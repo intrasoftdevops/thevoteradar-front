@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+$primary: #177ab8;
+$info: #64248b;
+$dark: #000;
+@import "../node_modules/bootswatch/dist/cosmo/variables";
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../node_modules/bootswatch/dist/cosmo/bootswatch";
+body {
+    font-family: 'Outfit', sans-serif !important;
+    margin: 0;
+    background-color: #e0e0e0 !important;
+    position: relative; 
+    padding-bottom:  25px;
+    min-height: 100vh;
+}
+.img-logo{
+    width: 150px !important;
+}
+hr{
+    opacity: 1;
+}
+
