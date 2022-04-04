@@ -42,6 +42,13 @@
                         placeholder="Numero de documento" name="numero_documento">
                 </div>
                 <div class="form-group col-md-4 pt-3">
+                    <label class="fw-bold ">Departamentos</label>
+                    <ng-multiselect-dropdown name="departamentos" [placeholder]="'Departamentos'"
+                        [settings]="dropdownSettings" [data]="municipioSelect"
+                        (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)">
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="form-group col-md-4 pt-3">
                     <label class="fw-bold ">Municipios asignados</label>
                     <ng-multiselect-dropdown name="municipios" [placeholder]="'Municipios asignados'"
                         [(ngModel)]="municipioAssign" [settings]="dropdownSettings" [data]="municipioSelect"
@@ -53,12 +60,6 @@
                     <label class="fw-bold">Email</label>
                     <input type="email" required class="form-control border-2 border-dark rounded " id="txtEmail"
                         placeholder="Email" name="email" [(ngModel)]="gerente.email">
-                </div>
-                <div class="form-group col-md-4">
-                    <label class="fw-bold">Password</label>
-                    <input type="password" required [(ngModel)]="gerente.password"
-                        class="form-control border-2 border-dark rounded" id="txtPassword" placeholder="Contraseña"
-                        name="password">
                 </div>
             </form>
         </div>

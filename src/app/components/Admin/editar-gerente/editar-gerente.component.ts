@@ -31,7 +31,6 @@ export class EditarGerenteComponent implements OnInit {
     nombres: '',
     apellidos: '',
     email: '',
-    password: '',
     cliente_id: 1,
   }
   idGerente: any;
@@ -96,7 +95,6 @@ export class EditarGerenteComponent implements OnInit {
       this.gerente.tipo_documento_id = res.tipo_documento_id;
       this.gerente.numero_documento = res.numero_documento;
       this.gerente.email = res.email;
-      this.gerente.password = res.password;
       this.apiService.getMunicipalAssignedGerente(res.id).subscribe((res: any) => {
         const { municipios_asignados } = res;
         this.municipioAssign = municipios_asignados.map((municipio: any) => {

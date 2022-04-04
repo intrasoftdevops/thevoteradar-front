@@ -10,122 +10,143 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 })
 export class CrearGerenteComponent implements OnInit {
 
-  dropdownList: any = [];
-  selectedItems: any = [];
-  dropdownSettings: IDropdownSettings = {};
-  municipios: any = [];
-  municipioSelect: any = [];
-  idDepartamentoVotacion: any;
+  selectedMunicipals: any = [];
+  dropdownSettingsDepartment: IDropdownSettings = {};
+  dropdownSettingsMunicipal: IDropdownSettings = {};
+  dataMunicipals: any = [];
+  dataDepartments: any = [];
+  dataFiltered: any = [];
 
   gerente: any = {
-    rol_id: 2,
-    tipo_documento_id: '',
-    numero_documento: '',
-    estado_id: 1,
-    genero_id: '',
-    localidad_residencia: '',
     nombres: '',
     apellidos: '',
+    genero_id: '',
+    tipo_documento_id: '',
+    numero_documento: '',
     email: '',
     password: '',
-    cliente_id: 1,
+    estado_id: 1,
+    municipios: [],
   }
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.municipios = resp;
-      this.municipioSelect = this.municipios.map((municipio: any) => {
-        const { codigo_unico, nombre } = municipio;
-        return { codigo_unico, nombre };
-      });
-    }, err => console.log(err))
-    this.dropdownSettings = {
+    this.getDepartmentAdmin();
+    this.getMunicipalAdmin();
+    this.dropdownSettingsDepartment = {
+      clearSearchFilter: false,
+      enableCheckAll: false,
+      singleSelection: true,
+      idField: 'codigo_unico',
+      textField: 'nombre_departamento_votacion',
+      itemsShowLimit: 2,
+      searchPlaceholderText: "Buscar",
+      allowSearchFilter: true
+    };
+    this.dropdownSettingsMunicipal = {
+      clearSearchFilter: false,
       enableCheckAll: false,
       singleSelection: false,
       idField: 'codigo_unico',
       textField: 'nombre',
-      itemsShowLimit: 3,
+      itemsShowLimit: 2,
       searchPlaceholderText: "Buscar",
       allowSearchFilter: true
     };
   }
 
-  onItemSelect(item: any) {
-    this.selectedItems.push(item.codigo_unico);
+  onItemSelectDepartment(item: any) {
+    this.selectedMunicipals = [];
+    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
   }
 
-  onItemDeSelect(item: any) {
-    const index = this.selectedItems.indexOf(item.codigo_unico);
-    console.log(index);
-    this.selectedItems.splice(index, 1);
-    console.log(this.selectedItems);
+  onItemDeSelectDepartment() {
+    this.dataFiltered = [];
+  }
+
+  getDepartmentAdmin() {
+    this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
+      this.dataDepartments = resp;
+    }, (err: any) => {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    })
+  }
+
+  getMunicipalAdmin() {
+    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
+      this.dataMunicipals = resp;
+    }, (err: any) => {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    });
   }
 
   createGerente() {
 
-    if (this.selectedItems.length > 0) {
-      this.gerente.estado_id = 2;
-    }
+    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email, password } = this.gerente;
 
-    this.apiService.createUser(this.gerente).subscribe((resp: any) => {
-      console.log("Crear gerente")
-      console.log(resp);
-      const { res, message, user_id } = resp;
-      if (res == true) {
-        Swal.fire(message);
+    if (nombres.trim() && apellidos.trim() && genero_id.trim() && tipo_documento_id.trim() && numero_documento && email.trim() && password.trim()) {
 
-        Swal.fire(
-          'Exitoso!',
-          message,
-          'success'
-        );
+      const codigo_unico = this.getCodeMunicipals();
 
-        const dataMunicipal = {
-          municipios: this.selectedItems,
-          gerente_id: user_id,
-
-        }
-
-
-
-        this.apiService.addMunicipals(dataMunicipal).subscribe((resp: any) => {
-          console.log("Agregar municipios")
-          console.log(resp);
-        }, (err: any) => console.log(err));
-        this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-          console.log("Obtener departamento")
-          console.log(resp);
-          const { codigo_unico } = resp;
-          this.idDepartamentoVotacion = codigo_unico;
-          const dataDepartament = {
-            c_departamento_votacion: this.idDepartamentoVotacion,
-            gerente_id: user_id
-          }
-
-          console.log(dataDepartament);
-
-          this.apiService.createDepartmentGerente(dataDepartament).subscribe((resp: any) => {
-            console.log("Crear departamento gerente")
-            console.log(resp);
-          }, (err: any) => console.log(err));
-        }, (err: any) => console.log(err));
-
+      if (codigo_unico.length > 0) {
+        this.gerente.estado_id = 2;
+        this.gerente.municipios = codigo_unico;
       } else {
+        this.gerente.estado_id = 1;
+      }
+
+      this.apiService.createGerente(this.gerente).subscribe((resp: any) => {
+
         console.log(resp);
-        console.log("Algo salio mal")
+
+        Swal.fire({
+          icon: 'success',
+          title: resp.message,
+          confirmButtonText: 'Ok',
+          allowEnterKey: false,
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        })
+
+      }, (err: any) => {
+        console.log(err);
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: "Algo salio mal",
-        })
-      }
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err,
-    }));
+          text: err.message,
+        });
+      })
+
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
+      });
+    }
+
+  }
+
+  getCodeMunicipals() {
+    return this.selectedMunicipals.map((selectedMunicipal: any) => {
+      const { codigo_unico } = selectedMunicipal;
+      return codigo_unico;
+    });
   }
 
 }

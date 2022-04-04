@@ -55,17 +55,6 @@ export class CrearCoordinadorComponent implements OnInit {
 
   createCoordinador() {
     console.log(this.coordinador);
-    this.apiService.createUser(this.coordinador).subscribe((resp: any) => {
-      console.log(resp);
-      const { res, message } = resp;
-      if (res == true) {
-        Swal.fire(message)
-      } else {
-        console.log(resp);
-        console.log("Algo salio mal")
-        Swal.fire('La Contraseña o el Usuario son equivocados')
-      }
-    }, err => console.log(err));
   }
 
 }

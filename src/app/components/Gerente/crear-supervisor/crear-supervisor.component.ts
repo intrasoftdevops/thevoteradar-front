@@ -25,12 +25,22 @@ export class CrearSupervisorComponent implements OnInit {
   zonas: any = [];
   dropdownList: any = [];
   selectedItems: any = [];
-  dropdownSettings: IDropdownSettings = {};
+  dropdownSettingsZone: IDropdownSettings = {};
+  dropdownSettingsMunicipal: IDropdownSettings = {};
   zonaSelect: any = [];
+  municipioAssign: any = [];
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
+    this.apiService.getMunicipalAssignedGerente(this.apiService.getId()).subscribe((res: any) => {
+      const { municipios_asignados } = res;
+      this.municipioAssign = municipios_asignados.map((municipio: any) => {
+        const { codigo_unico, nombre } = municipio;
+        return { codigo_unico, nombre };
+      });
+      console.log(this.municipioAssign);
+    })
     this.apiService.getZoneGerente().subscribe((resp: any) => {
       this.zonas = resp;
       console.log(resp)
@@ -44,7 +54,17 @@ export class CrearSupervisorComponent implements OnInit {
       title: 'Oops...',
       text: err,
     }));
-    this.dropdownSettings = {
+    this.dropdownSettingsMunicipal = {
+      limitSelection: 1,
+      enableCheckAll: false,
+      singleSelection: false,
+      idField: 'codigo_unico',
+      textField: 'nombre',
+      itemsShowLimit: 3,
+      searchPlaceholderText: "Buscar",
+      allowSearchFilter: true
+    };
+    this.dropdownSettingsZone = {
       enableCheckAll: false,
       singleSelection: false,
       idField: 'codigo_unico',
@@ -63,26 +83,7 @@ export class CrearSupervisorComponent implements OnInit {
 
   createSupervisor() {
     console.log(this.supervisor);
-    this.apiService.createUser(this.supervisor).subscribe((resp: any) => {
-      console.log(resp);
-      const { res, message } = resp;
-      if (res == true) {
-        Swal.fire(
-          'Exitoso',
-          message,
-          'success'
-        )
-        Swal.fire(message)
-      } else {
-        console.log(resp);
-        console.log("Algo salio mal")
-        Swal.fire('La Contraseña o el Usuario son equivocados')
-      }
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err,
-    }));
+
   }
 
 }

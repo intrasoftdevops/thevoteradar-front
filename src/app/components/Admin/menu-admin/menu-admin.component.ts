@@ -42,4 +42,12 @@ export class MenuAdminComponent implements OnInit {
     }));
   }
 
+  logout() {
+    this.apiService.logout().subscribe((resp: any) => {
+      console.log(resp);
+      this.apiService.deleteCookies();
+      this.router.navigate(['']);
+    }, err => console.log(err))
+  }
+
 }
