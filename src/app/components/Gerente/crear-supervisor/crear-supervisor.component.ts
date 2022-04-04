@@ -33,14 +33,6 @@ export class CrearSupervisorComponent implements OnInit {
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.apiService.getMunicipalAssignedGerente(this.apiService.getId()).subscribe((res: any) => {
-      const { municipios_asignados } = res;
-      this.municipioAssign = municipios_asignados.map((municipio: any) => {
-        const { codigo_unico, nombre } = municipio;
-        return { codigo_unico, nombre };
-      });
-      console.log(this.municipioAssign);
-    })
     this.apiService.getZoneGerente().subscribe((resp: any) => {
       this.zonas = resp;
       console.log(resp)

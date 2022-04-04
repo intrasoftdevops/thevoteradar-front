@@ -20,12 +20,16 @@ export class ApiService {
     return this.http.post(this._URL + "/crear-gerente", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
-  getUsers() {
-    return this.http.get(this._URL + "/users", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  getGerente(id: any) {
+    return this.http.get(this._URL + "/get-gerente/" + id, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
-  getUserById(id: any) {
-    return this.http.get(this._URL + "/users/" + id, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  updateGerente(id: any, data: any) {
+    return this.http.put(this._URL + "/editar-gerente/" + id, data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getUsers() {
+    return this.http.get(this._URL + "/users", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
   getAssignedMunicipal() {
@@ -44,16 +48,8 @@ export class ApiService {
     return this.http.get(this._URL + "/get-departamentos-administrador", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
-  getMunicipalAssignedGerente(id: any) {
-    return this.http.get(this._URL + "/get-gerente/" + id, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
-  }
-
   updateMunicipal(data: any) {
     return this.http.put(this._URL + "/editar-municipios-gerente", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
-  }
-
-  updateGerente(data: any, id: any) {
-    return this.http.put(this._URL + "/users/" + id, data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
   logout() {
@@ -69,6 +65,7 @@ export class ApiService {
   setToken(token: any) {
     this.cookies.set("token", token);
   }
+
   getToken() {
     return this.cookies.get("token");
   }
@@ -84,7 +81,7 @@ export class ApiService {
   setId(id: any) {
     this.cookies.set("id", id);
   }
-  
+
   getId() {
     return this.cookies.get("id");
   }

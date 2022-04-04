@@ -25,7 +25,6 @@ export class CrearGerenteComponent implements OnInit {
     numero_documento: '',
     email: '',
     password: '',
-    estado_id: 1,
     municipios: [],
   }
 
@@ -63,6 +62,7 @@ export class CrearGerenteComponent implements OnInit {
 
   onItemDeSelectDepartment() {
     this.dataFiltered = [];
+    this.selectedMunicipals = [];
   }
 
   getDepartmentAdmin() {
@@ -99,12 +99,7 @@ export class CrearGerenteComponent implements OnInit {
 
       const codigo_unico = this.getCodeMunicipals();
 
-      if (codigo_unico.length > 0) {
-        this.gerente.estado_id = 2;
-        this.gerente.municipios = codigo_unico;
-      } else {
-        this.gerente.estado_id = 1;
-      }
+      this.gerente.municipios = codigo_unico;
 
       this.apiService.createGerente(this.gerente).subscribe((resp: any) => {
 

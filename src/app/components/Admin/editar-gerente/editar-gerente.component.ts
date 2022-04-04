@@ -12,26 +12,23 @@ import Swal from 'sweetalert2';
 })
 export class EditarGerenteComponent implements OnInit {
 
-  dropdownList: any = [];
-  selectedItems: any = [];
-  dropdownSettings: IDropdownSettings = {};
-  municipios: any = [];
-  municipioSelect: any = [];
+  dropdownSettingsMunicipal: IDropdownSettings = {};
+  dropdownSettingsDepartment: IDropdownSettings = {};
+  dataDepartments: any = [];
+  dataMunicipals: any = [];
   municipioAssign: any = [];
+  departmentAssign: any = [];
   assignedItems: any = [];
-  sendMunicipals: any = [];
+  dataFiltered: any = [];
 
   gerente: any = {
-    rol_id: 2,
     tipo_documento_id: '',
     numero_documento: '',
-    estado_id: 1,
     genero_id: '',
-    localidad_residencia: '',
     nombres: '',
     apellidos: '',
     email: '',
-    cliente_id: 1,
+    municipios: [],
   }
   idGerente: any;
   subscriber: any;
@@ -40,26 +37,27 @@ export class EditarGerenteComponent implements OnInit {
 
   ngOnInit() {
     this.getGerente();
+    this.getDepartmentAdmin();
+    this.getMunicipalAdmin();
 
     this.subscriber = this.router.events.pipe(
       filter((event: any) => event instanceof NavigationEnd)
     ).subscribe((event) => {
-      this.getGerente();
+      window.location.reload();
     });
 
-    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.municipios = resp;
-      console.log(resp)
-      this.municipioSelect = this.municipios.map((municipio: any) => {
-        const { codigo_unico, nombre } = municipio;
-        return { codigo_unico, nombre };
-      });
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err,
-    }))
-    this.dropdownSettings = {
+    this.dropdownSettingsDepartment = {
+      clearSearchFilter: false,
+      enableCheckAll: false,
+      singleSelection: true,
+      idField: 'codigo_unico',
+      textField: 'nombre_departamento_votacion',
+      itemsShowLimit: 2,
+      searchPlaceholderText: "Buscar",
+      allowSearchFilter: true
+    };
+
+    this.dropdownSettingsMunicipal = {
       enableCheckAll: false,
       singleSelection: false,
       idField: 'codigo_unico',
@@ -70,89 +68,111 @@ export class EditarGerenteComponent implements OnInit {
     };
   }
 
+  getDepartmentAdmin() {
+    this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
+      console.log(resp)
+      this.dataDepartments = resp;
+    }, (err: any) => {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    })
+  }
+
+  getMunicipalAdmin() {
+    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
+      console.log(resp);
+      this.dataMunicipals = resp;
+      this.dataFiltered = this.dataMunicipals;
+    }, (err: any) => {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    });
+  }
+
   ngOnDestroy() {
     this.subscriber?.unsubscribe();
   }
 
 
   onItemSelect(item: any) {
-    this.sendMunicipals.push(item.codigo_unico);
-    console.log(this.sendMunicipals);
+    this.municipioAssign = [];
+    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
   }
 
-  onItemDeSelect(item: any) {
-    const index = this.sendMunicipals.indexOf(item.codigo_unico);
-    this.sendMunicipals.splice(index, 1);
-    console.log(this.sendMunicipals)
+  onItemDeSelect() {
+    this.dataFiltered = [];
+    this.municipioAssign = [];
   }
 
   getGerente() {
     this.idGerente = this.activatedRoute.snapshot.params['id'];
-    this.apiService.getUserById(this.idGerente).subscribe((res: any) => {
-      this.gerente.nombres = res.nombres;
-      this.gerente.apellidos = res.apellidos;
-      this.gerente.genero_id = res.genero_id;
-      this.gerente.tipo_documento_id = res.tipo_documento_id;
-      this.gerente.numero_documento = res.numero_documento;
-      this.gerente.email = res.email;
-      this.apiService.getMunicipalAssignedGerente(res.id).subscribe((res: any) => {
-        const { municipios_asignados } = res;
-        this.municipioAssign = municipios_asignados.map((municipio: any) => {
-          const { codigo_unico, nombre } = municipio;
-          return { codigo_unico, nombre };
-        });
-        console.log(this.municipioAssign)
-        this.assignedItems = this.municipioAssign.map((municipio: any) => {
-          const { codigo_unico } = municipio;
-          return codigo_unico;
-        });
-        console.log(this.assignedItems)
-        this.sendMunicipals = this.assignedItems;
-      }, (err: any) => Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err,
-      }))
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err,
-    }));
+    this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
+      const { gerente, municipios_asignados, departamentos_asignados } = resp;
+      this.gerente.nombres = gerente.nombres;
+      this.gerente.apellidos = gerente.apellidos;
+      this.gerente.genero_id = gerente.genero_id;
+      this.gerente.email = gerente.email;
+      this.gerente.tipo_documento_id = gerente.tipo_documento_id;
+      this.gerente.numero_documento = gerente.numero_documento;
+      this.municipioAssign = municipios_asignados;
+      this.departmentAssign = departamentos_asignados;
+      console.log(resp);
+    })
   }
 
   updateGerente() {
-
-    if (this.sendMunicipals.length > 0) {
-      this.gerente.estado_id = 2;
-    }
-
     console.log(this.gerente);
 
-    this.apiService.updateGerente(this.gerente, this.idGerente).subscribe((res: any) => {
-      Swal.fire(
-        'Exitoso!',
-        "Cuenta editada exitosamente.",
-        'success'
-      );
-      console.log(res)
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err,
-    }))
+    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.gerente;
 
-    const dataUpdateGerente = {
-      gerente_id: this.idGerente,
-      municipios: this.sendMunicipals,
+    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
+      const codigo_unico = this.getCodeMunicipals();
+      this.gerente.municipios = codigo_unico;
+
+      this.apiService.updateGerente(this.idGerente, this.gerente).subscribe((resp: any) => {
+        Swal.fire({
+          icon: 'success',
+          title: resp.res,
+          confirmButtonText: 'Ok',
+          allowEnterKey: false,
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        })
+      }, (err: any) => {
+        console.log(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: err.message,
+        });
+      })
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
+      });
     }
-    console.log(dataUpdateGerente);
-    this.apiService.updateMunicipal(dataUpdateGerente).subscribe((res: any) => {
-      console.log(res)
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err,
-    }))
+
+  }
+
+  getCodeMunicipals() {
+    return this.municipioAssign.map((selectedMunicipal: any) => {
+      const { codigo_unico } = selectedMunicipal;
+      return codigo_unico;
+    });
   }
 
 
