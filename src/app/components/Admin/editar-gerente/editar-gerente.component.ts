@@ -133,7 +133,7 @@ export class EditarGerenteComponent implements OnInit {
 
     let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.gerente;
 
-    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
+    if (nombres.trim() && apellidos.trim() && genero_id && tipo_documento_id && numero_documento.trim() && email.trim()) {
       const codigo_unico = this.getCodeMunicipals();
       this.gerente.municipios = codigo_unico;
 
