@@ -56,8 +56,16 @@ export class ApiService {
     return this.http.get(this._URL + "/get-municipios-gerente", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
-  getAssignedZone() {
+  getSupervisores() {
     return this.http.get(this._URL + "/supervisores-zona-asignada/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getSupervisor(id: any) {
+    return this.http.get(this._URL + "/get-supervisor/" + id, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  updateSupervisor(id: any, data: any) {
+    return this.http.put(this._URL + "/editar-supervisor/" + id, data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
   logout() {
@@ -67,31 +75,38 @@ export class ApiService {
   }
 
   deleteCookies() {
-    this.cookies.deleteAll();
+    localStorage.clear();
+    //this.cookies.deleteAll();
   }
 
   setToken(token: any) {
-    this.cookies.set("token", token);
+    localStorage.setItem('token', token);
+    //this.cookies.set("token", token);
   }
 
   getToken() {
-    return this.cookies.get("token");
+    return localStorage.getItem('token');
+    //return this.cookies.get("token");
   }
 
   setRol(rol: any) {
-    this.cookies.set("rol", rol);
+    localStorage.setItem('rol', rol);
+    //this.cookies.set("rol", rol);
   }
 
   getRol() {
-    return this.cookies.get("rol");
+    return localStorage.getItem('rol');
+    //return this.cookies.get("rol");
   }
 
   setId(id: any) {
-    this.cookies.set("id", id);
+    localStorage.setItem('id', id);
+    //this.cookies.set("id", id);
   }
 
   getId() {
-    return this.cookies.get("id");
+    return localStorage.getItem('id');
+    //return this.cookies.get("id");
   }
 
 }

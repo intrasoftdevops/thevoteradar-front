@@ -10,15 +10,25 @@ import Swal from 'sweetalert2';
 })
 export class MenuGerenteComponent implements OnInit {
 
+  listSupervisorAsignados: any = [];
+  listSupervisorNoAsignados: any = [];
+
   constructor(private apiService: ApiService, private router: Router) { }
 
   ngOnInit() {
-    this.getZones();
+    this.getSupervisores();
   }
 
-  getZones() {
-    this.apiService.getAssignedZone().subscribe((resp: any) => {
+  getSupervisores() {
+    this.apiService.getSupervisores().subscribe((resp: any) => {
       console.log(resp)
+      const { supervisores_asignados, supervisores_no_asignados } = resp;
+      for (let supervisor of supervisores_asignados) {
+        this.listSupervisorAsignados.push(supervisor);
+      }
+      for (let supervisor of supervisores_no_asignados) {
+        this.listSupervisorNoAsignados.push(supervisor);
+      }
     }, (err: any) => {
       console.log(err);
       Swal.fire({

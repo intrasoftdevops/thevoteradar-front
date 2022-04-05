@@ -35,7 +35,7 @@ export class MenuAdminComponent implements OnInit {
           this.listGerenteNoAsignados.push(gerente);
         }
       }
-    }, (err:any) => Swal.fire({
+    }, (err: any) => Swal.fire({
       icon: 'error',
       title: 'Oops...',
       text: err.message,

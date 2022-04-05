@@ -34,6 +34,7 @@ export class CrearSupervisorComponent implements OnInit {
     this.getMunicipalGerente();
     this.getZoneGerente();
     this.dropdownSettingsMunicipal = {
+      noDataAvailablePlaceholderText: "No hay informacion disponible",
       limitSelection: 1,
       enableCheckAll: false,
       singleSelection: false,
@@ -44,6 +45,7 @@ export class CrearSupervisorComponent implements OnInit {
       allowSearchFilter: true
     };
     this.dropdownSettingsZone = {
+      noDataAvailablePlaceholderText: "No hay informacion disponible",
       enableCheckAll: false,
       singleSelection: false,
       idField: 'codigo_unico',
@@ -94,7 +96,7 @@ export class CrearSupervisorComponent implements OnInit {
 
       const codigo_unico = this.getCodeZones();
 
-      this.supervisor.zone = codigo_unico;
+      this.supervisor.zonas = codigo_unico;
 
       this.apiService.createSupervisor(this.supervisor).subscribe((resp: any) => {
 
@@ -127,7 +129,7 @@ export class CrearSupervisorComponent implements OnInit {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
+        text: "Los campos no pueden estar vacios a excepción de municipio y zona.",
       });
     }
 

@@ -11,6 +11,7 @@ import { CrearSupervisorComponent } from './components/Gerente/crear-supervisor/
 import { CrearCoordinadorComponent } from './components/Supervisor/crear-coordinador/crear-coordinador.component';
 import { CrearTestigoComponent } from './components/Coordinador/crear-testigo/crear-testigo.component';
 import { EditarGerenteComponent } from './components/Admin/editar-gerente/editar-gerente.component';
+import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
 
 const routes: Routes = [
   {
@@ -56,7 +57,11 @@ const routes: Routes = [
   {
     path: 'editarGerente/:id',
     component: EditarGerenteComponent
-  }
+  },
+  {
+    path: 'editarSupervisor/:id',
+    component: EditarSupervisorComponent
+  },
 ];
 
 @NgModule({
