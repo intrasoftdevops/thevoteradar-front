@@ -64,7 +64,7 @@ export class EditarSupervisorComponent implements OnInit {
       enableCheckAll: false,
       singleSelection: false,
       idField: 'codigo_unico',
-      textField: 'codigo_unico',
+      textField: 'nombre',
       itemsShowLimit: 2,
       searchPlaceholderText: "Buscar",
       allowSearchFilter: true

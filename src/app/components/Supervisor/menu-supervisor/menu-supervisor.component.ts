@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class MenuSupervisorComponent implements OnInit {
 
-  constructor(private apiService: ApiService,private router: Router) { }
+  constructor(private apiService: ApiService, private router: Router) { }
 
   ngOnInit(): void {
   }

@@ -49,7 +49,7 @@ export class CrearSupervisorComponent implements OnInit {
       enableCheckAll: false,
       singleSelection: false,
       idField: 'codigo_unico',
-      textField: 'codigo_unico',
+      textField: 'nombre',
       itemsShowLimit: 3,
       searchPlaceholderText: "Buscar",
       allowSearchFilter: true

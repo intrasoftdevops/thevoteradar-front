@@ -68,6 +68,18 @@ export class ApiService {
     return this.http.put(this._URL + "/editar-supervisor/" + id, data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
+  getZonesSupervisor() {
+    return this.http.get(this._URL + "/get-zonas-supervisor", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getStationsCoordinador() {
+    return this.http.get(this._URL + "/puestos-supervisor/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  createCoordinador(data:any) {
+    return this.http.post(this._URL + "/crear-coordinador", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
   logout() {
     var data: any;
     console.log({ 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() });
