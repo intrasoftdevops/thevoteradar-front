@@ -86,7 +86,11 @@ export class EditarGerenteComponent implements OnInit {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
       console.log(resp);
       this.dataMunicipals = resp;
-      this.dataFiltered = this.dataMunicipals;
+      console.log(this.departmentAssign)
+      if (this.departmentAssign.length > 0) {
+        this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.departmentAssign[0].codigo_unico || []);
+      }
+
     }, (err: any) => {
       console.log(err);
       Swal.fire({
@@ -104,7 +108,9 @@ export class EditarGerenteComponent implements OnInit {
 
   onItemSelect(item: any) {
     this.municipioAssign = [];
-    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
+    if (this.departmentAssign.length > 0) {
+      this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.departmentAssign[0].codigo_unico || []);
+    }
   }
 
   onItemDeSelect() {
@@ -133,7 +139,7 @@ export class EditarGerenteComponent implements OnInit {
 
     let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.gerente;
 
-    if (nombres.trim() && apellidos.trim() && genero_id && tipo_documento_id && numero_documento.trim() && email.trim()) {
+    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
       const codigo_unico = this.getCodeMunicipals();
       this.gerente.municipios = codigo_unico;
 
