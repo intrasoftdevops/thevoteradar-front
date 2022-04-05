@@ -48,8 +48,16 @@ export class ApiService {
     return this.http.get(this._URL + "/get-departamentos-administrador", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
-  updateMunicipal(data: any) {
-    return this.http.put(this._URL + "/editar-municipios-gerente", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  createSupervisor(data: any) {
+    return this.http.post(this._URL + "/crear-supervisor", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getMunicipalGerente() {
+    return this.http.get(this._URL + "/get-municipios-gerente", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getAssignedZone() {
+    return this.http.get(this._URL + "/supervisores-zona-asignada/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
   logout() {

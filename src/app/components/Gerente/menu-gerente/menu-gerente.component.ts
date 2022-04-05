@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-menu-gerente',
@@ -11,7 +12,21 @@ export class MenuGerenteComponent implements OnInit {
 
   constructor(private apiService: ApiService, private router: Router) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.getZones();
+  }
+
+  getZones() {
+    this.apiService.getAssignedZone().subscribe((resp: any) => {
+      console.log(resp)
+    }, (err: any) => {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    })
   }
 
   logout() {

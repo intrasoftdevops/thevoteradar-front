@@ -14,13 +14,13 @@ export class MenuAdminComponent implements OnInit {
   listGerenteNoAsignados: any = [];
 
   constructor(private apiService: ApiService, private router: Router) {
-    this.getGerente();
   }
 
   ngOnInit(): void {
+    this.getGerentes();
   }
 
-  getGerente() {
+  getGerentes() {
 
     this.apiService.getAssignedMunicipal().subscribe((resp: any) => {
       const { gerentes_asignados, gerentes_no_asignados } = resp;
@@ -35,10 +35,10 @@ export class MenuAdminComponent implements OnInit {
           this.listGerenteNoAsignados.push(gerente);
         }
       }
-    }, err => Swal.fire({
+    }, (err:any) => Swal.fire({
       icon: 'error',
       title: 'Oops...',
-      text: "Un error ha ocurrido, vuelva a iniciar sesion.",
+      text: err.message,
     }));
   }
 
