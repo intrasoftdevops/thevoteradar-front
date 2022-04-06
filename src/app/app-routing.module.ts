@@ -13,6 +13,7 @@ import { CrearTestigoComponent } from './components/Coordinador/crear-testigo/cr
 import { EditarGerenteComponent } from './components/Admin/editar-gerente/editar-gerente.component';
 import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
 import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
+import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
 
 const routes: Routes = [
   {
@@ -66,6 +67,10 @@ const routes: Routes = [
   {
     path: 'editarCoordinador/:id',
     component: EditarCoordinadorComponent
+  },
+  {
+    path: 'editarTestigo/:id',
+    component: EditarTestigoComponent
   },
 ];
 

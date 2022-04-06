@@ -92,6 +92,30 @@ export class ApiService {
     return this.http.put(this._URL + "/editar-coordinador/" + id, data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
+  getStationsTestigo() {
+    return this.http.get(this._URL + "/get-puestos-coordinador/", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getTablesTestigo() {
+    return this.http.get(this._URL + "/mesas-coordinador/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  createTestigo(data: any) {
+    return this.http.post(this._URL + "/crear-testigo", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getTestigos() {
+    return this.http.get(this._URL + "/testigos-mesa-asignada/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getTestigo(id: any) {
+    return this.http.get(this._URL + "/get-testigo/" + id, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  updateTestigo(id: any, data: any) {
+    return this.http.put(this._URL + "/editar-testigo/" + id, data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
   logout() {
     var data: any;
     console.log({ 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() });

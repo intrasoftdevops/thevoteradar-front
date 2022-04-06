@@ -24,16 +24,11 @@ export class MenuAdminComponent implements OnInit {
 
     this.apiService.getAssignedMunicipal().subscribe((resp: any) => {
       const { gerentes_asignados, gerentes_no_asignados } = resp;
-      console.log(resp)
       for (let gerente of gerentes_asignados) {
-        if (gerente.rol_id == 2) {
-          this.listGerenteAsignados.push(gerente);
-        }
+        this.listGerenteAsignados.push(gerente);
       }
       for (let gerente of gerentes_no_asignados) {
-        if (gerente.rol_id == 2) {
-          this.listGerenteNoAsignados.push(gerente);
-        }
+        this.listGerenteNoAsignados.push(gerente);
       }
     }, (err: any) => Swal.fire({
       icon: 'error',

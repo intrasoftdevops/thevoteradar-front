@@ -1,21 +1,20 @@
 <app-menu-coordinador></app-menu-coordinador>
 <div class="container-md">
     <div class=" pt-5 my-5">
-        <div class="bg-info my-5 py-2 px-5 text-white mb-5 ">
-            <h4>Añadir Testigo</h4>
+        <div class="bg-info py-2 px-5 text-white mb-5 ">
+            <h4>Editar Testigo</h4>
         </div>
-        <div class=" border border-info bg-light rounded border-3 bordeFormulario">
+        <div class=" border border-info bg-light rounded border-3">
             <form class="row mx-5  my-4">
                 <div class="form-group col-md-4 pt-3">
                     <label class="fw-bold">Nombres</label>
-                    <input type="text" [(ngModel)]="testigo.nombres" class="form-control border-2 border-dark rounded"
-                        id="txtNombres" placeholder="Nombres" name="nombres" required>
+                    <input type="text" class="form-control border-2 border-dark rounded" id="txtNombres"
+                        placeholder="Nombres" name="nombres" required [(ngModel)]="testigo.nombres">
                 </div>
                 <div class="form-group col-md-4 pt-3">
                     <label class="fw-bold">Apellidos</label>
-                    <input type="text" [(ngModel)]="testigo.apellidos" required
-                        class="form-control border-2 border-dark rounded" id="txtApellidos" placeholder="Apellidos"
-                        name="apellidos">
+                    <input type="text" required class="form-control border-2 border-dark rounded border-dark rounded"
+                        id="txtApellidos" placeholder="Apellidos" name="apellidos" [(ngModel)]="testigo.apellidos">
                 </div>
                 <div class="form-group col-md-4 pt-3">
                     <label class="fw-bold">Genero</label>
@@ -37,41 +36,33 @@
                 </div>
                 <div class="form-group col-md-4 pt-3">
                     <label class="fw-bold">Numero de documento</label>
-                    <input type="number" [(ngModel)]="testigo.numero_documento" required
-                        class="form-control border-2 border-dark rounded" id="txtNumeroDocumento"
-                        placeholder="Numero de documento" name="numero_documento">
+                    <input type="number" required class="form-control border-2 border-dark rounded"
+                        id="txtNumeroDocumento" placeholder="Numero de documento" name="numero_documento"
+                        [(ngModel)]="testigo.numero_documento">
                 </div>
                 <div class="form-group col-md-4 pt-3">
                     <label class="fw-bold ">Puestos</label>
-                    <ng-multiselect-dropdown name="puestos" [placeholder]="'Puestos'"
+                    <ng-multiselect-dropdown name="puestos" [placeholder]="'Puestos'" [(ngModel)]="stationAssign"
                         [settings]="dropdownSettingsStation" [data]="dataStations" (onSelect)="onItemSelect($event)"
-                        (onDeSelect)="onItemDeSelect()">
+                        (onDeSelect)="onItemDeSelect($event)">
                     </ng-multiselect-dropdown>
                 </div>
                 <div class="form-group col-md-4 pt-3">
                     <label class="fw-bold ">Mesas</label>
-                    <ng-multiselect-dropdown name="mesas" [placeholder]="'Mesas'"
-                        [settings]="dropdownSettingsTable" [data]="dataFiltered" [(ngModel)]="selectedTables">
+                    <ng-multiselect-dropdown name="mesas" [placeholder]="'Mesas'" [(ngModel)]="tableAssign"
+                        [settings]="dropdownSettingsTable" [data]="dataFiltered">
                     </ng-multiselect-dropdown>
                 </div>
                 <hr class="my-4 border border-primary rounded border-2" />
                 <div class="form-group col-md-4">
                     <label class="fw-bold">Email</label>
-                    <input type="email" [(ngModel)]="testigo.email" required
-                        class="form-control border-2 border-dark rounded " id="txtEmail" placeholder="Email"
-                        name="email">
-                </div>
-                <div class="form-group col-md-4">
-                    <label class="fw-bold">Password</label>
-                    <input type="password" [(ngModel)]="testigo.password" required
-                        class="form-control border-2 border-dark rounded" id="txtPassword" placeholder="Password"
-                        name="password">
+                    <input type="email" required class="form-control border-2 border-dark rounded " id="txtEmail"
+                        placeholder="Email" name="email" [(ngModel)]="testigo.email">
                 </div>
             </form>
         </div>
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-lg btn-info mt-4 mx-2 rounded" (click)="createTestigo()"> CREAR
-            </button>
+            <button type="button" class="btn btn-lg btn-info mt-4 mx-2" (click)="updateTestigo()"> EDITAR </button>
         </div>
     </div>
 </div>
