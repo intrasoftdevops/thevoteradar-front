@@ -10,16 +10,16 @@
                 <li class="nav-item  d-flex align-items-center">
                     <a class="nav-link px-3" aria-current="page" routerLink="/coordinadorHome">Inicio</a>
                 </li>
-                <!---<li class="nav-item dropdown d-flex align-items-center">
+                <li class="nav-item dropdown d-flex align-items-center">
                     <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      Crear Usuario
+                        aria-expanded="false">
+                        Crear Usuario
                     </a>
                     <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item text-white" routerLink="/crearTestigo">Crear Testigo</a>
-                      </li>
+                        <li><a class="dropdown-item text-white" routerLink="/crearTestigo">Crear Testigo</a>
+                        </li>
                     </ul>
-                  </li>-->
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto ">
                 <li class="nav-item dropdown my-auto ">
@@ -31,7 +31,7 @@
                     <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
                                 data-bs-target="#offcanvasDatos">Actualizar Datos</a></li>
-                        <li><a class="dropdown-item text-white">Cerrar sesion</a></li>
+                        <li><a class="dropdown-item text-white" (click)="logout()">Cerrar sesion</a></li>
                     </ul>
                 </li>
             </ul>

@@ -76,8 +76,20 @@ export class ApiService {
     return this.http.get(this._URL + "/puestos-supervisor/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
-  createCoordinador(data:any) {
+  createCoordinador(data: any) {
     return this.http.post(this._URL + "/crear-coordinador", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getCoordinadores() {
+    return this.http.get(this._URL + "/coordinadores-puesto-asignado/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  getCoordinador(id: any) {
+    return this.http.get(this._URL + "/get-coordinador/" + id, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  }
+
+  updateCoordinador(id: any, data: any) {
+    return this.http.put(this._URL + "/editar-coordinador/" + id, data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
   }
 
   logout() {

@@ -12,6 +12,7 @@ import { CrearCoordinadorComponent } from './components/Supervisor/crear-coordin
 import { CrearTestigoComponent } from './components/Coordinador/crear-testigo/crear-testigo.component';
 import { EditarGerenteComponent } from './components/Admin/editar-gerente/editar-gerente.component';
 import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
+import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
 
 const routes: Routes = [
   {
@@ -61,6 +62,10 @@ const routes: Routes = [
   {
     path: 'editarSupervisor/:id',
     component: EditarSupervisorComponent
+  },
+  {
+    path: 'editarCoordinador/:id',
+    component: EditarCoordinadorComponent
   },
 ];
 

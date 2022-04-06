@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-menu-coordinador',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuCoordinadorComponent implements OnInit {
 
-  constructor() { }
+  constructor(private apiService: ApiService, private router: Router) { }
 
   ngOnInit(): void {
+  }
+
+  logout() {
+    this.apiService.logout().subscribe((resp: any) => {
+      console.log(resp);
+      this.apiService.deleteCookies();
+      this.router.navigate(['']);
+    }, (err:any) => console.log(err))
   }
 
 }

@@ -23,6 +23,7 @@ import { CrearTestigoComponent } from './components/Coordinador/crear-testigo/cr
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { EditarGerenteComponent } from './components/Admin/editar-gerente/editar-gerente.component';
 import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
+import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { EditarSupervisorComponent } from './components/Gerente/editar-superviso
     CrearCoordinadorComponent,
     CrearTestigoComponent,
     EditarGerenteComponent,
-    EditarSupervisorComponent
+    EditarSupervisorComponent,
+    EditarCoordinadorComponent
   ],
   imports: [
     BrowserModule,

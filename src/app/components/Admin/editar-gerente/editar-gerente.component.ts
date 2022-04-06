@@ -71,6 +71,18 @@ export class EditarGerenteComponent implements OnInit {
     };
   }
 
+  onItemSelect(item: any) {
+    this.municipioAssign = [];
+    this.dataFiltered = [];
+    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
+    console.log(this.dataFiltered);
+  }
+
+  onItemDeSelect(item: any) {
+    this.municipioAssign = [];
+    this.dataFiltered = [];
+  }
+
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       console.log(resp)
@@ -108,19 +120,6 @@ export class EditarGerenteComponent implements OnInit {
     this.subscriber?.unsubscribe();
   }
 
-
-  onItemSelect(item: any) {
-    this.municipioAssign = [];
-    this.dataFiltered = [];
-    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
-    console.log(this.dataFiltered);
-  }
-
-  onItemDeSelect(item: any) {
-    this.municipioAssign = [];
-    this.dataFiltered = [];
-  }
-
   getGerente() {
     this.idGerente = this.activatedRoute.snapshot.params['id'];
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
@@ -135,6 +134,12 @@ export class EditarGerenteComponent implements OnInit {
       this.municipioAssign = municipios_asignados;
       this.departmentAssign = departamentos_asignados;
       console.log(resp);
+    }, (err: any) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
     })
   }
 

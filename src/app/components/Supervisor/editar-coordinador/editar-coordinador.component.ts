@@ -1,20 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import Swal from 'sweetalert2';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { filter } from 'rxjs';
 
 @Component({
-  selector: 'app-crear-coordinador',
-  templateUrl: './crear-coordinador.component.html',
-  styleUrls: ['./crear-coordinador.component.scss']
+  selector: 'app-editar-coordinador',
+  templateUrl: './editar-coordinador.component.html',
+  styleUrls: ['./editar-coordinador.component.scss']
 })
-export class CrearCoordinadorComponent implements OnInit {
+export class EditarCoordinadorComponent implements OnInit {
 
-  selectedStations: any = [];
-  dropdownSettingsZones: IDropdownSettings = {};
-  dropdownSettingsStations: IDropdownSettings = {};
+  dropdownSettingsStation: IDropdownSettings = {};
+  dropdownSettingsZone: IDropdownSettings = {};
   dataZones: any = [];
   dataStations: any = [];
+  puestoAssign: any = [];
+  zoneAssign: any = [];
   dataFiltered: any = [];
 
   coordinador: any = {
@@ -28,13 +31,23 @@ export class CrearCoordinadorComponent implements OnInit {
     puestos: [],
   }
 
-  constructor(private apiService: ApiService) { }
+  idCoordinador: any;
+  subscriber: any;
 
-  dropdownSettings: IDropdownSettings = {};
+  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute, private router: Router) { }
+
   ngOnInit() {
+    this.getCoordinador();
     this.getZonesSupervisor();
-    this.getStationCoordinador();
-    this.dropdownSettingsZones = {
+    this.getStationsSupervisor();
+
+    this.subscriber = this.router.events.pipe(
+      filter((event: any) => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      window.location.reload();
+    });
+
+    this.dropdownSettingsZone = {
       noDataAvailablePlaceholderText: "No hay informacion disponible",
       clearSearchFilter: false,
       enableCheckAll: false,
@@ -45,9 +58,9 @@ export class CrearCoordinadorComponent implements OnInit {
       searchPlaceholderText: "Buscar",
       allowSearchFilter: true
     };
-    this.dropdownSettingsStations = {
+
+    this.dropdownSettingsStation = {
       noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
       enableCheckAll: false,
       singleSelection: false,
       idField: 'codigo_unico',
@@ -56,18 +69,19 @@ export class CrearCoordinadorComponent implements OnInit {
       searchPlaceholderText: "Buscar",
       allowSearchFilter: true
     };
+
   }
 
   onItemSelect(item: any) {
+    this.puestoAssign = [];
     this.dataFiltered = [];
-    this.selectedStations = [];
     this.dataFiltered = this.dataStations.filter((dataStation: any) => dataStation.codigo_zona_votacion == item.codigo_unico);
   }
-  onItemDeSelect() {
-    this.dataFiltered = [];
-    this.selectedStations = [];
-  }
 
+  onItemDeSelect(item: any) {
+    this.puestoAssign = [];
+    this.dataFiltered = [];
+  }
 
   getZonesSupervisor() {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
@@ -83,9 +97,14 @@ export class CrearCoordinadorComponent implements OnInit {
     })
   }
 
-  getStationCoordinador() {
+  getStationsSupervisor() {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
       this.dataStations = resp;
+      console.log(this.zoneAssign)
+      if (this.zoneAssign.length > 0) {
+        this.dataFiltered = this.dataStations.filter((dataStation: any) => dataStation.codigo_zona_votacion == this.zoneAssign[0].codigo_unico);
+      }
+      console.log(this.dataFiltered)
       console.log(resp)
     }, (err: any) => {
       console.log(err);
@@ -97,25 +116,44 @@ export class CrearCoordinadorComponent implements OnInit {
     })
   }
 
-  createCoordinador() {
-    console.log(this.dataFiltered)
-    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email, password } = this.coordinador;
+  getCoordinador() {
+    this.idCoordinador = this.activatedRoute.snapshot.params['id'];
+    this.apiService.getCoordinador(this.idCoordinador).subscribe((resp: any) => {
+      const { coordinador, puestos_asignados, zonas_asignadas } = resp;
+      this.coordinador.nombres = coordinador.nombres;
+      this.coordinador.apellidos = coordinador.apellidos;
+      this.coordinador.genero_id = coordinador.genero_id;
+      this.coordinador.tipo_documento_id = coordinador.tipo_documento_id;
+      this.coordinador.numero_documento = coordinador.numero_documento;
+      this.coordinador.email = coordinador.email;
+      this.coordinador.password = coordinador.password;
+      this.zoneAssign = zonas_asignadas;
+      this.puestoAssign = puestos_asignados;
+      console.log(resp)
+    }, (err: any) => {
+      console.log(err)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    })
+  }
 
-    if (nombres.trim() && apellidos.trim() && genero_id.trim() && tipo_documento_id.trim() && numero_documento && email.trim() && password.trim()) {
+  updateCoordinador() {
+    console.log(this.coordinador);
 
+    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.coordinador;
+
+    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
       const codigo_unico = this.getCodeStations();
-
       this.coordinador.puestos = codigo_unico;
 
-      console.log(this.coordinador);
-
-      this.apiService.createCoordinador(this.coordinador).subscribe((resp: any) => {
-
-        console.log(resp);
-
+      this.apiService.updateCoordinador(this.idCoordinador, this.coordinador).subscribe((resp: any) => {
+        console.log(resp)
         Swal.fire({
           icon: 'success',
-          title: resp.message,
+          title: resp.res,
           confirmButtonText: 'Ok',
           allowEnterKey: false,
           allowEscapeKey: false,
@@ -125,7 +163,6 @@ export class CrearCoordinadorComponent implements OnInit {
             window.location.reload();
           }
         })
-
       }, (err: any) => {
         console.log(err);
         Swal.fire({
@@ -133,7 +170,7 @@ export class CrearCoordinadorComponent implements OnInit {
           title: 'Oops...',
           text: err.message,
         });
-      });
+      })
 
     } else {
       Swal.fire({
@@ -143,12 +180,11 @@ export class CrearCoordinadorComponent implements OnInit {
       });
     }
 
-
   }
 
   getCodeStations() {
-    return this.selectedStations.map((selectedStation: any) => {
-      const { codigo_unico } = selectedStation;
+    return this.puestoAssign.map((puestoAssign: any) => {
+      const { codigo_unico } = puestoAssign;
       return codigo_unico;
     });
   }
