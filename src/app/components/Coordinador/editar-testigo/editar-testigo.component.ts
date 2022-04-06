@@ -136,7 +136,48 @@ export class EditarTestigoComponent implements OnInit {
   }
 
   updateTestigo() {
-    console.log(this.testigo);
+    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.testigo;
+
+    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
+      const codigo_unico = this.getCodeTables();
+      this.testigo.mesas = codigo_unico;
+      
+      this.apiService.updateTestigo(this.idTestigo, this.testigo).subscribe((resp: any) => {
+        Swal.fire({
+          icon: 'success',
+          title: resp.res,
+          confirmButtonText: 'Ok',
+          allowEnterKey: false,
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        })
+      }, (err: any) => {
+        console.log(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: err.message,
+        });
+      })
+
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
+      });
+    }
+  }
+
+  getCodeTables() {
+    return this.tableAssign.map((tableAssign: any) => {
+      const { codigo_unico } = tableAssign;
+      return codigo_unico;
+    });
   }
 
 }
