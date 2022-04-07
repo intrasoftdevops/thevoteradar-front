@@ -28,6 +28,7 @@ export class EditarGerenteComponent implements OnInit {
     nombres: '',
     apellidos: '',
     email: '',
+    password: '',
     municipios: [],
   }
   idGerente: any;
@@ -47,6 +48,7 @@ export class EditarGerenteComponent implements OnInit {
     });
 
     this.dropdownSettingsDepartment = {
+      noDataAvailablePlaceholderText: "No hay informacion disponible",
       clearSearchFilter: false,
       enableCheckAll: false,
       singleSelection: true,
@@ -58,6 +60,7 @@ export class EditarGerenteComponent implements OnInit {
     };
 
     this.dropdownSettingsMunicipal = {
+      noDataAvailablePlaceholderText: "No hay informacion disponible",
       enableCheckAll: false,
       singleSelection: false,
       idField: 'codigo_unico',
@@ -66,6 +69,18 @@ export class EditarGerenteComponent implements OnInit {
       searchPlaceholderText: "Buscar",
       allowSearchFilter: true
     };
+  }
+
+  onItemSelect(item: any) {
+    this.municipioAssign = [];
+    this.dataFiltered = [];
+    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
+    console.log(this.dataFiltered);
+  }
+
+  onItemDeSelect(item: any) {
+    this.municipioAssign = [];
+    this.dataFiltered = [];
   }
 
   getDepartmentAdmin() {
@@ -86,7 +101,11 @@ export class EditarGerenteComponent implements OnInit {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
       console.log(resp);
       this.dataMunicipals = resp;
-      this.dataFiltered = this.dataMunicipals;
+      console.log(this.departmentAssign)
+      if (this.departmentAssign.length > 0) {
+        this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.departmentAssign[0].codigo_unico);
+      }
+
     }, (err: any) => {
       console.log(err);
       Swal.fire({
@@ -101,17 +120,6 @@ export class EditarGerenteComponent implements OnInit {
     this.subscriber?.unsubscribe();
   }
 
-
-  onItemSelect(item: any) {
-    this.municipioAssign = [];
-    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
-  }
-
-  onItemDeSelect() {
-    this.dataFiltered = [];
-    this.municipioAssign = [];
-  }
-
   getGerente() {
     this.idGerente = this.activatedRoute.snapshot.params['id'];
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
@@ -120,11 +128,18 @@ export class EditarGerenteComponent implements OnInit {
       this.gerente.apellidos = gerente.apellidos;
       this.gerente.genero_id = gerente.genero_id;
       this.gerente.email = gerente.email;
+      this.gerente.password = gerente.password;
       this.gerente.tipo_documento_id = gerente.tipo_documento_id;
       this.gerente.numero_documento = gerente.numero_documento;
       this.municipioAssign = municipios_asignados;
       this.departmentAssign = departamentos_asignados;
       console.log(resp);
+    }, (err: any) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
     })
   }
 

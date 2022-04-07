@@ -10,51 +10,143 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 })
 export class CrearTestigoComponent implements OnInit {
 
+  dropdownSettingsStation: IDropdownSettings = {};
+  dropdownSettingsTable: IDropdownSettings = {};
+  dataStations: any = [];
+  dataFiltered: any = [];
+  dataTables: any = [];
+  selectedTables: any = [];
+
   testigo: any = {
-    rol_id: 5,
     tipo_documento_id: '',
     numero_documento: '',
-    estado_id: 1,
     genero_id: '',
     nombres: '',
     apellidos: '',
     email: '',
     password: '',
-    cliente_id: 1,
+    mesas: [],
   }
 
   constructor(private apiService: ApiService) { }
 
-  dropdownList: any = [];
-  selectedItems: any = [];
-  dropdownSettings: IDropdownSettings = {};
   ngOnInit() {
-    this.dropdownList = [
-      { item_id: 1, item_text: 'Mesa 1' },
-      { item_id: 2, item_text: 'Mesa 2' },
-      { item_id: 3, item_text: 'Mesa 3' },
-      { item_id: 4, item_text: 'Mesa 4' },
-      { item_id: 5, item_text: 'Mesa 5' }
-    ];
-    this.dropdownSettings = {
+    this.getStationsTestigo();
+    this.getTablesTestigo();
+
+    this.dropdownSettingsStation = {
+      noDataAvailablePlaceholderText: "No hay informacion disponible",
+      clearSearchFilter: false,
       enableCheckAll: false,
-      singleSelection: false,
-      idField: 'item_id',
-      textField: 'item_text',
-      itemsShowLimit: 3,
+      singleSelection: true,
+      idField: 'codigo_unico',
+      textField: 'nombre',
+      itemsShowLimit: 2,
       searchPlaceholderText: "Buscar",
       allowSearchFilter: true
     };
+    this.dropdownSettingsTable = {
+      noDataAvailablePlaceholderText: "No hay informacion disponible",
+      clearSearchFilter: false,
+      enableCheckAll: false,
+      singleSelection: false,
+      idField: 'codigo_unico',
+      textField: 'numero_mesa',
+      itemsShowLimit: 2,
+      searchPlaceholderText: "Buscar",
+      allowSearchFilter: true
+    };
+
   }
   onItemSelect(item: any) {
-    console.log(item);
+    this.dataFiltered = [];
+    this.selectedTables = [];
+    this.dataFiltered = this.dataTables.filter((dataTable: any) => dataTable.codigo_puesto_votacion == item.codigo_unico);
+    console.log(this.dataFiltered)
   }
-  onSelectAll(items: any) {
-    console.log(items);
+  onItemDeSelect() {
+    this.dataFiltered = [];
+    this.selectedTables = [];
+  }
+
+  getStationsTestigo() {
+    this.apiService.getStationsTestigo().subscribe((resp: any) => {
+      this.dataStations = resp;
+    }, (err: any) => {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    })
+  }
+
+  getTablesTestigo() {
+    this.apiService.getTablesTestigo().subscribe((resp: any) => {
+      this.dataTables = resp;
+    }, (err: any) => {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    })
   }
 
   createTestigo() {
     console.log(this.testigo);
+    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email, password } = this.testigo;
+
+    if (nombres.trim() && apellidos.trim() && genero_id.trim() && tipo_documento_id.trim() && numero_documento && email.trim() && password.trim()) {
+
+      const codigo_unico = this.getCodeTables();
+
+      this.testigo.mesas = codigo_unico;
+
+      this.apiService.createTestigo(this.testigo).subscribe((resp: any) => {
+
+        console.log(resp);
+
+        Swal.fire({
+          icon: 'success',
+          title: resp.message,
+          confirmButtonText: 'Ok',
+          allowEnterKey: false,
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        })
+
+      }, (err: any) => {
+        console.log(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: err.message,
+        });
+      })
+
+
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
+      });
+    }
+
+  }
+
+  getCodeTables() {
+    return this.selectedTables.map((selectedMunicipal: any) => {
+      const { codigo_unico } = selectedMunicipal;
+      return codigo_unico;
+    });
   }
 
 }

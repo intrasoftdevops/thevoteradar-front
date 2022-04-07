@@ -34,6 +34,7 @@ export class CrearGerenteComponent implements OnInit {
     this.getDepartmentAdmin();
     this.getMunicipalAdmin();
     this.dropdownSettingsDepartment = {
+      noDataAvailablePlaceholderText: "No hay informacion disponible",
       clearSearchFilter: false,
       enableCheckAll: false,
       singleSelection: true,
@@ -44,6 +45,7 @@ export class CrearGerenteComponent implements OnInit {
       allowSearchFilter: true
     };
     this.dropdownSettingsMunicipal = {
+      noDataAvailablePlaceholderText: "No hay informacion disponible",
       clearSearchFilter: false,
       enableCheckAll: false,
       singleSelection: false,
@@ -56,6 +58,7 @@ export class CrearGerenteComponent implements OnInit {
   }
 
   onItemSelectDepartment(item: any) {
+    this.dataFiltered = [];
     this.selectedMunicipals = [];
     this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
   }
