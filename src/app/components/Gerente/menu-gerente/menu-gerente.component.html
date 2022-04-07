@@ -85,26 +85,53 @@
     </div>
     <div class="offcanvas-body px-0 bg-dark border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-start" id="menu">
-
-            <div
-                class="d-flex align-items-end flex-column px-3 w-100 text-white border border-white border-top-0 border-end-0 border-start-0">
+            <h2 class="text-white">Supervsiores con zona asignada</h2>
+            <div class="d-flex align-items-end flex-column px-3 w-100 text-white border border-white border-top-0 border-end-0 border-start-0"
+                *ngFor="let supervisor of listSupervisorAsignados">
                 <div class="row w-100">
                     <div class="col-10">
-                        <h4></h4>
+                        <h4>{{ supervisor.nombres}} {{supervisor.apellidos}}</h4>
                     </div>
                     <div class="col-2">
                         <button class="btn btn-dark rounded-circle" s><i class="fas fa-pen text-primary"
-                                routerLink="/editarUsuario/"></i></button>
+                                routerLink="/editarSupervisor/{{supervisor.id}}"></i></button>
                     </div>
                 </div>
                 <div class="row w-100">
                     <div class="col-3">
-                        <p></p>
+                        <p>{{supervisor.numero_documento}}</p>
                     </div>
                     <div class="col-7">
-                        <p>correo@alazar.com</p>
+                        <p>{{supervisor.email}}</p>
                     </div>
                     <div class="col-2 ">
+                        <!-- <button class="btn btn-dark rounded-circle" (click)="eliminarUsuario(gerente.id)"><i
+                      class="fas fa-trash text-primary"></i></button> -->
+                    </div>
+                </div>
+            </div>
+            <h2 class="text-white">Supervsiores sin zona asignada</h2>
+            <div class="d-flex align-items-end flex-column px-3 w-100 text-white border border-white border-top-0 border-end-0 border-start-0"
+                *ngFor="let supervisor of listSupervisorNoAsignados">
+                <div class="row w-100">
+                    <div class="col-10">
+                        <h4>{{ supervisor.nombres}} {{supervisor.apellidos}}</h4>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-dark rounded-circle" s><i class="fas fa-pen text-primary"
+                                routerLink="/editarSupervisor/{{supervisor.id}}"></i></button>
+                    </div>
+                </div>
+                <div class="row w-100">
+                    <div class="col-3">
+                        <p>{{supervisor.numero_documento}}</p>
+                    </div>
+                    <div class="col-7">
+                        <p>{{supervisor.email}}</p>
+                    </div>
+                    <div class="col-2 ">
+                        <!-- <button class="btn btn-dark rounded-circle" (click)="eliminarUsuario(gerente.id)"><i
+                      class="fas fa-trash text-primary"></i></button> -->
                     </div>
                 </div>
             </div>

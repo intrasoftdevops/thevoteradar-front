@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +8,7 @@ export class ApiService {
 
   _URL = "http://54.219.225.56/api";
 
-  constructor(private http: HttpClient, private cookies: CookieService) {
+  constructor(private http: HttpClient) {
   }
 
   login(data: any) {
@@ -17,73 +16,141 @@ export class ApiService {
   }
 
   createGerente(data: any) {
-    return this.http.post(this._URL + "/crear-gerente", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+    return this.http.post(this._URL + "/crear-gerente", data, { headers: this.getHeaders() });
   }
 
   getGerente(id: any) {
-    return this.http.get(this._URL + "/get-gerente/" + id, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+    return this.http.get(this._URL + "/get-gerente/" + id, { headers: this.getHeaders() });
   }
 
   updateGerente(id: any, data: any) {
-    return this.http.put(this._URL + "/editar-gerente/" + id, data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+    return this.http.put(this._URL + "/editar-gerente/" + id, data, { headers: this.getHeaders() });
   }
 
   getUsers() {
-    return this.http.get(this._URL + "/users", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+    return this.http.get(this._URL + "/users", { headers: this.getHeaders() });
   }
 
   getAssignedMunicipal() {
-    return this.http.get(this._URL + "/gerentes-municipio-asignado/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+    return this.http.get(this._URL + "/gerentes-municipio-asignado/" + this.getId(), { headers: this.getHeaders() });
   }
 
   getMunicipalAdmin() {
-    return this.http.get(this._URL + "/municipios-administrador/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+    return this.http.get(this._URL + "/municipios-administrador/" + this.getId(), { headers: this.getHeaders() });
   }
 
   getZoneGerente() {
-    return this.http.get(this._URL + "/zonas-gerente/" + this.getId(), { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+    return this.http.get(this._URL + "/zonas-gerente/" + this.getId(), { headers: this.getHeaders() });
   }
 
   getDepartmentAdmin() {
-    return this.http.get(this._URL + "/get-departamentos-administrador", { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+    return this.http.get(this._URL + "/get-departamentos-administrador", { headers: this.getHeaders() });
   }
 
-  updateMunicipal(data: any) {
-    return this.http.put(this._URL + "/editar-municipios-gerente", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+  createSupervisor(data: any) {
+    return this.http.post(this._URL + "/crear-supervisor", data, { headers: this.getHeaders() });
+  }
+
+  getMunicipalGerente() {
+    return this.http.get(this._URL + "/get-municipios-gerente", { headers: this.getHeaders() });
+  }
+
+  getSupervisores() {
+    return this.http.get(this._URL + "/supervisores-zona-asignada/" + this.getId(), { headers: this.getHeaders() });
+  }
+
+  getSupervisor(id: any) {
+    return this.http.get(this._URL + "/get-supervisor/" + id, { headers: this.getHeaders() });
+  }
+
+  updateSupervisor(id: any, data: any) {
+    return this.http.put(this._URL + "/editar-supervisor/" + id, data, { headers: this.getHeaders() });
+  }
+
+  getZonesSupervisor() {
+    return this.http.get(this._URL + "/get-zonas-supervisor", { headers: this.getHeaders() });
+  }
+
+  getStationsCoordinador() {
+    return this.http.get(this._URL + "/puestos-supervisor/" + this.getId(), { headers: this.getHeaders() });
+  }
+
+  createCoordinador(data: any) {
+    return this.http.post(this._URL + "/crear-coordinador", data, { headers: this.getHeaders() });
+  }
+
+  getCoordinadores() {
+    return this.http.get(this._URL + "/coordinadores-puesto-asignado/" + this.getId(), { headers: this.getHeaders() });
+  }
+
+  getCoordinador(id: any) {
+    return this.http.get(this._URL + "/get-coordinador/" + id, { headers: this.getHeaders() });
+  }
+
+  updateCoordinador(id: any, data: any) {
+    return this.http.put(this._URL + "/editar-coordinador/" + id, data, { headers: this.getHeaders() });
+  }
+
+  getStationsTestigo() {
+    return this.http.get(this._URL + "/get-puestos-coordinador/", { headers: this.getHeaders() });
+  }
+
+  getTablesTestigo() {
+    return this.http.get(this._URL + "/mesas-coordinador/" + this.getId(), { headers: this.getHeaders() });
+  }
+
+  createTestigo(data: any) {
+    return this.http.post(this._URL + "/crear-testigo", data, { headers: this.getHeaders() });
+  }
+
+  getTestigos() {
+    return this.http.get(this._URL + "/testigos-mesa-asignada/" + this.getId(), { headers: this.getHeaders() });
+  }
+
+  getTestigo(id: any) {
+    return this.http.get(this._URL + "/get-testigo/" + id, { headers: this.getHeaders() });
+  }
+
+  updateTestigo(id: any, data: any) {
+    return this.http.put(this._URL + "/editar-testigo/" + id, data, { headers: this.getHeaders() });
   }
 
   logout() {
     var data: any;
-    console.log({ 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() });
-    return this.http.post(this._URL + "/logout", data, { headers: { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() } });
+    console.log(this.getHeaders());
+    return this.http.post(this._URL + "/logout", data, { headers: this.getHeaders() });
   }
 
   deleteCookies() {
-    this.cookies.deleteAll();
+    localStorage.clear();
+  }
+
+  getHeaders() {
+    return { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() };
   }
 
   setToken(token: any) {
-    this.cookies.set("token", token);
+    localStorage.setItem('token', token);
   }
 
   getToken() {
-    return this.cookies.get("token");
+    return localStorage.getItem('token');
   }
 
   setRol(rol: any) {
-    this.cookies.set("rol", rol);
+    localStorage.setItem('rol', rol);
   }
 
   getRol() {
-    return this.cookies.get("rol");
+    return localStorage.getItem('rol');
   }
 
   setId(id: any) {
-    this.cookies.set("id", id);
+    localStorage.setItem('id', id);
   }
 
   getId() {
-    return this.cookies.get("id");
+    return localStorage.getItem('id');
   }
 
 }

@@ -10,16 +10,16 @@
                 <li class="nav-item  d-flex align-items-center">
                     <a class="nav-link px-3" aria-current="page" routerLink="/supervisorHome">Inicio</a>
                 </li>
-                <!--<li class="nav-item dropdown d-flex align-items-center">
+                <li class="nav-item dropdown d-flex align-items-center">
                     <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      Crear Usuario
+                        aria-expanded="false">
+                        Crear Usuario
                     </a>
                     <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item text-white" routerLink="/crearCoordinador">Crear Coordinador</a>
-                      </li>
+                        <li><a class="dropdown-item text-white" routerLink="/crearCoordinador">Crear Coordinador</a>
+                        </li>
                     </ul>
-                  </li>-->
+                </li>
                   <li class="nav-item dropdown  d-flex align-items-center">
                     <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                       aria-expanded="false">
@@ -30,6 +30,16 @@
                       <li><a class="dropdown-item text-white" href="#" routerLink="/verPuestoSupervisor">Ver Puesto</a></li>
                     </ul>
                   </li>
+                <li class="nav-item dropdown  d-flex align-items-center">
+                    <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Personas
+                    </a>
+                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasAgregar">Coordinadores</a></li>
+                    </ul>
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto ">
                 <li class="nav-item dropdown my-auto ">
@@ -41,10 +51,84 @@
                     <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
                                 data-bs-target="#offcanvasDatos">Actualizar Datos</a></li>
-                        <li><a class="dropdown-item text-white">Cerrar sesion</a></li>
+                        <li><a class="dropdown-item text-white" (click)="logout()">Cerrar sesion</a></li>
                     </ul>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+
+<div class="offcanvas offcanvas-start w-35 " tabindex="-1" id="offcanvasAgregar" data-bs-keyboard="false">
+    <div class="d-flex align-items-end flex-column c-contactos ">
+        <div class="offcanvas-header">
+            <h4 class="offcanvas-title ps-auto text-white" id="offcanvas">Coordinadores</h4>
+            <div class="d-flex align-items-end">
+                <button type="button" class="btn  p-0" data-bs-dismiss="offcanvas" aria-label="Close"> <i
+                        class="fa-solid fa-circle-xmark fa-2xl text-white "></i></button>
+            </div>
+        </div>
+
+        <div class="btn-group dropend ms-auto pe-2">
+            <button type="button" id="dropdown" class="btn btn-primary btn-lg rounded-circle mb-2"
+                data-bs-toggle="dropdown" aria-expanded="false" routerLink="/agregarCoordinador">
+                <i class="fas fa-plus "></i>
+            </button>
+            <ul class="dropdown-menu">
+                <form class="col-12 p-2">
+
+                </form>
+            </ul>
+        </div>
+    </div>
+    <div class="offcanvas-body px-0 bg-dark border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
+        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-start" id="menu">
+            <h2 class="text-white">Gerentes con municipio asignado</h2>
+            <div class="d-flex align-items-end flex-column px-3 w-100 text-white border border-white border-top-0 border-end-0 border-start-0"
+                *ngFor="let coordinador of listCoordinadorAsignados">
+                <div class="row w-100">
+                    <div class="col-10">
+                        <h4>{{ coordinador.nombres}} {{coordinador.apellidos}}</h4>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-dark rounded-circle" s><i class="fas fa-pen text-primary"
+                                routerLink="/editarCoordinador/{{coordinador.id}}"></i></button>
+                    </div>
+                </div>
+                <div class="row w-100">
+                    <div class="col-3">
+                        <p>{{coordinador.numero_documento}}</p>
+                    </div>
+                    <div class="col-7">
+                        <p>{{coordinador.email}}</p>
+                    </div>
+                    <div class="col-2 ">
+                    </div>
+                </div>
+            </div>
+            <h2 class="text-white">Gerentes sin municipio asignado</h2>
+            <div class="d-flex align-items-end flex-column px-3 w-100 text-white border border-white border-top-0 border-end-0 border-start-0"
+                *ngFor="let coordinador of listCoordinadorNoAsignados">
+                <div class="row w-100">
+                    <div class="col-10">
+                        <h4>{{ coordinador.nombres}} {{coordinador.apellidos}}</h4>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-dark rounded-circle" s><i class="fas fa-pen text-primary"
+                                routerLink="/editarCoordinador/{{coordinador.id}}"></i></button>
+                    </div>
+                </div>
+                <div class="row w-100">
+                    <div class="col-3">
+                        <p>{{coordinador.numero_documento}}</p>
+                    </div>
+                    <div class="col-7">
+                        <p>{{coordinador.email}}</p>
+                    </div>
+                    <div class="col-2 ">
+                    </div>
+                </div>
+            </div>
+        </ul>
+    </div>
+</div>

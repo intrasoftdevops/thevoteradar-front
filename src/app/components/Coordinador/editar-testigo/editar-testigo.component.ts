@@ -1,21 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import Swal from 'sweetalert2';
+import { filter } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
-  selector: 'app-crear-testigo',
-  templateUrl: './crear-testigo.component.html',
-  styleUrls: ['./crear-testigo.component.scss']
+  selector: 'app-editar-testigo',
+  templateUrl: './editar-testigo.component.html',
+  styleUrls: ['./editar-testigo.component.scss']
 })
-export class CrearTestigoComponent implements OnInit {
+export class EditarTestigoComponent implements OnInit {
 
   dropdownSettingsStation: IDropdownSettings = {};
   dropdownSettingsTable: IDropdownSettings = {};
+  stationAssign: any = [];
+  tableAssign: any = [];
   dataStations: any = [];
   dataFiltered: any = [];
   dataTables: any = [];
-  selectedTables: any = [];
 
   testigo: any = {
     tipo_documento_id: '',
@@ -27,12 +30,21 @@ export class CrearTestigoComponent implements OnInit {
     password: '',
     mesas: [],
   }
+  idTestigo: any;
+  subscriber: any;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
+    this.getTestigo();
     this.getStationsTestigo();
     this.getTablesTestigo();
+
+    this.subscriber = this.router.events.pipe(
+      filter((event: any) => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      window.location.reload();
+    });
 
     this.dropdownSettingsStation = {
       noDataAvailablePlaceholderText: "No hay informacion disponible",
@@ -45,9 +57,9 @@ export class CrearTestigoComponent implements OnInit {
       searchPlaceholderText: "Buscar",
       allowSearchFilter: true
     };
+
     this.dropdownSettingsTable = {
       noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
       enableCheckAll: false,
       singleSelection: false,
       idField: 'codigo_unico',
@@ -58,15 +70,39 @@ export class CrearTestigoComponent implements OnInit {
     };
 
   }
+
   onItemSelect(item: any) {
+    this.tableAssign = [];
     this.dataFiltered = [];
-    this.selectedTables = [];
     this.dataFiltered = this.dataTables.filter((dataTable: any) => dataTable.codigo_puesto_votacion == item.codigo_unico);
-    console.log(this.dataFiltered)
   }
-  onItemDeSelect() {
+
+  onItemDeSelect(item: any) {
+    this.tableAssign = [];
     this.dataFiltered = [];
-    this.selectedTables = [];
+  }
+
+  getTestigo() {
+    this.idTestigo = this.activatedRoute.snapshot.params['id'];
+    this.apiService.getTestigo(this.idTestigo).subscribe((resp: any) => {
+      const { testigo, puesto_asignado, mesas_asignadas } = resp;
+      this.testigo.nombres = testigo.nombres;
+      this.testigo.apellidos = testigo.apellidos;
+      this.testigo.genero_id = testigo.genero_id;
+      this.testigo.email = testigo.email;
+      this.testigo.password = testigo.password;
+      this.testigo.tipo_documento_id = testigo.tipo_documento_id;
+      this.testigo.numero_documento = testigo.numero_documento;
+      this.stationAssign = puesto_asignado;
+      this.tableAssign = mesas_asignadas;
+      console.log(resp);
+    }, (err: any) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    })
   }
 
   getStationsTestigo() {
@@ -85,6 +121,10 @@ export class CrearTestigoComponent implements OnInit {
   getTablesTestigo() {
     this.apiService.getTablesTestigo().subscribe((resp: any) => {
       this.dataTables = resp;
+      if (this.stationAssign.length > 0) {
+        this.dataFiltered = this.dataTables.filter((dataTable: any) => dataTable.codigo_puesto_votacion == this.stationAssign[0].codigo_unico);
+      }
+      console.log(resp)
     }, (err: any) => {
       console.log(err);
       Swal.fire({
@@ -95,23 +135,17 @@ export class CrearTestigoComponent implements OnInit {
     })
   }
 
-  createTestigo() {
-    console.log(this.testigo);
-    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email, password } = this.testigo;
+  updateTestigo() {
+    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.testigo;
 
-    if (nombres.trim() && apellidos.trim() && genero_id.trim() && tipo_documento_id.trim() && numero_documento && email.trim() && password.trim()) {
-
+    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
       const codigo_unico = this.getCodeTables();
-
       this.testigo.mesas = codigo_unico;
 
-      this.apiService.createTestigo(this.testigo).subscribe((resp: any) => {
-
-        console.log(resp);
-
+      this.apiService.updateTestigo(this.idTestigo, this.testigo).subscribe((resp: any) => {
         Swal.fire({
           icon: 'success',
-          title: resp.message,
+          title: resp.res,
           confirmButtonText: 'Ok',
           allowEnterKey: false,
           allowEscapeKey: false,
@@ -121,7 +155,6 @@ export class CrearTestigoComponent implements OnInit {
             window.location.reload();
           }
         })
-
       }, (err: any) => {
         console.log(err);
         Swal.fire({
@@ -131,7 +164,6 @@ export class CrearTestigoComponent implements OnInit {
         });
       })
 
-
     } else {
       Swal.fire({
         icon: 'error',
@@ -139,12 +171,11 @@ export class CrearTestigoComponent implements OnInit {
         text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
       });
     }
-
   }
 
   getCodeTables() {
-    return this.selectedTables.map((selectedMunicipal: any) => {
-      const { codigo_unico } = selectedMunicipal;
+    return this.tableAssign.map((tableAssign: any) => {
+      const { codigo_unico } = tableAssign;
       return codigo_unico;
     });
   }

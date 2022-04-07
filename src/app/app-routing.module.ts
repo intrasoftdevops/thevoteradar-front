@@ -19,6 +19,9 @@ import { VerPuestoAdminComponent } from './components/Admin/ver-puesto-admin/ver
 import { VerPuestoGerenteComponent } from './components/Gerente/ver-puesto-gerente/ver-puesto-gerente.component';
 import { VerPuestoSupervisorComponent } from './components/Supervisor/ver-puesto-supervisor/ver-puesto-supervisor.component';
 import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-puesto-coordinador/ver-puesto-coordinador.component';
+import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
+import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
+import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
 
 const routes: Routes = [
   {
@@ -95,12 +98,22 @@ const routes: Routes = [
     path: 'verPuestoSupervisor',
     component: VerPuestoSupervisorComponent
   },
-  
   {
     path: 'verPuestoCoordinador',
     component: VerPuestoCoordinadorComponent
   },
-  
+  {
+    path: 'editarSupervisor/:id',
+    component: EditarSupervisorComponent
+  },
+  {
+    path: 'editarCoordinador/:id',
+    component: EditarCoordinadorComponent
+  },
+  {
+    path: 'editarTestigo/:id',
+    component: EditarTestigoComponent
+  },
 ];
 
 @NgModule({

@@ -43,9 +43,15 @@
                         placeholder="Numero de documento" name="numero_documento">
                 </div>
                 <div class="form-group col-md-4 pt-3">
-                    <label class="fw-bold ">Puestos asignados</label>
-                    <ng-multiselect-dropdown [placeholder]="'Puestos asignados'" [settings]="dropdownSettings"
-                        [data]="dropdownList" (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+                    <label class="fw-bold ">Zonas</label>
+                    <ng-multiselect-dropdown name="zonas" [placeholder]="'Zonas'" [settings]="dropdownSettingsZones"
+                        [data]="dataZones" (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect()">
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="form-group col-md-4 pt-3">
+                    <label class="fw-bold ">Puestos</label>
+                    <ng-multiselect-dropdown name="puestos" [placeholder]="'Puestos'"
+                        [settings]="dropdownSettingsStations" [data]="dataFiltered" [(ngModel)]="selectedStations">
                     </ng-multiselect-dropdown>
                 </div>
                 <hr class="my-4 border border-primary rounded border-2" />

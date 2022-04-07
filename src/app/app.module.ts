@@ -15,7 +15,6 @@ import { MenuCoordinadorComponent } from './components/Coordinador/menu-coordina
 import { MenuTestigoComponent } from './components/Testigo/menu-testigo/menu-testigo.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { CookieService } from 'ngx-cookie-service';
 import { CrearGerenteComponent } from './components/Admin/crear-gerente/crear-gerente.component';
 import { CrearSupervisorComponent } from './components/Gerente/crear-supervisor/crear-supervisor.component';
 import { CrearCoordinadorComponent } from './components/Supervisor/crear-coordinador/crear-coordinador.component';
@@ -30,6 +29,9 @@ import { VerPuestoAdminComponent } from './components/Admin/ver-puesto-admin/ver
 import { VerPuestoGerenteComponent } from './components/Gerente/ver-puesto-gerente/ver-puesto-gerente.component';
 import { VerPuestoSupervisorComponent } from './components/Supervisor/ver-puesto-supervisor/ver-puesto-supervisor.component';
 import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-puesto-coordinador/ver-puesto-coordinador.component';
+import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
+import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
+import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,10 @@ import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-pues
     VerPuestoAdminComponent,
     VerPuestoGerenteComponent,
     VerPuestoSupervisorComponent,
-    VerPuestoCoordinadorComponent
+    VerPuestoCoordinadorComponent,
+    EditarSupervisorComponent,
+    EditarCoordinadorComponent,
+    EditarTestigoComponent
   ],
   imports: [
     BrowserModule,
@@ -67,9 +72,7 @@ import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-pues
     FormsModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
-  providers: [
-    CookieService
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
