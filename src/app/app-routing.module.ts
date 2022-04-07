@@ -11,6 +11,14 @@ import { CrearSupervisorComponent } from './components/Gerente/crear-supervisor/
 import { CrearCoordinadorComponent } from './components/Supervisor/crear-coordinador/crear-coordinador.component';
 import { CrearTestigoComponent } from './components/Coordinador/crear-testigo/crear-testigo.component';
 import { EditarGerenteComponent } from './components/Admin/editar-gerente/editar-gerente.component';
+import { VerEquipoAdminComponent } from './components/Admin/ver-equipo-admin/ver-equipo-admin.component';
+import { VerEquipoGerenteComponent } from './components/Gerente/ver-equipo-gerente/ver-equipo-gerente.component';
+import { VerEquipoSupervisorComponent } from './components/Supervisor/ver-equipo-supervisor/ver-equipo-supervisor.component';
+import { VerEquipoCoordinadorComponent } from './components/Coordinador/ver-equipo-coordinador/ver-equipo-coordinador.component';
+import { VerPuestoAdminComponent } from './components/Admin/ver-puesto-admin/ver-puesto-admin.component';
+import { VerPuestoGerenteComponent } from './components/Gerente/ver-puesto-gerente/ver-puesto-gerente.component';
+import { VerPuestoSupervisorComponent } from './components/Supervisor/ver-puesto-supervisor/ver-puesto-supervisor.component';
+import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-puesto-coordinador/ver-puesto-coordinador.component';
 
 const routes: Routes = [
   {
@@ -56,7 +64,43 @@ const routes: Routes = [
   {
     path: 'editarGerente/:id',
     component: EditarGerenteComponent
-  }
+  },
+  {
+    path: 'verEquipoAdmin',
+    component: VerEquipoAdminComponent
+  },
+  {
+    path: 'verEquipoGerente',
+    component: VerEquipoGerenteComponent
+  },
+  {
+    path: 'verEquipoSupervisor',
+    component: VerEquipoSupervisorComponent
+  },
+  {
+    path: 'verEquipoCoordinador',
+    component: VerEquipoCoordinadorComponent
+  },
+  {
+    path: 'verPuestoAdmin',
+    component: VerPuestoAdminComponent
+  },
+  
+  {
+    path: 'verPuestoGerente',
+    component: VerPuestoGerenteComponent
+  },
+  
+  {
+    path: 'verPuestoSupervisor',
+    component: VerPuestoSupervisorComponent
+  },
+  
+  {
+    path: 'verPuestoCoordinador',
+    component: VerPuestoCoordinadorComponent
+  },
+  
 ];
 
 @NgModule({
