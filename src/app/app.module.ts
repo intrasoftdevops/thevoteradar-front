@@ -15,7 +15,6 @@ import { MenuCoordinadorComponent } from './components/Coordinador/menu-coordina
 import { MenuTestigoComponent } from './components/Testigo/menu-testigo/menu-testigo.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { CookieService } from 'ngx-cookie-service';
 import { CrearGerenteComponent } from './components/Admin/crear-gerente/crear-gerente.component';
 import { CrearSupervisorComponent } from './components/Gerente/crear-supervisor/crear-supervisor.component';
 import { CrearCoordinadorComponent } from './components/Supervisor/crear-coordinador/crear-coordinador.component';
@@ -57,9 +56,7 @@ import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/
     FormsModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
-  providers: [
-    CookieService
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

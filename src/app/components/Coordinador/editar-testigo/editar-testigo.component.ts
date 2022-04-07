@@ -141,7 +141,7 @@ export class EditarTestigoComponent implements OnInit {
     if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
       const codigo_unico = this.getCodeTables();
       this.testigo.mesas = codigo_unico;
-      
+
       this.apiService.updateTestigo(this.idTestigo, this.testigo).subscribe((resp: any) => {
         Swal.fire({
           icon: 'success',

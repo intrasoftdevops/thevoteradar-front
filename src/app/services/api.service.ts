@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +8,7 @@ export class ApiService {
 
   _URL = "http://54.219.225.56/api";
 
-  constructor(private http: HttpClient, private cookies: CookieService) {
+  constructor(private http: HttpClient) {
   }
 
   login(data: any) {
@@ -124,37 +123,30 @@ export class ApiService {
 
   deleteCookies() {
     localStorage.clear();
-    //this.cookies.deleteAll();
   }
 
   setToken(token: any) {
     localStorage.setItem('token', token);
-    //this.cookies.set("token", token);
   }
 
   getToken() {
     return localStorage.getItem('token');
-    //return this.cookies.get("token");
   }
 
   setRol(rol: any) {
     localStorage.setItem('rol', rol);
-    //this.cookies.set("rol", rol);
   }
 
   getRol() {
     return localStorage.getItem('rol');
-    //return this.cookies.get("rol");
   }
 
   setId(id: any) {
     localStorage.setItem('id', id);
-    //this.cookies.set("id", id);
   }
 
   getId() {
     return localStorage.getItem('id');
-    //return this.cookies.get("id");
   }
 
 }
