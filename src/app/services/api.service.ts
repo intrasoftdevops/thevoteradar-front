@@ -115,6 +115,22 @@ export class ApiService {
     return this.http.put(this._URL + "/editar-testigo/" + id, data, { headers: this.getHeaders() });
   }
 
+  getZonasyGerentes(data: any) {
+    return this.http.post(this._URL + "/get_zonas_y_gerentes_municipio", data, { headers: this.getHeaders() });
+  }
+
+  getPuestosySupervisores(data: any) {
+    return this.http.post(this._URL + "/get_puestos_y_supervisores_zona", data, { headers: this.getHeaders() });
+  }
+
+  getMesasyCoordinadores(data: any) {
+    return this.http.post(this._URL + "/get_mesas_y_coordinadores_puesto", data, { headers: this.getHeaders() });
+  }
+
+  getTestigoMesa(data: any) {
+    return this.http.post(this._URL + "/get_testigos_mesa", data, { headers: this.getHeaders() });
+  }
+
   logout() {
     var data: any;
     console.log(this.getHeaders());
