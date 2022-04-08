@@ -4,29 +4,40 @@
     <div class="bg-info py-2 px-5 text-white mb-5">
       <h4>Mi Equipo</h4>
     </div>
-    <div class="row">
+    <div class="row d-flex justify-content-center align-items-center align-items-center">
+      <div class="form-group col-md-4 pt-3">
+        <label class="fw-bold ">Departamentos</label>
+        <ng-multiselect-dropdown name="departamentos" [placeholder]="'Departamentos'"
+          [settings]="dropdownSettingsDepartments" [data]="dataDepartments" (onSelect)="onItemSelectDepartment($event)"
+          (onDeSelect)="onItemDeSelectDepartment()">
+        </ng-multiselect-dropdown>
+      </div>
       <div class="form-group col-md-4 pt-3">
         <label class="fw-bold ">Municipios</label>
-        <ng-multiselect-dropdown name="municipios" [placeholder]="'Municipios'" [settings]="dropdownSettingsMunicipals" [(ngModel)]="selectedMunicipal"
-          [data]="dataMunicipals" (onSelect)="onItemSelectMunicipal($event)" (onDeSelect)="onItemDeSelectMunicipal()">
+        <ng-multiselect-dropdown name="municipios" [placeholder]="'Municipios'" [settings]="dropdownSettingsMunicipals"
+          [(ngModel)]="selectedMunicipal" [data]="dataMunicipals" (onSelect)="onItemSelectMunicipal($event)"
+          (onDeSelect)="onItemDeSelectMunicipal()">
         </ng-multiselect-dropdown>
       </div>
       <div class="form-group col-md-4 pt-3">
         <label class="fw-bold ">Zonas</label>
-        <ng-multiselect-dropdown name="zonas" [placeholder]="'Zonas'" [settings]="dropdownSettingsZones" [(ngModel)]="selectedZone"
-          [data]="dataZones" (onSelect)="onItemSelectZone($event)" (onDeSelect)="onItemDeSelectZone()">
+        <ng-multiselect-dropdown name="zonas" [placeholder]="'Zonas'" [settings]="dropdownSettingsZones"
+          [(ngModel)]="selectedZone" [data]="dataZones" (onSelect)="onItemSelectZone($event)"
+          (onDeSelect)="onItemDeSelectZone()">
         </ng-multiselect-dropdown>
       </div>
       <div class="form-group col-md-4 pt-3">
         <label class="fw-bold ">Puestos</label>
-        <ng-multiselect-dropdown name="puestos" [placeholder]="'Puestos'" [settings]="dropdownSettingsStations" [(ngModel)]="selectedStation"
-          [data]="dataStations" (onSelect)="onItemSelectStation($event)" (onDeSelect)="onItemDeSelectStation()">
+        <ng-multiselect-dropdown name="puestos" [placeholder]="'Puestos'" [settings]="dropdownSettingsStations"
+          [(ngModel)]="selectedStation" [data]="dataStations" (onSelect)="onItemSelectStation($event)"
+          (onDeSelect)="onItemDeSelectStation()">
         </ng-multiselect-dropdown>
       </div>
       <div class="form-group col-md-4 pt-3">
         <label class="fw-bold ">Mesas</label>
-        <ng-multiselect-dropdown name="mesas" [placeholder]="'Mesas'" [settings]="dropdownSettingsTables" [(ngModel)]="selectedTable"
-          [data]="dataTables" (onSelect)="onItemSelectTable($event)" (onDeSelect)="onItemDeSelectTable()">
+        <ng-multiselect-dropdown name="mesas" [placeholder]="'Mesas'" [settings]="dropdownSettingsTables"
+          [(ngModel)]="selectedTable" [data]="dataTables" (onSelect)="onItemSelectTable($event)"
+          (onDeSelect)="onItemDeSelectTable()">
         </ng-multiselect-dropdown>
       </div>
     </div>

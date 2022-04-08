@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-ver-equipo-admin',
@@ -18,10 +19,12 @@ export class VerEquipoAdminComponent implements OnInit {
   botonAtrasSupervisores: Boolean = false;
   botonAtrasCoordinadores: Boolean = false;
   botonAtrasTestigos: Boolean = false;
+  dropdownSettingsDepartments: IDropdownSettings = {};
   dropdownSettingsMunicipals: IDropdownSettings = {};
   dropdownSettingsZones: IDropdownSettings = {};
   dropdownSettingsStations: IDropdownSettings = {};
   dropdownSettingsTables: IDropdownSettings = {};
+  dataDepartments: any = [];
   dataMunicipals: any = [];
   dataZones: any = [];
   dataStations: any = [];
@@ -36,8 +39,19 @@ export class VerEquipoAdminComponent implements OnInit {
   selectedTable: any = [];
 
   ngOnInit() {
+    this.getDepartmentAdmin();
 
-    this.getMunicipalAdmin();
+    this.dropdownSettingsDepartments = {
+      noDataAvailablePlaceholderText: "No hay informacion disponible",
+      clearSearchFilter: false,
+      enableCheckAll: false,
+      singleSelection: true,
+      idField: 'codigo_unico',
+      textField: 'nombre_departamento_votacion',
+      itemsShowLimit: 2,
+      searchPlaceholderText: "Buscar",
+      allowSearchFilter: true
+    };
 
     this.dropdownSettingsMunicipals = {
       noDataAvailablePlaceholderText: "No hay informacion disponible",
@@ -87,6 +101,31 @@ export class VerEquipoAdminComponent implements OnInit {
       allowSearchFilter: true
     };
 
+  }
+
+  onItemSelectDepartment(item: any) {
+    this.tablaGerentes = false;
+    this.tablaSupervisores = false;
+    this.tablaCoordinadores = false;
+    this.tablaTestigos = false;
+    this.selectedMunicipal = [];
+    this.selectedZone = [];
+    this.selectedStation = [];
+    this.selectedTable = [];
+    const codigo_unico = this.getCode(item);
+    console.log(codigo_unico);
+    this.getMunicipalAdmin(codigo_unico);
+  }
+
+  onItemDeSelectDepartment() {
+    this.tablaGerentes = false;
+    this.tablaSupervisores = false;
+    this.tablaCoordinadores = false;
+    this.tablaTestigos = false;
+    this.selectedMunicipal = [];
+    this.selectedZone = [];
+    this.selectedStation = [];
+    this.selectedTable = [];
   }
 
   onItemSelectMunicipal(item: any) {
@@ -169,14 +208,29 @@ export class VerEquipoAdminComponent implements OnInit {
     this.tablaCoordinadores = true;
   }
 
+  getDepartmentAdmin() {
+    this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
+      this.dataDepartments = resp;
+    }, (err: any) => {
+      this.showError(err);
+    })
+  }
+
+  getMunicipalAdmin(data: any) {
+    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
+      this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
+    }, (err: any) => {
+      this.showError(err);
+    })
+  }
+
   getZonasyGerentes(data: any) {
     this.apiService.getZonasyGerentes(data).subscribe((resp: any) => {
       const { zonas, gerentes } = resp;
       this.dataZones = zonas;
       this.listGerentes = gerentes;
-      console.log(resp);
     }, (err: any) => {
-      console.log(err)
+      this.showError(err);
     })
   }
 
@@ -185,9 +239,8 @@ export class VerEquipoAdminComponent implements OnInit {
       const { puestos, supervisores } = resp;
       this.dataStations = puestos;
       this.listSupervisores = supervisores;
-      console.log(resp);
     }, (err: any) => {
-      console.log(err)
+      this.showError(err);
     })
   }
 
@@ -196,9 +249,8 @@ export class VerEquipoAdminComponent implements OnInit {
       const { mesas, coordinadores } = resp;
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
-      console.log(resp);
     }, (err: any) => {
-      console.log(err)
+      this.showError(err);
     })
   }
 
@@ -206,23 +258,23 @@ export class VerEquipoAdminComponent implements OnInit {
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
       const { testigos } = resp;
       this.listTestigos = testigos;
-      console.log(resp)
     }, (err: any) => {
-      console.log(err)
-    })
-  }
-
-  getMunicipalAdmin() {
-    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.dataMunicipals = resp;
-    }, (err: any) => {
-      console.log(err)
+      this.showError(err);
     })
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  showError(err: any) {
+    console.log(err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: err.message,
+    });
   }
 
 }

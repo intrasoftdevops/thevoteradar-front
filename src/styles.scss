@@ -5,18 +5,57 @@ $dark: #000;
 @import "../node_modules/bootswatch/dist/cosmo/variables";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "../node_modules/bootswatch/dist/cosmo/bootswatch";
+
 body {
     font-family: 'Outfit', sans-serif !important;
     margin: 0;
     background-color: #e0e0e0 !important;
-    position: relative; 
-    padding-bottom:  25px;
+    position: relative;
+    padding-bottom: 25px;
     min-height: 100vh;
 }
-.img-logo{
+
+.img-logo {
     width: 150px !important;
 }
-hr{
+
+hr {
     opacity: 1;
 }
 
+$base-color: $primary;
+
+.multiselect-dropdown {
+    .dropdown-btn {
+        border: 2px solid $dark !important;
+
+        .selected-item {
+            border: 1px solid $base-color !important;
+            background: $base-color !important;
+        }
+    }
+}
+
+.multiselect-item-checkbox input[type='checkbox']:focus+div:before,
+.multiselect-item-checkbox input[type='checkbox']:hover+div:before {
+    border-color: $base-color !important;
+}
+
+.multiselect-item-checkbox input[type='checkbox']+div:before {
+    color: $base-color !important;
+    border: 2px solid $base-color !important;
+}
+
+.multiselect-item-checkbox input[type='checkbox']+div:after {
+    background-color: $base-color !important;
+}
+
+.multiselect-item-checkbox input[type='checkbox']:checked+div:before {
+    background: $base-color !important;
+}
+
+@keyframes borderscale {
+    50% {
+        box-shadow: 0 0 0 2px $base-color !important;
+    }
+}
