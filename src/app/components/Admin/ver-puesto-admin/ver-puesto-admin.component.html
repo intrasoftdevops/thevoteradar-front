@@ -4,34 +4,121 @@
     <div class="bg-info py-2 px-5 text-white mb-5">
       <h4>Puestos</h4>
     </div>
-    <div class="shadow-lg mt-5 mb-3 ">
-      <div class="bg-black py-3 px-5 text-white">
-        <h4>Consulta puestos</h4>
+    <div class="row d-flex justify-content-center align-items-center align-items-center">
+      <div class="form-group col-md-4 pt-3">
+        <label class="fw-bold ">Departamentos</label>
+        <ng-multiselect-dropdown name="departamentos" [placeholder]="'Departamentos'"
+          [settings]="dropdownSettingsDepartments" [data]="dataDepartments" (onSelect)="onItemSelectDepartment($event)"
+          (onDeSelect)="onItemDeSelectDepartment()">
+        </ng-multiselect-dropdown>
       </div>
-      <div class="table-responsive">
-        <table class="table text-center ">
-          <thead class="encatablecolor bg-info text-white">
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">MUNICIPIO</th>
-              <th scope="col">GERENTES HAY/SE NECESITAN</th>
-              <th scope="col">SUPERVISORES HAY/SE NECESITAN</th>
-              <th scope="col">COORDINADORES HAY/SE NECESITAN</th>
-              <th scope="col">TESTIGOS HAY/SE NECESITAN</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Bogota</td>
-              <td>0/2</td>
-              <td>0/4</td>
-              <td>0/8</td>
-              <td>0/16</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="form-group col-md-4 pt-3">
+        <label class="fw-bold ">Municipios</label>
+        <ng-multiselect-dropdown name="municipios" [placeholder]="'Municipios'" [settings]="dropdownSettingsMunicipals"
+          [(ngModel)]="selectedMunicipal" [data]="dataMunicipals" (onSelect)="onItemSelectMunicipal($event)"
+          (onDeSelect)="onItemDeSelectMunicipal()">
+        </ng-multiselect-dropdown>
+      </div>
+      <div class="form-group col-md-4 pt-3">
+        <label class="fw-bold ">Zonas</label>
+        <ng-multiselect-dropdown name="zonas" [placeholder]="'Zonas'" [settings]="dropdownSettingsZones"
+          [(ngModel)]="selectedZone" [data]="dataZones" (onSelect)="onItemSelectZone($event)"
+          (onDeSelect)="onItemDeSelectZone()">
+        </ng-multiselect-dropdown>
+      </div>
+      <div class="form-group col-md-4 pt-3">
+        <label class="fw-bold ">Puestos</label>
+        <ng-multiselect-dropdown name="puestos" [placeholder]="'Puestos'" [settings]="dropdownSettingsStations"
+          [(ngModel)]="selectedStation" [data]="dataStations" (onSelect)="onItemSelectStation($event)"
+          (onDeSelect)="onItemDeSelectStation()">
+        </ng-multiselect-dropdown>
       </div>
     </div>
+    <ng-container [ngSwitch]="tabla">
+      <div class="shadow-lg mt-5 mb-3 " *ngSwitchCase="'gerente'">
+        <div class="bg-black py-3 px-5 text-white">
+          <h4>Consulta puestos de gerente</h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table text-center ">
+            <thead class="encatablecolor bg-info text-white">
+              <tr>
+                <th scope="col">CANTIDAD DE GERENTES ACTUAL</th>
+                <th scope="col">GERENTES QUE SE NECESITAN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{gerentesNecesitados.cantidad_gerentes_hay}}</td>
+                <td>{{gerentesNecesitados.cantidad_gerentes_necesitada}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="shadow-lg mt-5 mb-3 " *ngSwitchCase="'supervisor'">
+        <div class="bg-black py-3 px-5 text-white">
+          <h4>Consulta puestos de supervisor</h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table text-center ">
+            <thead class="encatablecolor bg-info text-white">
+              <tr>
+                <th scope="col">SUPERVISORES QUE HAY</th>
+                <th scope="col">SUPERVISORES QUE SE NECESITAN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{supervisoresNecesitados.cantidad_supervisores_hay}}</td>
+                <td>{{supervisoresNecesitados.cantidad_supervisores_necesitada}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="shadow-lg mt-5 mb-3 " *ngSwitchCase="'coordinador'">
+        <div class="bg-black py-3 px-5 text-white">
+          <h4>Consulta puestos de coordinador</h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table text-center ">
+            <thead class="encatablecolor bg-info text-white">
+              <tr>
+                <th scope="col">COORDINADORES QUE HAY</th>
+                <th scope="col">COORDINADORES QUE SE NECESITAN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{coordinadoresNecesitados.cantidad_coordinadores_hay}}</td>
+                <td>{{coordinadoresNecesitados.cantidad_coordinadores_necesitada}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="shadow-lg mt-5 mb-3 " *ngSwitchCase="'testigo'">
+        <div class="bg-black py-3 px-5 text-white">
+          <h4>Consulta puestos de testigo</h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table text-center ">
+            <thead class="encatablecolor bg-info text-white">
+              <tr>
+                <th scope="col">TESTIGOS QUE HAY</th>
+                <th scope="col">TESTIGOS QUE SE NECESITAN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{testigosNecesitados.cantidad_testigos_hay}}</td>
+                <td>{{testigosNecesitados.cantidad_testigos_necesitada}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
   </div>
 </div>
