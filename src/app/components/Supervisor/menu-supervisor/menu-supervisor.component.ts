@@ -43,7 +43,11 @@ export class MenuSupervisorComponent implements OnInit {
       console.log(resp);
       this.apiService.deleteCookies();
       this.router.navigate(['']);
-    }, err => console.log(err))
+    }, (err: any) => {
+      console.log(err);
+      this.apiService.deleteCookies();
+      this.router.navigate(['']);
+    })
   }
 
 }
