@@ -8,8 +8,7 @@
       <div class="form-group col-md-4 pt-3">
         <label class="fw-bold ">Zonas</label>
         <ng-multiselect-dropdown name="zonas" [placeholder]="'Zonas'" [settings]="dropdownSettingsZones"
-          [data]="dataZones" (onSelect)="onItemSelectZone($event)"
-          (onDeSelect)="onItemDeSelectZone()">
+          [data]="dataZones" (onSelect)="onItemSelectZone($event)" (onDeSelect)="onItemDeSelectZone()">
         </ng-multiselect-dropdown>
       </div>
       <div class="form-group col-md-4 pt-3">

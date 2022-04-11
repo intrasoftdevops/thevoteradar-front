@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { LoginClass } from 'src/app/models/login-class';
 
 @Component({
   selector: 'app-login',
@@ -17,15 +16,14 @@ export class LoginComponent implements OnInit {
 
   constructor(private apiService: ApiService, private router: Router) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
   login() {
     this.apiService.login(this.user).subscribe(
       (resp: any) => {
-        const loginClass: LoginClass = resp;
-        console.log(loginClass);
-        const { res, rol, token, id } = loginClass;
+        console.log(resp);
+        const { res, rol, token, id } = resp;
         if (res == true) {
 
           this.apiService.setToken(token);
@@ -59,17 +57,20 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['adminHome']);
           }
         } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: resp.message,
-          })
+          this.showError(resp);
         }
-      }, (err:any) => Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      }))
+      }, (err: any) => {
+        this.showError(err);
+      })
+  }
+
+  showError(err: any) {
+    console.log(err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: err.message,
+    });
   }
 
 }
