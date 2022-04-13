@@ -61,7 +61,6 @@ export class VerPuestoSupervisorComponent implements OnInit {
     const codigo_unico = this.getCode(item);
     const data = { zona: codigo_unico }
     this.getPuestos(codigo_unico);
-    this.getCoordinadoresNecesitados(data);
     this.tabla = "coordinador";
   }
 
@@ -73,7 +72,6 @@ export class VerPuestoSupervisorComponent implements OnInit {
   onItemSelectStation(item: any) {
     const codigo_unico = this.getCode(item);
     const data = { puesto: codigo_unico }
-    this.getTestigosNecesitados(data);
     this.tabla = "testigo";
   }
 
@@ -94,24 +92,6 @@ export class VerPuestoSupervisorComponent implements OnInit {
       this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
     }, (err: any) => {
       this.showError(err);
-    })
-  }
-
-  getCoordinadoresNecesitados(data: any) {
-    this.apiService.getCoordinadoresNecesitados(data).subscribe((resp: any) => {
-      console.log(resp);
-      this.coordinadoresNecesitados = resp;
-    }, (err: any) => {
-      console.log(err)
-    })
-  }
-
-  getTestigosNecesitados(data: any) {
-    this.apiService.getTestigosNecesitados(data).subscribe((resp: any) => {
-      console.log(resp);
-      this.testigosNecesitados = resp;
-    }, (err: any) => {
-      console.log(err)
     })
   }
 

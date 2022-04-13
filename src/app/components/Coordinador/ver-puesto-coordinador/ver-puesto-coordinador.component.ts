@@ -40,7 +40,6 @@ export class VerPuestoCoordinadorComponent implements OnInit {
   onItemSelectStation(item: any) {
     const codigo_unico = this.getCode(item);
     const data = { puesto: codigo_unico }
-    this.getTestigosNecesitados(data);
     this.tabla = true;
   }
 
@@ -53,15 +52,6 @@ export class VerPuestoCoordinadorComponent implements OnInit {
       this.dataStations = resp;
     }, (err: any) => {
       this.showError(err);
-    })
-  }
-
-  getTestigosNecesitados(data: any) {
-    this.apiService.getTestigosNecesitados(data).subscribe((resp: any) => {
-      console.log(resp);
-      this.testigosNecesitados = resp;
-    }, (err: any) => {
-      console.log(err)
     })
   }
 

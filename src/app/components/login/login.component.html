@@ -1,66 +1,48 @@
-<header class="bg-dark p-4">
-    <a class="navbar-brand mx-4" href="#"><img src="../../../assets/logoTheVoteRadar.png" class="img-logo"></a>
-</header>
-
-<div class="container py-5 px">
-    <div class="row py-5">
-        <div class="col-md-6 pe-md-5 d-flex align-items-center">
-            <article>
-                <div class="text-center py-3">
-                    <h1 class="text-info"> <strong>THE VOTE RADAR</strong></h1>
-                    <h3>The vote radar es perfecto para que estes al tanto de tu campaña electoral.</h3>
-                </div>
-
-                <div>
-                    <ul class="list-inline text-center redes">
-                        <li class="list-inline-item px-2">
-                            <a class="btn btn-primary rounded-circle d-flex justify-content-center align-items-center"
-                                href="https://www.facebook.com/" target="blank"><i
-                                    class="fab fa-facebook-f fa-2x"></i></a>
-                        </li>
-                        <li class="list-inline-item px-2">
-                            <a class="btn btn-primary rounded-circle d-flex justify-content-center align-items-center"
-                                href="https://www.instagram.com/?hl=es" target="blank"><i
-                                    class="fab fa-instagram fa-2x"></i></a>
-                        </li>
-                        <li class="list-inline-item px-2">
-                            <a class="btn btn-primary rounded-circle d-flex justify-content-center align-items-center"
-                                href="https://www.whatsapp.com/?lang=es" target="blank"><i
-                                    class="fab fa-whatsapp fa-2x"></i></a>
-                        </li>
-                        <li class="list-inline-item px-2">
-                            <a class="btn btn-primary rounded-circle d-flex justify-content-center align-items-center"
-                                href="https://twitter.com/?lang=es" target="blank"><i
-                                    class="fab fa-twitter fa-2x"></i></a>
-                        </li>
-                    </ul>
-                </div>
-            </article>
+<section class="d-flex align-items-start" id="login">
+    <div class="container d-flex flex-column align-items-center py-4">
+        <ul class="list-inline text-start redes m-0 w-100">
+            <li class="list-inline-item">
+                <a class="text-white text-decoration-none d-flex justify-content-center align-items-center"
+                    href="https://www.facebook.com/" target="blank"><i class="fab fa-facebook-f fa-xl"></i></a>
+            </li>
+            <li class="list-inline-item">
+                <a class="text-white text-decoration-none d-flex justify-content-center align-items-center"
+                    href="https://www.instagram.com/?hl=es" target="blank"><i class="fab fa-instagram fa-xl"></i></a>
+            </li>
+            <li class="list-inline-item">
+                <a class="text-white text-decoration-none d-flex justify-content-center align-items-center"
+                    href="https://www.whatsapp.com/?lang=es" target="blank"><i class="fab fa-whatsapp fa-xl"></i></a>
+            </li>
+            <li class="list-inline-item">
+                <a class="text-white text-decoration-none d-flex justify-content-center align-items-center"
+                    href="https://twitter.com/?lang=es" target="blank"><i class="fab fa-twitter fa-xl"></i></a>
+            </li>
+        </ul>
+        <div class="col-md-7 col-lg-5 pb-5">
+            <img class="img-responsive w-100" src="../../../assets/logo.png" alt="logo" />
         </div>
-        <div class="col-md-6 ps-md-5 pt-5  ">
-            <div class="card rounded shadow-lg">
-                <div class="card-body">
-                    <article class="px-5">
-                        <div class="d-flex justify-content-center py-3">
-                            <i class="fas fa-user-circle fa-8x bg-primary rounded-circle text-dark"></i>
-                        </div>
-                        <div>
-                            <div class="form-group">
-                                <input type="text" [(ngModel)]="user.numero_documento" placeholder="Usuario"
-                                    class="form-control form-control-lg mt-3">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" [(ngModel)]="user.password" placeholder="Contraseña"
-                                    class="form-control form-control-lg mt-3">
-                            </div>
-                            <div class="form-group d-flex justify-content-center my-5">
-                                <button class="btn btn-lg btn-info px-5 rounded" (click)="login()">INICIAR</button>
-                            </div>
-                        </div>
-                    </article>
+        <div class="col-md-6 col-lg-4">
+            <div class="card" id="loginForm">
+                <div class="card-body py-5 mx-3">
+                    <h2 class="text-center fw-bolder py-4 text-dark">Iniciar Sesión</h2>
+                    <div class="Icon-inside mb-3">
+                        <i class="fa-solid fa-user fa-xl text-dark"></i>
+                        <input type="text" class="form-control form-control-lg ps-5 py-3" placeholder="Usuario"
+                            [(ngModel)]="user.numero_documento" />
+                    </div>
+                    <div class="Icon-inside mb-3">
+                        <i class="fa-solid fa-lock fa-xl text-dark"></i>
+                        <input type="password" [(ngModel)]="user.password" placeholder="Contraseña"
+                            class="form-control form-control-lg ps-5 py-3">
+                    </div>
+                    <div class="form-group d-flex justify-content-center mt-4">
+                        <button class="btn btn-lg btn-info fw-bolder col-8" (click)="login()">INICIAR</button>
+                    </div>
+                    <div class="text-center pt-2 d-none">
+                        <a href="#" class="text-dark">¿Olvidaste tu contraseña?</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <p>0.0.1</p>
-</div>
+</section>

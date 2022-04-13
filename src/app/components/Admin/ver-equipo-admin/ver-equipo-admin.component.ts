@@ -12,13 +12,7 @@ export class VerEquipoAdminComponent implements OnInit {
 
   constructor(private apiService: ApiService) { }
 
-  tablaGerentes: Boolean = false;
-  tablaSupervisores: Boolean = false;
-  tablaCoordinadores: Boolean = false;
-  tablaTestigos: Boolean = false;
-  botonAtrasSupervisores: Boolean = false;
-  botonAtrasCoordinadores: Boolean = false;
-  botonAtrasTestigos: Boolean = false;
+  tabla: string = "ninguna";
   dropdownSettingsDepartments: IDropdownSettings = {};
   dropdownSettingsMunicipals: IDropdownSettings = {};
   dropdownSettingsZones: IDropdownSettings = {};
@@ -104,24 +98,17 @@ export class VerEquipoAdminComponent implements OnInit {
   }
 
   onItemSelectDepartment(item: any) {
-    this.tablaGerentes = false;
-    this.tablaSupervisores = false;
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
+    this.tabla = "ninguna"
     this.selectedMunicipal = [];
     this.selectedZone = [];
     this.selectedStation = [];
     this.selectedTable = [];
     const codigo_unico = this.getCode(item);
-    console.log(codigo_unico);
     this.getMunicipalAdmin(codigo_unico);
   }
 
   onItemDeSelectDepartment() {
-    this.tablaGerentes = false;
-    this.tablaSupervisores = false;
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
+    this.tabla = "ninguna"
     this.selectedMunicipal = [];
     this.selectedZone = [];
     this.selectedStation = [];
@@ -129,83 +116,59 @@ export class VerEquipoAdminComponent implements OnInit {
   }
 
   onItemSelectMunicipal(item: any) {
-    this.tablaSupervisores = false;
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
     this.selectedZone = [];
     this.selectedStation = [];
     this.selectedTable = [];
     const codigo_unico = this.getCode(item);
     const data = { municipio: codigo_unico }
     this.getZonasyGerentes(data);
-    this.tablaGerentes = true;
+    this.tabla = "gerente";
   }
 
   onItemDeSelectMunicipal() {
-    this.tablaGerentes = false;
-    this.tablaSupervisores = false;
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
     this.selectedZone = [];
     this.selectedStation = [];
     this.selectedTable = [];
+    this.tabla = "ninguna";
   }
 
   onItemSelectZone(item: any) {
-    this.tablaGerentes = false;
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
     this.selectedStation = [];
     this.selectedTable = [];
     const codigo_unico = this.getCode(item);
     const data = { zona: codigo_unico }
     this.getPuestosySupervisores(data);
-    this.tablaSupervisores = true;
+    this.tabla = "supervisor";
   }
 
   onItemDeSelectZone() {
-    this.tablaSupervisores = false;
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
-    this.tablaGerentes = true;
     this.selectedStation = [];
     this.selectedTable = [];
+    this.tabla = "gerente";
   }
 
   onItemSelectStation(item: any) {
-    this.tablaTestigos = false;
-    this.tablaGerentes = false;
-    this.tablaSupervisores = false;
     this.selectedTable = [];
     const codigo_unico = this.getCode(item);
     const data = { puesto: codigo_unico }
     this.getMesasyCoordinadores(data);
-    this.tablaCoordinadores = true;
+    this.tabla = "coordinador";
   }
 
   onItemDeSelectStation() {
-    this.tablaGerentes = false;
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
-    this.tablaSupervisores = true;
     this.selectedTable = [];
+    this.tabla = "supervisor";
   }
 
   onItemSelectTable(item: any) {
-    this.tablaGerentes = false;
-    this.tablaSupervisores = false;
-    this.tablaCoordinadores = false;
     const codigo_unico = this.getCode(item);
     const data = { mesa: codigo_unico }
     this.getTestigoMesa(data);
-    this.tablaTestigos = true;
+    this.tabla = "testigo";
   }
 
   onItemDeSelectTable() {
-    this.tablaGerentes = false;
-    this.tablaSupervisores = false;
-    this.tablaTestigos = false;
-    this.tablaCoordinadores = true;
+    this.tabla = "coordinador";
   }
 
   getDepartmentAdmin() {

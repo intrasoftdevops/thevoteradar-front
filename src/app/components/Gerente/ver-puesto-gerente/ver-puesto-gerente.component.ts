@@ -80,7 +80,6 @@ export class VerPuestoGerenteComponent implements OnInit {
     this.selectedStation = [];
     const codigo_unico = this.getCode(item);
     const data = { municipio: codigo_unico }
-    this.getSupervisoresNecesitados(data);
     this.getZonas(codigo_unico);
     this.tabla = "supervisor";
   }
@@ -96,7 +95,6 @@ export class VerPuestoGerenteComponent implements OnInit {
     const codigo_unico = this.getCode(item);
     const data = { zona: codigo_unico }
     this.getPuestos(data);
-    this.getCoordinadoresNecesitados(data);
     this.tabla = "coordinador";
   }
 
@@ -108,7 +106,7 @@ export class VerPuestoGerenteComponent implements OnInit {
   onItemSelectStation(item: any) {
     const codigo_unico = this.getCode(item);
     const data = { puesto: codigo_unico }
-    this.getTestigosNecesitados(data);
+
     this.tabla = "testigo";
   }
 
@@ -138,33 +136,6 @@ export class VerPuestoGerenteComponent implements OnInit {
       this.dataStations = puestos;
     }, (err: any) => {
       this.showError(err);
-    })
-  }
-
-  getSupervisoresNecesitados(data: any) {
-    this.apiService.getSupervisoresNecesitados(data).subscribe((resp: any) => {
-      console.log(resp);
-      this.supervisoresNecesitados = resp;
-    }, (err: any) => {
-      console.log(err)
-    })
-  }
-
-  getCoordinadoresNecesitados(data: any) {
-    this.apiService.getCoordinadoresNecesitados(data).subscribe((resp: any) => {
-      console.log(resp);
-      this.coordinadoresNecesitados = resp;
-    }, (err: any) => {
-      console.log(err)
-    })
-  }
-
-  getTestigosNecesitados(data: any) {
-    this.apiService.getTestigosNecesitados(data).subscribe((resp: any) => {
-      console.log(resp);
-      this.testigosNecesitados = resp;
-    }, (err: any) => {
-      console.log(err)
     })
   }
 

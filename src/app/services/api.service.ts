@@ -131,20 +131,8 @@ export class ApiService {
     return this.http.post(this._URL + "/get_testigos_mesa", data, { headers: this.getHeaders() });
   }
 
-  getGerentesNecesitados(data: any) {
-    return this.http.post(this._URL + "/gerentes-hay-se-necesitan", data, { headers: this.getHeaders() });
-  }
-
-  getSupervisoresNecesitados(data: any) {
-    return this.http.post(this._URL + "/supervisores-hay-se-necesitan", data, { headers: this.getHeaders() });
-  }
-
-  getCoordinadoresNecesitados(data:any){
-    return this.http.post(this._URL + "/coordinadores-hay-se-necesitan", data, { headers: this.getHeaders() });
-  }
-
-  getTestigosNecesitados(data:any){
-    return this.http.post(this._URL + "/testigos-hay-se-necesitan", data, { headers: this.getHeaders() });
+  getNecesitadosDepartamento(data: any) {
+    return this.http.post(this._URL + "/necesitados-por-departamento", data, { headers: this.getHeaders() });
   }
 
   logout() {

@@ -30,16 +30,16 @@ export class LoginComponent implements OnInit {
           this.apiService.setRol(rol);
           this.apiService.setId(id);
           if (res == true && rol == 1) {
-            this.router.navigate(['adminHome']);
+            this.router.navigate(['verPuestoAdmin']);
           }
           else if (res == true && rol == 2) {
-            this.router.navigate(['gerenteHome']);
+            this.router.navigate(['verPuestoGerente']);
           }
           else if (res == true && rol == 3) {
-            this.router.navigate(['supervisorHome']);
+            this.router.navigate(['verPuestoSupervisor']);
           }
           else if (res == true && rol == 4) {
-            this.router.navigate(['coordinadorHome']);
+            this.router.navigate(['verPuestoCoordinador']);
           }
           else if (res == true && rol == 5) {
             this.router.navigate(['testigoHome']);

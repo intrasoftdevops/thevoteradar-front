@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-$primary: #177ab8;
+$primary: #64248b;
 $info: #64248b;
 $dark: #000;
 @import "../node_modules/bootswatch/dist/cosmo/variables";
@@ -8,15 +8,11 @@ $dark: #000;
 
 body {
     font-family: 'Outfit', sans-serif !important;
-    margin: 0;
-    background-color: #e0e0e0 !important;
-    position: relative;
-    padding-bottom: 25px;
-    min-height: 100vh;
+    background-color: $dark;
 }
 
 .img-logo {
-    width: 150px !important;
+    width: 170px !important;
 }
 
 hr {
@@ -58,4 +54,79 @@ $base-color: $primary;
     50% {
         box-shadow: 0 0 0 2px $base-color !important;
     }
+}
+
+#loginForm input {
+    border-radius: 25px !important;
+    border: 2px solid $dark !important;
+    background-color: transparent !important;
+}
+
+input::placeholder {
+    color: $dark !important;
+}
+
+button {
+    border-radius: 25px !important;
+}
+
+.card {
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.4) 35%, rgba(255, 255, 255, 0.2) 50%) !important;
+    border-radius: 25px !important;
+}
+
+.form-control,
+.form-select {
+    background-color: transparent !important;
+}
+
+// Set border-radius on the top-left and bottom-left of the first table data on the table row
+td:first-child,
+tbody>th:first-child {
+    border-radius: 10px 0 0 10px !important;
+    border-top: 2px solid $primary !important;
+    border-bottom: 2px solid $primary !important;
+    border-left: 2px solid $primary !important;
+}
+
+td,
+th :not(:first-child, :last-child) {
+    border-top: 2px solid $primary !important;
+    border-bottom: 2px solid $primary !important;
+}
+
+// Set border-radius on the top-right and bottom-right of the last table data on the table row
+td:last-child,
+tbody>th:last-child {
+    border-radius: 0 10px 10px 0 !important;
+    border-top: 2px solid $primary !important;
+    border-bottom: 2px solid $primary !important;
+    border-right: 2px solid $primary !important;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0 1em;
+}
+
+footer {
+    min-height: calc(1.9em + 1.9vh);
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+
+    footer {
+        min-height: calc(3.3em + 3.3vh);
+    }
+
+}
+
+
+#mundo{
+    min-height: 86vh!important;
+    background-image: url("./assets/mapa.png") !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-color: #cecece !important; 
 }

@@ -32,6 +32,7 @@ import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-pues
 import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
 import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
 import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
+import { FooterComponent } from './Footer/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/
     VerPuestoCoordinadorComponent,
     EditarSupervisorComponent,
     EditarCoordinadorComponent,
-    EditarTestigoComponent
+    EditarTestigoComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
