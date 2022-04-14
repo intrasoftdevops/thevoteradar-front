@@ -2,13 +2,19 @@
 $primary: #64248b;
 $info: #64248b;
 $dark: #000;
+$secondary: #111;
 @import "../node_modules/bootswatch/dist/cosmo/variables";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "../node_modules/bootswatch/dist/cosmo/bootswatch";
 
 body {
     font-family: 'Outfit', sans-serif !important;
-    background-color: $dark;
+    min-height: 100vh;
+    background-color: #cecece;
+    background-image: url("./assets/mapa.png") !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
 }
 
 .img-logo {
@@ -17,43 +23,6 @@ body {
 
 hr {
     opacity: 1;
-}
-
-$base-color: $primary;
-
-.multiselect-dropdown {
-    .dropdown-btn {
-        border: 2px solid $dark !important;
-
-        .selected-item {
-            border: 1px solid $base-color !important;
-            background: $base-color !important;
-        }
-    }
-}
-
-.multiselect-item-checkbox input[type='checkbox']:focus+div:before,
-.multiselect-item-checkbox input[type='checkbox']:hover+div:before {
-    border-color: $base-color !important;
-}
-
-.multiselect-item-checkbox input[type='checkbox']+div:before {
-    color: $base-color !important;
-    border: 2px solid $base-color !important;
-}
-
-.multiselect-item-checkbox input[type='checkbox']+div:after {
-    background-color: $base-color !important;
-}
-
-.multiselect-item-checkbox input[type='checkbox']:checked+div:before {
-    background: $base-color !important;
-}
-
-@keyframes borderscale {
-    50% {
-        box-shadow: 0 0 0 2px $base-color !important;
-    }
 }
 
 #loginForm input {
@@ -71,13 +40,13 @@ button {
 }
 
 .card {
-    background: linear-gradient(150deg, rgba(255, 255, 255, 0.4) 35%, rgba(255, 255, 255, 0.2) 50%) !important;
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.6) 35%, rgba(255, 255, 255, 0.5) 50%) !important;
     border-radius: 25px !important;
 }
 
 .form-control,
 .form-select {
-    background-color: transparent !important;
+    background-color: white !important;
 }
 
 // Set border-radius on the top-left and bottom-left of the first table data on the table row
@@ -109,24 +78,13 @@ table {
     border-spacing: 0 1em;
 }
 
-footer {
-    min-height: calc(1.9em + 1.9vh);
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-@media (min-width: 768px) and (max-width: 992px) {
-
-    footer {
-        min-height: calc(3.3em + 3.3vh);
-    }
-
-}
-
-
-#mundo{
-    min-height: 86vh!important;
-    background-image: url("./assets/mapa.png") !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: cover !important;
-    background-color: #cecece !important; 
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }

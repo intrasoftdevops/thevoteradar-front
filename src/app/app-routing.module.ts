@@ -22,6 +22,7 @@ import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-pues
 import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
 import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
 import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
+import { ConsultarGerenteComponent } from './components/Admin/consultar-gerente/consultar-gerente.component';
 
 const routes: Routes = [
   {
@@ -88,12 +89,12 @@ const routes: Routes = [
     path: 'verPuestoAdmin',
     component: VerPuestoAdminComponent
   },
-  
+
   {
     path: 'verPuestoGerente',
     component: VerPuestoGerenteComponent
   },
-  
+
   {
     path: 'verPuestoSupervisor',
     component: VerPuestoSupervisorComponent
@@ -113,6 +114,10 @@ const routes: Routes = [
   {
     path: 'editarTestigo/:id',
     component: EditarTestigoComponent
+  },
+  {
+    path: 'consultarGerente',
+    component: ConsultarGerenteComponent
   },
 ];
 

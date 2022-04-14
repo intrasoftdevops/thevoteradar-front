@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-menu-admin',
@@ -13,7 +14,7 @@ export class MenuAdminComponent implements OnInit {
   listGerenteAsignados: any = [];
   listGerenteNoAsignados: any = [];
 
-  constructor(private apiService: ApiService, private router: Router) {
+  constructor(private apiService: ApiService, private router: Router, private alertService: AlertService) {
   }
 
   ngOnInit(): void {
@@ -30,11 +31,9 @@ export class MenuAdminComponent implements OnInit {
       for (let gerente of gerentes_no_asignados) {
         this.listGerenteNoAsignados.push(gerente);
       }
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    }));
+    }, (err: any) => {
+      this.alertService.errorAlert(err.message);
+    });
   }
 
   logout() {

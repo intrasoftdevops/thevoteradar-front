@@ -1,83 +1,109 @@
 <app-menu-admin></app-menu-admin>
-<section id="mundo">
-    <div class="container py-5">
-        <div class="card">
-            <div class="bg-info py-3 px-5 text-white">
-                <h4 class="m-0">Añadir Gerente</h4>
-            </div>
-            <div class="card-body">
-                <h4 class="ms-4 fw-bolder">Datos Personales</h4>
-                <div class="row m-4">
-                    <div class="form-group col-md-4">
-                        <label class="fw-bold">Nombres</label>
-                        <input type="text" [(ngModel)]="gerente.nombres"
-                            class="form-control border-2 border-dark rounded" id="txtNombres" name="nombres" required>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label class="fw-bold">Apellidos</label>
-                        <input type="text" [(ngModel)]="gerente.apellidos" required
-                            class="form-control border-2 border-dark rounded border-dark rounded" id="txtApellidos"
-                            name="apellidos">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label class="fw-bold">Genero</label>
-                        <select class="form-select border-2 border-dark rounded" aria-label="Default select example"
-                            name="genero" [(ngModel)]="gerente.genero_id">
-                            <option selected value="">Seleccione el genero</option>
-                            <option value="1">Masculino</option>
-                            <option value="2">Femenino</option>
-                            <option value="3">Otro</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-4 pt-3">
-                        <label class="fw-bold">Tipo de documento</label>
-                        <select class="form-select border-2 border-dark rounded" aria-label="Default select example"
-                            name="tipo_documento_id" [(ngModel)]="gerente.tipo_documento_id">
-                            <option selected value="">Seleccione el tipo de documento</option>
-                            <option value="1">Cedula de ciudadania</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-4 pt-3">
-                        <label class="fw-bold">Numero de documento</label>
-                        <input type="number" [(ngModel)]="gerente.numero_documento" required
-                            class="form-control border-2 border-dark rounded" id="txtNumeroDocumento"
-                            name="numero_documento">
-                    </div>
-                    <div class="form-group col-md-4 pt-3">
-                        <label class="fw-bold">Email</label>
-                        <input type="email" [(ngModel)]="gerente.email" required
-                            class="form-control border-2 border-dark rounded " id="txtEmail" name="email">
-                    </div>
-                    <div class="form-group col-md-4 pt-3">
-                        <label class="fw-bold">Password</label>
-                        <input type="password" [(ngModel)]="gerente.password"
-                            class="form-control border-2 border-dark rounded" id="txtPassword" name="password" required>
-                    </div>
-                </div>
-                <hr class="mx-4 border border-primary rounded border-2" />
-                <h4 class="ms-4 fw-bolder">Lugar de Trabajo</h4>
-                <div class="row mx-4 my-4">
-                    <div class="form-group col-md-6 col-lg-4">
-                        <label class="fw-bold ">Departamento de votacion</label>
-                        <ng-multiselect-dropdown name="departamentos" [placeholder]="'Seleccione departamento'"
-                            [settings]="dropdownSettingsDepartment" [data]="dataDepartments"
-                            (onSelect)="onItemSelectDepartment($event)" (onDeSelect)="onItemDeSelectDepartment()">
-                        </ng-multiselect-dropdown>
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4">
-                        <label class="fw-bold ">Municipios de votacion</label>
-                        <ng-multiselect-dropdown name="municipios" [placeholder]="'Seleccione municipio'"
-                            [settings]="dropdownSettingsMunicipal" [data]="dataFiltered"
-                            [(ngModel)]="selectedMunicipals">
-                        </ng-multiselect-dropdown>
-                    </div>
-                </div>
-            </div>
+<form class="container py-5" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+    <div class="card">
+        <div class="bg-info py-3 px-5 text-white">
+            <h4 class="m-0">
+                Añadir Gerente
+            </h4>
         </div>
-        <div class="d-flex justify-content-end pt-4">
-            <button type="submit" class="btn btn-lg btn-info mx-2 rounded" (click)="createGerente()"> CREAR
-            </button>
+        <div class="card-body">
+            <h4 class="ms-4 fw-bolder">
+                Datos Personales
+            </h4>
+            <div class="row m-4">
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Nombres</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="nombres" />
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Apellidos</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="apellidos" />
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Genero</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select border-2 border-dark rounded" formControlName="genero_id">
+                        <option selected value="">Seleccione el genero</option>
+                        <option value="1">Masculino</option>
+                        <option value="2">Femenino</option>
+                        <option value="3">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Tipo de documento</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select border-2 border-dark rounded" formControlName="tipo_documento_id">
+                        <option selected value="">Seleccione el tipo de documento</option>
+                        <option value="1">Cedula de ciudadania</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Numero de documento</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="number" class="form-control border-2 border-dark rounded"
+                        formControlName="numero_documento">
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label fw-bold">Telefono</label>
+                    <input type="number" class="form-control border-2 border-dark rounded" formControlName="telefono">
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Correo electronico</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="email" class="form-control border-2 border-dark rounded" formControlName="email">
+                    <small class="text-danger" *ngIf="createFormControl['email'].errors?.['email']">
+                        Ingrese una direccion de correo electronico valido.
+                    </small>
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Contraseña</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="password" class="form-control border-2 border-dark rounded" formControlName="password">
+                    <small class="text-danger" *ngIf="createFormControl['password'].errors?.['invalidPassword']">
+                        La contraseña debe tener mínimo 8 caracteres.
+                    </small>
+                </div>
+            </div>
+            <hr class="mx-4 border border-primary rounded border-2" />
+            <h4 class="ms-4 fw-bolder">
+                Lugar de Trabajo
+            </h4>
+            <div class="row mx-4 my-4">
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="fw-bold form-label">Departamento de votacion</label>
+                    <ng-multiselect-dropdown name="departamentos" [placeholder]="'Seleccione departamento'"
+                        [settings]="dropdownSettingsDepartment" [data]="dataDepartments"
+                        (onSelect)="onItemSelectDepartment($event)" (onDeSelect)="onItemDeSelectDepartment()">
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="fw-bold form-label">Municipios de votacion</label>
+                    <ng-multiselect-dropdown name="municipios" [placeholder]="'Seleccione municipio'"
+                        [settings]="dropdownSettingsMunicipal" [data]="dataFiltered" [(ngModel)]="selectedMunicipals"
+                        [ngModelOptions]="{ standalone : true }">
+                    </ng-multiselect-dropdown>
+                </div>
+            </div>
         </div>
     </div>
-</section>
-<app-footer></app-footer>
+    <div class="d-flex justify-content-end pt-4">
+        <button type="submit" class="btn btn-lg btn-info mx-2 rounded"> CREAR
+        </button>
+    </div>
+</form>

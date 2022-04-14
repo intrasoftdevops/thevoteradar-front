@@ -1,160 +1,157 @@
 <app-menu-admin></app-menu-admin>
-<section id="mundo">
-  <div class="container py-5">
-    <div class="card">
-      <div class="bg-info py-3 px-5 text-white">
-        <h4>Mi Equipo</h4>
-      </div>
-      <div class="card-body">
-        <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
-          <div class="form-group col-md-4">
-            <label class="fw-bold ">Departamentos</label>
-            <ng-multiselect-dropdown name="departamentos" [placeholder]="'Departamentos'"
-              [settings]="dropdownSettingsDepartments" [data]="dataDepartments"
-              (onSelect)="onItemSelectDepartment($event)" (onDeSelect)="onItemDeSelectDepartment()">
-            </ng-multiselect-dropdown>
-          </div>
-          <div class="form-group col-md-4">
-            <label class="fw-bold ">Municipios</label>
-            <ng-multiselect-dropdown name="municipios" [placeholder]="'Municipios'"
-              [settings]="dropdownSettingsMunicipals" [(ngModel)]="selectedMunicipal" [data]="dataMunicipals"
-              (onSelect)="onItemSelectMunicipal($event)" (onDeSelect)="onItemDeSelectMunicipal()">
-            </ng-multiselect-dropdown>
-          </div>
-          <div class="form-group col-md-4">
-            <label class="fw-bold ">Zonas</label>
-            <ng-multiselect-dropdown name="zonas" [placeholder]="'Zonas'" [settings]="dropdownSettingsZones"
-              [(ngModel)]="selectedZone" [data]="dataZones" (onSelect)="onItemSelectZone($event)"
-              (onDeSelect)="onItemDeSelectZone()">
-            </ng-multiselect-dropdown>
-          </div>
-          <div class="form-group col-md-4">
-            <label class="fw-bold ">Puestos</label>
-            <ng-multiselect-dropdown name="puestos" [placeholder]="'Puestos'" [settings]="dropdownSettingsStations"
-              [(ngModel)]="selectedStation" [data]="dataStations" (onSelect)="onItemSelectStation($event)"
-              (onDeSelect)="onItemDeSelectStation()">
-            </ng-multiselect-dropdown>
-          </div>
-          <div class="form-group col-md-4">
-            <label class="fw-bold ">Mesas</label>
-            <ng-multiselect-dropdown name="mesas" [placeholder]="'Mesas'" [settings]="dropdownSettingsTables"
-              [(ngModel)]="selectedTable" [data]="dataTables" (onSelect)="onItemSelectTable($event)"
-              (onDeSelect)="onItemDeSelectTable()">
-            </ng-multiselect-dropdown>
-          </div>
+<div class="container py-5">
+  <div class="card">
+    <div class="bg-info py-3 px-5 text-white">
+      <h4>Mi Equipo</h4>
+    </div>
+    <div class="card-body">
+      <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
+        <div class="form-group col-md-6 col-lg-4">
+          <label class="fw-bold ">Departamentos</label>
+          <ng-multiselect-dropdown name="departamentos" [placeholder]="'Departamentos'"
+            [settings]="dropdownSettingsDepartments" [data]="dataDepartments"
+            (onSelect)="onItemSelectDepartment($event)" (onDeSelect)="onItemDeSelectDepartment()">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="form-group col-md-6 col-lg-4">
+          <label class="fw-bold ">Municipios</label>
+          <ng-multiselect-dropdown name="municipios" [placeholder]="'Municipios'"
+            [settings]="dropdownSettingsMunicipals" [(ngModel)]="selectedMunicipal" [data]="dataMunicipals"
+            (onSelect)="onItemSelectMunicipal($event)" (onDeSelect)="onItemDeSelectMunicipal()">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="form-group col-md-6 col-lg-4">
+          <label class="fw-bold ">Zonas</label>
+          <ng-multiselect-dropdown name="zonas" [placeholder]="'Zonas'" [settings]="dropdownSettingsZones"
+            [(ngModel)]="selectedZone" [data]="dataZones" (onSelect)="onItemSelectZone($event)"
+            (onDeSelect)="onItemDeSelectZone()">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="form-group col-md-6 col-lg-4">
+          <label class="fw-bold ">Puestos</label>
+          <ng-multiselect-dropdown name="puestos" [placeholder]="'Puestos'" [settings]="dropdownSettingsStations"
+            [(ngModel)]="selectedStation" [data]="dataStations" (onSelect)="onItemSelectStation($event)"
+            (onDeSelect)="onItemDeSelectStation()">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="form-group col-md-6 col-lg-4">
+          <label class="fw-bold ">Mesas</label>
+          <ng-multiselect-dropdown name="mesas" [placeholder]="'Mesas'" [settings]="dropdownSettingsTables"
+            [(ngModel)]="selectedTable" [data]="dataTables" (onSelect)="onItemSelectTable($event)"
+            (onDeSelect)="onItemDeSelectTable()">
+          </ng-multiselect-dropdown>
         </div>
       </div>
     </div>
-    <ng-container [ngSwitch]="tabla">
-      <div class="card mt-5" *ngSwitchCase="'gerente'">
-        <div class="bg-info py-3 px-5 text-white">
-          <h4>Gerentes</h4>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
-                <tr>
-                  <th scope="col">NOMBRES</th>
-                  <th scope="col">APELLIDOS</th>
-                  <th scope="col">TELEFONO</th>
-                  <th scope="col">CORREO ELECTRONICO</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let gerente of listGerentes" class="bg-white">
-                  <td scope="row">{{gerente.nombres}}</td>
-                  <td>{{gerente.apellidos}}</td>
-                  <td>8794561</td>
-                  <td>{{gerente.email}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="card mt-5" *ngSwitchCase="'supervisor'">
-        <div class="bg-info py-3 px-5 text-white">
-          <h4>Supervisores</h4>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
-                <tr>
-                  <th scope="col">NOMBRES</th>
-                  <th scope="col">APELLIDOS</th>
-                  <th scope="col">TELEFONO</th>
-                  <th scope="col">CORREO ELECTRONICO</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let supervisor of listSupervisores" class="bg-white">
-                  <td scope="row">{{supervisor.nombres}}</td>
-                  <td>{{supervisor.apellidos}}</td>
-                  <td>1456841</td>
-                  <td>{{supervisor.email}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="card mt-5" *ngSwitchCase="'coordinador'">
-        <div class="bg-info py-3 px-5 text-white">
-          <h4>Coordinadores</h4>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
-                <tr>
-                  <th scope="col">NOMBRES</th>
-                  <th scope="col">APELLIDOS</th>
-                  <th scope="col">TELEFONO</th>
-                  <th scope="col">CORREO ELECTRONICO</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let coordinador of listCoordinadores" class="bg-white">
-                  <td scope="row">{{coordinador.nombres}}</td>
-                  <td>{{coordinador.apellidos}}</td>
-                  <td>45621638</td>
-                  <td>{{coordinador.email}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="card mt-5" *ngSwitchCase="'testigo'">
-        <div class="bg-info py-3 px-5 text-white">
-          <h4>Testigos</h4>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
-                <tr>
-                  <th scope="col">NOMBRES</th>
-                  <th scope="col">APELLIDOS</th>
-                  <th scope="col">TELEFONO</th>
-                  <th scope="col">CORREO ELECTRONICO</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let testigo of listTestigos" class="bg-white">
-                  <td scope="row">{{testigo.nombres}}</td>
-                  <td>{{testigo.apellidos}}</td>
-                  <td>78213</td>
-                  <td>{{testigo.email}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </ng-container>
   </div>
-</section>
-<app-footer></app-footer>
+  <ng-container [ngSwitch]="tabla">
+    <div class="card mt-5" *ngSwitchCase="'gerente'">
+      <div class="bg-info py-3 px-5 text-white">
+        <h4>Gerentes</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-curved text-center">
+            <thead class="text-dark">
+              <tr>
+                <th scope="col">NOMBRES</th>
+                <th scope="col">APELLIDOS</th>
+                <th scope="col">TELEFONO</th>
+                <th scope="col">CORREO ELECTRONICO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let gerente of listGerentes" class="bg-white">
+                <td scope="row">{{gerente.nombres}}</td>
+                <td>{{gerente.apellidos}}</td>
+                <td>8794561</td>
+                <td>{{gerente.email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card mt-5" *ngSwitchCase="'supervisor'">
+      <div class="bg-info py-3 px-5 text-white">
+        <h4>Supervisores</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-curved text-center">
+            <thead class="text-dark">
+              <tr>
+                <th scope="col">NOMBRES</th>
+                <th scope="col">APELLIDOS</th>
+                <th scope="col">TELEFONO</th>
+                <th scope="col">CORREO ELECTRONICO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let supervisor of listSupervisores" class="bg-white">
+                <td scope="row">{{supervisor.nombres}}</td>
+                <td>{{supervisor.apellidos}}</td>
+                <td>1456841</td>
+                <td>{{supervisor.email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card mt-5" *ngSwitchCase="'coordinador'">
+      <div class="bg-info py-3 px-5 text-white">
+        <h4>Coordinadores</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-curved text-center">
+            <thead class="text-dark">
+              <tr>
+                <th scope="col">NOMBRES</th>
+                <th scope="col">APELLIDOS</th>
+                <th scope="col">TELEFONO</th>
+                <th scope="col">CORREO ELECTRONICO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let coordinador of listCoordinadores" class="bg-white">
+                <td scope="row">{{coordinador.nombres}}</td>
+                <td>{{coordinador.apellidos}}</td>
+                <td>45621638</td>
+                <td>{{coordinador.email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card mt-5" *ngSwitchCase="'testigo'">
+      <div class="bg-info py-3 px-5 text-white">
+        <h4>Testigos</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-curved text-center">
+            <thead class="text-dark">
+              <tr>
+                <th scope="col">NOMBRES</th>
+                <th scope="col">APELLIDOS</th>
+                <th scope="col">TELEFONO</th>
+                <th scope="col">CORREO ELECTRONICO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let testigo of listTestigos" class="bg-white">
+                <td scope="row">{{testigo.nombres}}</td>
+                <td>{{testigo.apellidos}}</td>
+                <td>78213</td>
+                <td>{{testigo.email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

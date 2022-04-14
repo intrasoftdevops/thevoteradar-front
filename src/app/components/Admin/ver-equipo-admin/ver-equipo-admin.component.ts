@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import Swal from 'sweetalert2';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-ver-equipo-admin',
@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 })
 export class VerEquipoAdminComponent implements OnInit {
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private alertService: AlertService) { }
 
   tabla: string = "ninguna";
   dropdownSettingsDepartments: IDropdownSettings = {};
@@ -175,7 +175,7 @@ export class VerEquipoAdminComponent implements OnInit {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
     }, (err: any) => {
-      this.showError(err);
+      this.alertService.errorAlert(err.message);
     })
   }
 
@@ -183,7 +183,7 @@ export class VerEquipoAdminComponent implements OnInit {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
       this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
     }, (err: any) => {
-      this.showError(err);
+      this.alertService.errorAlert(err.message);
     })
   }
 
@@ -193,7 +193,7 @@ export class VerEquipoAdminComponent implements OnInit {
       this.dataZones = zonas;
       this.listGerentes = gerentes;
     }, (err: any) => {
-      this.showError(err);
+      this.alertService.errorAlert(err.message);
     })
   }
 
@@ -203,7 +203,7 @@ export class VerEquipoAdminComponent implements OnInit {
       this.dataStations = puestos;
       this.listSupervisores = supervisores;
     }, (err: any) => {
-      this.showError(err);
+      this.alertService.errorAlert(err.message);
     })
   }
 
@@ -213,7 +213,7 @@ export class VerEquipoAdminComponent implements OnInit {
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
     }, (err: any) => {
-      this.showError(err);
+      this.alertService.errorAlert(err.message);
     })
   }
 
@@ -222,22 +222,13 @@ export class VerEquipoAdminComponent implements OnInit {
       const { testigos } = resp;
       this.listTestigos = testigos;
     }, (err: any) => {
-      this.showError(err);
+      this.alertService.errorAlert(err.message);
     })
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
-  }
-
-  showError(err: any) {
-    console.log(err);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    });
   }
 
 }

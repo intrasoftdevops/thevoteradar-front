@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import Swal from 'sweetalert2';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { CustomValidationService } from '../../../services/custom-validation.service';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-crear-gerente',
@@ -17,22 +19,24 @@ export class CrearGerenteComponent implements OnInit {
   dataDepartments: any = [];
   dataFiltered: any = [];
 
-  gerente: any = {
-    nombres: '',
-    apellidos: '',
-    genero_id: '',
-    tipo_documento_id: '',
-    numero_documento: '',
-    email: '',
-    password: '',
-    municipios: [],
+  createForm: FormGroup = this.fb.group({
+    nombres: ['', Validators.required],
+    apellidos: ['', Validators.required],
+    genero_id: ['', Validators.required],
+    tipo_documento_id: ['', Validators.required],
+    numero_documento: ['', Validators.required],
+    telefono: [''],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.compose([Validators.required, this.customValidator.patternValidator()])],
+    municipios: [[]],
   }
+  )
+  submitted = false;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
   ngOnInit() {
     this.getDepartmentAdmin();
-    this.getMunicipalAdmin();
     this.dropdownSettingsDepartment = {
       noDataAvailablePlaceholderText: "No hay informacion disponible",
       clearSearchFilter: false,
@@ -57,10 +61,34 @@ export class CrearGerenteComponent implements OnInit {
     };
   }
 
+  get createFormControl() {
+    return this.createForm.controls;
+  }
+
+  onSubmit() {
+    this.createForm.patchValue({
+      municipios: this.getCodeMunicipals(),
+    });
+    this.submitted = true;
+    if (this.createForm.valid) {
+      console.log(this.createForm.value)
+      this.apiService.createGerente(this.createForm.value).subscribe((resp: any) => {
+
+        this.alertService.successAlert(resp.message);
+
+      }, (err: any) => {
+        this.alertService.errorAlert(err.message);
+      })
+    } else {
+      this.alertService.errorAlert("Llene los campos obligatorios.");
+    }
+  }
+
   onItemSelectDepartment(item: any) {
     this.dataFiltered = [];
     this.selectedMunicipals = [];
-    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
+    this.getMunicipalAdmin(item.codigo_unico)
+
   }
 
   onItemDeSelectDepartment() {
@@ -72,72 +100,16 @@ export class CrearGerenteComponent implements OnInit {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
     }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
+      this.alertService.errorAlert(err.message);
     })
   }
 
-  getMunicipalAdmin() {
+  getMunicipalAdmin(data: any) {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.dataMunicipals = resp;
+      this.dataFiltered = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
     }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
+      this.alertService.errorAlert(err.message);
     });
-  }
-
-  createGerente() {
-
-    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email, password } = this.gerente;
-
-    if (nombres.trim() && apellidos.trim() && genero_id.trim() && tipo_documento_id.trim() && numero_documento && email.trim() && password.trim()) {
-
-      const codigo_unico = this.getCodeMunicipals();
-
-      this.gerente.municipios = codigo_unico;
-
-      this.apiService.createGerente(this.gerente).subscribe((resp: any) => {
-
-        console.log(resp);
-
-        Swal.fire({
-          icon: 'success',
-          title: resp.message,
-          confirmButtonText: 'Ok',
-          allowEnterKey: false,
-          allowEscapeKey: false,
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        })
-
-      }, (err: any) => {
-        console.log(err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: err.message,
-        });
-      })
-
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
-      });
-    }
-
   }
 
   getCodeMunicipals() {

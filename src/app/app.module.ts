@@ -14,7 +14,7 @@ import { MenuSupervisorComponent } from './components/Supervisor/menu-supervisor
 import { MenuCoordinadorComponent } from './components/Coordinador/menu-coordinador/menu-coordinador.component';
 import { MenuTestigoComponent } from './components/Testigo/menu-testigo/menu-testigo.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CrearGerenteComponent } from './components/Admin/crear-gerente/crear-gerente.component';
 import { CrearSupervisorComponent } from './components/Gerente/crear-supervisor/crear-supervisor.component';
 import { CrearCoordinadorComponent } from './components/Supervisor/crear-coordinador/crear-coordinador.component';
@@ -32,7 +32,7 @@ import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-pues
 import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
 import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
 import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
-import { FooterComponent } from './Footer/footer/footer.component';
+import { ConsultarGerenteComponent } from './components/Admin/consultar-gerente/consultar-gerente.component';
 
 @NgModule({
   declarations: [
@@ -65,13 +65,14 @@ import { FooterComponent } from './Footer/footer/footer.component';
     EditarSupervisorComponent,
     EditarCoordinadorComponent,
     EditarTestigoComponent,
-    FooterComponent
+    ConsultarGerenteComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
   providers: [],

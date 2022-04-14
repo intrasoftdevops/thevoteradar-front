@@ -7,17 +7,17 @@
       </div>
       <div class="card-body">
         <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-6 col-lg-4">
             <label class="fw-bold ">Departamentos</label>
             <ng-multiselect-dropdown name="departamentos" [placeholder]="'Departamentos'"
               [settings]="dropdownSettingsDepartments" [data]="dataDepartments"
-              (onSelect)="onItemSelectDepartment($event)">
+              (onSelect)="onItemSelectDepartment($event)" (onDeSelect)="onItemDeSelectDepartment()">
             </ng-multiselect-dropdown>
           </div>
         </div>
-        <div class="table-responsive">
-          <table class="table table-curved text-center">
-            <thead class="text-dark">
+        <div class="table-responsive" *ngIf="tabla">
+          <table class="table text-center align-middle">
+            <thead class="text-dark align-middle">
               <tr>
                 <th scope="col">GERENTES</th>
                 <th scope="col">GERENTES POR ASIGNAR</th>
@@ -31,14 +31,38 @@
             </thead>
             <tbody>
               <tr class="bg-white">
-                <td>{{data.gerentes.cantidad_gerentes_existentes}}/{{data.gerentes.cantidad_gerentes_necesitados}}</td>
-                <td>{{data.gerentes.cantidad_gerentes_por_asignar}}</td>
-                <td>{{data.supervisores.cantidad_supervisores_existentes}}/{{data.supervisores.cantidad_supervisores_necesitados}}</td>
-                <td>{{data.supervisores.cantidad_supervisores_por_asignar}}</td>
-                <td>{{data.coordinadores.cantidad_coordinadores_existentes}}/{{data.coordinadores.cantidad_coordinadores_necesitados}}</td>
-                <td>{{data.coordinadores.cantidad_coordinadores_por_asignar}}</td>
-                <td>{{data.testigos.cantidad_testigos_existentes}}/{{data.testigos.cantidad_testigos_necesitados}}</td>
-                <td>{{data.testigos.cantidad_testigos_por_asignar}}</td>
+                <td
+                  [ngClass]="textColor(data.gerentes.cantidad_gerentes_existentes,data.gerentes.cantidad_gerentes_necesitados)">
+                  {{data.gerentes.cantidad_gerentes_existentes}}/{{data.gerentes.cantidad_gerentes_necesitados}}
+                  ({{(data.gerentes.cantidad_gerentes_existentes/data.gerentes.cantidad_gerentes_necesitados)*100}}%)
+                </td>
+                <td>
+                  {{data.gerentes.cantidad_gerentes_por_asignar}}
+                </td>
+                <td
+                  [ngClass]="textColor(data.supervisores.cantidad_supervisores_existentes,data.supervisores.cantidad_supervisores_necesitados)">
+                  {{data.supervisores.cantidad_supervisores_existentes}}/{{data.supervisores.cantidad_supervisores_necesitados}}
+                  ({{(data.supervisores.cantidad_supervisores_existentes/data.supervisores.cantidad_supervisores_necesitados)*100}}%)
+                </td>
+                <td>
+                  {{data.supervisores.cantidad_supervisores_por_asignar}}
+                </td>
+                <td
+                  [ngClass]="textColor(data.coordinadores.cantidad_coordinadores_existentes,data.coordinadores.cantidad_coordinadores_necesitados)">
+                  {{data.coordinadores.cantidad_coordinadores_existentes}}/{{data.coordinadores.cantidad_coordinadores_necesitados}}
+                  ({{(data.coordinadores.cantidad_coordinadores_existentes/data.coordinadores.cantidad_coordinadores_necesitados)*100}}%)
+                </td>
+                <td>
+                  {{data.coordinadores.cantidad_coordinadores_por_asignar}}
+                </td>
+                <td
+                  [ngClass]="textColor(data.testigos.cantidad_testigos_existentes,data.testigos.cantidad_testigos_necesitados)">
+                  {{data.testigos.cantidad_testigos_existentes}}/{{data.testigos.cantidad_testigos_necesitados}}
+                  ({{(data.testigos.cantidad_testigos_existentes/data.testigos.cantidad_testigos_necesitados)*100}}%)
+                </td>
+                <td>
+                  {{data.testigos.cantidad_testigos_por_asignar}}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -47,4 +71,3 @@
     </div>
   </div>
 </section>
-<app-footer></app-footer>
