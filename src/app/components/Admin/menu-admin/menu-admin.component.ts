@@ -17,23 +17,7 @@ export class MenuAdminComponent implements OnInit {
   constructor(private apiService: ApiService, private router: Router, private alertService: AlertService) {
   }
 
-  ngOnInit(): void {
-    this.getGerentes();
-  }
-
-  getGerentes() {
-
-    this.apiService.getAssignedMunicipal().subscribe((resp: any) => {
-      const { gerentes_asignados, gerentes_no_asignados } = resp;
-      for (let gerente of gerentes_asignados) {
-        this.listGerenteAsignados.push(gerente);
-      }
-      for (let gerente of gerentes_no_asignados) {
-        this.listGerenteNoAsignados.push(gerente);
-      }
-    }, (err: any) => {
-      this.alertService.errorAlert(err.message);
-    });
+  ngOnInit() {
   }
 
   logout() {

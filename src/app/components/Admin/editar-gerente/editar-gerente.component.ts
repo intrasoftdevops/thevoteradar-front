@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { filter } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -14,14 +13,9 @@ import { AlertService } from '../../../services/alert.service';
 })
 export class EditarGerenteComponent implements OnInit {
 
-  dropdownSettingsMunicipal: IDropdownSettings = {};
-  dropdownSettingsDepartment: IDropdownSettings = {};
   dataDepartments: any = [];
   dataMunicipals: any = [];
-  municipioAssign: any = [];
   departmentAssign: any = [];
-  assignedItems: any = [];
-  dataFiltered: any = [];
 
   idGerente: any;
   subscriber: any;
@@ -33,8 +27,8 @@ export class EditarGerenteComponent implements OnInit {
     tipo_documento_id: ['', Validators.required],
     numero_documento: ['', Validators.required],
     telefono: [''],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.compose([Validators.required, this.customValidator.patternValidator()])],
+    email: ['', [Validators.required, Validators.email,this.customValidator.patternValidator()]],
+    password: [''],
     municipios: [[]],
   });
   submitted = false;
@@ -47,35 +41,23 @@ export class EditarGerenteComponent implements OnInit {
     this.getGerente();
     this.getDepartmentAdmin();
     this.getMunicipalAdmin();
-
     this.subscriber = this.router.events.pipe(
       filter((event: any) => event instanceof NavigationEnd)
     ).subscribe((event) => {
       window.location.reload();
     });
 
-    this.dropdownSettingsDepartment = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre_departamento_votacion',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
+  }
 
-    this.dropdownSettingsMunicipal = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      enableCheckAll: false,
-      singleSelection: false,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
+  getSelectedValue(item: any) {
+    this.updateForm.patchValue({
+      municipios: [],
+    });
+    if (item) {
+      this.getMunicipalAdmin()
+    } else {
+      this.dataMunicipals = [];
+    }
   }
 
   get updateFormControl() {
@@ -84,33 +66,19 @@ export class EditarGerenteComponent implements OnInit {
 
   onSubmit() {
     console.log(this.updateForm.value)
-    this.updateForm.patchValue({
-      municipios: this.getCodeMunicipals(),
-    });
     this.submitted = true;
     if (this.updateForm.valid) {
       console.log(this.updateForm.value)
       this.apiService.updateGerente(this.idGerente, this.updateForm.value).subscribe((resp: any) => {
 
         this.alertService.successAlert(resp.res);
+
       }, (err: any) => {
         this.alertService.errorAlert(err.message);
       })
     } else {
       this.alertService.errorAlert("Llene los campos obligatorios.");
     }
-  }
-
-  onItemSelect(item: any) {
-    this.municipioAssign = [];
-    this.dataFiltered = [];
-    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
-    console.log(this.dataFiltered);
-  }
-
-  onItemDeSelect(item: any) {
-    this.municipioAssign = [];
-    this.dataFiltered = [];
   }
 
   getDepartmentAdmin() {
@@ -123,13 +91,9 @@ export class EditarGerenteComponent implements OnInit {
 
   getMunicipalAdmin() {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-
-      this.dataMunicipals = resp;
-
-      if (this.departmentAssign.length > 0) {
-        this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.departmentAssign[0].codigo_unico);
+      if (this.departmentAssign) {
+        this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.departmentAssign.codigo_unico);
       }
-
     }, (err: any) => {
       this.alertService.errorAlert(err.message);
     });
@@ -153,16 +117,16 @@ export class EditarGerenteComponent implements OnInit {
       this.updateForm.get('tipo_documento_id')?.setValue(gerente.tipo_documento_id);
       this.updateForm.get('numero_documento')?.setValue(gerente.numero_documento);
       this.updateForm.get('telefono')?.setValue(gerente.telefono);
-      this.municipioAssign = municipios_asignados;
-      this.departmentAssign = departamentos_asignados;
+      this.updateForm.get('municipios')?.setValue(this.getCodeMunicipals(municipios_asignados));
+      this.departmentAssign = departamentos_asignados[0];
 
     }, (err: any) => {
       this.alertService.errorAlert(err.message);
     })
   }
 
-  getCodeMunicipals() {
-    return this.municipioAssign.map((selectedMunicipal: any) => {
+  getCodeMunicipals(data: any) {
+    return data.map((selectedMunicipal: any) => {
       const { codigo_unico } = selectedMunicipal;
       return codigo_unico;
     });

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from 'src/app/services/api.service';
+import { Router } from '@angular/router';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-consultar-gerente',
@@ -7,9 +10,36 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConsultarGerenteComponent implements OnInit {
 
-  constructor() { }
+  listGerenteAsignados: any = [];
+  listGerenteNoAsignados: any = [];
+  listMunicipals:any=[];
 
-  ngOnInit(): void {
+  constructor(private apiService: ApiService, private router: Router, private alertService: AlertService) { }
+
+  ngOnInit() {
+    this.getGerentes();
+  }
+
+  getGerentes() {
+
+    this.apiService.getAssignedMunicipal().subscribe((resp: any) => {
+      const { gerentes_asignados, gerentes_no_asignados } = resp;
+        this.listGerenteAsignados=gerentes_asignados;
+        this.listGerenteNoAsignados=gerentes_no_asignados;
+        for (let gerente of this.listGerenteAsignados) {
+          let municipios=this.getMunicipals(gerente.municipios);
+          this.listMunicipals.push(municipios.join(', '));
+        }
+    }, (err: any) => {
+      this.alertService.errorAlert(err.message);
+    });
+  }
+
+  getMunicipals(data: any) {
+    return data.map((municipal: any) => {
+      const { nombre } = municipal;
+      return nombre;
+    });
   }
 
 }

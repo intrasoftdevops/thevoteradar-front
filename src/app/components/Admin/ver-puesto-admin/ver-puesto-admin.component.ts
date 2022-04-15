@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { AlertService } from '../../../services/alert.service';
 
 @Component({
@@ -10,8 +9,7 @@ import { AlertService } from '../../../services/alert.service';
 })
 export class VerPuestoAdminComponent implements OnInit {
 
-  tabla:boolean = false;
-  dropdownSettingsDepartments: IDropdownSettings = {};
+  tabla: boolean = false;
   dataDepartments: any = [];
   data: any = {
     gerentes: {
@@ -40,29 +38,17 @@ export class VerPuestoAdminComponent implements OnInit {
 
   ngOnInit() {
     this.getDepartmentAdmin();
-
-    this.dropdownSettingsDepartments = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre_departamento_votacion',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
   }
 
-  onItemSelectDepartment(item: any) {
-    const codigo_unico = this.getCode(item);
-    const data = { departamento: codigo_unico };
-    this.getNecesitadosDepartamento(data);
-  }
-
-  onItemDeSelectDepartment(){
-    this.tabla=false;
+  getSelectedDepartment(item: any) {
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { departamento: codigo_unico };
+      this.getNecesitadosDepartamento(data);
+      this.tabla = true;
+    } else {
+      this.tabla = false;
+    }
   }
 
   getDepartmentAdmin() {
@@ -76,13 +62,13 @@ export class VerPuestoAdminComponent implements OnInit {
   getNecesitadosDepartamento(data: any) {
     this.apiService.getNecesitadosDepartamento(data).subscribe((resp: any) => {
       this.data = resp;
-      this.tabla=true;
+      this.tabla = true;
     }, (err: any) => {
       this.alertService.errorAlert(err.message);
     })
   }
 
-  textColor(existentes:any, necesitados:any){
+  textColor(existentes: any, necesitados: any) {
     if (existentes == necesitados) {
       return 'text-success';
     } else if (existentes < necesitados) {

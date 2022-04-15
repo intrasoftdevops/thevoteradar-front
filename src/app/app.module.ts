@@ -33,6 +33,7 @@ import { EditarSupervisorComponent } from './components/Gerente/editar-superviso
 import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
 import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
 import { ConsultarGerenteComponent } from './components/Admin/consultar-gerente/consultar-gerente.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { ConsultarGerenteComponent } from './components/Admin/consultar-gerente/
     FormsModule,
     ReactiveFormsModule,
     NgMultiSelectDropDownModule.forRoot(),
+    NgSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -6,6 +6,7 @@ $secondary: #111;
 @import "../node_modules/bootswatch/dist/cosmo/variables";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "../node_modules/bootswatch/dist/cosmo/bootswatch";
+@import "../node_modules/@ng-select/ng-select/scss/default.theme.scss";
 
 body {
     font-family: 'Outfit', sans-serif !important;
@@ -35,7 +36,7 @@ input::placeholder {
     color: $dark !important;
 }
 
-button {
+.btn {
     border-radius: 25px !important;
 }
 
@@ -87,4 +88,53 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.ng-select.custom-select .ng-select-container  {
+    border:2px solid $dark;
+    padding-top: 1.12rem;
+    padding-bottom: 1.12rem;
+}
+
+.ng-select.custom-multiple-select .ng-select-container  {
+    border:2px solid $dark;
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+}
+
+.ng-select.ng-select-focused:not(.ng-select-opened)>.ng-select-container {
+    border:2px solid $dark;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+    background-color: lighten($color: $primary, $amount: 60);
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+    background-color: $primary;
+    color: white;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected, .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
+    background-color: lighten($color: $primary, $amount: 60);
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon.left {
+    border-right: none;
+}
+
+ .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: white;
+    background-color: $primary!important;
+    border-color: $primary;
+}
+
+.nav-tabs {
+    border-bottom: 5px solid lighten($color: $primary, $amount: 10);
+}
+
+.nav-tabs .nav-link {
+    margin-bottom: -1px;
+    background: white;
+    border: 1px solid white;
 }

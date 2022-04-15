@@ -13,11 +13,6 @@ export class VerEquipoAdminComponent implements OnInit {
   constructor(private apiService: ApiService, private alertService: AlertService) { }
 
   tabla: string = "ninguna";
-  dropdownSettingsDepartments: IDropdownSettings = {};
-  dropdownSettingsMunicipals: IDropdownSettings = {};
-  dropdownSettingsZones: IDropdownSettings = {};
-  dropdownSettingsStations: IDropdownSettings = {};
-  dropdownSettingsTables: IDropdownSettings = {};
   dataDepartments: any = [];
   dataMunicipals: any = [];
   dataZones: any = [];
@@ -34,141 +29,73 @@ export class VerEquipoAdminComponent implements OnInit {
 
   ngOnInit() {
     this.getDepartmentAdmin();
-
-    this.dropdownSettingsDepartments = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre_departamento_votacion',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsMunicipals = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsZones = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsStations = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsTables = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'numero_mesa',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
   }
 
-  onItemSelectDepartment(item: any) {
-    this.tabla = "ninguna"
+  getSelectedDepartment(item: any) {
     this.selectedMunicipal = [];
     this.selectedZone = [];
     this.selectedStation = [];
     this.selectedTable = [];
-    const codigo_unico = this.getCode(item);
-    this.getMunicipalAdmin(codigo_unico);
+    if (item) {
+      this.getMunicipalAdmin(item.codigo_unico);
+      this.tabla = "ninguna"
+    } else {
+      this.dataMunicipals = [];
+      this.tabla = "ninguna"
+    }
   }
 
-  onItemDeSelectDepartment() {
-    this.tabla = "ninguna"
-    this.selectedMunicipal = [];
+  getSelectedMunicipal(item: any) {
     this.selectedZone = [];
     this.selectedStation = [];
     this.selectedTable = [];
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { municipio: codigo_unico }
+      this.getZonasyGerentes(data);
+      this.tabla = "gerente";
+    } else {
+      this.dataZones = [];
+      this.tabla = "ninguna"
+    }
   }
 
-  onItemSelectMunicipal(item: any) {
-    this.selectedZone = [];
+  getSelectedZone(item: any) {
     this.selectedStation = [];
     this.selectedTable = [];
-    const codigo_unico = this.getCode(item);
-    const data = { municipio: codigo_unico }
-    this.getZonasyGerentes(data);
-    this.tabla = "gerente";
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { zona: codigo_unico }
+      this.getPuestosySupervisores(data);
+      this.tabla = "supervisor";
+    } else {
+      this.dataStations = [];
+      this.tabla = "gerente"
+    }
   }
 
-  onItemDeSelectMunicipal() {
-    this.selectedZone = [];
-    this.selectedStation = [];
+  getSelectedStation(item: any) {
     this.selectedTable = [];
-    this.tabla = "ninguna";
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { puesto: codigo_unico }
+      this.getMesasyCoordinadores(data);
+      this.tabla = "coordinador";
+    } else {
+      this.dataTables = [];
+      this.tabla = "supervisor"
+    }
   }
 
-  onItemSelectZone(item: any) {
-    this.selectedStation = [];
-    this.selectedTable = [];
-    const codigo_unico = this.getCode(item);
-    const data = { zona: codigo_unico }
-    this.getPuestosySupervisores(data);
-    this.tabla = "supervisor";
-  }
-
-  onItemDeSelectZone() {
-    this.selectedStation = [];
-    this.selectedTable = [];
-    this.tabla = "gerente";
-  }
-
-  onItemSelectStation(item: any) {
-    this.selectedTable = [];
-    const codigo_unico = this.getCode(item);
-    const data = { puesto: codigo_unico }
-    this.getMesasyCoordinadores(data);
-    this.tabla = "coordinador";
-  }
-
-  onItemDeSelectStation() {
-    this.selectedTable = [];
-    this.tabla = "supervisor";
-  }
-
-  onItemSelectTable(item: any) {
-    const codigo_unico = this.getCode(item);
-    const data = { mesa: codigo_unico }
-    this.getTestigoMesa(data);
-    this.tabla = "testigo";
-  }
-
-  onItemDeSelectTable() {
-    this.tabla = "coordinador";
+  getSelectedTable(item: any) {
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { mesa: codigo_unico }
+      this.getTestigoMesa(data);
+      this.tabla = "testigo";
+    } else {
+      this.tabla = "coordinador"
+    }
   }
 
   getDepartmentAdmin() {
@@ -213,6 +140,7 @@ export class VerEquipoAdminComponent implements OnInit {
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
     }, (err: any) => {
+      console.log(err)
       this.alertService.errorAlert(err.message);
     })
   }
