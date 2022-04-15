@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 $primary: #64248b;
-$info: #64248b;
 $dark: #000;
 $secondary: #111;
 @import "../node_modules/bootswatch/dist/cosmo/variables";
@@ -138,3 +137,12 @@ input[type=number] {
     background: white;
     border: 1px solid white;
 }
+
+.link-active{
+    border-bottom: 5px solid $primary !important;
+}
+
+.sublink-active{
+    border-bottom: 5px solid lighten($color: $primary, $amount: 20) !important;
+}
+

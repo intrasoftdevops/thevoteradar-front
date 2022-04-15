@@ -1,7 +1,7 @@
 <app-menu-admin></app-menu-admin>
 <form class="container py-5" [formGroup]="createForm" (ngSubmit)="onSubmit()">
     <div class="card">
-        <div class="bg-info py-3 px-5 text-white">
+        <div class="bg-primary py-3 px-5 text-white">
             <h4 class="m-0">
                 Añadir Gerente
             </h4>
@@ -16,14 +16,14 @@
                         <span class="fw-bold">Nombres</span>
                         <span class="text-danger">*</span>
                     </label>
-                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="nombres" />
+                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="nombres" (keypress)="keypressValidator.keyPressLetters($event)"/>
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label">
                         <span class="fw-bold">Apellidos</span>
                         <span class="text-danger">*</span>
                     </label>
-                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="apellidos" />
+                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="apellidos" (keypress)="keypressValidator.keyPressLetters($event)"/>
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label">
@@ -51,11 +51,11 @@
                         <span class="text-danger">*</span>
                     </label>
                     <input type="number" class="form-control border-2 border-dark rounded"
-                        formControlName="numero_documento">
+                        formControlName="numero_documento" (keypress)="keypressValidator.keyPressNumbers($event)">
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label fw-bold">Telefono</label>
-                    <input type="number" class="form-control border-2 border-dark rounded" formControlName="telefono">
+                    <input type="number" class="form-control border-2 border-dark rounded" formControlName="telefono" (keypress)="keypressValidator.keyPressNumbers($event)">
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label">
@@ -63,11 +63,7 @@
                         <span class="text-danger">*</span>
                     </label>
                     <input type="email" class="form-control border-2 border-dark rounded" formControlName="email">
-                    <small class="text-danger" *ngIf="createFormControl['email'].errors?.['email']">
-                        Ingrese una direccion de correo electronico valido.
-                    </small>
-                    <small class="text-danger"
-                        *ngIf="!createFormControl['email'].errors?.['email'] && createFormControl['email'].errors?.['invalidEmail']">
+                    <small class="text-danger" *ngIf="createFormControl['email'].errors?.['email'] || createFormControl['email'].errors?.['invalidEmail']">
                         Ingrese una direccion de correo electronico valido.
                     </small>
                 </div>
@@ -105,7 +101,6 @@
         </div>
     </div>
     <div class="d-flex justify-content-end pt-4">
-        <button type="submit" class="btn btn-lg btn-info mx-2 rounded"> CREAR
-        </button>
+        <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">CREAR</button>
     </div>
 </form>

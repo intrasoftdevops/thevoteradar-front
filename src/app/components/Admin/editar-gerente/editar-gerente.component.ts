@@ -27,7 +27,7 @@ export class EditarGerenteComponent implements OnInit {
     tipo_documento_id: ['', Validators.required],
     numero_documento: ['', Validators.required],
     telefono: [''],
-    email: ['', [Validators.required, Validators.email,this.customValidator.patternValidator()]],
+    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     password: [''],
     municipios: [[]],
   });
@@ -64,20 +64,24 @@ export class EditarGerenteComponent implements OnInit {
     return this.updateForm.controls;
   }
 
+  get keypressValidator() {
+    return this.customValidator;
+  }
+
   onSubmit() {
-    console.log(this.updateForm.value)
-    this.submitted = true;
-    if (this.updateForm.valid) {
-      console.log(this.updateForm.value)
-      this.apiService.updateGerente(this.idGerente, this.updateForm.value).subscribe((resp: any) => {
+    if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
+      if (this.updateForm.valid) {
+        console.log(this.updateForm.value)
+        this.apiService.updateGerente(this.idGerente, this.updateForm.value).subscribe((resp: any) => {
 
-        this.alertService.successAlert(resp.res);
+          this.alertService.successAlert(resp.res);
 
-      }, (err: any) => {
-        this.alertService.errorAlert(err.message);
-      })
-    } else {
-      this.alertService.errorAlert("Llene los campos obligatorios.");
+        }, (err: any) => {
+          this.alertService.errorAlert(err.message);
+        })
+      } else {
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
     }
   }
 

@@ -22,12 +22,11 @@ export class CrearGerenteComponent implements OnInit {
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
     telefono: [''],
-    email: ['', [Validators.required, Validators.email,this.customValidator.patternValidator()]],
-    password: ['', Validators.compose([Validators.required,Validators.minLength(8)])],
+    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
     municipios: [[]],
   }
   )
-  submitted = false;
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
@@ -51,20 +50,37 @@ export class CrearGerenteComponent implements OnInit {
     return this.createForm.controls;
   }
 
-  onSubmit() {
-    console.log(this.createFormControl['password'].errors?.['minlength']['actualLength'])
-    this.submitted = true;
-    if (this.createForm.valid) {
-      console.log(this.createForm.value)
-      this.apiService.createGerente(this.createForm.value).subscribe((resp: any) => {
+  get keypressValidator() {
+    return this.customValidator;
+  }
 
-        this.alertService.successAlert(resp.message);
+  onSubmit() { 
+    if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
 
-      }, (err: any) => {
-        this.alertService.errorAlert(err.message);
-      })
+      if (this.createForm.valid) {
+        console.log(this.createForm.value)
+        this.apiService.createGerente(this.createForm.value).subscribe((resp: any) => {
+
+          this.alertService.successAlert(resp.message);
+
+        }, (err: any) => {
+          this.alertService.errorAlert(err.message);
+        })
+      } else {
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+
+    }
+  }
+
+  keyPressNumbers(event:any) {
+    var charCode = (event.which) ? event.which : event.keyCode;
+    // Only Numbers 0-9
+    if ((charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+      return false;
     } else {
-      this.alertService.errorAlert("Llene los campos obligatorios.");
+      return true;
     }
   }
 
