@@ -9,8 +9,11 @@ $secondary: #111;
 
 body {
     font-family: 'Outfit', sans-serif !important;
-    min-height: 100vh;
     background-color: #cecece;
+}
+
+section:not(#login){
+    min-height: 100vh;
     background-image: url("./assets/mapa.png") !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -48,6 +51,56 @@ input::placeholder {
 .form-select {
     background-color: white !important;
 }
+
+.welcomeBanner {
+    background: white;
+    width: 35%;
+    top: 81%;
+    right: 0px;
+    height: 65px;
+    display: block;
+    position: absolute;
+    padding-left: 1.5rem !important;
+    z-index: 1;
+    border-left: 2px solid $primary !important;
+    border-top: 2px solid $primary !important;
+    border-bottom: 2px solid $primary !important;
+}
+
+.welcomeBanner::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -27px;
+    width: 45px;
+    height: 65px;
+    background: white;
+    transform: skew(30deg);
+    border-left: 2px solid $primary !important;
+    border-top: 2px solid $primary !important;
+    border-bottom: 2px solid $primary !important;
+}
+
+@media (max-width: 992px) {
+
+    .welcomeBanner {
+        top: 75%;
+        width: 45%;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .welcomeBanner{
+        top: 75%;
+        width: 75%;
+        padding-left: 2rem !important;
+    }
+
+}
+
+
 
 // Set border-radius on the top-left and bottom-left of the first table data on the table row
 td:first-child,

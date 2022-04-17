@@ -15,7 +15,6 @@ export class EditarGerenteComponent implements OnInit {
 
   dataDepartments: any = [];
   dataMunicipals: any = [];
-  departmentAssign: any = [];
 
   idGerente: any;
   subscriber: any;
@@ -29,6 +28,7 @@ export class EditarGerenteComponent implements OnInit {
     telefono: [''],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     password: [''],
+    departamento: [[],Validators.required],
     municipios: [[]],
   });
   submitted = false;
@@ -77,6 +77,7 @@ export class EditarGerenteComponent implements OnInit {
           this.alertService.successAlert(resp.res);
 
         }, (err: any) => {
+          console.log(err);
           this.alertService.errorAlert(err.message);
         })
       } else {
@@ -95,9 +96,11 @@ export class EditarGerenteComponent implements OnInit {
 
   getMunicipalAdmin() {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      if (this.departmentAssign) {
-        this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.departmentAssign.codigo_unico);
+
+      if (this.updateFormControl['departamento'].value) {
+        this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControl['departamento'].value);
       }
+
     }, (err: any) => {
       this.alertService.errorAlert(err.message);
     });
@@ -122,7 +125,7 @@ export class EditarGerenteComponent implements OnInit {
       this.updateForm.get('numero_documento')?.setValue(gerente.numero_documento);
       this.updateForm.get('telefono')?.setValue(gerente.telefono);
       this.updateForm.get('municipios')?.setValue(this.getCodeMunicipals(municipios_asignados));
-      this.departmentAssign = departamentos_asignados[0];
+      this.updateForm.get('departamento')?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
 
     }, (err: any) => {
       this.alertService.errorAlert(err.message);
@@ -130,8 +133,8 @@ export class EditarGerenteComponent implements OnInit {
   }
 
   getCodeMunicipals(data: any) {
-    return data.map((selectedMunicipal: any) => {
-      const { codigo_unico } = selectedMunicipal;
+    return data.map((seletedData: any) => {
+      const { codigo_unico } = seletedData;
       return codigo_unico;
     });
   }

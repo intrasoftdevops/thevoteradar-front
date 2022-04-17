@@ -24,6 +24,7 @@ export class CrearGerenteComponent implements OnInit {
     telefono: [''],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
+    departamento: [[], Validators.required],
     municipios: [[]],
   }
   )
@@ -54,7 +55,8 @@ export class CrearGerenteComponent implements OnInit {
     return this.customValidator;
   }
 
-  onSubmit() { 
+  onSubmit() {
+    console.log(this.createForm.value)
     if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
 
       if (this.createForm.valid) {
@@ -73,7 +75,7 @@ export class CrearGerenteComponent implements OnInit {
     }
   }
 
-  keyPressNumbers(event:any) {
+  keyPressNumbers(event: any) {
     var charCode = (event.which) ? event.which : event.keyCode;
     // Only Numbers 0-9
     if ((charCode < 48 || charCode > 57)) {

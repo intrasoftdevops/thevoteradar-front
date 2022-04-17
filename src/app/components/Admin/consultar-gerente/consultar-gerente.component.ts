@@ -12,7 +12,7 @@ export class ConsultarGerenteComponent implements OnInit {
 
   listGerenteAsignados: any = [];
   listGerenteNoAsignados: any = [];
-  listMunicipals:any=[];
+  listMunicipals: any = [];
 
   constructor(private apiService: ApiService, private router: Router, private alertService: AlertService) { }
 
@@ -24,12 +24,20 @@ export class ConsultarGerenteComponent implements OnInit {
 
     this.apiService.getAssignedMunicipal().subscribe((resp: any) => {
       const { gerentes_asignados, gerentes_no_asignados } = resp;
-        this.listGerenteAsignados=gerentes_asignados;
-        this.listGerenteNoAsignados=gerentes_no_asignados;
-        for (let gerente of this.listGerenteAsignados) {
-          let municipios=this.getMunicipals(gerente.municipios);
-          this.listMunicipals.push(municipios.join(', '));
+      this.listGerenteAsignados = gerentes_asignados;
+      this.listGerenteNoAsignados = gerentes_no_asignados;
+      for (let gerente of this.listGerenteAsignados) {
+        let municipios = this.getMunicipals(gerente.municipios);
+        let lastMunicipio;
+        if (municipios.length > 1) {
+          lastMunicipio = municipios.shift();
+          this.listMunicipals.push(municipios.join(', ') + " y " + lastMunicipio);
+        } else {
+          this.listMunicipals.push(municipios);
         }
+        console.log(municipios)
+        //
+      }
     }, (err: any) => {
       this.alertService.errorAlert(err.message);
     });
