@@ -20,11 +20,11 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.apiService.login(this.user).subscribe(
-      (resp: any) => {
-        console.log(resp);
+    this.apiService.login(this.user).subscribe({
+      next: (resp: any) => {
         const { res, rol, token, id } = resp;
         if (res == true) {
+          console.log(resp);
 
           this.apiService.setToken(token);
           this.apiService.setRol(rol);
@@ -59,9 +59,9 @@ export class LoginComponent implements OnInit {
         } else {
           this.showError(resp);
         }
-      }, (err: any) => {
-        this.showError(err);
-      })
+      },
+      error: (e) => this.showError(e),
+    })
   }
 
   showError(err: any) {

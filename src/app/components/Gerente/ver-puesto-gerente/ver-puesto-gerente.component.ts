@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../../services/api.service';
 
@@ -11,9 +10,6 @@ import { ApiService } from '../../../services/api.service';
 export class VerPuestoGerenteComponent implements OnInit {
 
   tabla: string = "ninguna";
-  dropdownSettingsMunicipals: IDropdownSettings = {};
-  dropdownSettingsZones: IDropdownSettings = {};
-  dropdownSettingsStations: IDropdownSettings = {};
   dataMunicipals: any = [];
   dataZones: any = [];
   dataStations: any = [];
@@ -37,81 +33,6 @@ export class VerPuestoGerenteComponent implements OnInit {
   ngOnInit() {
     this.getMunicipalAdmin();
 
-    this.dropdownSettingsMunicipals = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsZones = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsStations = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-  }
-
-  onItemSelectMunicipal(item: any) {
-    this.selectedZone = [];
-    this.selectedStation = [];
-    const codigo_unico = this.getCode(item);
-    const data = { municipio: codigo_unico }
-    this.getZonas(codigo_unico);
-    this.tabla = "supervisor";
-  }
-
-  onItemDeSelectMunicipal() {
-    this.selectedZone = [];
-    this.selectedStation = [];
-    this.tabla = "gerente";
-  }
-
-  onItemSelectZone(item: any) {
-    this.selectedStation = [];
-    const codigo_unico = this.getCode(item);
-    const data = { zona: codigo_unico }
-    this.getPuestos(data);
-    this.tabla = "coordinador";
-  }
-
-  onItemDeSelectZone() {
-    this.selectedStation = [];
-    this.tabla = "supervisor";
-  }
-
-  onItemSelectStation(item: any) {
-    const codigo_unico = this.getCode(item);
-    const data = { puesto: codigo_unico }
-
-    this.tabla = "testigo";
-  }
-
-  onItemDeSelectStation() {
-    this.tabla = "coordinador";
   }
 
   getMunicipalAdmin() {

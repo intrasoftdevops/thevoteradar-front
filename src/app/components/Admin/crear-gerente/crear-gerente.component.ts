@@ -26,14 +26,12 @@ export class CrearGerenteComponent implements OnInit {
     password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
     departamento: [[], Validators.required],
     municipios: [[]],
-  }
-  )
+  });
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
   ngOnInit() {
     this.getDepartmentAdmin();
-
   }
 
   getSelectedValue(item: any) {
@@ -72,17 +70,6 @@ export class CrearGerenteComponent implements OnInit {
         this.alertService.errorAlert("Llene los campos obligatorios.");
       }
 
-    }
-  }
-
-  keyPressNumbers(event: any) {
-    var charCode = (event.which) ? event.which : event.keyCode;
-    // Only Numbers 0-9
-    if ((charCode < 48 || charCode > 57)) {
-      event.preventDefault();
-      return false;
-    } else {
-      return true;
     }
   }
 

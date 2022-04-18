@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import Swal from 'sweetalert2';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AlertService } from '../../../services/alert.service';
+import { CustomValidationService } from '../../../services/custom-validation.service';
 
 @Component({
   selector: 'app-crear-supervisor',
@@ -10,55 +13,70 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 })
 export class CrearSupervisorComponent implements OnInit {
 
-  supervisor: any = {
-    tipo_documento_id: '',
-    numero_documento: '',
-    genero_id: '',
-    nombres: '',
-    apellidos: '',
-    email: '',
-    password: '',
-    zonas: []
-  }
-
-  dropdownSettingsZone: IDropdownSettings = {};
-  dropdownSettingsMunicipal: IDropdownSettings = {};
   dataZones: any = [];
   dataMunicipals: any = [];
-  selectedZones: any = [];
-  dataFiltered: any = [];
 
-  constructor(private apiService: ApiService) { }
+  createForm: FormGroup = this.fb.group({
+    nombres: ['', Validators.required],
+    apellidos: ['', Validators.required],
+    genero_id: [null, Validators.required],
+    tipo_documento_id: [null, Validators.required],
+    numero_documento: ['', Validators.required],
+    telefono: [''],
+    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
+    municipio: [[], Validators.required],
+    zonas: [[]],
+  });
+
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
   ngOnInit() {
     this.getMunicipalGerente();
-    this.getZoneGerente();
-    this.dropdownSettingsMunicipal = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      limitSelection: 1,
-      enableCheckAll: false,
-      singleSelection: false,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 3,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-    this.dropdownSettingsZone = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      enableCheckAll: false,
-      singleSelection: false,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 3,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
   }
 
-  getZoneGerente() {
+  getSelectedValue(item: any) {
+    this.createForm.patchValue({
+      zonas: [],
+    });
+    if (item) {
+      this.getZoneGerente(item.codigo_unico)
+    } else {
+      this.dataZones = [];
+    }
+  }
+
+  get createFormControl() {
+    return this.createForm.controls;
+  }
+
+  get keypressValidator() {
+    return this.customValidator;
+  }
+
+  onSubmit() {
+    console.log(this.createForm.value)
+    if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
+
+      if (this.createForm.valid) {
+        console.log(this.createForm.value)
+        this.apiService.createSupervisor(this.createForm.value).subscribe((resp: any) => {
+
+          this.alertService.successAlert(resp.message);
+
+        }, (err: any) => {
+          this.alertService.errorAlert(err.message);
+        })
+      } else {
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+
+    }
+  }
+
+  getZoneGerente(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
-      this.dataZones = resp;
+      this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == data);
     }, (err: any) => Swal.fire({
       icon: 'error',
       title: 'Oops...',
@@ -78,16 +96,8 @@ export class CrearSupervisorComponent implements OnInit {
     });
   }
 
-  onItemSelect(item: any) {
-    this.selectedZones = [];
-    this.dataFiltered = this.dataZones.filter((dataMunicipal: any) => dataMunicipal.codigo_municipio_votacion == item.codigo_unico);
-  }
-  onItemDeSelect() {
-    this.dataFiltered = [];
-    this.selectedZones = [];
-  }
-
   createSupervisor() {
+    /*
     console.log(this.supervisor);
 
     const { tipo_documento_id, numero_documento, genero_id, nombres, apellidos, email, password } = this.supervisor;
@@ -132,14 +142,7 @@ export class CrearSupervisorComponent implements OnInit {
         text: "Los campos no pueden estar vacios a excepción de municipio y zona.",
       });
     }
-
-  }
-
-  getCodeZones() {
-    return this.selectedZones.map((selectedZone: any) => {
-      const { codigo_unico } = selectedZone;
-      return codigo_unico;
-    });
+*/
   }
 
 }
