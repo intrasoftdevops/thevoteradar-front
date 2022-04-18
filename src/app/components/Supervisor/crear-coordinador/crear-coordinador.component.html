@@ -1,77 +1,117 @@
-<app-menu-supervisor></app-menu-supervisor>
-<div class="container-md">
-    <div class=" pt-5 my-5">
-        <div class="bg-info my-5 py-2 px-5 text-white mb-5 ">
-            <h4>Añadir Coordinador</h4>
+<section>
+    <app-menu-supervisor></app-menu-supervisor>
+    <form class="container py-5" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+        <div class="card">
+            <div class="bg-primary py-3 px-5 text-white">
+                <h4 class="m-0">
+                    Añadir Coordinador
+                </h4>
+            </div>
+            <div class="card-body">
+                <h4 class="ms-4 fw-bolder">
+                    Datos Personales
+                </h4>
+                <div class="row m-4">
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="form-label">
+                            <span class="fw-bold">Nombres</span>
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control border-2 border-dark rounded" formControlName="nombres"
+                            (keypress)="keypressValidator.keyPressLetters($event)" />
+                    </div>
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="form-label">
+                            <span class="fw-bold">Apellidos</span>
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control border-2 border-dark rounded" formControlName="apellidos"
+                            (keypress)="keypressValidator.keyPressLetters($event)" />
+                    </div>
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="form-label">
+                            <span class="fw-bold">Genero</span>
+                            <span class="text-danger">*</span>
+                        </label>
+                        <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id">
+                            <ng-option [value]="1">Masculino</ng-option>
+                            <ng-option [value]="2">Femenino</ng-option>
+                            <ng-option [value]="3">Otro</ng-option>
+                        </ng-select>
+                    </div>
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="form-label">
+                            <span class="fw-bold">Tipo de documento</span>
+                            <span class="text-danger">*</span>
+                        </label>
+                        <ng-select [searchable]="false" class="custom-select rounded"
+                            formControlName="tipo_documento_id">
+                            <ng-option [value]="1">Cedula de ciudadania</ng-option>
+                        </ng-select>
+                    </div>
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="form-label">
+                            <span class="fw-bold">Numero de documento</span>
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="number" class="form-control border-2 border-dark rounded"
+                            formControlName="numero_documento" (keypress)="keypressValidator.keyPressNumbers($event)">
+                    </div>
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="form-label fw-bold">Telefono</label>
+                        <input type="number" class="form-control border-2 border-dark rounded"
+                            formControlName="telefono" (keypress)="keypressValidator.keyPressNumbers($event)">
+                    </div>
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="form-label">
+                            <span class="fw-bold">Correo electronico</span>
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="email" class="form-control border-2 border-dark rounded" formControlName="email">
+                        <small class="text-danger"
+                            *ngIf="createFormControl['email'].errors?.['email'] || createFormControl['email'].errors?.['invalidEmail']">
+                            Ingrese una direccion de correo electronico valido.
+                        </small>
+                    </div>
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="form-label">
+                            <span class="fw-bold">Contraseña</span>
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="password" class="form-control border-2 border-dark rounded"
+                            formControlName="password">
+                        <small class="text-danger" *ngIf="createFormControl['password'].errors?.['minlength']">
+                            La contraseña debe tener al menos 8 caracteres.
+                        </small>
+                    </div>
+                </div>
+                <hr class="mx-4 border border-primary rounded border-2" />
+                <h4 class="ms-4 fw-bolder">
+                    Lugar de Trabajo
+                </h4>
+                <div class="row mx-4 my-4">
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="fw-bold form-label">
+                            <span class="fw-bold">Zona de votacion</span>
+                            <span class="text-danger">*</span>
+                        </label>
+                        <ng-select [items]="dataZones" [searchable]="false" class="custom-select rounded"
+                            formControlName="zona" bindLabel="nombre" bindValue="codigo_unico"
+                            (change)="getSelectedValue($event)" notFoundText="No hay informacion disponible">
+                        </ng-select>
+                    </div>
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="fw-bold form-label">Zonas de votacion</label>
+                        <ng-select [items]="dataStations" class="custom-multiple-select rounded"
+                            formControlName="puestos" bindLabel="nombre" bindValue="codigo_unico" [multiple]="true"
+                            notFoundText="No hay informacion disponible">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class=" border border-info bg-light rounded border-3 bordeFormulario">
-            <form class="row mx-5  my-4">
-                <div class="form-group col-md-4 pt-3">
-                    <label class="fw-bold">Nombres</label>
-                    <input type="text" [(ngModel)]="coordinador.nombres"
-                        class="form-control border-2 border-dark rounded" id="txtNombres" placeholder="Nombres"
-                        name="nombres" required>
-                </div>
-                <div class="form-group col-md-4 pt-3">
-                    <label class="fw-bold">Apellidos</label>
-                    <input type="text" [(ngModel)]="coordinador.apellidos" required
-                        class="form-control border-2 border-dark rounded" id="txtApellidos" placeholder="Apellidos"
-                        name="apellidos">
-                </div>
-                <div class="form-group col-md-4 pt-3">
-                    <label class="fw-bold">Genero</label>
-                    <select class="form-select border-2 border-dark rounded" aria-label="Default select example"
-                        name="genero" [(ngModel)]="coordinador.genero_id">
-                        <option selected value="">Seleccione el genero</option>
-                        <option value="1">Masculino</option>
-                        <option value="2">Femenino</option>
-                        <option value="3">Otro</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-4 pt-3">
-                    <label class="fw-bold">Tipo de documento</label>
-                    <select class="form-select border-2 border-dark rounded" aria-label="Default select example"
-                        name="tipo_documento_id" [(ngModel)]="coordinador.tipo_documento_id">
-                        <option selected value="">Seleccione el tipo de documento</option>
-                        <option value="1">Cedula de ciudadania</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-4 pt-3">
-                    <label class="fw-bold">Numero de documento</label>
-                    <input type="number" [(ngModel)]="coordinador.numero_documento" required
-                        class="form-control border-2 border-dark rounded" id="txtNumeroDocumento"
-                        placeholder="Numero de documento" name="numero_documento">
-                </div>
-                <div class="form-group col-md-4 pt-3">
-                    <label class="fw-bold ">Zonas</label>
-                    <ng-multiselect-dropdown name="zonas" [placeholder]="'Zonas'" [settings]="dropdownSettingsZones"
-                        [data]="dataZones" (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect()">
-                    </ng-multiselect-dropdown>
-                </div>
-                <div class="form-group col-md-4 pt-3">
-                    <label class="fw-bold ">Puestos</label>
-                    <ng-multiselect-dropdown name="puestos" [placeholder]="'Puestos'"
-                        [settings]="dropdownSettingsStations" [data]="dataFiltered" [(ngModel)]="selectedStations">
-                    </ng-multiselect-dropdown>
-                </div>
-                <hr class="my-4 border border-primary rounded border-2" />
-                <div class="form-group col-md-4">
-                    <label class="fw-bold">Email</label>
-                    <input type="email" [(ngModel)]="coordinador.email" required
-                        class="form-control border-2 border-dark rounded " id="txtEmail" placeholder="Email"
-                        name="email">
-                </div>
-                <div class="form-group col-md-4">
-                    <label class="fw-bold">Password</label>
-                    <input type="password" [(ngModel)]="coordinador.password" required
-                        class="form-control border-2 border-dark rounded" id="txtPassword" placeholder="Password"
-                        name="password">
-                </div>
-            </form>
+        <div class="d-flex justify-content-end pt-4">
+            <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">CREAR</button>
         </div>
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-lg btn-info mt-4 mx-2 rounded" (click)="createCoordinador()"> CREAR
-            </button>
-        </div>
-    </div>
-</div>
+    </form>
+</section>

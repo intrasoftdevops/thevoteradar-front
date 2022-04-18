@@ -9,9 +9,8 @@
         <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Municipios</label>
-            <ng-select [items]="dataMunicipals" [searchable]="false" class="custom-select rounded"
-              bindLabel="nombre" bindValue="nombre_departamento_votacion"
-              notFoundText="No hay informacion disponible">
+            <ng-select [items]="dataMunicipals" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
+            (change)="getSelectedMunicipal($event)" bindValue="nombre_departamento_votacion" notFoundText="No hay informacion disponible">
             </ng-select>
           </div>
         </div>
@@ -29,24 +28,30 @@
             </thead>
             <tbody>
               <tr class="bg-white">
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
+                <td
+                [ngClass]="textColor(data.supervisores.cantidad_supervisores_existentes,data.supervisores.cantidad_supervisores_necesitados)">
+                {{data.supervisores.cantidad_supervisores_existentes}}/{{data.supervisores.cantidad_supervisores_necesitadoss}}
+                ({{(data.supervisores.cantidad_supervisores_existentes/data.supervisores.cantidad_supervisores_necesitados)*100}}%)
+              </td>
+              <td>
+                {{data.supervisores.cantidad_supervisores_por_asignar}}
+              </td>
+              <td
+                [ngClass]="textColor(data.coordinadores.cantidad_coordinadores_existentes,data.coordinadores.cantidad_coordinadores_necesitados)">
+                {{data.coordinadores.cantidad_coordinadores_existentes}}/{{data.coordinadores.cantidad_coordinadores_necesitados}}
+                ({{(data.coordinadores.cantidad_coordinadores_existentes/data.coordinadores.cantidad_coordinadores_necesitados)*100}}%)
+              </td>
+              <td>
+                {{data.coordinadores.cantidad_coordinadores_por_asignar}}
+              </td>
+              <td
+                [ngClass]="textColor(data.testigos.cantidad_testigos_existentes,data.testigos.cantidad_testigos_necesitados)">
+                {{data.testigos.cantidad_testigos_existentes}}/{{data.testigos.cantidad_testigos_necesitados}}
+                ({{(data.testigos.cantidad_testigos_existentes/data.testigos.cantidad_testigos_necesitados)*100}}%)
+              </td>
+              <td>
+                {{data.testigos.cantidad_testigos_por_asignar}}
+              </td>
               </tr>
             </tbody>
           </table>

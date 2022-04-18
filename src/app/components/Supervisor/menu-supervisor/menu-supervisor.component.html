@@ -1,56 +1,72 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid ">
-        <a class="navbar-brand mx-4" href="#"><img src="../../../assets/logoTheVoteRadar.png" class="img-logo"></a>
+    <div class="container">
+        <a class="navbar-brand" routerLink="/supervisorHome">
+            <img src="../../../../assets/logo.png" class="img-logo" alt="logo" />
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav  ">
-                <li class="nav-item  d-flex align-items-center">
-                    <a class="nav-link px-3" aria-current="page" routerLink="/supervisorHome">Inicio</a>
-                </li>
-                <li class="nav-item dropdown d-flex align-items-center">
-                    <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Crear Usuario
+            <ul class="navbar-nav ms-auto text-center">
+                <li class="nav-item align-middle">
+                    <a class="nav-link px-3 text-white" aria-current="page" [routerLink]="['/supervisorHome']"
+                        [routerLinkActive]="['link-active']">
+                        <i class="fa-solid fa-house fa-lg align-middle"></i> &nbsp; <span
+                            class="fs-5 align-middle">Inicio</span>
                     </a>
-                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item text-white" routerLink="/crearCoordinador">Crear Coordinador</a>
+                </li>
+                <li class="nav-item dropdown align-middle" [routerLinkActive]="['link-active']">
+                    <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user-plus fa-lg align-middle"></i> &nbsp; <span
+                            class="fs-5 align-middle">Crear
+                            Usuarios</span>
+                    </a>
+                    <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item text-white fs-6" [routerLink]="['/crearCoordinador']"
+                                [routerLinkActive]="['sublink-active']">
+                                Crear Coordinador
+                            </a>
                         </li>
                     </ul>
                 </li>
-                  <li class="nav-item dropdown  d-flex align-items-center">
-                    <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      Consultas
+                <li class="nav-item dropdown align-middle" [routerLinkActive]="['link-active']">
+                    <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-magnifying-glass fa-lg align-middle"></i> &nbsp; <span
+                            class="fs-5 align-middle">Consultar</span>
                     </a>
-                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item text-white" href="#" routerLink="/verEquipoSupervisor">Ver Equipo</a></li>
-                      <li><a class="dropdown-item text-white" href="#" routerLink="/verPuestoSupervisor">Ver Puesto</a></li>
-                    </ul>
-                  </li>
-                <li class="nav-item dropdown  d-flex align-items-center">
-                    <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Personas
-                    </a>
-                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasAgregar">Coordinadores</a></li>
+                    <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item text-white" [routerLink]="['/verEquipoSupervisor']"
+                                [routerLinkActive]="['sublink-active']">
+                                Ver Equipo
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-white" [routerLink]="['/verPuestoSupervisor']"
+                                [routerLinkActive]="['sublink-active']">
+                                Ver Puestos
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasAgregar">Coordinadores</a>
+                        </li>
                     </ul>
                 </li>
-            </ul>
-            <ul class="navbar-nav ms-auto ">
-                <li class="nav-item dropdown my-auto ">
-                    <a class="nav-link px-3 mx-4 d-flex flex-column align-items-center" href="#" id="navbarDropdown"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user-circle fa-3x icono"></i>
-                        <p class="my-0">supervisor</p>
+                <li class="nav-item dropdown my-auto" [routerLinkActive]="['link-active']">
+                    <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle fa-2xl icono"></i>
                     </a>
-                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasDatos">Actualizar Datos</a></li>
+                    <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasDatos">Actualizar Datos</a>
+                        </li>
                         <li><a class="dropdown-item text-white" (click)="logout()">Cerrar sesion</a></li>
                     </ul>
                 </li>

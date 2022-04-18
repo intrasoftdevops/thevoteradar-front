@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import Swal from 'sweetalert2';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { AlertService } from '../../../services/alert.service';
+import { CustomValidationService } from '../../../services/custom-validation.service';
 
 @Component({
   selector: 'app-crear-coordinador',
@@ -10,69 +13,74 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 })
 export class CrearCoordinadorComponent implements OnInit {
 
-  selectedStations: any = [];
   dropdownSettingsZones: IDropdownSettings = {};
   dropdownSettingsStations: IDropdownSettings = {};
   dataZones: any = [];
   dataStations: any = [];
   dataFiltered: any = [];
 
-  coordinador: any = {
-    tipo_documento_id: '',
-    numero_documento: '',
-    genero_id: '',
-    nombres: '',
-    apellidos: '',
-    email: '',
-    password: '',
-    puestos: [],
-  }
+  createForm: FormGroup = this.fb.group({
+    nombres: ['', Validators.required],
+    apellidos: ['', Validators.required],
+    genero_id: [null, Validators.required],
+    tipo_documento_id: [null, Validators.required],
+    numero_documento: ['', Validators.required],
+    telefono: [''],
+    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
+    zona: [[], Validators.required],
+    puestos: [[]],
+  });
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
-  dropdownSettings: IDropdownSettings = {};
   ngOnInit() {
     this.getZonesSupervisor();
-    this.getStationCoordinador();
-    this.dropdownSettingsZones = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-    this.dropdownSettingsStations = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: false,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
   }
 
-  onItemSelect(item: any) {
-    this.dataFiltered = [];
-    this.selectedStations = [];
-    this.dataFiltered = this.dataStations.filter((dataStation: any) => dataStation.codigo_zona_votacion == item.codigo_unico);
+  getSelectedValue(item: any) {
+    this.createForm.patchValue({
+      puestos: [],
+    });
+    if (item) {
+      this.getStationCoordinador(item.codigo_unico)
+    } else {
+      this.dataZones = [];
+    }
   }
-  onItemDeSelect() {
-    this.dataFiltered = [];
-    this.selectedStations = [];
+
+  get createFormControl() {
+    return this.createForm.controls;
+  }
+
+  get keypressValidator() {
+    return this.customValidator;
+  }
+
+  onSubmit() {
+    console.log(this.createForm.value)
+    if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
+
+      if (this.createForm.valid) {
+        console.log(this.createForm.value)
+        this.apiService.createCoordinador(this.createForm.value).subscribe((resp: any) => {
+
+          this.alertService.successAlert(resp.message);
+
+        }, (err: any) => {
+          this.alertService.errorAlert(err.message);
+        })
+      } else {
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+
+    }
   }
 
 
   getZonesSupervisor() {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
       this.dataZones = resp;
-      console.log(resp)
     }, (err: any) => {
       console.log(err);
       Swal.fire({
@@ -83,10 +91,9 @@ export class CrearCoordinadorComponent implements OnInit {
     })
   }
 
-  getStationCoordinador() {
+  getStationCoordinador(data:any) {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
-      this.dataStations = resp;
-      console.log(resp)
+      this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
     }, (err: any) => {
       console.log(err);
       Swal.fire({
@@ -95,62 +102,6 @@ export class CrearCoordinadorComponent implements OnInit {
         text: err.message,
       });
     })
-  }
-
-  createCoordinador() {
-    console.log(this.dataFiltered)
-    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email, password } = this.coordinador;
-
-    if (nombres.trim() && apellidos.trim() && genero_id.trim() && tipo_documento_id.trim() && numero_documento && email.trim() && password.trim()) {
-
-      const codigo_unico = this.getCodeStations();
-
-      this.coordinador.puestos = codigo_unico;
-
-      console.log(this.coordinador);
-
-      this.apiService.createCoordinador(this.coordinador).subscribe((resp: any) => {
-
-        console.log(resp);
-
-        Swal.fire({
-          icon: 'success',
-          title: resp.message,
-          confirmButtonText: 'Ok',
-          allowEnterKey: false,
-          allowEscapeKey: false,
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        })
-
-      }, (err: any) => {
-        console.log(err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: err.message,
-        });
-      });
-
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
-      });
-    }
-
-
-  }
-
-  getCodeStations() {
-    return this.selectedStations.map((selectedStation: any) => {
-      const { codigo_unico } = selectedStation;
-      return codigo_unico;
-    });
   }
 
 }

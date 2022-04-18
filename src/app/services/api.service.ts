@@ -135,6 +135,23 @@ export class ApiService {
     return this.http.post(this._URL + "/necesitados-por-departamento", data, { headers: this.getHeaders() });
   }
 
+  getNecesitadosMunicipio(data: any) {
+    return this.http.post(this._URL + "/necesitados-por-municipio", data, { headers: this.getHeaders() });
+  }
+
+  getNecesitadosZona(data: any) {
+    return this.http.post(this._URL + "/necesitados-por-zona", data, { headers: this.getHeaders() });
+  }
+
+  getCategoriasIncidencias() {
+    return this.http.get(this._URL + "/categorias-incidencias", { headers: this.getHeaders()})
+  }
+
+
+  getIncidenciasDeTestigo(data: any) {
+    return this.http.get(this._URL + "/incidencias-testigo/" + data, { headers: this.getHeaders()})
+  }
+
   logout() {
     var data: any;
     console.log(this.getHeaders());

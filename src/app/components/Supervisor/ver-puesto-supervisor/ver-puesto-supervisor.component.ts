@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../../services/api.service';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-ver-puesto-supervisor',
@@ -10,73 +10,49 @@ import { ApiService } from '../../../services/api.service';
 })
 export class VerPuestoSupervisorComponent implements OnInit {
 
-  tabla: string = "ninguna";
-  dropdownSettingsZones: IDropdownSettings = {};
-  dropdownSettingsStations: IDropdownSettings = {};
+  tabla: boolean = false;
   dataZones: any = [];
   dataStations: any = [];
   selectedStation: any = [];
-  coordinadoresNecesitados: any = {
-    cantidad_coordinadores_hay: '',
-    cantidad_coordinadores_necesitada: ''
-  };
-  testigosNecesitados: any = {
-    cantidad_testigos_hay: '',
-    cantidad_testigos_necesitada: ''
+  data: any = {
+    coordinadores: {
+      cantidad_coordinadores_existentes: '',
+      cantidad_coordinadores_necesitados: '',
+      cantidad_coordinadores_por_asignar: ''
+    },
+    testigos: {
+      cantidad_testigos_existentes: '',
+      cantidad_testigos_necesitados: '',
+      cantidad_testigos_por_asignar: ''
+    }
   };
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService,private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getZonas();
 
-    this.dropdownSettingsZones = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsStations = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
   }
 
-  onItemSelectZone(item: any) {
-    this.selectedStation = [];
-    const codigo_unico = this.getCode(item);
-    const data = { zona: codigo_unico }
-    this.getPuestos(codigo_unico);
-    this.tabla = "coordinador";
+  getSelectedZone(item: any){
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { zona: codigo_unico };
+      this.getNecesitadosZona(data);
+      this.tabla = true;
+    } else {
+      this.tabla = false;
+    }
   }
 
-  onItemDeSelectZone() {
-    this.selectedStation = [];
-    this.tabla = "supervisor";
-  }
-
-  onItemSelectStation(item: any) {
-    const codigo_unico = this.getCode(item);
-    const data = { puesto: codigo_unico }
-    this.tabla = "testigo";
-  }
-
-  onItemDeSelectStation() {
-    this.tabla = "coordinador";
+  getNecesitadosZona(data: any){
+    this.apiService.getNecesitadosZona(data).subscribe((resp: any) => {
+      console.log(resp)
+      this.data = resp;
+      this.tabla = true;
+    }, (err: any) => {
+      this.alertService.errorAlert(err.message);
+    })
   }
 
   getZonas() {
@@ -87,12 +63,14 @@ export class VerPuestoSupervisorComponent implements OnInit {
     })
   }
 
-  getPuestos(data: any) {
-    this.apiService.getStationsCoordinador().subscribe((resp: any) => {
-      this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
-    }, (err: any) => {
-      this.showError(err);
-    })
+  textColor(existentes: any, necesitados: any) {
+    if (existentes == necesitados) {
+      return 'text-success';
+    } else if (existentes < necesitados) {
+      return 'text-primary';
+    } else {
+      return 'text-danger'
+    }
   }
 
   getCode(item: any) {

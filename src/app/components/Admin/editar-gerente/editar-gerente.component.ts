@@ -40,7 +40,6 @@ export class EditarGerenteComponent implements OnInit {
 
     this.getGerente();
     this.getDepartmentAdmin();
-    this.getMunicipalAdmin();
     this.subscriber = this.router.events.pipe(
       filter((event: any) => event instanceof NavigationEnd)
     ).subscribe((event) => {
@@ -89,6 +88,7 @@ export class EditarGerenteComponent implements OnInit {
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
+      this.getMunicipalAdmin();
     }, (err: any) => {
       this.alertService.errorAlert(err.message);
     })

@@ -34,6 +34,10 @@ import { EditarCoordinadorComponent } from './components/Supervisor/editar-coord
 import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
 import { ConsultarGerenteComponent } from './components/Admin/consultar-gerente/consultar-gerente.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ConsultarSupervisorComponent } from './components/Gerente/consultar-supervisor/consultar-supervisor.component';
+import { ConsultarIncidenciasComponent } from './components/Coordinador/consultar-incidencias/consultar-incidencias.component';
+import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incidencias/reporte-incidencias.component';
+import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar-coordinador/consultar-coordinador.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +70,11 @@ import { NgSelectModule } from '@ng-select/ng-select';
     EditarSupervisorComponent,
     EditarCoordinadorComponent,
     EditarTestigoComponent,
-    ConsultarGerenteComponent
+    ConsultarGerenteComponent,
+    ConsultarSupervisorComponent,
+    ConsultarIncidenciasComponent,
+    ReporteIncidenciasComponent,
+    ConsultarCoordinadorComponent
   ],
   imports: [
     BrowserModule,

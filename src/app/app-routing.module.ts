@@ -23,6 +23,9 @@ import { EditarSupervisorComponent } from './components/Gerente/editar-superviso
 import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
 import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
 import { ConsultarGerenteComponent } from './components/Admin/consultar-gerente/consultar-gerente.component';
+import { ConsultarSupervisorComponent } from './components/Gerente/consultar-supervisor/consultar-supervisor.component';
+import { ConsultarIncidenciasComponent } from './components/Coordinador/consultar-incidencias/consultar-incidencias.component';
+import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incidencias/reporte-incidencias.component';
 
 const routes: Routes = [
   {
@@ -118,6 +121,18 @@ const routes: Routes = [
   {
     path: 'consultarGerente',
     component: ConsultarGerenteComponent
+  },
+  {
+    path: 'consultarSupervisor',
+    component: ConsultarSupervisorComponent
+  },
+  {
+    path: 'consultarIncidencias',
+    component: ConsultarIncidenciasComponent
+  },
+  {
+    path: 'reporteIncidencias',
+    component: ReporteIncidenciasComponent
   },
 ];
 

@@ -1,0 +1,145 @@
+<app-menu-testigo></app-menu-testigo>
+
+<div class="container-fluid">
+  <div class=" py-5 px-5 ">
+
+    <button class="btn btn-primary btn-lg " data-bs-toggle="offcanvas" data-bs-target="#offcanvasReporte"><i
+        class="fas fa-plus-circle fa-2x align-middle"></i><span class="align-middle mx-3 fw-bold">
+        Agregar Reporte</span></button>
+
+    <div class="shadow-lg mt-5 mb-3">
+      <div class="table-responsive">
+        <table class="table text-center ">
+          <thead class="encatablecolor text-white">
+            <tr>
+              <th scope="col">REPORTE #</th>
+              <th scope="col">CATEGORIA</th>
+              <th scope="col">ASUNTO</th>
+              <th scope="col">DESCRIPCION</th>
+              <th scope="col">Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">12</th>
+              <th>Robo</th>
+              <th>SE LO LOBALON</th>
+              <th>SADGBAKDJW</th>
+              <th>ABIERTO</th>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORTAR INCIDENCIA -->
+
+  <div class="offcanvas offcanvas-start w-35 " tabindex="-1" id="offcanvasReporte" data-bs-keyboard="false">
+    <div class="c-contactos bg-primary py-4">
+      <div class="offcanvas-header ">
+        <h4 class="offcanvas-title text-white" id="offcanvas">Crear Reporte</h4>
+        <div class="d-flex align-items-end">
+          <button type="button" class="btn  p-0" data-bs-dismiss="offcanvas" aria-label="Close"> <i
+              class="fa-solid fa-circle-xmark fa-2xl text-white "></i></button>
+        </div>
+      </div>
+
+    </div>
+    <div
+      class="offcanvas-body px-0 bg-ligth border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
+
+
+      <form class="mx-4" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+        <div class=" my-5">
+          <label for="disabledSelect" class="form-label">Categoria</label>
+          <ng-select [items]="categoryIncidencias" [searchable]="false" class="custom-select rounded"
+            formControlName="categoria" bindLabel="nombre" bindValue="id" notFoundText="No hay informacion disponible">
+          </ng-select>
+        </div>
+        <div class="mb-5">
+          <label for="disabledTextInput" class="form-label">Titulo</label>
+          <input type="text" id="disabledTextInput" class="form-control" formControlName="titulo">
+        </div>
+        <div class="mb-5">
+          <label for="disabledTextInput" class="form-label">Descripcion</label>
+          <textarea class="form-control" rows="5" formControlName="descripcion"></textarea>
+        </div>
+        <div class="mb-5">
+          <label for="disabledTextInput" class="form-label">Adjuntar archivo</label>
+          <div class="text-center">
+            <input type="file" formControlName="url_archivo" id="file" class="inputfile"
+              accept="image/png, image/jpeg" />
+            <label class="border border-primary interlineado py-3 col-12" for="file"><i
+                class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar Archivo (maximo 10MB):</label>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary " data-bs-dismiss="offcanvas">Enviar
+            Reporte</button>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+
+  <!-- VER REPORTE -->
+
+  <div class="offcanvas offcanvas-start w-35 " tabindex="-1" id="offcanvasVerReporte" data-bs-keyboard="false">
+    <div class="c-contactos bg-primary py-4">
+      <div class="offcanvas-header ">
+        <h4 class="offcanvas-title text-white" id="offcanvas">Ver Reporte</h4>
+        <div class="d-flex align-items-end">
+          <button type="button" class="btn  p-0" data-bs-dismiss="offcanvas" aria-label="Close"> <i
+              class="fa-solid fa-circle-xmark fa-2xl text-white "></i></button>
+        </div>
+      </div>
+
+    </div>
+    <div
+      class="offcanvas-body px-0 bg-ligth border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
+      <form class="mx-4">
+
+        <div class="">
+          <label for="disabledSelect" class="form-label fw-bold">Categoria: </label>
+
+          <ng-container>
+            <label for="disabledSelect" class="form-label mx-2 ">1</label>
+          </ng-container>
+        </div>
+        <div class="">
+          <label for="disabledSelect" class="form-label fw-bold">Titulo: </label>
+          <label for="disabledSelect" class="form-label mx-2">Ay no</label>
+        </div>
+
+        <div class="mb-5 my-5">
+          <label for="disabledTextInput" class="form-label fw-bold">DescripciÃ³n: </label>
+          <p class="form-control " rows="5">dasrfgrdasfdsfdfsdf</p>
+        </div>
+
+        <div class="mb-5">
+          <label for="disabledTextInput" class="form-label fw-bold">Archivo Adjunto:</label>
+          <!-- <img class="img-fluid largoimg" src="../../../assets/Marmotamaps_Wallpaper_Berchtesgaden_Desktop_1920x1080.png">-->
+          <ng-container id="contenedor">
+            <img class="img-fluid largoimg" />
+          </ng-container>
+
+
+
+        </div>
+
+        <div class="mb-5">
+          <label for="disabledTextInput" class="form-label fw-bold">Respuesta escrita</label>
+          <p class="form-control " rows="5">dfwfdfg</p>
+        </div>
+
+
+      </form>
+
+
+    </div>
+  </div>
+</div>

@@ -10,12 +10,7 @@ import Swal from 'sweetalert2';
 })
 export class VerEquipoSupervisorComponent implements OnInit {
 
-  tablaCoordinadores: Boolean = false;
-  tablaTestigos: Boolean = false;
-  botonAtrasTestigos: Boolean = false;
-  dropdownSettingsZones: IDropdownSettings = {};
-  dropdownSettingsStations: IDropdownSettings = {};
-  dropdownSettingsTables: IDropdownSettings = {};
+  tabla: string = "ninguna";
   dataZones: any = [];
   dataStations: any = [];
   dataTables: any = [];
@@ -28,87 +23,43 @@ export class VerEquipoSupervisorComponent implements OnInit {
 
   ngOnInit(): void {
     this.getZonas();
-
-    this.dropdownSettingsZones = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsStations = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsTables = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'numero_mesa',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
   }
 
-  onItemSelectZone(item: any) {
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
+  getSelectedZone(item: any) {
     this.selectedStation = [];
     this.selectedTable = [];
-    const codigo_unico = this.getCode(item);
-    this.getPuestos(codigo_unico);
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      this.getPuestos(codigo_unico);
+      this.tabla = "ninguna";
+    } else {
+      this.dataStations = [];
+      this.tabla = "ninguna"
+    }
   }
 
-  onItemDeSelectZone() {
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
-    this.selectedStation = [];
+  getSelectedStation(item: any) {
     this.selectedTable = [];
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { puesto: codigo_unico }
+      this.getMesasyCoordinadores(data);
+      this.tabla = "coordinador";
+    } else {
+      this.dataTables = [];
+      this.tabla = "supervisor"
+    }
   }
 
-  onItemSelectStation(item: any) {
-    this.tablaTestigos = false;
-    this.selectedTable = [];
-    const codigo_unico = this.getCode(item);
-    const data = { puesto: codigo_unico }
-    this.getMesasyCoordinadores(data);
-    this.tablaCoordinadores = true;
-  }
-
-  onItemDeSelectStation() {
-    this.tablaCoordinadores = false;
-    this.tablaTestigos = false;
-    this.selectedTable = [];
-  }
-
-  onItemSelectTable(item: any) {
-    this.tablaCoordinadores = false;
-    const codigo_unico = this.getCode(item);
-    const data = { mesa: codigo_unico }
-    this.getTestigoMesa(data);
-    this.tablaTestigos = true;
-  }
-
-  onItemDeSelectTable() {
-    this.tablaTestigos = false;
-    this.tablaCoordinadores = true;
+  getSelectedTable(item: any) {
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { mesa: codigo_unico }
+      this.getTestigoMesa(data);
+      this.tabla = "testigo";
+    } else {
+      this.tabla = "coordinador"
+    }
   }
 
   getZonas() {
