@@ -18,6 +18,14 @@ section:not(#login){
     background-position: center !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
+    position: relative;
+    padding-bottom: 3rem;;
+}
+
+footer{
+    width: 100%;
+    position: absolute;
+    bottom: 0 !important;
 }
 
 .img-logo {

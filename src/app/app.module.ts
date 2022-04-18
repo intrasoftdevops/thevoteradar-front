@@ -38,6 +38,7 @@ import { ConsultarSupervisorComponent } from './components/Gerente/consultar-sup
 import { ConsultarIncidenciasComponent } from './components/Coordinador/consultar-incidencias/consultar-incidencias.component';
 import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incidencias/reporte-incidencias.component';
 import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar-coordinador/consultar-coordinador.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar
     ConsultarSupervisorComponent,
     ConsultarIncidenciasComponent,
     ReporteIncidenciasComponent,
-    ConsultarCoordinadorComponent
+    ConsultarCoordinadorComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
