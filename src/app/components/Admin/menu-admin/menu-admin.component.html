@@ -23,7 +23,8 @@
           </a>
           <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
             <li>
-              <a class="dropdown-item text-white fs-6" [routerLink]="['/crearGerente']" [routerLinkActive]="['sublink-active']">
+              <a class="dropdown-item text-white fs-6" [routerLink]="['/crearGerente']"
+                [routerLinkActive]="['sublink-active']">
                 Crear Gerente
               </a>
             </li>
@@ -37,17 +38,20 @@
           </a>
           <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
             <li>
-              <a class="dropdown-item text-white" [routerLink]="['/verEquipoAdmin']" [routerLinkActive]="['sublink-active']">
+              <a class="dropdown-item text-white" [routerLink]="['/verEquipoAdmin']"
+                [routerLinkActive]="['sublink-active']">
                 Ver Equipo
               </a>
             </li>
             <li>
-              <a class="dropdown-item text-white" [routerLink]="['/verPuestoAdmin']" [routerLinkActive]="['sublink-active']">
+              <a class="dropdown-item text-white" [routerLink]="['/verPuestoAdmin']"
+                [routerLinkActive]="['sublink-active']">
                 Ver Puestos
               </a>
             </li>
             <li>
-              <a class="dropdown-item text-white" [routerLink]="['/consultarGerente']" [routerLinkActive]="['sublink-active']">
+              <a class="dropdown-item text-white" [routerLink]="['/consultarGerente']"
+                [routerLinkActive]="['sublink-active']">
                 Consultar Gerentes
               </a>
             </li>
@@ -60,8 +64,10 @@
           </a>
           <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
             <li>
-              <a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasDatos">Actualizar Datos</a>
+              <a class="dropdown-item text-white" [routerLink]="['/editarPerfil']"
+                [routerLinkActive]="['sublink-active']">
+                Actualizar datos
+              </a>
             </li>
             <li><a class="dropdown-item text-white" (click)="logout()">Cerrar sesion</a></li>
           </ul>

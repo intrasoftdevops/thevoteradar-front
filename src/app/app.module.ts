@@ -39,6 +39,8 @@ import { ConsultarIncidenciasComponent } from './components/Coordinador/consulta
 import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incidencias/reporte-incidencias.component';
 import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar-coordinador/consultar-coordinador.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { ConsultarTestigoComponent } from './components/Coordinador/consultar-testigo/consultar-testigo.component';
+import { EditarPerfilComponent } from './components/editar-perfil/editar-perfil.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +78,9 @@ import { FooterComponent } from './components/footer/footer.component';
     ConsultarIncidenciasComponent,
     ReporteIncidenciasComponent,
     ConsultarCoordinadorComponent,
-    FooterComponent
+    FooterComponent,
+    ConsultarTestigoComponent,
+    EditarPerfilComponent
   ],
   imports: [
     BrowserModule,

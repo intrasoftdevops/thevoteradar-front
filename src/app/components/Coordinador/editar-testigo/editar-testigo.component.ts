@@ -3,7 +3,9 @@ import { ApiService } from '../../../services/api.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import Swal from 'sweetalert2';
 import { filter } from 'rxjs';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { AlertService } from '../../../services/alert.service';
+import { CustomValidationService } from '../../../services/custom-validation.service';
 
 @Component({
   selector: 'app-editar-testigo',
@@ -12,33 +14,29 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 })
 export class EditarTestigoComponent implements OnInit {
 
-  dropdownSettingsStation: IDropdownSettings = {};
-  dropdownSettingsTable: IDropdownSettings = {};
-  stationAssign: any = [];
-  tableAssign: any = [];
   dataStations: any = [];
-  dataFiltered: any = [];
   dataTables: any = [];
-
-  testigo: any = {
-    tipo_documento_id: '',
-    numero_documento: '',
-    genero_id: '',
-    nombres: '',
-    apellidos: '',
-    email: '',
-    password: '',
-    mesas: [],
-  }
   idTestigo: any;
   subscriber: any;
+  updateForm: FormGroup = this.fb.group({
+    nombres: ['', Validators.required],
+    apellidos: ['', Validators.required],
+    genero_id: ['', Validators.required],
+    tipo_documento_id: ['', Validators.required],
+    numero_documento: ['', Validators.required],
+    telefono: [''],
+    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    password: [''],
+    puesto: [[], Validators.required],
+    mesas: [[]],
+  });
 
-  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute, private router: Router) { }
+  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
+    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService) { }
 
   ngOnInit() {
     this.getTestigo();
     this.getStationsTestigo();
-    this.getTablesTestigo();
 
     this.subscriber = this.router.events.pipe(
       filter((event: any) => event instanceof NavigationEnd)
@@ -46,56 +44,62 @@ export class EditarTestigoComponent implements OnInit {
       window.location.reload();
     });
 
-    this.dropdownSettingsStation = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsTable = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      enableCheckAll: false,
-      singleSelection: false,
-      idField: 'codigo_unico',
-      textField: 'numero_mesa',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
   }
 
-  onItemSelect(item: any) {
-    this.tableAssign = [];
-    this.dataFiltered = [];
-    this.dataFiltered = this.dataTables.filter((dataTable: any) => dataTable.codigo_puesto_votacion == item.codigo_unico);
+  getSelectedValue(item: any) {
+    this.updateForm.patchValue({
+      mesas: [],
+    });
+    if (item) {
+      this.getTablesTestigo()
+    } else {
+      this.dataTables = [];
+    }
   }
 
-  onItemDeSelect(item: any) {
-    this.tableAssign = [];
-    this.dataFiltered = [];
+  onSubmit() {
+    console.log(this.updateForm.value)
+    if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
+      if (this.updateForm.valid) {
+
+        this.apiService.updateTestigo(this.idTestigo, this.updateForm.value).subscribe((resp: any) => {
+
+          this.alertService.successAlert(resp.res);
+
+        }, (err: any) => {
+          console.log(err);
+          this.alertService.errorAlert(err.message);
+        })
+      } else {
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+    }
+  }
+
+  get updateFormControl() {
+    return this.updateForm.controls;
+  }
+
+  get keypressValidator() {
+    return this.customValidator;
   }
 
   getTestigo() {
     this.idTestigo = this.activatedRoute.snapshot.params['id'];
     this.apiService.getTestigo(this.idTestigo).subscribe((resp: any) => {
-      const { testigo, puesto_asignado, mesas_asignadas } = resp;
-      this.testigo.nombres = testigo.nombres;
-      this.testigo.apellidos = testigo.apellidos;
-      this.testigo.genero_id = testigo.genero_id;
-      this.testigo.email = testigo.email;
-      this.testigo.password = testigo.password;
-      this.testigo.tipo_documento_id = testigo.tipo_documento_id;
-      this.testigo.numero_documento = testigo.numero_documento;
-      this.stationAssign = puesto_asignado;
-      this.tableAssign = mesas_asignadas;
-      console.log(resp);
+      const { testigo, puestos_asignados, mesas_asignadas } = resp;
+
+      this.updateForm.get('nombres')?.setValue(testigo.nombres);
+      this.updateForm.get('apellidos')?.setValue(testigo.apellidos);
+      this.updateForm.get('genero_id')?.setValue(testigo.genero_id);
+      this.updateForm.get('email')?.setValue(testigo.email);
+      this.updateForm.get('password')?.setValue(testigo.password);
+      this.updateForm.get('tipo_documento_id')?.setValue(testigo.tipo_documento_id);
+      this.updateForm.get('numero_documento')?.setValue(testigo.numero_documento);
+      this.updateForm.get('telefono')?.setValue(testigo.telefono);
+      this.updateForm.get('mesas')?.setValue(this.getCodeMunicipals(mesas_asignadas));
+      this.updateForm.get('puesto')?.setValue(this.getCodeMunicipals(puestos_asignados)[0]);
+
     }, (err: any) => {
       Swal.fire({
         icon: 'error',
@@ -108,6 +112,7 @@ export class EditarTestigoComponent implements OnInit {
   getStationsTestigo() {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
+      this.getTablesTestigo();
     }, (err: any) => {
       console.log(err);
       Swal.fire({
@@ -120,11 +125,9 @@ export class EditarTestigoComponent implements OnInit {
 
   getTablesTestigo() {
     this.apiService.getTablesTestigo().subscribe((resp: any) => {
-      this.dataTables = resp;
-      if (this.stationAssign.length > 0) {
-        this.dataFiltered = this.dataTables.filter((dataTable: any) => dataTable.codigo_puesto_votacion == this.stationAssign[0].codigo_unico);
+      if (this.updateFormControl['puesto'].value) {
+        this.dataTables = resp.filter((dataTable: any) => dataTable.codigo_puesto_votacion == this.updateFormControl['puesto'].value);
       }
-      console.log(resp)
     }, (err: any) => {
       console.log(err);
       Swal.fire({
@@ -135,47 +138,9 @@ export class EditarTestigoComponent implements OnInit {
     })
   }
 
-  updateTestigo() {
-    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.testigo;
-
-    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
-      const codigo_unico = this.getCodeTables();
-      this.testigo.mesas = codigo_unico;
-
-      this.apiService.updateTestigo(this.idTestigo, this.testigo).subscribe((resp: any) => {
-        Swal.fire({
-          icon: 'success',
-          title: resp.res,
-          confirmButtonText: 'Ok',
-          allowEnterKey: false,
-          allowEscapeKey: false,
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        })
-      }, (err: any) => {
-        console.log(err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: err.message,
-        });
-      })
-
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
-      });
-    }
-  }
-
-  getCodeTables() {
-    return this.tableAssign.map((tableAssign: any) => {
-      const { codigo_unico } = tableAssign;
+  getCodeMunicipals(data: any) {
+    return data.map((seletedData: any) => {
+      const { codigo_unico } = seletedData;
       return codigo_unico;
     });
   }

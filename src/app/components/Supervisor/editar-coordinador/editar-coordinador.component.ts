@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import Swal from 'sweetalert2';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { filter } from 'rxjs';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { CustomValidationService } from '../../../services/custom-validation.service';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-editar-coordinador',
@@ -12,34 +14,29 @@ import { filter } from 'rxjs';
 })
 export class EditarCoordinadorComponent implements OnInit {
 
-  dropdownSettingsStation: IDropdownSettings = {};
-  dropdownSettingsZone: IDropdownSettings = {};
   dataZones: any = [];
   dataStations: any = [];
-  puestoAssign: any = [];
-  zoneAssign: any = [];
-  dataFiltered: any = [];
-
-  coordinador: any = {
-    tipo_documento_id: '',
-    numero_documento: '',
-    genero_id: '',
-    nombres: '',
-    apellidos: '',
-    email: '',
-    password: '',
-    puestos: [],
-  }
-
   idCoordinador: any;
   subscriber: any;
+  updateForm: FormGroup = this.fb.group({
+    nombres: ['', Validators.required],
+    apellidos: ['', Validators.required],
+    genero_id: ['', Validators.required],
+    tipo_documento_id: ['', Validators.required],
+    numero_documento: ['', Validators.required],
+    telefono: [''],
+    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    password: [''],
+    zona: [[], Validators.required],
+    puestos: [[]],
+  });
 
-  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute, private router: Router) { }
+  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
+    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService) { }
 
   ngOnInit() {
     this.getCoordinador();
     this.getZonesSupervisor();
-    this.getStationsSupervisor();
 
     this.subscriber = this.router.events.pipe(
       filter((event: any) => event instanceof NavigationEnd)
@@ -47,46 +44,50 @@ export class EditarCoordinadorComponent implements OnInit {
       window.location.reload();
     });
 
-    this.dropdownSettingsZone = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsStation = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      enableCheckAll: false,
-      singleSelection: false,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
   }
 
-  onItemSelect(item: any) {
-    this.puestoAssign = [];
-    this.dataFiltered = [];
-    this.dataFiltered = this.dataStations.filter((dataStation: any) => dataStation.codigo_zona_votacion == item.codigo_unico);
+  getSelectedValue(item: any) {
+    this.updateForm.patchValue({
+      puestos: [],
+    });
+    if (item) {
+      this.getStationsSupervisor()
+    } else {
+      this.dataStations = [];
+    }
   }
 
-  onItemDeSelect(item: any) {
-    this.puestoAssign = [];
-    this.dataFiltered = [];
+  onSubmit() {
+    console.log(this.updateForm.value)
+    if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
+      if (this.updateForm.valid) {
+        
+        this.apiService.updateCoordinador(this.idCoordinador, this.updateForm.value).subscribe((resp: any) => {
+
+          this.alertService.successAlert(resp.res);
+
+        }, (err: any) => {
+          console.log(err);
+          this.alertService.errorAlert(err.message);
+        })
+      } else {
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+    }
+  }
+
+  get updateFormControl() {
+    return this.updateForm.controls;
+  }
+
+  get keypressValidator() {
+    return this.customValidator;
   }
 
   getZonesSupervisor() {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
       this.dataZones = resp;
-      console.log(resp)
+      this.getStationsSupervisor();
     }, (err: any) => {
       console.log(err);
       Swal.fire({
@@ -99,13 +100,9 @@ export class EditarCoordinadorComponent implements OnInit {
 
   getStationsSupervisor() {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
-      this.dataStations = resp;
-      console.log(this.zoneAssign)
-      if (this.zoneAssign.length > 0) {
-        this.dataFiltered = this.dataStations.filter((dataStation: any) => dataStation.codigo_zona_votacion == this.zoneAssign[0].codigo_unico);
+      if (this.updateFormControl['zona'].value) {
+        this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == this.updateFormControl['zona'].value);
       }
-      console.log(this.dataFiltered)
-      console.log(resp)
     }, (err: any) => {
       console.log(err);
       Swal.fire({
@@ -120,16 +117,20 @@ export class EditarCoordinadorComponent implements OnInit {
     this.idCoordinador = this.activatedRoute.snapshot.params['id'];
     this.apiService.getCoordinador(this.idCoordinador).subscribe((resp: any) => {
       const { coordinador, puestos_asignados, zonas_asignadas } = resp;
-      this.coordinador.nombres = coordinador.nombres;
-      this.coordinador.apellidos = coordinador.apellidos;
-      this.coordinador.genero_id = coordinador.genero_id;
-      this.coordinador.tipo_documento_id = coordinador.tipo_documento_id;
-      this.coordinador.numero_documento = coordinador.numero_documento;
-      this.coordinador.email = coordinador.email;
-      this.coordinador.password = coordinador.password;
-      this.zoneAssign = zonas_asignadas;
-      this.puestoAssign = puestos_asignados;
+
       console.log(resp)
+
+      this.updateForm.get('nombres')?.setValue(coordinador.nombres);
+      this.updateForm.get('apellidos')?.setValue(coordinador.apellidos);
+      this.updateForm.get('genero_id')?.setValue(coordinador.genero_id);
+      this.updateForm.get('email')?.setValue(coordinador.email);
+      this.updateForm.get('password')?.setValue(coordinador.password);
+      this.updateForm.get('tipo_documento_id')?.setValue(coordinador.tipo_documento_id);
+      this.updateForm.get('numero_documento')?.setValue(coordinador.numero_documento);
+      this.updateForm.get('telefono')?.setValue(coordinador.telefono);
+      this.updateForm.get('puestos')?.setValue(this.getCodeMunicipals(puestos_asignados));
+      this.updateForm.get('zona')?.setValue(this.getCodeMunicipals(zonas_asignadas)[0]);
+     
     }, (err: any) => {
       console.log(err)
       Swal.fire({
@@ -140,51 +141,9 @@ export class EditarCoordinadorComponent implements OnInit {
     })
   }
 
-  updateCoordinador() {
-    console.log(this.coordinador);
-
-    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.coordinador;
-
-    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
-      const codigo_unico = this.getCodeStations();
-      this.coordinador.puestos = codigo_unico;
-
-      this.apiService.updateCoordinador(this.idCoordinador, this.coordinador).subscribe((resp: any) => {
-        console.log(resp)
-        Swal.fire({
-          icon: 'success',
-          title: resp.res,
-          confirmButtonText: 'Ok',
-          allowEnterKey: false,
-          allowEscapeKey: false,
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        })
-      }, (err: any) => {
-        console.log(err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: err.message,
-        });
-      })
-
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
-      });
-    }
-
-  }
-
-  getCodeStations() {
-    return this.puestoAssign.map((puestoAssign: any) => {
-      const { codigo_unico } = puestoAssign;
+  getCodeMunicipals(data: any) {
+    return data.map((seletedData: any) => {
+      const { codigo_unico } = seletedData;
       return codigo_unico;
     });
   }

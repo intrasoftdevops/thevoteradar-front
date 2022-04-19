@@ -22,8 +22,12 @@
                         <p class="my-0 ">testigo</p>
                     </a>
                     <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasDatos">Actualizar Datos</a></li>
+                        <li>
+                            <a class="dropdown-item text-white" [routerLink]="['/editarPerfil']"
+                                [routerLinkActive]="['sublink-active']">
+                                Actualizar datos
+                            </a>
+                        </li>
                         <li><a class="dropdown-item text-white" (click)="logout()">Cerrar sesion</a></li>
                     </ul>
                 </li>

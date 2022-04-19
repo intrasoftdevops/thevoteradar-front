@@ -10,9 +10,7 @@ import Swal from 'sweetalert2';
 })
 export class VerEquipoCoordinadorComponent implements OnInit {
 
-  tablaTestigos: Boolean = false;
-  dropdownSettingsStations: IDropdownSettings = {};
-  dropdownSettingsTables: IDropdownSettings = {};
+  tabla: boolean = false;
   dataZones: any = [];
   dataStations: any = [];
   dataTables: any = [];
@@ -24,54 +22,29 @@ export class VerEquipoCoordinadorComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPuestos();
-
-    this.dropdownSettingsStations = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsTables = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'numero_mesa',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
   }
 
-  onItemSelectStation(item: any) {
-    this.tablaTestigos = false;
+  getSelectedStation(item: any) {
     this.selectedTable = [];
-    const codigo_unico = this.getCode(item);
-    this.getMesas(codigo_unico);
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      this.getMesas(codigo_unico);
+      this.tabla = false;
+    } else {
+      this.dataStations = [];
+      this.tabla = false
+    }
   }
 
-  onItemDeSelectStation() {
-    this.tablaTestigos = false;
-    this.selectedTable = [];
-  }
-
-  onItemSelectTable(item: any) {
-    const codigo_unico = this.getCode(item);
-    const data = { mesa: codigo_unico }
-    this.getTestigoMesa(data);
-    this.tablaTestigos = true;
-  }
-
-  onItemDeSelectTable() {
-    this.tablaTestigos = false;
+  getSelectedTable(item: any) {
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { mesa: codigo_unico }
+      this.getTestigoMesa(data);
+      this.tabla = true;
+    } else {
+      this.tabla = false
+    }
   }
 
   getPuestos() {

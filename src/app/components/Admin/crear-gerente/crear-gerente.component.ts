@@ -83,7 +83,9 @@ export class CrearGerenteComponent implements OnInit {
 
   getMunicipalAdmin(data: any) {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
+      console.log(resp)
       this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
+      console.log(this.dataMunicipals)
     }, (err: any) => {
       this.alertService.errorAlert(err.message);
     });

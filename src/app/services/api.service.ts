@@ -31,6 +31,14 @@ export class ApiService {
     return this.http.get(this._URL + "/users", { headers: this.getHeaders() });
   }
 
+  getUser() {
+    return this.http.get(this._URL + "/users/" + this.getId(), { headers: this.getHeaders() });
+  }
+
+  updateUser(data: any) {
+    return this.http.put(this._URL + "/users/" + this.getId(), data, { headers: this.getHeaders() });
+  }
+
   getAssignedMunicipal() {
     return this.http.get(this._URL + "/gerentes-municipio-asignado/" + this.getId(), { headers: this.getHeaders() });
   }
@@ -143,13 +151,17 @@ export class ApiService {
     return this.http.post(this._URL + "/necesitados-por-zona", data, { headers: this.getHeaders() });
   }
 
+  getNecesitadosPuesto(data: any) {
+    return this.http.post(this._URL + "/necesitados-por-puesto", data, { headers: this.getHeaders() });
+  }
+
   getCategoriasIncidencias() {
-    return this.http.get(this._URL + "/categorias-incidencias", { headers: this.getHeaders()})
+    return this.http.get(this._URL + "/categorias-incidencias", { headers: this.getHeaders() })
   }
 
 
   getIncidenciasDeTestigo(data: any) {
-    return this.http.get(this._URL + "/incidencias-testigo/" + data, { headers: this.getHeaders()})
+    return this.http.get(this._URL + "/incidencias-testigo/" + data, { headers: this.getHeaders() })
   }
 
   logout() {

@@ -1,17 +1,20 @@
 <section>
-    <app-menu-coordinador></app-menu-coordinador>
-    <form class="container py-5" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+    <app-menu-admin *ngIf="this.rol == 1"></app-menu-admin>
+    <app-menu-gerente *ngIf="rol == 2"></app-menu-gerente>
+    <app-menu-supervisor *ngIf="rol == 3"></app-menu-supervisor>
+    <app-menu-coordinador *ngIf="rol == 4"></app-menu-coordinador>
+    <app-menu-testigo *ngIf="rol == 5"></app-menu-testigo>
+
+    <form class="container py-5" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+        <div class="bg-primary py-3 px-5 text-white">
+            <h4>Edita tus datos</h4>
+        </div>
+        <div class="d-flex justify-content-center">
+            <i class="fa-solid fa-circle-user fa-10x my-4 text-dark bg-primary rounded-circle"></i>
+        </div>
         <div class="card">
-            <div class="bg-primary py-3 px-5 text-white">
-                <h4 class="m-0">
-                    Añadir Testigo
-                </h4>
-            </div>
             <div class="card-body">
-                <h4 class="ms-4 fw-bolder">
-                    Datos Personales
-                </h4>
-                <div class="row m-4">
+                <div class="row m-4 d-flex justify-content-center">
                     <div class="form-group col-md-6 col-lg-4 pt-2">
                         <label class="form-label">
                             <span class="fw-bold">Nombres</span>
@@ -73,45 +76,11 @@
                             Ingrese una direccion de correo electronico valido.
                         </small>
                     </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="form-label">
-                            <span class="fw-bold">Contraseña</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="password" class="form-control border-2 border-dark rounded"
-                            formControlName="password">
-                        <small class="text-danger" *ngIf="createFormControl['password'].errors?.['minlength']">
-                            La contraseña debe tener al menos 8 caracteres.
-                        </small>
-                    </div>
-                </div>
-                <hr class="mx-4 border border-primary rounded border-2" />
-                <h4 class="ms-4 fw-bolder">
-                    Lugar de Trabajo
-                </h4>
-                <div class="row mx-4 my-4">
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="fw-bold form-label">
-                            <span class="fw-bold">Puesto de votacion</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
-                            formControlName="puesto" bindLabel="nombre" bindValue="codigo_unico"
-                            (change)="getSelectedValue($event)" notFoundText="No hay informacion disponible">
-                        </ng-select>
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="fw-bold form-label">Mesa de votacion</label>
-                        <ng-select [items]="dataTables" class="custom-multiple-select rounded"
-                            formControlName="mesas" bindLabel="numero_mesa" bindValue="codigo_unico" [multiple]="true"
-                            notFoundText="No hay informacion disponible">
-                        </ng-select>
-                    </div>
                 </div>
             </div>
         </div>
         <div class="d-flex justify-content-end pt-4">
-            <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">CREAR</button>
+            <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">EDITAR</button>
         </div>
     </form>
 </section>

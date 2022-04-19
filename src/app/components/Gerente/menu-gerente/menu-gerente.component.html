@@ -52,9 +52,10 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item text-white" [routerLink]="['/consultarSupervisor']" [routerLinkActive]="['sublink-active']">
+                            <a class="dropdown-item text-white" [routerLink]="['/consultarSupervisor']"
+                                [routerLinkActive]="['sublink-active']">
                                 Consultar Supervisores
-                              </a>
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -65,8 +66,10 @@
                     </a>
                     <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
                         <li>
-                            <a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasDatos">Actualizar Datos</a>
+                            <a class="dropdown-item text-white" [routerLink]="['/editarPerfil']"
+                                [routerLinkActive]="['sublink-active']">
+                                Actualizar datos
+                            </a>
                         </li>
                         <li><a class="dropdown-item text-white" (click)="logout()">Cerrar sesion</a></li>
                     </ul>

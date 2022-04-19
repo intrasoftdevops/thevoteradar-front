@@ -1,8 +1,8 @@
 <section>
-    <app-menu-supervisor></app-menu-supervisor>
+    <app-menu-coordinador></app-menu-coordinador>
     <div class="container py-5">
         <div class="bg-primary py-3 px-5 text-white">
-            <h4>Consultar Coordinador</h4>
+            <h4>Consultar Testigo</h4>
         </div>
         <ul class="nav nav-tabs mt-5" id="myTab">
             <li class="nav-item" id="tab">
@@ -29,14 +29,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="bg-white" *ngFor="let coordinador of listCoordinadorAsignados;let index=index">
-                                        <td>{{coordinador.nombres}} {{coordinador.apellidos}}</td>
-                                        <td>{{coordinador.email}}</td>
-                                        <td>{{listStations[index]}}</td>
+                                    <tr class="bg-white" *ngFor="let testigo of listTestigoAsignados;let index=index">
+                                        <td>{{testigo.nombres}} {{testigo.apellidos}}</td>
+                                        <td>{{testigo.email}}</td>
+                                        <td>{{listTables[index]}}</td>
                                         <td>
                                             <a class="rounded-circle">
                                                 <i class="fas fa-pen text-primary"
-                                                    routerLink="/editarCoordinador/{{coordinador.id}}"></i>
+                                                    routerLink="/editarTestigo/{{testigo.id}}"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -59,13 +59,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="bg-white" *ngFor="let coordinador of listCoordinadorNoAsignados">
-                                        <td>{{coordinador.nombres}} {{coordinador.apellidos}}</td>
-                                        <td>{{coordinador.email}}</td>
+                                    <tr class="bg-white" *ngFor="let testigo of listTestigoNoAsignados">
+                                        <td>{{testigo.nombres}} {{testigo.apellidos}}</td>
+                                        <td>{{testigo.email}}</td>
                                         <td>
                                             <a class="rounded-circle">
                                                 <i class="fas fa-pen text-primary"
-                                                    routerLink="/editarCoordinador/{{coordinador.id}}"></i>
+                                                    routerLink="/editarTestigo/{{testigo.id}}"></i>
                                             </a>
                                         </td>
                                     </tr>
