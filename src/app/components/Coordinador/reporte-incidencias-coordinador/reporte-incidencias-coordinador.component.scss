@@ -1,0 +1,24 @@
+#file {
+    display: none;
+}
+
+.interlineado{
+    border:#64248b 2px dashed !important;
+    background-color: #fff !important;
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: #64248b !important;
+    color: #fff;
+}

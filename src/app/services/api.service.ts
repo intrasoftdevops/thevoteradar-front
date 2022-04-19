@@ -160,8 +160,8 @@ export class ApiService {
   }
 
 
-  getIncidenciasDeTestigo(data: any) {
-    return this.http.get(this._URL + "/incidencias-testigo/" + data, { headers: this.getHeaders() })
+  getIncidenciasDeTestigo() {
+    return this.http.get(this._URL + "/incidencias-testigo/"+ this.getId(), { headers: this.getHeaders() })
   }
 
   logout() {
