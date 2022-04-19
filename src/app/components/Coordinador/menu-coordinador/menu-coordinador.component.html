@@ -58,6 +58,27 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown align-middle" [routerLinkActive]="['link-active']">
+                    <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-file-signature fa-lg align-middle"></i> &nbsp; <span
+                            class="fs-5 align-middle">Reportes</span>
+                    </a>
+                    <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item text-white" [routerLink]="['/reporteIncidenciasCoordinador']"
+                                [routerLinkActive]="['sublink-active']">
+                                Incidencias
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-white" [routerLink]="['/reporteVotosCoordinador']"
+                                [routerLinkActive]="['sublink-active']">
+                                Votos
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item dropdown my-auto" [routerLinkActive]="['link-active']">
                     <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">

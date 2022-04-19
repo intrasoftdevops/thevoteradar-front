@@ -29,6 +29,8 @@ import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incide
 import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar-coordinador/consultar-coordinador.component';
 import { ConsultarTestigoComponent } from './components/Coordinador/consultar-testigo/consultar-testigo.component';
 import { EditarPerfilComponent } from './components/editar-perfil/editar-perfil.component';
+import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
+import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
 
 const routes: Routes = [
   {
@@ -148,6 +150,14 @@ const routes: Routes = [
   {
     path: 'editarPerfil',
     component: EditarPerfilComponent
+  },
+  {
+    path: 'reporteIncidenciasCoordinador',
+    component: ReporteIncidenciasCoordinadorComponent
+  },
+  {
+    path: 'reporteVotosCoordinador',
+    component: ReporteVotosCoordinadorComponent
   },
 ];
 

@@ -1,0 +1,162 @@
+<section>
+    <app-menu-coordinador></app-menu-coordinador>
+    <div class="container py-5">
+        <div class="bg-primary py-3 px-5 text-white">
+            <h4>Lista de incidentes</h4>
+        </div>
+        <ul class="nav nav-tabs mt-5" id="myTab">
+            <li class="nav-item" id="tab">
+                <button class="nav-link h4 px-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#abiertos"
+                    type="button" role="tab">Abiertos</button>
+            </li>
+            <li class="nav-item" id="tab">
+                <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cerrados"
+                    type="button" role="tab">Cerrados</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="abiertos" role="tabpanel">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table text-center align-middle">
+                                <thead class="text-dark align-middle">
+                                    <tr>
+                                        <th scope="col"># REPORTE</th>
+                                        <th scope="col">PUESTO VOTACION</th>
+                                        <th scope="col">NOMBRE TESTIGO</th>
+                                        <th scope="col">MESA DE VOTACION</th>
+                                        <th scope="col">ESTADO</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white">
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#incidenciaAbierta">
+                                                Ver incidencia
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="cerrados" role="tabpanel">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table text-center align-middle">
+                                <thead class="text-dark align-middle">
+                                    <tr>
+                                        <th scope="col"># REPORTE</th>
+                                        <th scope="col">PUESTO VOTACION</th>
+                                        <th scope="col">NOMBRE TESTIGO</th>
+                                        <th scope="col">MESA DE VOTACION</th>
+                                        <th scope="col">ESTADO</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white">
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#incidenciaCerrada">
+                                                Ver incidencia
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">REPORTE #1</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-x text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><span class="fw-bolder">Categoria: </span><span> Fraude</span></p>
+                <p><span class="fw-bolder">Asunto: </span><span> Compra de votos</span></p>
+                <p class="fw-bolder">Descripcion: </p>
+                <p>
+                    Amet eiusmod eiusmod veniam exercitation pariatur officia magna adipisicing ad ipsum eiusmod
+                    consectetur aliquip et. Non pariatur exercitation reprehenderit eu aliquip pariatur deserunt sit
+                    dolor minim id. Dolor mollit pariatur officia occaecat commodo cupidatat. Pariatur duis dolor non
+                    irure eiusmod ullamco adipisicing reprehenderit commodo dolore minim laboris occaecat. Ut est irure
+                    ut veniam qui pariatur aute ipsum ullamco.
+                </p>
+                <p class="fw-bolder">Archivo adjunto: </p>
+                <img src="../../../../assets/logo.png" class="w-100" alt="logo" />
+                <p>Escribir una respuesta</p>
+                <textarea class="form-control" rows="4"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger">Cerrar incidencia</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="incidenciaCerrada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">REPORTE #1</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-x text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><span class="fw-bolder">Categoria: </span><span> Fraude</span></p>
+                <p><span class="fw-bolder">Asunto: </span><span> Compra de votos</span></p>
+                <p class="fw-bolder">Descripcion: </p>
+                <p>
+                    Amet eiusmod eiusmod veniam exercitation pariatur officia magna adipisicing ad ipsum eiusmod
+                    consectetur aliquip et. Non pariatur exercitation reprehenderit eu aliquip pariatur deserunt sit
+                    dolor minim id. Dolor mollit pariatur officia occaecat commodo cupidatat. Pariatur duis dolor non
+                    irure eiusmod ullamco adipisicing reprehenderit commodo dolore minim laboris occaecat. Ut est irure
+                    ut veniam qui pariatur aute ipsum ullamco.
+                </p>
+                <p class="fw-bolder">Archivo adjunto: </p>
+                <img src="../../../../assets/logo.png" class="w-100" alt="logo" />
+                <p>
+                    Reprehenderit cillum reprehenderit do magna est ipsum elit veniam culpa est exercitation in magna.
+                    Duis nisi ea culpa ullamco sit officia esse. Fugiat voluptate amet ea aute cupidatat ipsum enim
+                    ullamco qui in fugiat fugiat. Eu id incididunt sunt minim laboris commodo ex esse ut irure minim
+                    incididunt sit. Do culpa ullamco non sunt in exercitation nisi id incididunt laboris non. Ipsum in
+                    irure anim nisi elit ad mollit consequat duis ipsum minim sit labore. Enim sunt ullamco enim cillum
+                    nostrud labore ea proident exercitation Lorem reprehenderit est voluptate.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success">Reabrir incidencia</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -41,6 +41,8 @@ import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar
 import { FooterComponent } from './components/footer/footer.component';
 import { ConsultarTestigoComponent } from './components/Coordinador/consultar-testigo/consultar-testigo.component';
 import { EditarPerfilComponent } from './components/editar-perfil/editar-perfil.component';
+import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
+import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +82,9 @@ import { EditarPerfilComponent } from './components/editar-perfil/editar-perfil.
     ConsultarCoordinadorComponent,
     FooterComponent,
     ConsultarTestigoComponent,
-    EditarPerfilComponent
+    EditarPerfilComponent,
+    ReporteIncidenciasCoordinadorComponent,
+    ReporteVotosCoordinadorComponent
   ],
   imports: [
     BrowserModule,
