@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import packageJson from '../../../../package.json';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,8 @@ export class LoginComponent implements OnInit {
     numero_documento: '',
     password: ''
   }
+
+  public version: string = packageJson.version;
 
   constructor(private apiService: ApiService, private router: Router) { }
 
