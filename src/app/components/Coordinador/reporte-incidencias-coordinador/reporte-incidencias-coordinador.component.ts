@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-reporte-incidencias-coordinador',
@@ -7,9 +8,30 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReporteIncidenciasCoordinadorComponent implements OnInit {
 
-  constructor() { }
+  dataIncidenciasAbiertas: any = [];
+  dataIncidenciasCerradas: any = [];
 
-  ngOnInit(): void {
+  constructor(private apiService: ApiService) { }
+
+  ngOnInit() {
+    this.getIncidenciasDeCoordinador();
+  }
+
+  getIncidenciasDeCoordinador() {
+    this.apiService.getIncidenciasDeCoordinador().subscribe((resp: any) => {
+      //this.dataIncidencias = resp;
+      this.dataIncidenciasAbiertas = resp.filter((incidencia: any) => {
+        return incidencia.estado === 0;
+      }
+      );
+      this.dataIncidenciasCerradas = resp.filter((incidencia: any) => {
+        return incidencia.estado === 1;
+      }
+      );
+      console.log(resp)
+    }, (err: any) => {
+      console.log(err)
+    })
   }
 
 }

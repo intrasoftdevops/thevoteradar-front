@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import Swal from 'sweetalert2';
 import { filter } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';

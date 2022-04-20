@@ -1,27 +1,42 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid ">
-        <a class="navbar-brand mx-4" href="#"><img src="../../../assets/logoTheVoteRadar.png" class="img-logo"></a>
+    <div class="container">
+        <a class="navbar-brand" routerLink="/testigoHome">
+            <img src="../../../../assets/logo.png" class="img-logo" alt="logo" />
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav  ">
-                <li class="nav-item  d-flex align-items-center">
-                    <a class="nav-link px-3" aria-current="page" routerLink="/testigoHome">Inicio</a>
-                </li>
-                <li>
-                    <a class="nav-link px-3" routerLink="/reporteIncidencias">Incidencias</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ms-auto ">
-                <li class="nav-item dropdown my-auto ">
-                    <a class="nav-link px-3 mx-4 d-flex flex-column align-items-center" href="#" id="navbarDropdown"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user-circle fa-3x icono"></i>
-                        <p class="my-0 ">testigo</p>
+            <ul class="navbar-nav ms-auto text-center">
+                <li class="nav-item align-middle">
+                    <a class="nav-link px-3 text-white" aria-current="page" [routerLink]="['/testigoHome']"
+                        [routerLinkActive]="['link-active']">
+                        <i class="fa-solid fa-house fa-lg align-middle"></i> &nbsp; <span
+                            class="fs-5 align-middle">Inicio</span>
                     </a>
-                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                </li>
+                <li class="nav-item dropdown align-middle" [routerLinkActive]="['link-active']">
+                    <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-file-signature fa-lg align-middle"></i> &nbsp; <span
+                            class="fs-5 align-middle">Reportes</span>
+                    </a>
+                    <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item text-white fs-6" [routerLink]="['/reporteIncidencias']"
+                                [routerLinkActive]="['sublink-active']">
+                                Incidencias
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown my-auto" [routerLinkActive]="['link-active']">
+                    <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle fa-2xl icono"></i>
+                    </a>
+                    <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
                         <li>
                             <a class="dropdown-item text-white" [routerLink]="['/editarPerfil']"
                                 [routerLinkActive]="['sublink-active']">

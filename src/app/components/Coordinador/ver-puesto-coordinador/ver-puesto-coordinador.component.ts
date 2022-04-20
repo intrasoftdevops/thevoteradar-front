@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../../services/api.service';
 import { AlertService } from '../../../services/alert.service';
@@ -12,7 +11,6 @@ import { AlertService } from '../../../services/alert.service';
 export class VerPuestoCoordinadorComponent implements OnInit {
 
   tabla: boolean = false;
-  dropdownSettingsStations: IDropdownSettings = {};
   dataStations: any = [];
   data: any = {
     testigos: {

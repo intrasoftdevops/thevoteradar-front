@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { ApiService } from '../../../services/api.service';
 import Swal from 'sweetalert2';
 

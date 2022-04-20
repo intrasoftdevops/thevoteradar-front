@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import Swal from 'sweetalert2';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert.service';
 import { CustomValidationService } from '../../../services/custom-validation.service';

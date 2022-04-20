@@ -159,9 +159,17 @@ export class ApiService {
     return this.http.get(this._URL + "/categorias-incidencias", { headers: this.getHeaders() })
   }
 
-
   getIncidenciasDeTestigo() {
     return this.http.get(this._URL + "/incidencias-testigo/" + this.getId(), { headers: this.getHeaders() })
+  }
+
+  getIncidenciasDeCoordinador() {
+    return this.http.get(this._URL + "/incidencias-coordinador", { headers: this.getHeaders() })
+  }
+
+
+  createIncidencias(data: any) {
+    return this.http.post(this._URL + "/incidencias", data, { headers: this.getHeaders() });
   }
 
   logout() {

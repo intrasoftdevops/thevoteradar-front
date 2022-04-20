@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
@@ -19,7 +19,6 @@ import { CrearGerenteComponent } from './components/Admin/crear-gerente/crear-ge
 import { CrearSupervisorComponent } from './components/Gerente/crear-supervisor/crear-supervisor.component';
 import { CrearCoordinadorComponent } from './components/Supervisor/crear-coordinador/crear-coordinador.component';
 import { CrearTestigoComponent } from './components/Coordinador/crear-testigo/crear-testigo.component';
-import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { EditarGerenteComponent } from './components/Admin/editar-gerente/editar-gerente.component';
 import { VerEquipoAdminComponent } from './components/Admin/ver-equipo-admin/ver-equipo-admin.component';
 import { VerEquipoGerenteComponent } from './components/Gerente/ver-equipo-gerente/ver-equipo-gerente.component';
@@ -43,6 +42,7 @@ import { ConsultarTestigoComponent } from './components/Coordinador/consultar-te
 import { EditarPerfilComponent } from './components/editar-perfil/editar-perfil.component';
 import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
 import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
+import { NgLightboxModule } from '@silmar/ng-lightbox';
 
 @NgModule({
   declarations: [
@@ -92,8 +92,9 @@ import { ReporteVotosCoordinadorComponent } from './components/Coordinador/repor
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    NgMultiSelectDropDownModule.forRoot(),
-    NgSelectModule
+    NgSelectModule,
+    HammerModule, // <-- For Angular 9
+    NgLightboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

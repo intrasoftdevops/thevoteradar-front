@@ -12,17 +12,18 @@ body {
     background-color: #cecece;
 }
 
-section:not(#login){
+section:not(#login) {
     min-height: 100vh;
     background-image: url("./assets/mapa.png") !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
     position: relative;
-    padding-bottom: 3rem;;
+    padding-bottom: 3rem;
+    ;
 }
 
-footer{
+footer {
     width: 100%;
     position: absolute;
     bottom: 0 !important;
@@ -100,7 +101,7 @@ input::placeholder {
 
 @media (max-width: 768px) {
 
-    .welcomeBanner{
+    .welcomeBanner {
         top: 75%;
         width: 75%;
         padding-left: 2rem !important;
@@ -141,29 +142,29 @@ table {
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
-.ng-select.custom-select .ng-select-container  {
-    border:2px solid $dark;
+.ng-select.custom-select .ng-select-container {
+    border: 2px solid $dark;
     padding-top: 1.12rem;
     padding-bottom: 1.12rem;
 }
 
-.ng-select.custom-multiple-select .ng-select-container  {
-    border:2px solid $dark;
+.ng-select.custom-multiple-select .ng-select-container {
+    border: 2px solid $dark;
     padding-top: 0.15rem;
     padding-bottom: 0.15rem;
 }
 
 .ng-select.ng-select-focused:not(.ng-select-opened)>.ng-select-container {
-    border:2px solid $dark;
+    border: 2px solid $dark;
 }
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
@@ -175,7 +176,8 @@ input[type=number] {
     color: white;
 }
 
-.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected, .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected,
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
     background-color: lighten($color: $primary, $amount: 60);
 }
 
@@ -183,9 +185,10 @@ input[type=number] {
     border-right: none;
 }
 
- .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
     color: white;
-    background-color: $primary!important;
+    background-color: $primary !important;
     border-color: $primary;
 }
 
@@ -199,11 +202,11 @@ input[type=number] {
     border: 1px solid white;
 }
 
-.link-active{
+.link-active {
     border-bottom: 5px solid $primary !important;
 }
 
-.sublink-active{
+.sublink-active {
     border-left: 7px solid lighten($color: $primary, $amount: 20) !important;
 }
 
@@ -211,8 +214,8 @@ input[type=number] {
     display: none;
 }
 
-.interlineado{
-    border:#64248b 2px dashed !important;
+.interlineado {
+    border: #64248b 2px dashed !important;
 }
 
 .inputfile {
@@ -225,8 +228,17 @@ input[type=number] {
 
 }
 
-.inputfile:focus + label,
-.inputfile + label:hover {
+.inputfile:focus+label,
+.inputfile+label:hover {
     background-color: #64248b;
-    color: #fff;
+    color: #fff !important;
+}
+
+.inputfile:focus+label,
+.inputfile+label:hover>i {
+    color: #fff !important;
+}
+
+.light-wrap {
+    z-index: 1100!important;
 }

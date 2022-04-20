@@ -26,17 +26,15 @@
                                         <th scope="col">PUESTO VOTACION</th>
                                         <th scope="col">NOMBRE TESTIGO</th>
                                         <th scope="col">MESA DE VOTACION</th>
-                                        <th scope="col">ESTADO</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="bg-white">
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                    <tr class="bg-white" *ngFor="let incidencia of dataIncidenciasAbiertas">
+                                        <td>{{incidencia.id}}</td>
+                                        <td>{{incidencia.codigo_puesto}}</td>
+                                        <td>{{incidencia.testigo_id}}</td>
+                                        <td>{{incidencia.codigo_mesa}}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#incidenciaAbierta">
@@ -62,17 +60,15 @@
                                         <th scope="col">PUESTO VOTACION</th>
                                         <th scope="col">NOMBRE TESTIGO</th>
                                         <th scope="col">MESA DE VOTACION</th>
-                                        <th scope="col">ESTADO</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="bg-white">
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                    <tr class="bg-white" *ngFor="let incidencia of dataIncidenciasCerradas">
+                                        <td>{{incidencia.id}}</td>
+                                        <td>{{incidencia.codigo_puesto}}</td>
+                                        <td>{{incidencia.testigo_id}}</td>
+                                        <td>{{incidencia.codigo_mesa}}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#incidenciaCerrada">
