@@ -57,6 +57,13 @@
             </li>
           </ul>
         </li>
+        <li class="nav-item align-middle">
+          <a class="nav-link px-3 text-white" data-bs-toggle="offcanvas" href="#offcanvasExample"
+            [routerLinkActive]="['link-active']" role="button" aria-controls="offcanvasExample">
+            <i class="fa-solid fa-address-book fa-lg align-middle"></i> &nbsp; <span
+              class="fs-5 align-middle">Contactos</span>
+          </a>
+        </li>
         <li class="nav-item dropdown my-auto" [routerLinkActive]="['link-active']">
           <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
@@ -76,3 +83,4 @@
     </div>
   </div>
 </nav>
+<app-contactos></app-contactos>

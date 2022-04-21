@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 $primary: #64248b;
 $dark: #000;
-$secondary: #111;
+$secondary: #cecece;
 @import "../node_modules/bootswatch/dist/cosmo/variables";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "../node_modules/bootswatch/dist/cosmo/bootswatch";
@@ -232,6 +232,7 @@ input[type=number] {
 .inputfile+label:hover {
     background-color: #64248b;
     color: #fff !important;
+    border: white 2px dashed !important;
 }
 
 .inputfile:focus+label,

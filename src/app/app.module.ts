@@ -43,6 +43,8 @@ import { EditarPerfilComponent } from './components/editar-perfil/editar-perfil.
 import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
 import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
 import { NgLightboxModule } from '@silmar/ng-lightbox';
+import { ContactosComponent } from './components/contactos/contactos.component';
+import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos-testigo/reporte-votos-testigo.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +86,9 @@ import { NgLightboxModule } from '@silmar/ng-lightbox';
     ConsultarTestigoComponent,
     EditarPerfilComponent,
     ReporteIncidenciasCoordinadorComponent,
-    ReporteVotosCoordinadorComponent
+    ReporteVotosCoordinadorComponent,
+    ContactosComponent,
+    ReporteVotosTestigoComponent
   ],
   imports: [
     BrowserModule,

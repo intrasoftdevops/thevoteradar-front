@@ -1,0 +1,74 @@
+<section>
+    <app-menu-testigo></app-menu-testigo>
+    <div class="container">
+        <div class="py-5">
+            <button class="btn btn-primary btn-lg " data-bs-toggle="offcanvas" data-bs-target="#offcanvasReporte">
+                <i class="fas fa-plus-circle fa-2x align-middle"></i><span class="align-middle mx-3 fw-bold"> Agregar
+                    Reporte</span></button>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table text-center align-middle">
+                            <thead class="text-dark align-middle">
+                                <tr>
+                                    <th scope="col"># REPORTE</th>
+                                    <th scope="col">TESTIGO</th>
+                                    <th scope="col">ASUNTO</th>
+                                    <th scope="col">ESTADO</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white">
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>
+                                        0
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- REPORTAR INCIDENCIA -->
+
+<div class="offcanvas offcanvas-start w-35 " tabindex="-1" id="offcanvasReporte" data-bs-keyboard="false">
+    <div class="c-contactos bg-primary py-4">
+        <div class="offcanvas-header ">
+            <h4 class="offcanvas-title text-white" id="offcanvas">Crear Reporte</h4>
+            <div class="d-flex align-items-end">
+                <button type="button" class="btn p-0" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <i class="fa-solid fa-xmark text-white fa-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <div
+        class="offcanvas-body px-0 bg-secondary border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
+
+    </div>
+</div>
+
+<div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">REPORTE #</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
