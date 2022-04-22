@@ -225,12 +225,15 @@ input[type=number] {
     overflow: hidden;
     position: absolute;
     z-index: -1;
+}
 
+.inputfile+label{
+    background-color: white !important;
 }
 
 .inputfile:focus+label,
 .inputfile+label:hover {
-    background-color: #64248b;
+    background-color: #64248b!important;
     color: #fff !important;
     border: white 2px dashed !important;
 }
@@ -241,5 +244,5 @@ input[type=number] {
 }
 
 .light-wrap {
-    z-index: 1100!important;
+    z-index: 1100 !important;
 }

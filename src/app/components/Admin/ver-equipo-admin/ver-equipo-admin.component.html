@@ -51,7 +51,7 @@
           <h4>Gerentes</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="table-responsive" *ngIf="listGerentes.length>0;else other_content">
             <table class="table table-curved text-center">
               <thead class="text-dark">
                 <tr>
@@ -71,6 +71,9 @@
               </tbody>
             </table>
           </div>
+          <ng-template #other_content>
+            <p class="text-center">No hay Gerente asignado para esta municipio.</p>
+          </ng-template>
         </div>
       </div>
       <div class="card mt-5" *ngSwitchCase="'supervisor'">
@@ -78,7 +81,7 @@
           <h4>Supervisores</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="table-responsive" *ngIf="listSupervisores.length>0;else other_content">
             <table class="table table-curved text-center">
               <thead class="text-dark">
                 <tr>
@@ -98,6 +101,9 @@
               </tbody>
             </table>
           </div>
+          <ng-template #other_content>
+            <p class="text-center">No hay Supervisor asignado para esta zona.</p>
+          </ng-template>
         </div>
       </div>
       <div class="card mt-5" *ngSwitchCase="'coordinador'">
@@ -105,7 +111,7 @@
           <h4>Coordinadores</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="table-responsive" *ngIf="listCoordinadores.length>0;else other_content">
             <table class="table table-curved text-center">
               <thead class="text-dark">
                 <tr>
@@ -125,6 +131,9 @@
               </tbody>
             </table>
           </div>
+          <ng-template #other_content>
+            <p class="text-center">No hay Coordinador asignado para este puesto.</p>
+          </ng-template>
         </div>
       </div>
       <div class="card mt-5" *ngSwitchCase="'testigo'">
@@ -132,7 +141,7 @@
           <h4>Testigos</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="table-responsive" *ngIf="listTestigos.length>0;else other_content">
             <table class="table table-curved text-center">
               <thead class="text-dark">
                 <tr>
@@ -152,8 +161,12 @@
               </tbody>
             </table>
           </div>
+          <ng-template #other_content>
+            <p class="text-center">No hay Testigo asignado para esta mesa.</p>
+          </ng-template>
         </div>
       </div>
     </ng-container>
   </div>
+  <app-footer></app-footer>
 </section>

@@ -11,28 +11,10 @@ export class VerPuestoAdminComponent implements OnInit {
 
   tabla: boolean = false;
   dataDepartments: any = [];
-  data: any = {
-    gerentes: {
-      cantidad_gerentes_existentes: 0,
-      cantidad_gerentes_necesitados: 0,
-      cantidad_gerentes_por_asignar: 0
-    },
-    supervisores: {
-      cantidad_supervisores_existentes: '',
-      cantidad_supervisores_necesitados: '',
-      cantidad_supervisores_por_asignar: ''
-    },
-    coordinadores: {
-      cantidad_coordinadores_existentes: '',
-      cantidad_coordinadores_necesitados: '',
-      cantidad_coordinadores_por_asignar: ''
-    },
-    testigos: {
-      cantidad_testigos_existentes: '',
-      cantidad_testigos_necesitados: '',
-      cantidad_testigos_por_asignar: ''
-    }
-  };
+  gerentes: any = {}
+  supervisores: any = {};
+  coordinadores: any = {};
+  testigos: any = {};
 
   constructor(private apiService: ApiService, private alertService: AlertService) { }
 
@@ -61,7 +43,11 @@ export class VerPuestoAdminComponent implements OnInit {
 
   getNecesitadosDepartamento(data: any) {
     this.apiService.getNecesitadosDepartamento(data).subscribe((resp: any) => {
-      this.data = resp;
+      console.log(resp)
+      this.gerentes = resp.gerentes;
+      this.supervisores = resp.supervisores;
+      this.coordinadores = resp.coordinadores;
+      this.testigos = resp.testigos;
       this.tabla = true;
     }, (err: any) => {
       this.alertService.errorAlert(err.message);
@@ -76,6 +62,21 @@ export class VerPuestoAdminComponent implements OnInit {
     } else {
       return 'text-danger'
     }
+  }
+
+  createPercent(existentes: any, necesitados: any) {
+    const percent = (existentes / necesitados) * 100;
+    if (necesitados == 0) {
+      return '(0%)';
+    }
+    return `(${Math.round(percent * 100) / 100}%)`;
+  }
+
+  validObjects() {
+    if ((Object.keys(this.gerentes).length !== 0) && (Object.keys(this.supervisores).length !== 0) && (Object.keys(this.coordinadores).length !== 0) && (Object.keys(this.testigos).length !== 0)) {
+      return true;
+    }
+    return false;
   }
 
   getCode(item: any) {

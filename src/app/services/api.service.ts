@@ -176,19 +176,31 @@ export class ApiService {
   }
 
   deleteContacto(id: any) {
-    return this.http.delete(this._URL + "/contactos/"+id, { headers: this.getHeaders() });
+    return this.http.delete(this._URL + "/contactos/" + id, { headers: this.getHeaders() });
   }
 
-  updateContacto(id:any,data: any) {
-    return this.http.put(this._URL + "/contactos/"+id, data, { headers: this.getHeaders() });
+  updateContacto(id: any, data: any) {
+    return this.http.put(this._URL + "/contactos/" + id, data, { headers: this.getHeaders() });
   }
 
   getContactos() {
-    return this.http.get(this._URL + "/contactos-usuario/"+this.getId(), { headers: this.getHeaders() })
+    return this.http.get(this._URL + "/contactos-usuario/" + this.getId(), { headers: this.getHeaders() });
   }
 
   getVotosTestigo() {
-    return this.http.get(this._URL + "/mesas-con-sin-reportar", { headers: this.getHeaders() })
+    return this.http.get(this._URL + "/mesas-con-sin-reportar", { headers: this.getHeaders() });
+  }
+
+  getVotosCoordinador(data: any) {
+    return this.http.post(this._URL + "/reportes-coordinador",data, { headers: this.getHeaders() });
+  }
+
+  getCandidatos() {
+    return this.http.get(this._URL + "/candidato-e-intereses", { headers: this.getHeaders() });
+  }
+
+  createVotos(data: any) {
+    return this.http.post(this._URL + "/reportes-mesa", data, { headers: this.getHeaders() });
   }
 
   logout() {

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../../services/api.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-reporte-votos-coordinador',
@@ -7,9 +9,61 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReporteVotosCoordinadorComponent implements OnInit {
 
-  constructor() { }
+  tabla: boolean = false;
+  dataStations: any = [];
+  listMesas: any = [];
+  reporte: any = {};
+  listCantidatos: any = [];
+  photos: any = [];
 
-  ngOnInit(): void {
+  constructor(private apiService: ApiService) { }
+
+  ngOnInit() {
+    this.getStationsTestigo();
   }
+
+  ModalReporteActual(mesa: any) {
+    console.log(mesa)
+    this.photos = [];
+    this.listCantidatos = [];
+    this.reporte = mesa;
+    this.listCantidatos = mesa.reporte.reportes;
+    this.photos = mesa.reporte.archivos;
+  }
+
+  getVotosCoordinador(data: any) {
+    this.apiService.getVotosCoordinador(data).subscribe((resp: any) => {
+      const { puesto } = resp;
+      const { mesas_reportadas } = puesto;
+      this.listMesas = mesas_reportadas;
+    }, (err: any) => {
+      console.log(err)
+    })
+  }
+
+  getStationsTestigo() {
+    this.apiService.getStationsTestigo().subscribe((resp: any) => {
+      this.dataStations = resp;
+    }, (err: any) => {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: err.message,
+      });
+    })
+  }
+
+  getSelectedValue(item: any) {
+    if (item) {
+      this.tabla = true;
+      const data = { puesto: item.codigo_unico }
+      this.getVotosCoordinador(data);
+    } else {
+      this.tabla = false;
+      this.listMesas = [];
+    }
+  }
+
 
 }

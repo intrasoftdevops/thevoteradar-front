@@ -59,13 +59,9 @@ export class ContactosComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.createForm.value)
     if (this.createForm.valid) {
-      console.log(this.createForm.value)
       this.apiService.createContacto(this.createForm.value).subscribe((resp: any) => {
-
         this.alertService.successAlert(resp.message);
-
       }, (err: any) => {
         console.log(err);
         this.alertService.errorAlert(err.message);
@@ -92,14 +88,9 @@ export class ContactosComponent implements OnInit {
   }
 
   onSubmitItem(id: any) {
-    console.log(this.updateForm.value)
     if (this.updateForm.valid) {
-      console.log(this.updateForm.value)
-      this.apiService.updateContacto(id,this.updateForm.value).subscribe((resp: any) => {
-        console.log(resp)
-
+      this.apiService.updateContacto(id, this.updateForm.value).subscribe((resp: any) => {
         this.alertService.successAlert(resp.message);
-
       }, (err: any) => {
         console.log(err);
         this.alertService.errorAlert(err.message);
@@ -112,7 +103,6 @@ export class ContactosComponent implements OnInit {
   getContactos() {
     this.apiService.getContactos().subscribe((resp: any) => {
       this.listContactos = resp;
-      console.log(resp)
     }, (err: any) => {
       console.log(err)
     })

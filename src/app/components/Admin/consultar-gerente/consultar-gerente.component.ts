@@ -35,8 +35,6 @@ export class ConsultarGerenteComponent implements OnInit {
         } else {
           this.listMunicipals.push(municipios);
         }
-        console.log(municipios)
-        //
       }
     }, (err: any) => {
       this.alertService.errorAlert(err.message);

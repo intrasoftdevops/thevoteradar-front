@@ -2,73 +2,102 @@
     <app-menu-testigo></app-menu-testigo>
     <div class="container">
         <div class="py-5">
-            <button class="btn btn-primary btn-lg " data-bs-toggle="offcanvas" data-bs-target="#offcanvasReporte">
-                <i class="fas fa-plus-circle fa-2x align-middle"></i><span class="align-middle mx-3 fw-bold"> Agregar
-                    Reporte</span></button>
-            <div class="card mt-3">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table text-center align-middle">
-                            <thead class="text-dark align-middle">
-                                <tr>
-                                    <th scope="col"># REPORTE</th>
-                                    <th scope="col">TESTIGO</th>
-                                    <th scope="col">ASUNTO</th>
-                                    <th scope="col">ESTADO</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bg-white">
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>
-                                        0
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div class="bg-primary py-3 px-5 text-white">
+                <h4 class="m-0">
+                    Reportes de mesa
+                </h4>
+            </div>
+            <form class="row pt-5" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+                <div class="col-lg-7">
+                    <div class="card">
+                        <div class="bg-primary py-3 px-4 text-white">
+                            <div class="row py-1">
+                                <div class="col-6">
+                                    <p class="m-0 h4">
+                                        Puesto de votacion:
+                                    </p>
+                                </div>
+                                <div class="col-6 d-flex justify-content-center align-items-center">
+                                    {{puestos_asignado}}
+                                </div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-6 d-flex align-items-center">
+                                    <p class="m-0 h4">
+                                        Numero de mesa:
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <ng-select [items]="mesas_asignadas" [searchable]="false"
+                                        class="custom-select rounded" formControlName="codigo_mesa"
+                                        bindLabel="numero_mesa" bindValue="codigo_unico"
+                                        (change)="getSelectedValue($event)"
+                                        notFoundText="No hay informacion disponible">
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="table-responsive">
+                                <table class="table text-center align-middle">
+                                    <thead class="table-dark align-middle">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">PARTIDO</th>
+                                            <th scope="col">CANDIDATO</th>
+                                            <th scope="col">N° VOTOS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white" *ngFor="let candidato of listCandidatos;index as index">
+                                            <td class="fw-bolder col-1">{{index+1}}</td>
+                                            <td class="col-4">{{candidato.partido_politico_id}}</td>
+                                            <td class="col-4">{{candidato.nombres}} {{candidato.apellidos}}</td>
+                                            <td class="col-3">
+                                                <div formGroupName="votos">
+                                                    <input type="text"
+                                                        class="form-control form-control-sm border-primary"
+                                                        [formControlName]="index" />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <!--<tfoot>
+                                        <tr class="bg-white">
+                                            <td colspan="3" class="fw-bolder">Votos en blanco</td>
+                                            <td>0</td>
+                                        </tr>
+                                        <tr class="bg-white">
+                                            <td colspan="3" class="fw-bolder">Votos nulos</td>
+                                            <td>0</td>
+                                        </tr>
+                                        <tr class="bg-white">
+                                            <td colspan="3" class="fw-bolder">TOTAL VOTOS</td>
+                                            <td>0</td>
+                                        </tr>
+                                    </tfoot>-->
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="col-lg-5 d-flex flex-column justify-content-around" *ngIf="showUpload">
+                    <h4 class="fw-bolder my-5 text-center">Adjuntar Prueba</h4>
+                    <div class="text-center">
+                        <input type="file" id="file" formArrayName="url_archivo" (change)="handleFileInput($event)"
+                            class="inputfile" accept="image/png, image/jpeg" multiple />
+                        <label class="border border-primary interlineado py-4 col-12" for="file" id="labelFile">
+                            <i class="fas fa-paperclip text-primary fa-lg"></i>
+                            {{(myFiles.length == 0) ? "Adjuntar Archivo (maximo 10MB)":filename}}
+                        </label>
+                    </div>
+                    <div class="text-end mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Enviar Reporte
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </section>
-
-<!-- REPORTAR INCIDENCIA -->
-
-<div class="offcanvas offcanvas-start w-35 " tabindex="-1" id="offcanvasReporte" data-bs-keyboard="false">
-    <div class="c-contactos bg-primary py-4">
-        <div class="offcanvas-header ">
-            <h4 class="offcanvas-title text-white" id="offcanvas">Crear Reporte</h4>
-            <div class="d-flex align-items-end">
-                <button type="button" class="btn p-0" data-bs-dismiss="offcanvas" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white fa-2xl"></i>
-                </button>
-            </div>
-        </div>
-
-    </div>
-    <div
-        class="offcanvas-body px-0 bg-secondary border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
-
-    </div>
-</div>
-
-<div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">REPORTE #</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-        </div>
-    </div>
-</div>

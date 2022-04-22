@@ -1,3 +1,82 @@
 <section>
     <app-menu-coordinador></app-menu-coordinador>
+    <div class="container py-5">
+        <div class="card">
+            <div class="bg-primary py-3 px-5 text-white">
+                <h4>Lista de Reporte de Votos</h4>
+            </div>
+            <div class="card-body pt-0">
+                <div class="d-flex justify-content-center">
+                    <div class="form-group col-md-6 col-lg-4 pt-2 m-4">
+                        <label class="fw-bold form-label">
+                            Puesto de votacion
+                        </label>
+                        <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
+                            bindLabel="nombre" bindValue="codigo_unico" (change)="getSelectedValue($event)"
+                            notFoundText="No hay informacion disponible">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="table-responsive" *ngIf="tabla">
+                    <table class="table text-center align-middle">
+                        <thead class="text-dark align-middle">
+                            <tr>
+                                <th scope="col">N° MESA</th>
+                                <th scope="col">TESTIGO</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white" *ngFor="let mesa of listMesas">
+                                <td>{{mesa.numero_mesa}}</td>
+                                <td>{{mesa.reporte.testigo_id}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#incidenciaAbierta" (click)="ModalReporteActual(mesa)">
+                                        Ver Reporte
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+
+<div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Mesa #{{reporte.numero_mesa}}</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table text-center align-middle">
+                        <thead class="text-dark align-middle">
+                            <tr>
+                                <th scope="col">PARTIDO</th>
+                                <th scope="col">CANDIDATO</th>
+                                <th scope="col">N° VOTOS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white" *ngFor="let candidato of listCantidatos">
+                                <td>0</td>
+                                <td>{{candidato.candidato_id}}</td>
+                                <td>{{candidato.numero_votos}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <si-ng-lightbox [showPreviews]="true">
+                    <img *ngFor="let img of photos" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo" [siLightboxItem]="img.url_archivo" class="item w-100"/>
+                  </si-ng-lightbox>
+            </div>
+        </div>
+    </div>
+</div>
