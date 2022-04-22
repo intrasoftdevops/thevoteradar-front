@@ -45,6 +45,9 @@ import { ReporteVotosCoordinadorComponent } from './components/Coordinador/repor
 import { NgLightboxModule } from '@silmar/ng-lightbox';
 import { ContactosComponent } from './components/contactos/contactos.component';
 import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos-testigo/reporte-votos-testigo.component';
+import { ImpugnarComponent } from './components/Impugnador/impugnar/impugnar.component';
+import { MenuImpugnadorComponent } from './components/Impugnador/menu-impugnador/menu-impugnador.component';
+import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home/impugnador-home.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +91,10 @@ import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos
     ReporteIncidenciasCoordinadorComponent,
     ReporteVotosCoordinadorComponent,
     ContactosComponent,
-    ReporteVotosTestigoComponent
+    ReporteVotosTestigoComponent,
+    ImpugnarComponent,
+    MenuImpugnadorComponent,
+    ImpugnadorHomeComponent
   ],
   imports: [
     BrowserModule,
