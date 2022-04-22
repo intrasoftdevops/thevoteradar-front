@@ -5,6 +5,7 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../../services/alert.service';
 import { CustomValidationService } from '../../services/custom-validation.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-contactos',
@@ -61,7 +62,9 @@ export class ContactosComponent implements OnInit {
   onSubmit() {
     if (this.createForm.valid) {
       this.apiService.createContacto(this.createForm.value).subscribe((resp: any) => {
-        this.alertService.successAlert(resp.message);
+        this.createForm.reset();
+        this.getContactos();
+        this.successAlert(resp.message);
       }, (err: any) => {
         console.log(err);
         this.alertService.errorAlert(err.message);
@@ -72,10 +75,19 @@ export class ContactosComponent implements OnInit {
   }
 
   deleteContacto(id: any) {
-    this.apiService.deleteContacto(id).subscribe((resp: any) => {
-      console.log(resp);
-    }, (err: any) => {
-      console.log(err)
+    Swal.fire({
+      title: '¿Esta seguro de borrar este contacto?',
+      showCancelButton: true,
+      confirmButtonText: 'Eliminar',
+      cancelButtonText:'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.apiService.deleteContacto(id).subscribe((resp: any) => {
+          this.getContactos();
+        }, (err: any) => {
+          console.log(err)
+        })
+      }
     })
   }
 
@@ -90,7 +102,9 @@ export class ContactosComponent implements OnInit {
   onSubmitItem(id: any) {
     if (this.updateForm.valid) {
       this.apiService.updateContacto(id, this.updateForm.value).subscribe((resp: any) => {
-        this.alertService.successAlert(resp.message);
+        this.updateForm.reset();
+        this.getContactos();
+        this.successAlert(resp.message);
       }, (err: any) => {
         console.log(err);
         this.alertService.errorAlert(err.message);
@@ -106,6 +120,13 @@ export class ContactosComponent implements OnInit {
     }, (err: any) => {
       console.log(err)
     })
+  }
+
+  successAlert(message: any) {
+    Swal.fire({
+      icon: 'success',
+      title: message,
+    });
   }
 
 }

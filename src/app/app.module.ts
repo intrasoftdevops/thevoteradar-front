@@ -46,6 +46,9 @@ import { NgLightboxModule } from '@silmar/ng-lightbox';
 import { ContactosComponent } from './components/contactos/contactos.component';
 import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos-testigo/reporte-votos-testigo.component';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { ImpugnarComponent } from './components/Impugnador/impugnar/impugnar.component';
+import { MenuImpugnadorComponent } from './components/Impugnador/menu-impugnador/menu-impugnador.component';
+import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home/impugnador-home.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +92,10 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     ReporteIncidenciasCoordinadorComponent,
     ReporteVotosCoordinadorComponent,
     ContactosComponent,
-    ReporteVotosTestigoComponent
+    ReporteVotosTestigoComponent,
+    ImpugnarComponent,
+    MenuImpugnadorComponent,
+    ImpugnadorHomeComponent
   ],
   imports: [
     BrowserModule,

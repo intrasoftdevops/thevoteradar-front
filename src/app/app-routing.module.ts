@@ -32,6 +32,9 @@ import { EditarPerfilComponent } from './components/editar-perfil/editar-perfil.
 import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
 import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
 import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos-testigo/reporte-votos-testigo.component';
+import { ImpugnarComponent } from './components/Impugnador/impugnar/impugnar.component';
+import { MenuImpugnadorComponent } from './components/Impugnador/menu-impugnador/menu-impugnador.component';
+import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home/impugnador-home.component';
 
 const routes: Routes = [
   {
@@ -164,6 +167,14 @@ const routes: Routes = [
     path: 'reporteVotosTestigo',
     component: ReporteVotosTestigoComponent
   },
+  {
+    path: 'Impugnar',
+    component: ImpugnarComponent
+  },
+  {
+    path: 'ImpugnadorHome',
+    component: ImpugnadorHomeComponent
+  }
 ];
 
 @NgModule({
