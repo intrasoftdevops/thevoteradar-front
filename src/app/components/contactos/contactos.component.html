@@ -16,25 +16,27 @@
                 <form class="dropdown-menu dropdown-form p-4" [formGroup]="createForm" (ngSubmit)="onSubmit()">
                     <div class="row mb-3">
                         <div class="col-6">
-                            <input type="name" class="form-control" placeholder="Nombre" formControlName="nombres" />
+                            <input type="name" class="form-control" placeholder="Nombre" formControlName="nombres"
+                                (keypress)="keypressValidator.keyPressLetters($event)" />
                         </div>
                         <div class="col-6">
-                            <input type="name" class="form-control" placeholder="Apellidos"
-                                formControlName="apellidos" />
+                            <input type="name" class="form-control" placeholder="Apellidos" formControlName="apellidos"
+                                (keypress)="keypressValidator.keyPressLetters($event)" />
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
-                            <input type="name" class="form-control" placeholder="Seudonimo" formControlName="apodo">
+                            <input type="name" class="form-control" placeholder="Seudonimo" formControlName="apodo"
+                                (keypress)="keypressValidator.keyPressLetters($event)" />
                         </div>
                         <div class="col-6">
                             <input type="name" class="form-control" placeholder="Como te dice?"
-                                formControlName="como_te_dice" />
+                                formControlName="como_te_dice" (keypress)="keypressValidator.keyPressLetters($event)" />
                         </div>
                     </div>
                     <div class="mb-3">
                         <input type="number" class="form-control" placeholder="Numero de contacto"
-                            formControlName="numero_contacto">
+                            formControlName="numero_contacto" (keypress)="keypressValidator.keyPressNumbers($event)" />
                     </div>
                     <div class="mb-3 text-end">
                         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -62,8 +64,10 @@
                         </small>
                     </div>
                     <div class="col-1">
-                        <div class="btn-group" [ngClass]="{'dropdown': innerWidth < 720, 'dropend' : innerWidth >= 720 }">
-                            <button type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false" (click)="updateData(contacto)">
+                        <div class="btn-group"
+                            [ngClass]="{'dropdown': innerWidth < 720, 'dropend' : innerWidth >= 720 }">
+                            <button type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false"
+                                (click)="updateData(contacto)">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <form class="dropdown-menu dropdown-form p-4" [formGroup]="updateForm"
@@ -71,26 +75,26 @@
                                 <div class="row mb-3">
                                     <div class="col-6">
                                         <input type="name" class="form-control" placeholder="Nombre"
-                                            formControlName="nombres" />
+                                            formControlName="nombres" (keypress)="keypressValidator.keyPressLetters($event)"/>
                                     </div>
                                     <div class="col-6">
                                         <input type="name" class="form-control" placeholder="Apellidos"
-                                            formControlName="apellidos" />
+                                            formControlName="apellidos" (keypress)="keypressValidator.keyPressLetters($event)"/>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-6">
                                         <input type="name" class="form-control" placeholder="Seudonimo"
-                                            formControlName="apodo">
+                                            formControlName="apodo" (keypress)="keypressValidator.keyPressLetters($event)"/>
                                     </div>
                                     <div class="col-6">
                                         <input type="name" class="form-control" placeholder="Como te dice?"
-                                            formControlName="como_te_dice" />
+                                            formControlName="como_te_dice" (keypress)="keypressValidator.keyPressLetters($event)"/>
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <input type="number" class="form-control" placeholder="Numero de contacto"
-                                        formControlName="numero_contacto">
+                                        formControlName="numero_contacto" (keypress)="keypressValidator.keyPressNumbers($event)">
                                 </div>
                                 <div class="mb-3 text-end">
                                     <button type="submit" class="btn btn-primary">Guardar</button>
@@ -107,6 +111,6 @@
         </ng-container>
         <ng-template #other_content>
             <p class="text-center">No tiene contactos.</p>
-          </ng-template>
+        </ng-template>
     </div>
 </div>

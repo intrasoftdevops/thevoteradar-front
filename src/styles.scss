@@ -227,13 +227,13 @@ input[type=number] {
     z-index: -1;
 }
 
-.inputfile+label{
+.inputfile+label {
     background-color: white !important;
 }
 
 .inputfile:focus+label,
 .inputfile+label:hover {
-    background-color: #64248b!important;
+    background-color: #64248b !important;
     color: #fff !important;
     border: white 2px dashed !important;
 }
@@ -245,4 +245,25 @@ input[type=number] {
 
 .light-wrap {
     z-index: 1100 !important;
+}
+
+ngx-dropzone {
+    height: 200px !important;
+    border: 2px dashed $primary !important;
+    overflow-y: auto !important;
+}
+
+ngx-dropzone-image-preview,
+ngx-dropzone-image-preview>img {
+    width: 100% !important;
+    height: auto !important;
+}
+
+ngx-dropzone-remove-badge {
+    background: $primary !important;
+}
+
+ngx-dropzone-image-preview>ngx-dropzone-label {
+    color: white !important;
+    text-shadow: 1px 1px 2px black, 0 0 1em $primary, 0 0 0.2em $primary;
 }

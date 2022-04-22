@@ -83,14 +83,15 @@
                 </div>
                 <div class="col-lg-5 d-flex flex-column justify-content-around" *ngIf="showUpload">
                     <h4 class="fw-bolder my-5 text-center">Adjuntar Prueba</h4>
-                    <div class="text-center">
-                        <input type="file" id="file" formArrayName="url_archivo" (change)="handleFileInput($event)"
-                            class="inputfile" accept="image/png, image/jpeg" multiple />
-                        <label class="border border-primary interlineado py-4 col-12" for="file" id="labelFile">
-                            <i class="fas fa-paperclip text-primary fa-lg"></i>
-                            {{(myFiles.length == 0) ? "Adjuntar Archivo (maximo 10MB)":filename}}
-                        </label>
-                    </div>
+                    <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true">
+                        <ngx-dropzone-label>
+                            <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar Archivo (maximo 10MB)
+                        </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files"
+                            [file]="f" [removable]="true" (removed)="onRemove(f)">
+                            <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+                        </ngx-dropzone-image-preview>
+                    </ngx-dropzone>
                     <div class="text-end mt-5">
                         <button type="submit" class="btn btn-primary btn-lg">
                             Enviar Reporte

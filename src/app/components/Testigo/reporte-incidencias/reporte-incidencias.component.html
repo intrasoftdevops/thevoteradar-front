@@ -54,7 +54,8 @@
     </div>
 
   </div>
-  <div class="offcanvas-body px-0 bg-secondary border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
+  <div
+    class="offcanvas-body px-0 bg-secondary border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
     <form class="mx-4" [formGroup]="createForm" (ngSubmit)="onSubmit()">
       <div class="form-group pt-3">
         <label class="form-label">
@@ -94,12 +95,15 @@
           <span class="fw-bold">Archivo adjunto</span>
           <span class="text-danger">*</span>
         </label>
-        <div class="text-center">
-          <input type="file" formArrayName="url_archivo" id="file" class="inputfile" (change)="handleFileInput($event)"
-            accept="image/png, image/jpeg" multiple />
-          <label class="border border-primary interlineado py-3 col-12" for="file" id="labelFile">
-            <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar Archivo (maximo 10MB)</label>
-        </div>
+        <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true">
+          <ngx-dropzone-label>
+            <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar Archivo (maximo 10MB)
+          </ngx-dropzone-label>
+          <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
+            [removable]="true" (removed)="onRemove(f)">
+            <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+          </ngx-dropzone-image-preview>
+        </ngx-dropzone>
       </div>
       <div class="d-flex justify-content-end pt-5">
         <button type="submit" class="btn btn-primary ">
@@ -131,7 +135,7 @@
         </p>
         <p class="fw-bolder">Archivos adjuntos: </p>
         <si-ng-lightbox [showPreviews]="true">
-          <img *ngFor="let img of photos" src="{{img}}" [previewSrc]="img" [siLightboxItem]="img" class="item w-100"/>
+          <img *ngFor="let img of photos" src="{{img}}" [previewSrc]="img" [siLightboxItem]="img" class="item w-100" />
         </si-ng-lightbox>
       </div>
     </div>

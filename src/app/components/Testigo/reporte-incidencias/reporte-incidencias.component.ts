@@ -12,7 +12,7 @@ import { CustomValidationService } from '../../../services/custom-validation.ser
 export class ReporteIncidenciasComponent implements OnInit {
 
   photos: any = [];
-
+  files: File[] = [];
   categoryIncidencias: any = [];
   mesas_asignadas: any = [];
   dataIncidencias: any = [];
@@ -20,11 +20,8 @@ export class ReporteIncidenciasComponent implements OnInit {
     categoria_id: [null, Validators.required],
     titulo: ['', Validators.required],
     descripcion: ['', Validators.required],
-    url_archivo: this.fb.array([]),
     codigo_mesa: [null, Validators.required],
   });
-
-  myFiles: string[] = [];
   incidenciaActual: any = {};
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService,
@@ -41,16 +38,17 @@ export class ReporteIncidenciasComponent implements OnInit {
   }
 
   onSubmit() {
+
     console.log(this.createForm.value)
 
-    if (this.createForm.valid) {
+    if (this.createForm.valid && this.files.length > 0) {
 
       const uploadData = new FormData();
       uploadData.append('categoria_id', this.createForm.get('categoria_id')!.value);
       uploadData.append('titulo', this.createForm.get('titulo')!.value);
       uploadData.append('descripcion', this.createForm.get('descripcion')!.value);
-      for (var i = 0; i < this.createFormControl['url_archivo'].value.length; i++) {
-        uploadData.append("url_archivo[]", this.createFormControl['url_archivo'].value[i]);
+      for (let file in this.files) {
+        uploadData.append("url_archivo[]", this.files[file]);
       }
       uploadData.append('codigo_mesa', this.createForm.get('codigo_mesa')!.value);
 
@@ -68,28 +66,12 @@ export class ReporteIncidenciasComponent implements OnInit {
   }
 
   ModalIncidenciaActual(incidencia: any) {
-    this.photos=[];
+    this.photos = [];
     this.incidenciaActual = {};
     this.incidenciaActual = incidencia;
     for (let i = 0; i < this.incidenciaActual.archivos.length; i++) {
       this.photos.push(this.incidenciaActual.archivos[i].url_archivo);
     }
-  }
-
-  handleFileInput(event: any) {
-    let selectedFiles = event.target.files;
-    if (selectedFiles) {
-      for (let file of selectedFiles) {
-        this.myFiles.push(file.name);
-        this.createImage(file);
-      }
-      document.getElementById("labelFile")!.innerHTML = '<i class="fas fa-paperclip text-primary fa-lg"></i> ' + this.myFiles.join(", ");
-    }
-  }
-
-  createImage(img: any) {
-    const newImage = new FormControl(img, Validators.required);
-    (<FormArray>this.createForm.get('url_archivo')).push(newImage)
   }
 
   getCategoriasIncidencias() {
@@ -110,10 +92,19 @@ export class ReporteIncidenciasComponent implements OnInit {
   getIncidenciasDeTestigo() {
     this.apiService.getIncidenciasDeTestigo().subscribe((resp: any) => {
       this.dataIncidencias = resp;
-      console.log(resp)
     }, (err: any) => {
       console.log(err)
     })
+  }
+
+  onSelect(event: any) {
+    this.files.push(...event.addedFiles);
+    console.log(this.files)
+  }
+
+  onRemove(event: any) {
+    this.files.splice(this.files.indexOf(event), 1);
+    console.log(this.files)
   }
 
 }

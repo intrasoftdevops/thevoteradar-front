@@ -45,6 +45,7 @@ import { ReporteVotosCoordinadorComponent } from './components/Coordinador/repor
 import { NgLightboxModule } from '@silmar/ng-lightbox';
 import { ContactosComponent } from './components/contactos/contactos.component';
 import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos-testigo/reporte-votos-testigo.component';
+import { NgxDropzoneModule } from 'ngx-dropzone';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos
     ReactiveFormsModule,
     NgSelectModule,
     HammerModule, // <-- For Angular 9
-    NgLightboxModule
+    NgLightboxModule,
+    NgxDropzoneModule
   ],
   providers: [],
   bootstrap: [AppComponent]

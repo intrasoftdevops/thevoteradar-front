@@ -17,11 +17,9 @@ export class ReporteVotosTestigoComponent implements OnInit {
   createForm: FormGroup = this.fb.group({
     codigo_mesa: [null, Validators.required],
     votos: this.fb.array([]),
-    url_archivo: this.fb.array([]),
   });
   puestos_asignado: any = "";
-  myFiles: string[] = [];
-  filename: string = "";
+  files: File[] = [];
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService,
     private customValidator: CustomValidationService) { }
@@ -43,12 +41,12 @@ export class ReporteVotosTestigoComponent implements OnInit {
 
   onSubmit() {
     console.log(this.createForm.value);
-    if (this.createForm.valid) {
+    if (this.createForm.valid && this.files.length > 0) {
 
       const uploadData = new FormData();
       uploadData.append('codigo_mesa', this.createForm.get('codigo_mesa')!.value);
-      for (var i = 0; i < this.createFormControl['url_archivo'].value.length; i++) {
-        uploadData.append("url_archivo[]", this.createFormControl['url_archivo'].value[i]);
+      for (let file in this.files) {
+        uploadData.append("url_archivo[]", this.files[file]);
       }
       for (var i = 0; i < this.createFormControl['votos'].value.length; i++) {
         uploadData.append("votos[]", this.createFormControl['votos'].value[i]);
@@ -68,8 +66,9 @@ export class ReporteVotosTestigoComponent implements OnInit {
   }
 
   getVotosTestigo() {
-    this.apiService.getVotosTestigo().subscribe(resp => {
-      console.log(resp)
+    this.apiService.getVotosTestigo().subscribe((resp: any) => {
+      const { mesas_sin_reportar } = resp;
+      this.mesas_asignadas = mesas_sin_reportar;
     }, (err: any) => {
       console.log(err)
     })
@@ -77,8 +76,7 @@ export class ReporteVotosTestigoComponent implements OnInit {
 
   getMesasTetigo() {
     this.apiService.getTestigo(this.apiService.getId()).subscribe((resp: any) => {
-      const { mesas_asignadas, puestos_asignados } = resp;
-      this.mesas_asignadas = mesas_asignadas;
+      const { puestos_asignados } = resp;
       this.puestos_asignado = puestos_asignados[0].nombre;
       console.log(resp)
     }, (err: any) => {
@@ -102,36 +100,25 @@ export class ReporteVotosTestigoComponent implements OnInit {
     })
   }
 
-  handleFileInput(event: any) {
-    let selectedFiles = event.target.files;
-    if (selectedFiles) {
-      for (let file of selectedFiles) {
-        this.myFiles.push(file.name);
-        this.createImage(file);
-      }
-      this.filename = this.myFiles.join(", ");
-    }
-  }
-
-  createImage(img: any) {
-    const newImage = new FormControl(img, Validators.required);
-    (<FormArray>this.createForm.get('url_archivo')).push(newImage)
-  }
-
   getSelectedValue(item: any) {
-    this.myFiles = [];
+    this.files = [];
     if (item) {
       this.createFormControl['votos'].reset();
-      const arr = this.createFormControl['url_archivo'] as FormArray;
-      while (0 !== arr.length) {
-        arr.removeAt(0);
-      }
-      console.log(this.createFormControl['url_archivo'].value)
       this.showUpload = true;
     } else {
       this.showUpload = false;
       this.createForm.reset();
     }
+  }
+
+  onSelect(event: any) {
+    this.files.push(...event.addedFiles);
+    console.log(this.files)
+  }
+
+  onRemove(event: any) {
+    this.files.splice(this.files.indexOf(event), 1);
+    console.log(this.files)
   }
 
 }
