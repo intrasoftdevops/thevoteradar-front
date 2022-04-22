@@ -9,6 +9,7 @@ import { AlertService } from '../../../services/alert.service';
 })
 export class VerPuestoAdminComponent implements OnInit {
 
+  showLoading:boolean = false;
   tabla: boolean = false;
   dataDepartments: any = [];
   gerentes: any = {}
@@ -34,15 +35,20 @@ export class VerPuestoAdminComponent implements OnInit {
   }
 
   getDepartmentAdmin() {
+    this.showLoading = true;
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
+      this.showLoading = false;
       this.dataDepartments = resp;
     }, (err: any) => {
+      this.showLoading = false;
       this.alertService.errorAlert(err.message);
     })
   }
 
   getNecesitadosDepartamento(data: any) {
+    this.showLoading = true;
     this.apiService.getNecesitadosDepartamento(data).subscribe((resp: any) => {
+      this.showLoading = false;
       console.log(resp)
       this.gerentes = resp.gerentes;
       this.supervisores = resp.supervisores;
@@ -50,6 +56,7 @@ export class VerPuestoAdminComponent implements OnInit {
       this.testigos = resp.testigos;
       this.tabla = true;
     }, (err: any) => {
+      this.showLoading = false;
       this.alertService.errorAlert(err.message);
     })
   }

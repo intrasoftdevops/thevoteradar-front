@@ -49,6 +49,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 import { ImpugnarComponent } from './components/Impugnador/impugnar/impugnar.component';
 import { MenuImpugnadorComponent } from './components/Impugnador/menu-impugnador/menu-impugnador.component';
 import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home/impugnador-home.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home
     ReporteVotosTestigoComponent,
     ImpugnarComponent,
     MenuImpugnadorComponent,
-    ImpugnadorHomeComponent
+    ImpugnadorHomeComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,

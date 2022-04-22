@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 })
 export class ContactosComponent implements OnInit {
 
+  showLoading:boolean = false;
   listGerenteAsignados: any = [];
   listGerenteNoAsignados: any = [];
   innerWidth: any;
@@ -115,9 +116,12 @@ export class ContactosComponent implements OnInit {
   }
 
   getContactos() {
+    this.showLoading = true;
     this.apiService.getContactos().subscribe((resp: any) => {
+      this.showLoading = false;
       this.listContactos = resp;
     }, (err: any) => {
+      this.showLoading = false;
       console.log(err)
     })
   }

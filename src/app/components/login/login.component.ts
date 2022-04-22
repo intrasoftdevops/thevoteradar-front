@@ -10,6 +10,8 @@ import packageJson from '../../../../package.json';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
+  showLoading:boolean = false;
   user: any = {
     numero_documento: '',
     password: ''
@@ -23,8 +25,10 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    this.showLoading = true;
     this.apiService.login(this.user).subscribe({
       next: (resp: any) => {
+        this.showLoading = false;
         const { res, rol, token, id } = resp;
         if (res == true) {
           console.log(resp);
@@ -63,7 +67,10 @@ export class LoginComponent implements OnInit {
           this.showError(resp);
         }
       },
-      error: (e) => this.showError(e),
+      error: (e) => {
+        this.showLoading = false;
+        this.showError(e)
+      },
     })
   }
 

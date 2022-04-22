@@ -3,7 +3,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { Router } from '@angular/router';
 
 import { AlertService } from '../../../services/alert.service';
-import { fromEvent, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CustomValidationService } from '../../../services/custom-validation.service';
 
@@ -14,6 +14,7 @@ import { CustomValidationService } from '../../../services/custom-validation.ser
 })
 export class MenuAdminComponent implements OnInit {
 
+  showLoading:boolean = false;
   listGerenteAsignados: any = [];
   listGerenteNoAsignados: any = [];
   innerWidth: any;
@@ -34,11 +35,14 @@ export class MenuAdminComponent implements OnInit {
   }
 
   logout() {
+    this.showLoading = true;
     this.apiService.logout().subscribe((resp: any) => {
+      this.showLoading = false;
       console.log(resp);
       this.apiService.deleteCookies();
       this.router.navigate(['']);
     }, (err: any) => {
+      this.showLoading = false;
       console.log(err);
       this.apiService.deleteCookies();
       this.router.navigate(['']);
