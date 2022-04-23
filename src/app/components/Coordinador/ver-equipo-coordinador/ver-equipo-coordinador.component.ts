@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -49,16 +49,12 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   getPuestos() {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
   getMesas(data: any) {
     this.apiService.getTablesTestigo().subscribe((resp: any) => {
       this.dataTables = resp.filter((dataTable: any) => dataTable.codigo_puesto_votacion == data);
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
@@ -66,23 +62,12 @@ export class VerEquipoCoordinadorComponent implements OnInit {
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
       const { testigos } = resp;
       this.listTestigos = testigos;
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
-  }
-
-  showError(err: any) {
-    console.log(err);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    });
   }
 
 }

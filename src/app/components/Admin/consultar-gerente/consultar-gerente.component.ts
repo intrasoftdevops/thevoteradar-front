@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
-import { AlertService } from '../../../services/alert.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-consultar-gerente',
@@ -10,7 +10,6 @@ import { AlertService } from '../../../services/alert.service';
 })
 export class ConsultarGerenteComponent implements OnInit {
 
-  showLoading: boolean = false;
   listGerenteAsignados: any = [];
   listGerenteNoAsignados: any = [];
   listMunicipals: any = [];
@@ -22,9 +21,7 @@ export class ConsultarGerenteComponent implements OnInit {
   }
 
   getGerentes() {
-    this.showLoading = true;
     this.apiService.getAssignedMunicipal().subscribe((resp: any) => {
-      this.showLoading = false;
       const { gerentes_asignados, gerentes_no_asignados } = resp;
       this.listGerenteAsignados = gerentes_asignados;
       this.listGerenteNoAsignados = gerentes_no_asignados;
@@ -38,9 +35,6 @@ export class ConsultarGerenteComponent implements OnInit {
           this.listMunicipals.push(municipios);
         }
       }
-    }, (err: any) => {
-      this.showLoading = false;
-      this.alertService.errorAlert(err.message);
     });
   }
 

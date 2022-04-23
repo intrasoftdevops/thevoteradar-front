@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import Swal from 'sweetalert2';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlertService } from '../../../services/alert.service';
-import { CustomValidationService } from '../../../services/custom-validation.service';
+import { AlertService } from '../../../services/alert/alert.service';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 
 @Component({
   selector: 'app-crear-supervisor',
@@ -63,8 +63,6 @@ export class CrearSupervisorComponent implements OnInit {
 
           this.alertService.successAlert(resp.message);
 
-        }, (err: any) => {
-          this.alertService.errorAlert(err.message);
         })
       } else {
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -76,22 +74,12 @@ export class CrearSupervisorComponent implements OnInit {
   getZoneGerente(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
       this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == data);
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    }));
+    });
   }
 
   getMunicipalGerente() {
     this.apiService.getMunicipalGerente().subscribe(resp => {
       this.dataMunicipals = resp;
-    }, (err: any) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     });
   }
 

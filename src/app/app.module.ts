@@ -13,7 +13,7 @@ import { MenuGerenteComponent } from './components/Gerente/menu-gerente/menu-ger
 import { MenuSupervisorComponent } from './components/Supervisor/menu-supervisor/menu-supervisor.component';
 import { MenuCoordinadorComponent } from './components/Coordinador/menu-coordinador/menu-coordinador.component';
 import { MenuTestigoComponent } from './components/Testigo/menu-testigo/menu-testigo.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CrearGerenteComponent } from './components/Admin/crear-gerente/crear-gerente.component';
 import { CrearSupervisorComponent } from './components/Gerente/crear-supervisor/crear-supervisor.component';
@@ -39,7 +39,7 @@ import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incide
 import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar-coordinador/consultar-coordinador.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ConsultarTestigoComponent } from './components/Coordinador/consultar-testigo/consultar-testigo.component';
-import { EditarPerfilComponent } from './components/editar-perfil/editar-perfil.component';
+import { EditarPerfilComponent } from './components/editarPerfil/editar-perfil.component';
 import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
 import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
 import { NgLightboxModule } from '@silmar/ng-lightbox';
@@ -50,6 +50,8 @@ import { ImpugnarComponent } from './components/Impugnador/impugnar/impugnar.com
 import { MenuImpugnadorComponent } from './components/Impugnador/menu-impugnador/menu-impugnador.component';
 import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home/impugnador-home.component';
 import { LoadingComponent } from './components/loading/loading.component';
+import { LoaderService } from './services/loader/loader.service';
+import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -110,7 +112,10 @@ import { LoadingComponent } from './components/loading/loading.component';
     NgLightboxModule,
     NgxDropzoneModule
   ],
-  providers: [],
+  providers: [
+    LoaderService,
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

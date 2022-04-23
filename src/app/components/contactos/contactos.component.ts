@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api/api.service';
 import { Router } from '@angular/router';
-import { AlertService } from '../../services/alert.service';
-import { CustomValidationService } from '../../services/custom-validation.service';
+import { AlertService } from '../../services/alert/alert.service';
+import { CustomValidationService } from '../../services/validations/custom-validation.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -14,7 +14,6 @@ import Swal from 'sweetalert2';
 })
 export class ContactosComponent implements OnInit {
 
-  showLoading:boolean = false;
   listGerenteAsignados: any = [];
   listGerenteNoAsignados: any = [];
   innerWidth: any;
@@ -62,16 +61,9 @@ export class ContactosComponent implements OnInit {
 
   onSubmit() {
     if (this.createForm.valid) {
-      this.showLoading = true;
       this.apiService.createContacto(this.createForm.value).subscribe((resp: any) => {
-        this.showLoading = false;
-        this.createForm.reset();
         this.getContactos();
         this.successAlert(resp.message);
-      }, (err: any) => {
-        this.showLoading = false;
-        console.log(err);
-        this.alertService.errorAlert(err.message);
       })
     } else {
       this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -83,16 +75,11 @@ export class ContactosComponent implements OnInit {
       title: '¿Esta seguro de borrar este contacto?',
       showCancelButton: true,
       confirmButtonText: 'Eliminar',
-      cancelButtonText:'Cancelar'
+      cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.showLoading = true;
         this.apiService.deleteContacto(id).subscribe((resp: any) => {
-          this.showLoading = false;
           this.getContactos();
-        }, (err: any) => {
-          this.showLoading = false;
-          console.log(err)
         })
       }
     })
@@ -108,30 +95,19 @@ export class ContactosComponent implements OnInit {
 
   onSubmitItem(id: any) {
     if (this.updateForm.valid) {
-      this.showLoading = true;
       this.apiService.updateContacto(id, this.updateForm.value).subscribe((resp: any) => {
-        this.showLoading = false;
         this.updateForm.reset();
         this.getContactos();
         this.successAlert(resp.message);
-      }, (err: any) => {
-        this.showLoading = false;
-        console.log(err);
-        this.alertService.errorAlert(err.message);
-      })
+      });
     } else {
       this.alertService.errorAlert("Llene los campos obligatorios.");
     }
   }
 
   getContactos() {
-    this.showLoading = true;
     this.apiService.getContactos().subscribe((resp: any) => {
-      this.showLoading = false;
       this.listContactos = resp;
-    }, (err: any) => {
-      this.showLoading = false;
-      console.log(err)
     })
   }
 

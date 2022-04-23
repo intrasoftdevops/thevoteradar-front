@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -28,22 +28,19 @@ export class MenuCoordinadorComponent implements OnInit {
       for (let testigo of testigos_no_asignados) {
         this.listTestigoNoAsignados.push(testigo);
       }
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    }));
+    });
   }
 
   logout() {
-    this.apiService.logout().subscribe((resp: any) => {
-      console.log(resp);
-      this.apiService.deleteCookies();
-      this.router.navigate(['']);
-    }, (err: any) => {
-      console.log(err);
-      this.apiService.deleteCookies();
-      this.router.navigate(['']);
+    this.apiService.logout().subscribe({
+      next: () => {
+        this.apiService.deleteCookies();
+        this.router.navigate(['']);
+      },
+      error: () => {
+        this.apiService.deleteCookies();
+        this.router.navigate(['']);
+      }
     })
   }
 

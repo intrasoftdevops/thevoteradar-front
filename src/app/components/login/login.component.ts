@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import packageJson from '../../../../package.json';
+import { AlertService } from '../../services/alert/alert.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,6 @@ import packageJson from '../../../../package.json';
 })
 export class LoginComponent implements OnInit {
 
-  showLoading:boolean = false;
   user: any = {
     numero_documento: '',
     password: ''
@@ -19,16 +19,14 @@ export class LoginComponent implements OnInit {
 
   public version: string = packageJson.version;
 
-  constructor(private apiService: ApiService, private router: Router) { }
+  constructor(private apiService: ApiService, private router: Router, private alertService: AlertService) { }
 
   ngOnInit() {
   }
 
   login() {
-    this.showLoading = true;
     this.apiService.login(this.user).subscribe({
       next: (resp: any) => {
-        this.showLoading = false;
         const { res, rol, token, id } = resp;
         if (res == true) {
           console.log(resp);
@@ -64,23 +62,10 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['adminHome']);
           }
         } else {
-          this.showError(resp);
+          this.alertService.errorAlert(resp.message);
         }
       },
-      error: (e) => {
-        this.showLoading = false;
-        this.showError(e)
-      },
     })
-  }
-
-  showError(err: any) {
-    console.log(err);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    });
   }
 
 }

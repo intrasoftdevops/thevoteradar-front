@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -29,24 +29,19 @@ export class MenuSupervisorComponent implements OnInit {
       for (let coordinador of coordinadores_no_asignados) {
         this.listCoordinadorNoAsignados.push(coordinador);
       }
-    }, (err: any) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 
   logout() {
-    this.apiService.logout().subscribe((resp: any) => {
-      console.log(resp);
-      this.apiService.deleteCookies();
-      this.router.navigate(['']);
-    }, (err: any) => {
-      console.log(err);
-      this.apiService.deleteCookies();
-      this.router.navigate(['']);
+    this.apiService.logout().subscribe({
+      next: () => {
+        this.apiService.deleteCookies();
+        this.router.navigate(['']);
+      },
+      error: () => {
+        this.apiService.deleteCookies();
+        this.router.navigate(['']);
+      }
     })
   }
 

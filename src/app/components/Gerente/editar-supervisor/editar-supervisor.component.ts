@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { filter } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { CustomValidationService } from '../../../services/custom-validation.service';
-import { AlertService } from '../../../services/alert.service';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-editar-supervisor',
@@ -65,9 +65,6 @@ export class EditarSupervisorComponent implements OnInit {
 
           this.alertService.successAlert(resp.res);
 
-        }, (err: any) => {
-          console.log(err);
-          this.alertService.errorAlert(err.message);
         })
       } else {
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -88,8 +85,6 @@ export class EditarSupervisorComponent implements OnInit {
     this.apiService.getMunicipalGerente().subscribe((resp: any) => {
       this.dataMunicipals = resp;
       this.getZoneSupervisor();
-    }, (err: any) => {
-      this.alertService.errorAlert(err.message);
     })
   }
 
@@ -98,8 +93,6 @@ export class EditarSupervisorComponent implements OnInit {
       if (this.updateFormControl['municipio'].value) {
         this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == this.updateFormControl['municipio'].value);
       }
-    }, (err: any) => {
-      this.alertService.errorAlert(err.message);
     });
   }
 
@@ -120,8 +113,6 @@ export class EditarSupervisorComponent implements OnInit {
       this.updateForm.get('zonas')?.setValue(this.getCodeMunicipals(zonas_asignadas));
       this.updateForm.get('municipio')?.setValue(this.getCodeMunicipals(municipios_asignados)[0]);
 
-    }, (err: any) => {
-      this.alertService.errorAlert(err.message);
     })
   }
 

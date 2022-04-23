@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
-import { ApiService } from '../../../services/api.service';
-import { AlertService } from '../../../services/alert.service';
+import { ApiService } from '../../../services/api/api.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-ver-puesto-coordinador',
@@ -40,8 +40,6 @@ export class VerPuestoCoordinadorComponent implements OnInit {
   getPuestos() {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
@@ -49,8 +47,6 @@ export class VerPuestoCoordinadorComponent implements OnInit {
     this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
       this.data = resp;
       this.tabla = true;
-    }, (err: any) => {
-      this.alertService.errorAlert(err.message);
     })
   }
 
@@ -67,15 +63,6 @@ export class VerPuestoCoordinadorComponent implements OnInit {
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
-  }
-
-  showError(err: any) {
-    console.log(err);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    });
   }
 
 }

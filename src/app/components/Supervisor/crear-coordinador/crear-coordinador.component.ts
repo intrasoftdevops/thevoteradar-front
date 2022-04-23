@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import Swal from 'sweetalert2';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { AlertService } from '../../../services/alert.service';
-import { CustomValidationService } from '../../../services/custom-validation.service';
+import { AlertService } from '../../../services/alert/alert.service';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 
 @Component({
   selector: 'app-crear-coordinador',
@@ -64,9 +64,6 @@ export class CrearCoordinadorComponent implements OnInit {
 
           this.alertService.successAlert(resp.message);
 
-        }, (err: any) => {
-          console.log(err)
-          this.alertService.errorAlert(err.message);
         })
       } else {
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -79,26 +76,12 @@ export class CrearCoordinadorComponent implements OnInit {
   getZonesSupervisor() {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
       this.dataZones = resp;
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 
   getStationCoordinador(data:any) {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
       this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 

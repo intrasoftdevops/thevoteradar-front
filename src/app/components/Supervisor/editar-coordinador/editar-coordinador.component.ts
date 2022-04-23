@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import Swal from 'sweetalert2';
 import { filter } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { CustomValidationService } from '../../../services/custom-validation.service';
-import { AlertService } from '../../../services/alert.service';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-editar-coordinador',
@@ -66,9 +66,6 @@ export class EditarCoordinadorComponent implements OnInit {
 
           this.alertService.successAlert(resp.res);
 
-        }, (err: any) => {
-          console.log(err);
-          this.alertService.errorAlert(err.message);
         })
       } else {
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -88,13 +85,6 @@ export class EditarCoordinadorComponent implements OnInit {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
       this.dataZones = resp;
       this.getStationsSupervisor();
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 
@@ -103,13 +93,6 @@ export class EditarCoordinadorComponent implements OnInit {
       if (this.updateFormControl['zona'].value) {
         this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == this.updateFormControl['zona'].value);
       }
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 
@@ -131,13 +114,6 @@ export class EditarCoordinadorComponent implements OnInit {
       this.updateForm.get('puestos')?.setValue(this.getCodeMunicipals(puestos_asignados));
       this.updateForm.get('zona')?.setValue(this.getCodeMunicipals(zonas_asignadas)[0]);
      
-    }, (err: any) => {
-      console.log(err)
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 

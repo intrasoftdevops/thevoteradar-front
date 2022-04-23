@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
-import Swal from 'sweetalert2';
+import { ApiService } from '../../../services/api/api.service';
 
 @Component({
   selector: 'app-ver-equipo-supervisor',
@@ -64,16 +63,12 @@ export class VerEquipoSupervisorComponent implements OnInit {
   getZonas() {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
       this.dataZones = resp;
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
   getPuestos(data: any) {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
       this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
@@ -82,8 +77,6 @@ export class VerEquipoSupervisorComponent implements OnInit {
       const { mesas, coordinadores } = resp;
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
@@ -91,23 +84,12 @@ export class VerEquipoSupervisorComponent implements OnInit {
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
       const { testigos } = resp;
       this.listTestigos = testigos;
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
-  }
-
-  showError(err: any) {
-    console.log(err);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    });
   }
 
 }

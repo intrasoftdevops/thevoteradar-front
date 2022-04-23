@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -36,21 +36,12 @@ export class ReporteVotosCoordinadorComponent implements OnInit {
       const { puesto } = resp;
       const { mesas_reportadas } = puesto;
       this.listMesas = mesas_reportadas;
-    }, (err: any) => {
-      console.log(err)
     })
   }
 
   getStationsTestigo() {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 

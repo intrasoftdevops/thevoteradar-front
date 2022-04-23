@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertService } from '../../../services/alert.service';
-import { ApiService } from '../../../services/api.service';
+import { AlertService } from '../../../services/alert/alert.service';
+import { ApiService } from '../../../services/api/api.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -38,13 +38,6 @@ export class ConsultarCoordinadorComponent implements OnInit {
         }
         //
       }
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 

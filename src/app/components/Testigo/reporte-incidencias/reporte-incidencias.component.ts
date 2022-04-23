@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, Validators, FormBuilder, FormControl, FormArray } from '@angular/forms';
-import { AlertService } from '../../../services/alert.service';
-import { CustomValidationService } from '../../../services/custom-validation.service';
+import { AlertService } from '../../../services/alert/alert.service';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 
 @Component({
   selector: 'app-reporte-incidencias',
@@ -56,9 +56,6 @@ export class ReporteIncidenciasComponent implements OnInit {
 
         this.alertService.successAlert(resp.message);
 
-      }, (err: any) => {
-        console.log(err)
-        this.alertService.errorAlert(err.message);
       })
     } else {
       this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -84,16 +81,12 @@ export class ReporteIncidenciasComponent implements OnInit {
     this.apiService.getTestigo(this.apiService.getId()).subscribe((resp: any) => {
       const { mesas_asignadas } = resp;
       this.mesas_asignadas = mesas_asignadas;
-    }, (err: any) => {
-      console.log(err)
     })
   }
 
   getIncidenciasDeTestigo() {
     this.apiService.getIncidenciasDeTestigo().subscribe((resp: any) => {
       this.dataIncidencias = resp;
-    }, (err: any) => {
-      console.log(err)
     })
   }
 

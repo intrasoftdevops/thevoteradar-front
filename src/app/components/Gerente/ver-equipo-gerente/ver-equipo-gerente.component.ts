@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -83,16 +83,12 @@ export class VerEquipoGerenteComponent implements OnInit {
   getMunicipalAdmin() {
     this.apiService.getMunicipalGerente().subscribe(resp => {
       this.dataMunicipals = resp;
-    }, (err: any) => {
-      this.showError(err);
     });
   }
 
   getZonas(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
       this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == data);
-    }, (err: any) => {
-      this.showError(err);
     });
   }
 
@@ -101,8 +97,6 @@ export class VerEquipoGerenteComponent implements OnInit {
       const { puestos, supervisores } = resp;
       this.dataStations = puestos;
       this.listSupervisores = supervisores;
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
@@ -112,8 +106,6 @@ export class VerEquipoGerenteComponent implements OnInit {
       console.log(resp)
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
@@ -121,23 +113,12 @@ export class VerEquipoGerenteComponent implements OnInit {
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
       const { testigos } = resp;
       this.listTestigos = testigos;
-    }, (err: any) => {
-      this.showError(err);
     })
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
-  }
-
-  showError(err: any) {
-    console.log(err);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    });
   }
 
 }

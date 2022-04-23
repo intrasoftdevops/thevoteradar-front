@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, Validators, FormBuilder, FormControl, FormArray } from '@angular/forms';
-import { CustomValidationService } from '../../../services/custom-validation.service';
-import { AlertService } from '../../../services/alert.service';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-reporte-votos-testigo',
@@ -55,9 +55,6 @@ export class ReporteVotosTestigoComponent implements OnInit {
 
         this.alertService.successAlert(resp.message);
 
-      }, (err: any) => {
-        console.log(err)
-        this.alertService.errorAlert(err.message);
       })
 
     } else {
@@ -69,8 +66,6 @@ export class ReporteVotosTestigoComponent implements OnInit {
     this.apiService.getVotosTestigo().subscribe((resp: any) => {
       const { mesas_sin_reportar } = resp;
       this.mesas_asignadas = mesas_sin_reportar;
-    }, (err: any) => {
-      console.log(err)
     })
   }
 
@@ -79,8 +74,6 @@ export class ReporteVotosTestigoComponent implements OnInit {
       const { puestos_asignados } = resp;
       this.puestos_asignado = puestos_asignados[0].nombre;
       console.log(resp)
-    }, (err: any) => {
-      console.log(err)
     })
   }
 
@@ -95,8 +88,6 @@ export class ReporteVotosTestigoComponent implements OnInit {
         );
       });
       console.log(this.listCandidatos)
-    }, (err: any) => {
-      console.log(err)
     })
   }
 

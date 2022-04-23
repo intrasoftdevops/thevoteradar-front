@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
-import { AlertService } from '../../../services/alert.service';
+import { ApiService } from '../../../services/api/api.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-ver-equipo-admin',
@@ -11,7 +11,6 @@ export class VerEquipoAdminComponent implements OnInit {
 
   constructor(private apiService: ApiService, private alertService: AlertService) { }
 
-  showLoading: boolean = false;
   tabla: string = "ninguna";
   dataDepartments: any = [];
   dataMunicipals: any = [];
@@ -99,76 +98,45 @@ export class VerEquipoAdminComponent implements OnInit {
   }
 
   getDepartmentAdmin() {
-    this.showLoading = true;
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      this.showLoading = false;
       this.dataDepartments = resp;
-    }, (err: any) => {
-      this.showLoading = false;
-      this.alertService.errorAlert(err.message);
     })
   }
 
   getMunicipalAdmin(data: any) {
-    this.showLoading = true;
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.showLoading = false;
       this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
-    }, (err: any) => {
-      this.showLoading = false;
-      this.alertService.errorAlert(err.message);
     })
   }
 
   getZonasyGerentes(data: any) {
-    this.showLoading = true;
     this.apiService.getZonasyGerentes(data).subscribe((resp: any) => {
-      this.showLoading = false;
       const { zonas, gerentes } = resp;
       this.dataZones = zonas;
       this.listGerentes = gerentes;
-    }, (err: any) => {
-      this.showLoading = false;
-      this.alertService.errorAlert(err.message);
     })
   }
 
   getPuestosySupervisores(data: any) {
-    this.showLoading = true;
     this.apiService.getPuestosySupervisores(data).subscribe((resp: any) => {
-      this.showLoading = false;
       const { puestos, supervisores } = resp;
       this.dataStations = puestos;
       this.listSupervisores = supervisores;
-    }, (err: any) => {
-      this.showLoading = false;
-      this.alertService.errorAlert(err.message);
     })
   }
 
   getMesasyCoordinadores(data: any) {
-    this.showLoading = true;
     this.apiService.getMesasyCoordinadores(data).subscribe((resp: any) => {
-      this.showLoading = false;
       const { mesas, coordinadores } = resp;
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
-    }, (err: any) => {
-      this.showLoading = false;
-      console.log(err)
-      this.alertService.errorAlert(err.message);
     })
   }
 
   getTestigoMesa(data: any) {
-    this.showLoading = true;
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
-      this.showLoading = false;
       const { testigos } = resp;
       this.listTestigos = testigos;
-    }, (err: any) => {
-      this.showLoading = false;
-      this.alertService.errorAlert(err.message);
     })
   }
 

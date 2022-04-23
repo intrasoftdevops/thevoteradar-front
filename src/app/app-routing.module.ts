@@ -28,7 +28,7 @@ import { ConsultarIncidenciasComponent } from './components/Coordinador/consulta
 import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incidencias/reporte-incidencias.component';
 import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar-coordinador/consultar-coordinador.component';
 import { ConsultarTestigoComponent } from './components/Coordinador/consultar-testigo/consultar-testigo.component';
-import { EditarPerfilComponent } from './components/editar-perfil/editar-perfil.component';
+import { EditarPerfilComponent } from './components/editarPerfil/editar-perfil.component';
 import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
 import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
 import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos-testigo/reporte-votos-testigo.component';

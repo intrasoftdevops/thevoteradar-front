@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import Swal from 'sweetalert2';
 import { filter } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { AlertService } from '../../../services/alert.service';
-import { CustomValidationService } from '../../../services/custom-validation.service';
+import { AlertService } from '../../../services/alert/alert.service';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 
 @Component({
   selector: 'app-editar-testigo',
@@ -66,9 +66,6 @@ export class EditarTestigoComponent implements OnInit {
 
           this.alertService.successAlert(resp.res);
 
-        }, (err: any) => {
-          console.log(err);
-          this.alertService.errorAlert(err.message);
         })
       } else {
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -100,12 +97,6 @@ export class EditarTestigoComponent implements OnInit {
       this.updateForm.get('mesas')?.setValue(this.getCodeMunicipals(mesas_asignadas));
       this.updateForm.get('puesto')?.setValue(this.getCodeMunicipals(puestos_asignados)[0]);
 
-    }, (err: any) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 
@@ -113,13 +104,6 @@ export class EditarTestigoComponent implements OnInit {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
       this.getTablesTestigo();
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 
@@ -128,13 +112,6 @@ export class EditarTestigoComponent implements OnInit {
       if (this.updateFormControl['puesto'].value) {
         this.dataTables = resp.filter((dataTable: any) => dataTable.codigo_puesto_votacion == this.updateFormControl['puesto'].value);
       }
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 

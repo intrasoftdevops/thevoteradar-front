@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
-import { ApiService } from '../../../services/api.service';
-import { AlertService } from '../../../services/alert.service';
+import { ApiService } from '../../../services/api/api.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-ver-puesto-gerente',
@@ -54,8 +54,6 @@ export class VerPuestoGerenteComponent implements OnInit {
   getMunicipalAdmin() {
     this.apiService.getMunicipalGerente().subscribe(resp => {
       this.dataMunicipals = resp;
-    }, (err: any) => {
-      this.showError(err);
     });
   }
 
@@ -64,8 +62,6 @@ export class VerPuestoGerenteComponent implements OnInit {
       console.log(resp)
       this.data = resp;
       this.tabla = true;
-    }, (err: any) => {
-      this.alertService.errorAlert(err.message);
     })
   }
 
@@ -82,15 +78,6 @@ export class VerPuestoGerenteComponent implements OnInit {
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
-  }
-
-  showError(err: any) {
-    console.log(err);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    });
   }
 
 }

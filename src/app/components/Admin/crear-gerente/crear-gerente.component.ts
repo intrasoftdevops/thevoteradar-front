@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { CustomValidationService } from '../../../services/custom-validation.service';
-import { AlertService } from 'src/app/services/alert.service';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { AlertService } from 'src/app/services/alert/alert.service';
 
 @Component({
   selector: 'app-crear-gerente',
@@ -10,8 +10,6 @@ import { AlertService } from 'src/app/services/alert.service';
   styleUrls: ['./crear-gerente.component.scss']
 })
 export class CrearGerenteComponent implements OnInit {
-
-  showLoading: boolean = false;
 
   dataMunicipals: any = [];
   dataDepartments: any = [];
@@ -59,15 +57,9 @@ export class CrearGerenteComponent implements OnInit {
     if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
 
       if (this.createForm.valid) {
-        this.showLoading = true;
         console.log(this.createForm.value)
         this.apiService.createGerente(this.createForm.value).subscribe((resp: any) => {
-          this.showLoading = false;
           this.alertService.successAlert(resp.message);
-
-        }, (err: any) => {
-          this.showLoading = false;
-          this.alertService.errorAlert(err.message);
         })
       } else {
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -77,26 +69,16 @@ export class CrearGerenteComponent implements OnInit {
   }
 
   getDepartmentAdmin() {
-    this.showLoading = true;
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      this.showLoading = false;
       this.dataDepartments = resp;
-    }, (err: any) => {
-      this.showLoading = false;
-      this.alertService.errorAlert(err.message);
     })
   }
 
   getMunicipalAdmin(data: any) {
-    this.showLoading = true;
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.showLoading = false;
       console.log(resp)
       this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
       console.log(this.dataMunicipals)
-    }, (err: any) => {
-      this.showLoading = false;
-      this.alertService.errorAlert(err.message);
     });
   }
 
