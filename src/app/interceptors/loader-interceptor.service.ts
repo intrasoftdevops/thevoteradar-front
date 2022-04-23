@@ -36,6 +36,7 @@ export class LoaderInterceptor implements HttpInterceptor {
       const subscription = next.handle(req)
         .subscribe(
           event => {
+            //console.log(event)
             if (event instanceof HttpResponse) {
               this.removeRequest(req);
               observer.next(event);

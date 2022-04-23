@@ -192,7 +192,7 @@ export class ApiService {
   }
 
   getVotosCoordinador(data: any) {
-    return this.http.post(this._URL + "/reportes-coordinador",data, { headers: this.getHeaders() });
+    return this.http.post(this._URL + "/reportes-coordinador", data, { headers: this.getHeaders() });
   }
 
   getCandidatos() {
@@ -205,7 +205,6 @@ export class ApiService {
 
   logout() {
     var data: any;
-    console.log(this.getHeaders());
     return this.http.post(this._URL + "/logout", data, { headers: this.getHeaders() });
   }
 
