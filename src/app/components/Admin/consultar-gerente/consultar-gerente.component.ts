@@ -10,6 +10,7 @@ import { AlertService } from '../../../services/alert.service';
 })
 export class ConsultarGerenteComponent implements OnInit {
 
+  showLoading: boolean = false;
   listGerenteAsignados: any = [];
   listGerenteNoAsignados: any = [];
   listMunicipals: any = [];
@@ -21,8 +22,9 @@ export class ConsultarGerenteComponent implements OnInit {
   }
 
   getGerentes() {
-
+    this.showLoading = true;
     this.apiService.getAssignedMunicipal().subscribe((resp: any) => {
+      this.showLoading = false;
       const { gerentes_asignados, gerentes_no_asignados } = resp;
       this.listGerenteAsignados = gerentes_asignados;
       this.listGerenteNoAsignados = gerentes_no_asignados;
@@ -37,6 +39,7 @@ export class ConsultarGerenteComponent implements OnInit {
         }
       }
     }, (err: any) => {
+      this.showLoading = false;
       this.alertService.errorAlert(err.message);
     });
   }

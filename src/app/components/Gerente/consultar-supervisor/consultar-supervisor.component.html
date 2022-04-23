@@ -29,7 +29,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="bg-white" *ngFor="let supervisor of listSupervisorAsignados;let index=index">
+                                    <tr class="bg-white"
+                                        *ngFor="let supervisor of listSupervisorAsignados;let index=index">
                                         <td>{{supervisor.nombres}} {{supervisor.apellidos}}</td>
                                         <td>{{supervisor.email}}</td>
                                         <td>{{listZones[index]}}</td>
@@ -77,4 +78,5 @@
             </div>
         </div>
     </div>
+    <app-footer></app-footer>
 </section>

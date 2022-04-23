@@ -13,6 +13,7 @@ import { AlertService } from '../../../services/alert.service';
 })
 export class EditarGerenteComponent implements OnInit {
 
+  showLoading:boolean = false;
   dataDepartments: any = [];
   dataMunicipals: any = [];
 
@@ -70,8 +71,10 @@ export class EditarGerenteComponent implements OnInit {
   onSubmit() {
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
+        this.showLoading = true;
         console.log(this.updateForm.value)
         this.apiService.updateGerente(this.idGerente, this.updateForm.value).subscribe((resp: any) => {
+          this.showLoading = false;
 
           this.alertService.successAlert(resp.res);
 
@@ -80,28 +83,35 @@ export class EditarGerenteComponent implements OnInit {
           this.alertService.errorAlert(err.message);
         })
       } else {
+        this.showLoading = false;
         this.alertService.errorAlert("Llene los campos obligatorios.");
       }
     }
   }
 
   getDepartmentAdmin() {
+    this.showLoading = true;
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
+      this.showLoading = false;
       this.dataDepartments = resp;
       this.getMunicipalAdmin();
     }, (err: any) => {
+      this.showLoading = false;
       this.alertService.errorAlert(err.message);
     })
   }
 
   getMunicipalAdmin() {
+    this.showLoading = true;
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
+      this.showLoading = false;
 
       if (this.updateFormControl['departamento'].value) {
         this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControl['departamento'].value);
       }
 
     }, (err: any) => {
+      this.showLoading = false;
       this.alertService.errorAlert(err.message);
     });
   }
@@ -111,8 +121,10 @@ export class EditarGerenteComponent implements OnInit {
   }
 
   getGerente() {
+    this.showLoading = true;
     this.idGerente = this.activatedRoute.snapshot.params['id'];
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
+      this.showLoading = false;
 
       const { gerente, municipios_asignados, departamentos_asignados } = resp;
 
@@ -128,6 +140,7 @@ export class EditarGerenteComponent implements OnInit {
       this.updateForm.get('departamento')?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
 
     }, (err: any) => {
+      this.showLoading = false;
       this.alertService.errorAlert(err.message);
     })
   }

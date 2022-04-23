@@ -62,11 +62,14 @@ export class ContactosComponent implements OnInit {
 
   onSubmit() {
     if (this.createForm.valid) {
+      this.showLoading = true;
       this.apiService.createContacto(this.createForm.value).subscribe((resp: any) => {
+        this.showLoading = false;
         this.createForm.reset();
         this.getContactos();
         this.successAlert(resp.message);
       }, (err: any) => {
+        this.showLoading = false;
         console.log(err);
         this.alertService.errorAlert(err.message);
       })
@@ -83,9 +86,12 @@ export class ContactosComponent implements OnInit {
       cancelButtonText:'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
+        this.showLoading = true;
         this.apiService.deleteContacto(id).subscribe((resp: any) => {
+          this.showLoading = false;
           this.getContactos();
         }, (err: any) => {
+          this.showLoading = false;
           console.log(err)
         })
       }
@@ -102,11 +108,14 @@ export class ContactosComponent implements OnInit {
 
   onSubmitItem(id: any) {
     if (this.updateForm.valid) {
+      this.showLoading = true;
       this.apiService.updateContacto(id, this.updateForm.value).subscribe((resp: any) => {
+        this.showLoading = false;
         this.updateForm.reset();
         this.getContactos();
         this.successAlert(resp.message);
       }, (err: any) => {
+        this.showLoading = false;
         console.log(err);
         this.alertService.errorAlert(err.message);
       })

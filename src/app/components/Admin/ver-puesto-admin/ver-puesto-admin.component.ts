@@ -9,7 +9,7 @@ import { AlertService } from '../../../services/alert.service';
 })
 export class VerPuestoAdminComponent implements OnInit {
 
-  showLoading:boolean = false;
+  showLoading: boolean = false;
   tabla: boolean = false;
   dataDepartments: any = [];
   gerentes: any = {}

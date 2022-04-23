@@ -11,6 +11,7 @@ import { CustomValidationService } from 'src/app/services/custom-validation.serv
 })
 export class EditarPerfilComponent implements OnInit {
 
+  showLoading: boolean = false;
   updateForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
@@ -31,7 +32,7 @@ export class EditarPerfilComponent implements OnInit {
   }
 
   getRol() {
-    this.rol = this.apiService.getRol();
+    this.rol = localStorage.getItem('rol');
   }
 
   onSubmit() {
@@ -39,12 +40,15 @@ export class EditarPerfilComponent implements OnInit {
     if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
 
       if (this.updateForm.valid) {
+        this.showLoading = true;
         console.log(this.updateForm.value)
         this.apiService.updateUser(this.updateForm.value).subscribe((resp: any) => {
+          this.showLoading = false;
 
           this.alertService.successAlert(resp.message);
 
         }, (err: any) => {
+          this.showLoading = false;
           this.alertService.errorAlert(err.message);
         })
       } else {
@@ -55,7 +59,9 @@ export class EditarPerfilComponent implements OnInit {
   }
 
   getUser() {
+    this.showLoading = true;
     this.apiService.getUser().subscribe((resp: any) => {
+      this.showLoading = false;
       this.updateForm.get('nombres')?.setValue(resp.nombres);
       this.updateForm.get('apellidos')?.setValue(resp.apellidos);
       this.updateForm.get('genero_id')?.setValue(resp.genero_id);
@@ -66,6 +72,7 @@ export class EditarPerfilComponent implements OnInit {
       this.updateForm.get('telefono')?.setValue(resp.telefono);
 
     }, (err: any) => {
+      this.showLoading = false;
       console.log(err)
     })
   }
