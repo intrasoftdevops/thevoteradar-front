@@ -10,7 +10,8 @@
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Municipios</label>
             <ng-select [items]="dataZones" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
-            (change)="getSelectedZone($event)" bindValue="nombre_departamento_votacion" notFoundText="No hay informacion disponible">
+              (change)="getSelectedZone($event)" bindValue="nombre_departamento_votacion"
+              notFoundText="No hay informacion disponible">
             </ng-select>
           </div>
         </div>
@@ -26,23 +27,21 @@
             </thead>
             <tbody>
               <tr class="bg-white">
-              <td
-                [ngClass]="textColor(data.coordinadores.cantidad_coordinadores_existentes,data.coordinadores.cantidad_coordinadores_necesitados)">
-                {{data.coordinadores.cantidad_coordinadores_existentes}}/{{data.coordinadores.cantidad_coordinadores_necesitados}}
-                ({{(data.coordinadores.cantidad_coordinadores_existentes/data.coordinadores.cantidad_coordinadores_necesitados)*100}}%)
-              </td>
-              <td>
-                {{data.coordinadores.cantidad_coordinadores_por_asignar}}
-              </td>
-              <td
-                [ngClass]="textColor(data.testigos.cantidad_testigos_existentes,data.testigos.cantidad_testigos_necesitados)">
-                {{data.testigos.cantidad_testigos_existentes}}/{{data.testigos.cantidad_testigos_necesitados}}
-                ({{(data.testigos.cantidad_testigos_existentes/data.testigos.cantidad_testigos_necesitados)*100}}%)
-              </td>
-              <td>
-                {{data.testigos.cantidad_testigos_por_asignar}}
-              </td>
-              </tr>
+                <td
+                  [ngClass]="textColor(coordinadores.cantidad_coordinadores_existentes,coordinadores.cantidad_coordinadores_necesitados)">
+                  {{coordinadores.cantidad_coordinadores_existentes}}/{{coordinadores.cantidad_coordinadores_necesitados}}
+                  {{createPercent(coordinadores.cantidad_coordinadores_existentes,coordinadores.cantidad_coordinadores_necesitados)}}
+                </td>
+                <td>
+                  {{coordinadores.cantidad_coordinadores_por_asignar}}
+                </td>
+                <td [ngClass]="textColor(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)">
+                  {{testigos.cantidad_testigos_existentes}}/{{testigos.cantidad_testigos_necesitados}}
+                  {{createPercent(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)}}
+                </td>
+                <td>
+                  {{testigos.cantidad_testigos_por_asignar}}
+                </td>
             </tbody>
           </table>
         </div>

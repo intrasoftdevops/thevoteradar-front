@@ -15,40 +15,43 @@
           </div>
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Mesas</label>
-            <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa" bindValue="codigo_unico"
-              (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
+            <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa"
+              bindValue="codigo_unico" (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
               [(ngModel)]="selectedTable">
             </ng-select>
           </div>
         </div>
       </div>
     </div>
-      <div class="card mt-5" *ngIf="tabla">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4>Testigos</h4>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
-                <tr>
-                  <th scope="col">NOMBRES</th>
-                  <th scope="col">APELLIDOS</th>
-                  <th scope="col">TELEFONO</th>
-                  <th scope="col">CORREO ELECTRONICO</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let testigo of listTestigos" class="bg-white">
-                  <td scope="row">{{testigo.nombres}}</td>
-                  <td>{{testigo.apellidos}}</td>
-                  <td>78213</td>
-                  <td>{{testigo.email}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+    <div class="card mt-5" *ngIf="tabla">
+      <div class="bg-primary py-3 px-5 text-white">
+        <h4>Testigos</h4>
       </div>
+      <div class="card-body">
+        <div class="table-responsive" *ngIf="listTestigos.length>0;else other_content">
+          <table class="table table-curved text-center">
+            <thead class="text-dark">
+              <tr>
+                <th scope="col">NOMBRES</th>
+                <th scope="col">APELLIDOS</th>
+                <th scope="col">TELEFONO</th>
+                <th scope="col">CORREO ELECTRONICO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let testigo of listTestigos" class="bg-white">
+                <td scope="row">{{testigo.nombres}}</td>
+                <td>{{testigo.apellidos}}</td>
+                <td>78213</td>
+                <td>{{testigo.email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #other_content>
+          <p class="text-center">No hay Testigo asignado para esta mesa.</p>
+        </ng-template>
+      </div>
+    </div>
   </div>
 </section>

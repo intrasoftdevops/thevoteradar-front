@@ -16,31 +16,17 @@ export class VerPuestoGerenteComponent implements OnInit {
   dataStations: any = [];
   selectedZone: any = [];
   selectedStation: any = [];
-  data: any = {
-    supervisores: {
-      cantidad_supervisores_existentes: '',
-      cantidad_supervisores_necesitados: '',
-      cantidad_supervisores_por_asignar: ''
-    },
-    coordinadores: {
-      cantidad_coordinadores_existentes: '',
-      cantidad_coordinadores_necesitados: '',
-      cantidad_coordinadores_por_asignar: ''
-    },
-    testigos: {
-      cantidad_testigos_existentes: '',
-      cantidad_testigos_necesitados: '',
-      cantidad_testigos_por_asignar: ''
-    }
-  };
+  supervisores: any = {};
+  coordinadores: any = {};
+  testigos: any = {};
 
-  constructor(private apiService: ApiService,private alertService: AlertService) { }
+  constructor(private apiService: ApiService, private alertService: AlertService) { }
 
   ngOnInit() {
     this.getMunicipalAdmin();
   }
 
-  getSelectedMunicipal(item: any){
+  getSelectedMunicipal(item: any) {
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { municipio: codigo_unico };
@@ -60,7 +46,9 @@ export class VerPuestoGerenteComponent implements OnInit {
   getNecesitadosMunicipio(data: any) {
     this.apiService.getNecesitadosMunicipio(data).subscribe((resp: any) => {
       console.log(resp)
-      this.data = resp;
+      this.supervisores = resp.supervisores;
+      this.coordinadores = resp.coordinadores;
+      this.testigos = resp.testigos;
       this.tabla = true;
     })
   }
@@ -73,6 +61,21 @@ export class VerPuestoGerenteComponent implements OnInit {
     } else {
       return 'text-danger'
     }
+  }
+
+  createPercent(existentes: any, necesitados: any) {
+    const percent = (existentes / necesitados) * 100;
+    if (necesitados == 0) {
+      return '(0%)';
+    }
+    return `(${Math.round(percent * 100) / 100}%)`;
+  }
+
+  validObjects() {
+    if ((Object.keys(this.supervisores).length !== 0) && (Object.keys(this.coordinadores).length !== 0) && (Object.keys(this.testigos).length !== 0)) {
+      return true;
+    }
+    return false;
   }
 
   getCode(item: any) {

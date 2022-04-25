@@ -22,8 +22,8 @@
           </div>
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Mesas</label>
-            <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa" bindValue="codigo_unico"
-              (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
+            <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa"
+              bindValue="codigo_unico" (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
               [(ngModel)]="selectedTable">
             </ng-select>
           </div>
@@ -36,7 +36,7 @@
           <h4>Coordinadores</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="table-responsive" *ngIf="listCoordinadores.length>0;else other_content">
             <table class="table table-curved text-center">
               <thead class="text-dark">
                 <tr>
@@ -56,6 +56,9 @@
               </tbody>
             </table>
           </div>
+          <ng-template #other_content>
+            <p class="text-center">No hay Coordinador asignado para este puesto.</p>
+          </ng-template>
         </div>
       </div>
       <div class="card mt-5" *ngSwitchCase="'testigo'">
@@ -63,7 +66,7 @@
           <h4>Testigos</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="table-responsive" *ngIf="listTestigos.length>0;else other_content">
             <table class="table table-curved text-center">
               <thead class="text-dark">
                 <tr>
@@ -83,6 +86,9 @@
               </tbody>
             </table>
           </div>
+          <ng-template #other_content>
+            <p class="text-center">No hay Testigo asignado para esta mesa.</p>
+          </ng-template>
         </div>
       </div>
     </ng-container>

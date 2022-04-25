@@ -14,27 +14,17 @@ export class VerPuestoSupervisorComponent implements OnInit {
   dataZones: any = [];
   dataStations: any = [];
   selectedStation: any = [];
-  data: any = {
-    coordinadores: {
-      cantidad_coordinadores_existentes: '',
-      cantidad_coordinadores_necesitados: '',
-      cantidad_coordinadores_por_asignar: ''
-    },
-    testigos: {
-      cantidad_testigos_existentes: '',
-      cantidad_testigos_necesitados: '',
-      cantidad_testigos_por_asignar: ''
-    }
-  };
+  coordinadores: any = {};
+  testigos: any = {};
 
-  constructor(private apiService: ApiService,private alertService: AlertService) { }
+  constructor(private apiService: ApiService, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getZonas();
 
   }
 
-  getSelectedZone(item: any){
+  getSelectedZone(item: any) {
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { zona: codigo_unico };
@@ -45,12 +35,28 @@ export class VerPuestoSupervisorComponent implements OnInit {
     }
   }
 
-  getNecesitadosZona(data: any){
+  getNecesitadosZona(data: any) {
     this.apiService.getNecesitadosZona(data).subscribe((resp: any) => {
       console.log(resp)
-      this.data = resp;
+      this.coordinadores = resp.coordinadores;
+      this.testigos = resp.testigos;
       this.tabla = true;
     })
+  }
+
+  createPercent(existentes: any, necesitados: any) {
+    const percent = (existentes / necesitados) * 100;
+    if (necesitados == 0) {
+      return '(0%)';
+    }
+    return `(${Math.round(percent * 100) / 100}%)`;
+  }
+
+  validObjects() {
+    if ((Object.keys(this.coordinadores).length !== 0) && (Object.keys(this.testigos).length !== 0)) {
+      return true;
+    }
+    return false;
   }
 
   getZonas() {

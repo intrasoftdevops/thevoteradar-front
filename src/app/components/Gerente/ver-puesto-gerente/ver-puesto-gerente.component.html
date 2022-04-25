@@ -10,11 +10,12 @@
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Municipios</label>
             <ng-select [items]="dataMunicipals" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
-            (change)="getSelectedMunicipal($event)" bindValue="nombre_departamento_votacion" notFoundText="No hay informacion disponible">
+              (change)="getSelectedMunicipal($event)" bindValue="nombre_departamento_votacion"
+              notFoundText="No hay informacion disponible">
             </ng-select>
           </div>
         </div>
-        <div class="table-responsive" *ngIf="tabla">
+        <div class="table-responsive" *ngIf="tabla && validObjects()">
           <table class="table text-center align-middle">
             <thead class="text-dark align-middle">
               <tr>
@@ -29,29 +30,28 @@
             <tbody>
               <tr class="bg-white">
                 <td
-                [ngClass]="textColor(data.supervisores.cantidad_supervisores_existentes,data.supervisores.cantidad_supervisores_necesitados)">
-                {{data.supervisores.cantidad_supervisores_existentes}}/{{data.supervisores.cantidad_supervisores_necesitadoss}}
-                ({{(data.supervisores.cantidad_supervisores_existentes/data.supervisores.cantidad_supervisores_necesitados)*100}}%)
-              </td>
-              <td>
-                {{data.supervisores.cantidad_supervisores_por_asignar}}
-              </td>
-              <td
-                [ngClass]="textColor(data.coordinadores.cantidad_coordinadores_existentes,data.coordinadores.cantidad_coordinadores_necesitados)">
-                {{data.coordinadores.cantidad_coordinadores_existentes}}/{{data.coordinadores.cantidad_coordinadores_necesitados}}
-                ({{(data.coordinadores.cantidad_coordinadores_existentes/data.coordinadores.cantidad_coordinadores_necesitados)*100}}%)
-              </td>
-              <td>
-                {{data.coordinadores.cantidad_coordinadores_por_asignar}}
-              </td>
-              <td
-                [ngClass]="textColor(data.testigos.cantidad_testigos_existentes,data.testigos.cantidad_testigos_necesitados)">
-                {{data.testigos.cantidad_testigos_existentes}}/{{data.testigos.cantidad_testigos_necesitados}}
-                ({{(data.testigos.cantidad_testigos_existentes/data.testigos.cantidad_testigos_necesitados)*100}}%)
-              </td>
-              <td>
-                {{data.testigos.cantidad_testigos_por_asignar}}
-              </td>
+                  [ngClass]="textColor(supervisores.cantidad_supervisores_existentes,supervisores.cantidad_supervisores_necesitados)">
+                  {{supervisores.cantidad_supervisores_existentes}}/{{supervisores.cantidad_supervisores_necesitados}}
+                  {{createPercent(supervisores.cantidad_supervisores_existentes,supervisores.cantidad_supervisores_necesitados)}}
+                </td>
+                <td>
+                  {{supervisores.cantidad_supervisores_por_asignar}}
+                </td>
+                <td
+                  [ngClass]="textColor(coordinadores.cantidad_coordinadores_existentes,coordinadores.cantidad_coordinadores_necesitados)">
+                  {{coordinadores.cantidad_coordinadores_existentes}}/{{coordinadores.cantidad_coordinadores_necesitados}}
+                  {{createPercent(coordinadores.cantidad_coordinadores_existentes,coordinadores.cantidad_coordinadores_necesitados)}}
+                </td>
+                <td>
+                  {{coordinadores.cantidad_coordinadores_por_asignar}}
+                </td>
+                <td [ngClass]="textColor(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)">
+                  {{testigos.cantidad_testigos_existentes}}/{{testigos.cantidad_testigos_necesitados}}
+                  {{createPercent(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)}}
+                </td>
+                <td>
+                  {{testigos.cantidad_testigos_por_asignar}}
+                </td>
               </tr>
             </tbody>
           </table>

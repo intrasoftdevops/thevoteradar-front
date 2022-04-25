@@ -12,21 +12,15 @@ export class VerPuestoCoordinadorComponent implements OnInit {
 
   tabla: boolean = false;
   dataStations: any = [];
-  data: any = {
-    testigos: {
-      cantidad_testigos_existentes: '',
-      cantidad_testigos_necesitados: '',
-      cantidad_testigos_por_asignar: ''
-    }
-  };
+  testigos: any = {};
 
-  constructor(private apiService: ApiService,private alertService: AlertService) { }
+  constructor(private apiService: ApiService, private alertService: AlertService) { }
 
   ngOnInit() {
     this.getPuestos();
   }
 
-  getSelectedStation(item: any){
+  getSelectedStation(item: any) {
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { puesto: codigo_unico };
@@ -43,9 +37,9 @@ export class VerPuestoCoordinadorComponent implements OnInit {
     })
   }
 
-  getNecesitadosPuesto(data: any){
+  getNecesitadosPuesto(data: any) {
     this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
-      this.data = resp;
+      this.testigos = resp.testigos;
       this.tabla = true;
     })
   }
@@ -58,6 +52,21 @@ export class VerPuestoCoordinadorComponent implements OnInit {
     } else {
       return 'text-danger'
     }
+  }
+
+  createPercent(existentes: any, necesitados: any) {
+    const percent = (existentes / necesitados) * 100;
+    if (necesitados == 0) {
+      return '(0%)';
+    }
+    return `(${Math.round(percent * 100) / 100}%)`;
+  }
+
+  validObjects() {
+    if ((Object.keys(this.testigos).length !== 0)) {
+      return true;
+    }
+    return false;
   }
 
   getCode(item: any) {

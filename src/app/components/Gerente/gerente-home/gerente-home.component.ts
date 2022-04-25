@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-gerente-home',
@@ -6,8 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./gerente-home.component.scss']
 })
 export class GerenteHomeComponent implements OnInit {
+  safeURL: any;
 
-  constructor() { }
+  constructor(private _sanitizer: DomSanitizer) {
+    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/SQNtGoM3FVU");
+   }
 
   ngOnInit(): void {
   }

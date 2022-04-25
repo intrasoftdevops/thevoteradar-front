@@ -10,7 +10,8 @@
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Puestos de votacion</label>
             <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
-            (change)="getSelectedStation($event)" bindValue="nombre_departamento_votacion" notFoundText="No hay informacion disponible">
+              (change)="getSelectedStation($event)" bindValue="nombre_departamento_votacion"
+              notFoundText="No hay informacion disponible">
             </ng-select>
           </div>
         </div>
@@ -24,14 +25,13 @@
             </thead>
             <tbody>
               <tr class="bg-white">
-              <td
-                [ngClass]="textColor(data.testigos.cantidad_testigos_existentes,data.testigos.cantidad_testigos_necesitados)">
-                {{data.testigos.cantidad_testigos_existentes}}/{{data.testigos.cantidad_testigos_necesitados}}
-                ({{(data.testigos.cantidad_testigos_existentes/data.testigos.cantidad_testigos_necesitados)*100}}%)
-              </td>
-              <td>
-                {{data.testigos.cantidad_testigos_por_asignar}}
-              </td>
+                <td [ngClass]="textColor(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)">
+                  {{testigos.cantidad_testigos_existentes}}/{{testigos.cantidad_testigos_necesitados}}
+                  {{createPercent(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)}}
+                </td>
+                <td>
+                  {{testigos.cantidad_testigos_por_asignar}}
+                </td>
               </tr>
             </tbody>
           </table>
