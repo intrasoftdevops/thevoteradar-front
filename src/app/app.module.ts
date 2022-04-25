@@ -56,6 +56,7 @@ import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordin
 import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
 import { CrearCoordinadorGerenteComponent } from './components/Gerente/crear-coordinador-gerente/crear-coordinador-gerente.component';
 import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo-gerente/crear-testigo-gerente.component';
+import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-testigo-supervisor/crear-testigo-supervisor.component';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo
     CrearCoordinadorAdminComponent,
     CrearTestigoAdminComponent,
     CrearCoordinadorGerenteComponent,
-    CrearTestigoGerenteComponent
+    CrearTestigoGerenteComponent,
+    CrearTestigoSupervisorComponent
   ],
   imports: [
     BrowserModule,

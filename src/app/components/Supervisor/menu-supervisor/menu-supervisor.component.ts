@@ -15,21 +15,7 @@ export class MenuSupervisorComponent implements OnInit {
 
   constructor(private apiService: ApiService, private router: Router) { }
 
-  ngOnInit(): void {
-    this.getCoordinadores();
-  }
-
-  getCoordinadores() {
-    this.apiService.getCoordinadores().subscribe((resp: any) => {
-      const { coordinadores_asignados, coordinadores_no_asignados } = resp;
-      console.log(resp)
-      for (let coordinador of coordinadores_asignados) {
-        this.listCoordinadorAsignados.push(coordinador);
-      }
-      for (let coordinador of coordinadores_no_asignados) {
-        this.listCoordinadorNoAsignados.push(coordinador);
-      }
-    })
+  ngOnInit() {
   }
 
   logout() {

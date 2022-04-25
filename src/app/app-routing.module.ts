@@ -39,6 +39,7 @@ import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordin
 import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
 import { CrearCoordinadorGerenteComponent } from './components/Gerente/crear-coordinador-gerente/crear-coordinador-gerente.component';
 import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo-gerente/crear-testigo-gerente.component';
+import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-testigo-supervisor/crear-testigo-supervisor.component';
 
 const routes: Routes = [
   {
@@ -194,6 +195,10 @@ const routes: Routes = [
   {
     path: 'crearTestigoGerente',
     component: CrearTestigoGerenteComponent
+  },
+  {
+    path: 'crearTestigoSupervisor',
+    component: CrearTestigoSupervisorComponent
   }
 ];
 
