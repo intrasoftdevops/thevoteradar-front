@@ -54,6 +54,8 @@ import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
 import { CrearSupervisorAdminComponent } from './components/Admin/crear-supervisor-admin/crear-supervisor-admin.component';
 import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordinador-admin/crear-coordinador-admin.component';
 import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
+import { CrearCoordinadorGerenteComponent } from './components/Gerente/crear-coordinador-gerente/crear-coordinador-gerente.component';
+import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo-gerente/crear-testigo-gerente.component';
 
 @NgModule({
   declarations: [
@@ -103,7 +105,9 @@ import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-adm
     LoadingComponent,
     CrearSupervisorAdminComponent,
     CrearCoordinadorAdminComponent,
-    CrearTestigoAdminComponent
+    CrearTestigoAdminComponent,
+    CrearCoordinadorGerenteComponent,
+    CrearTestigoGerenteComponent
   ],
   imports: [
     BrowserModule,

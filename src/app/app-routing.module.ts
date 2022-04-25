@@ -37,6 +37,8 @@ import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home
 import { CrearSupervisorAdminComponent } from './components/Admin/crear-supervisor-admin/crear-supervisor-admin.component';
 import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordinador-admin/crear-coordinador-admin.component';
 import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
+import { CrearCoordinadorGerenteComponent } from './components/Gerente/crear-coordinador-gerente/crear-coordinador-gerente.component';
+import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo-gerente/crear-testigo-gerente.component';
 
 const routes: Routes = [
   {
@@ -184,6 +186,14 @@ const routes: Routes = [
   {
     path: 'crearTestigoAdmin',
     component: CrearTestigoAdminComponent
+  },
+  {
+    path: 'crearCoordinadorGerente',
+    component: CrearCoordinadorGerenteComponent
+  },
+  {
+    path: 'crearTestigoGerente',
+    component: CrearTestigoGerenteComponent
   }
 ];
 
