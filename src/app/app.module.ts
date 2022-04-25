@@ -34,7 +34,6 @@ import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/
 import { ConsultarGerenteComponent } from './components/Admin/consultar-gerente/consultar-gerente.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ConsultarSupervisorComponent } from './components/Gerente/consultar-supervisor/consultar-supervisor.component';
-import { ConsultarIncidenciasComponent } from './components/Coordinador/consultar-incidencias/consultar-incidencias.component';
 import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incidencias/reporte-incidencias.component';
 import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar-coordinador/consultar-coordinador.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -52,6 +51,9 @@ import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home
 import { LoadingComponent } from './components/loading/loading.component';
 import { LoaderService } from './services/loader/loader.service';
 import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
+import { CrearSupervisorAdminComponent } from './components/Admin/crear-supervisor-admin/crear-supervisor-admin.component';
+import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordinador-admin/crear-coordinador-admin.component';
+import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,6 @@ import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
     EditarTestigoComponent,
     ConsultarGerenteComponent,
     ConsultarSupervisorComponent,
-    ConsultarIncidenciasComponent,
     ReporteIncidenciasComponent,
     ConsultarCoordinadorComponent,
     FooterComponent,
@@ -99,7 +100,10 @@ import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
     ImpugnarComponent,
     MenuImpugnadorComponent,
     ImpugnadorHomeComponent,
-    LoadingComponent
+    LoadingComponent,
+    CrearSupervisorAdminComponent,
+    CrearCoordinadorAdminComponent,
+    CrearTestigoAdminComponent
   ],
   imports: [
     BrowserModule,

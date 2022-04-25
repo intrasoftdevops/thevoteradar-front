@@ -7,7 +7,7 @@
           Reporte</span></button>
       <div class="card mt-3">
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="table-responsive" *ngIf="dataIncidencias.length>0;else incidencias_content">
             <table class="table text-center align-middle">
               <thead class="text-dark align-middle">
                 <tr>
@@ -34,10 +34,14 @@
               </tbody>
             </table>
           </div>
+          <ng-template #incidencias_content>
+            <p class="text-center mb-0">No hay incidencias.</p>
+          </ng-template>
         </div>
       </div>
     </div>
   </div>
+  <app-footer></app-footer>
 </section>
 
 <!-- REPORTAR INCIDENCIA -->

@@ -7,7 +7,8 @@
                     Reportes de mesa
                 </h4>
             </div>
-            <form class="row pt-5" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+            <form class="row pt-5" [formGroup]="createForm" (ngSubmit)="onSubmit()"
+                *ngIf="mesas_asignadas.length>0;else mesas_content">
                 <div class="col-lg-7">
                     <div class="card">
                         <div class="bg-primary py-3 px-4 text-white">
@@ -38,7 +39,7 @@
                             </div>
                         </div>
                         <div class="card-body pt-0">
-                            <div class="table-responsive">
+                            <div class="table-responsive" *ngIf="listCandidatos.length>0;else candidato_content">
                                 <table class="table text-center align-middle">
                                     <thead class="table-dark align-middle">
                                         <tr>
@@ -78,6 +79,9 @@
                                     </tfoot>-->
                                 </table>
                             </div>
+                            <ng-template #candidato_content>
+                                <p class="text-center mb-0">No existen candidatos para este reporte.</p>
+                            </ng-template>
                         </div>
                     </div>
                 </div>
@@ -99,6 +103,14 @@
                     </div>
                 </div>
             </form>
+            <ng-template #mesas_content>
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <p class="text-center mb-0">No hay mesas para reportar.</p>
+                    </div>
+                </div>
+            </ng-template>
         </div>
     </div>
+    <app-footer></app-footer>
 </section>

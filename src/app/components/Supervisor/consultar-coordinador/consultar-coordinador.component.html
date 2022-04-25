@@ -18,18 +18,19 @@
             <div class="tab-pane fade show active" id="asignados" role="tabpanel">
                 <div class="card mt-3">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive" *ngIf="listCoordinadorAsignados.length>0;else puesto_content">
                             <table class="table text-center align-middle">
                                 <thead class="text-dark align-middle">
                                     <tr>
                                         <th scope="col">NOMBRE COMPLETO</th>
                                         <th scope="col">CORREO ELECTRONICO</th>
-                                        <th scope="col">MUNICIPIOS</th>
+                                        <th scope="col">PUESTOS</th>
                                         <th scope="col">OPCIONES</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="bg-white" *ngFor="let coordinador of listCoordinadorAsignados;let index=index">
+                                    <tr class="bg-white"
+                                        *ngFor="let coordinador of listCoordinadorAsignados;let index=index">
                                         <td>{{coordinador.nombres}} {{coordinador.apellidos}}</td>
                                         <td>{{coordinador.email}}</td>
                                         <td>{{listStations[index]}}</td>
@@ -43,13 +44,17 @@
                                 </tbody>
                             </table>
                         </div>
+                        <ng-template #puesto_content>
+                            <p class="text-center mb-0">No hay Coordinadores con asignacion de puesto.</p>
+                        </ng-template>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="noasignados" role="tabpanel">
                 <div class="card mt-3">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive"
+                            *ngIf="listCoordinadorNoAsignados.length>0;else no_puesto_content">
                             <table class="table text-center align-middle">
                                 <thead class="text-dark align-middle">
                                     <tr>
@@ -72,9 +77,13 @@
                                 </tbody>
                             </table>
                         </div>
+                        <ng-template #no_puesto_content>
+                            <p class="text-center mb-0">No hay Coordinadores sin asignacion de puesto.</p>
+                        </ng-template>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <app-footer></app-footer>
 </section>

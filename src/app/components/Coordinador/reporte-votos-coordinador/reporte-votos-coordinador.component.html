@@ -17,7 +17,11 @@
                         </ng-select>
                     </div>
                 </div>
-                <div class="table-responsive" *ngIf="tabla">
+            </div>
+        </div>
+        <div class="card mt-5" *ngIf="tabla">
+            <div class="card-body">
+                <div class="table-responsive" *ngIf="listMesas.length>0;else table_content">
                     <table class="table text-center align-middle">
                         <thead class="text-dark align-middle">
                             <tr>
@@ -40,9 +44,13 @@
                         </tbody>
                     </table>
                 </div>
+                <ng-template #table_content>
+                    <p class="text-center mb-0">No hay resporte de votos para este puesto.</p>
+                </ng-template>
             </div>
         </div>
     </div>
+    <app-footer></app-footer>
 </section>
 
 <div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -74,8 +82,9 @@
                     </table>
                 </div>
                 <si-ng-lightbox [showPreviews]="true">
-                    <img *ngFor="let img of photos" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo" [siLightboxItem]="img.url_archivo" class="item w-100"/>
-                  </si-ng-lightbox>
+                    <img *ngFor="let img of photos" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
+                        [siLightboxItem]="img.url_archivo" class="item w-100" />
+                </si-ng-lightbox>
             </div>
         </div>
     </div>

@@ -24,7 +24,6 @@ import { EditarCoordinadorComponent } from './components/Supervisor/editar-coord
 import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
 import { ConsultarGerenteComponent } from './components/Admin/consultar-gerente/consultar-gerente.component';
 import { ConsultarSupervisorComponent } from './components/Gerente/consultar-supervisor/consultar-supervisor.component';
-import { ConsultarIncidenciasComponent } from './components/Coordinador/consultar-incidencias/consultar-incidencias.component';
 import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incidencias/reporte-incidencias.component';
 import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar-coordinador/consultar-coordinador.component';
 import { ConsultarTestigoComponent } from './components/Coordinador/consultar-testigo/consultar-testigo.component';
@@ -35,6 +34,9 @@ import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos
 import { ImpugnarComponent } from './components/Impugnador/impugnar/impugnar.component';
 import { MenuImpugnadorComponent } from './components/Impugnador/menu-impugnador/menu-impugnador.component';
 import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home/impugnador-home.component';
+import { CrearSupervisorAdminComponent } from './components/Admin/crear-supervisor-admin/crear-supervisor-admin.component';
+import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordinador-admin/crear-coordinador-admin.component';
+import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
 
 const routes: Routes = [
   {
@@ -144,10 +146,6 @@ const routes: Routes = [
     component: ConsultarTestigoComponent
   },
   {
-    path: 'consultarIncidencias',
-    component: ConsultarIncidenciasComponent
-  },
-  {
     path: 'reporteIncidencias',
     component: ReporteIncidenciasComponent
   },
@@ -174,6 +172,18 @@ const routes: Routes = [
   {
     path: 'ImpugnadorHome',
     component: ImpugnadorHomeComponent
+  },
+  {
+    path: 'crearSupervisorAdmin',
+    component: CrearSupervisorAdminComponent
+  },
+  {
+    path: 'crearCoordinadorAdmin',
+    component: CrearCoordinadorAdminComponent
+  },
+  {
+    path: 'crearTestigoAdmin',
+    component: CrearTestigoAdminComponent
   }
 ];
 

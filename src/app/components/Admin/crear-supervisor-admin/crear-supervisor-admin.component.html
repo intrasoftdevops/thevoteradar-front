@@ -1,10 +1,10 @@
 <section>
-    <app-menu-coordinador></app-menu-coordinador>
+    <app-menu-admin></app-menu-admin>
     <form class="container py-5" [formGroup]="createForm" (ngSubmit)="onSubmit()">
         <div class="card">
             <div class="bg-primary py-3 px-5 text-white">
                 <h4 class="m-0">
-                    Añadir Testigo
+                    Añadir Supervisor
                 </h4>
             </div>
             <div class="card-body">
@@ -92,18 +92,28 @@
                 <div class="row mx-4 my-4">
                     <div class="form-group col-md-6 col-lg-4 pt-2">
                         <label class="fw-bold form-label">
-                            <span class="fw-bold">Puesto de votacion</span>
+                            <span class="fw-bold">Departamento de votacion</span>
                             <span class="text-danger">*</span>
                         </label>
-                        <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
-                            formControlName="puesto" bindLabel="nombre" bindValue="codigo_unico"
-                            (change)="getSelectedValue($event)" notFoundText="No hay informacion disponible">
+                        <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
+                            bindLabel="nombre_departamento_votacion" bindValue="nombre_departamento_votacion"
+                            (change)="getSelectedDepartment($event)" notFoundText="No hay informacion disponible">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="fw-bold form-label">Mesas de votacion</label>
-                        <ng-select [items]="dataTables" class="custom-multiple-select rounded" formControlName="mesas"
-                            bindLabel="numero_mesa" bindValue="codigo_unico" [multiple]="true"
+                        <label class="fw-bold form-label">
+                            <span class="fw-bold">Municipio de votacion</span>
+                            <span class="text-danger">*</span>
+                        </label>
+                        <ng-select [items]="dataMunicipals" [searchable]="false" class="custom-select rounded"
+                            formControlName="municipio" bindLabel="nombre" bindValue="codigo_unico"
+                            (change)="getSelectedMunicipal($event)" notFoundText="No hay informacion disponible">
+                        </ng-select>
+                    </div>
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="fw-bold form-label">Zonas de votacion</label>
+                        <ng-select [items]="dataZones" class="custom-multiple-select rounded" formControlName="zonas"
+                            bindLabel="nombre" bindValue="codigo_unico" [multiple]="true"
                             notFoundText="No hay informacion disponible">
                         </ng-select>
                     </div>

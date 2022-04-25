@@ -18,7 +18,7 @@
             <div class="tab-pane fade show active" id="abiertos" role="tabpanel">
                 <div class="card mt-3">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive" *ngIf="dataIncidenciasAbiertas.length>0;else open_content">
                             <table class="table text-center align-middle">
                                 <thead class="text-dark align-middle">
                                     <tr>
@@ -46,13 +46,16 @@
                                 </tbody>
                             </table>
                         </div>
+                        <ng-template #open_content>
+                            <p class="text-center mb-0">No hay incidencias abiertas por el momento.</p>
+                        </ng-template>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="cerrados" role="tabpanel">
                 <div class="card mt-3">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive" *ngIf="dataIncidenciasCerradas.length>0;else close_content">
                             <table class="table text-center align-middle">
                                 <thead class="text-dark align-middle">
                                     <tr>
@@ -79,11 +82,15 @@
                                 </tbody>
                             </table>
                         </div>
+                        <ng-template #close_content>
+                            <p class="text-center mb-0">No hay incidencias cerradas por el momento.</p>
+                        </ng-template>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <app-footer></app-footer>
 </section>
 
 <div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

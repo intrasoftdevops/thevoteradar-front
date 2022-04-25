@@ -18,13 +18,13 @@
             <div class="tab-pane fade show active" id="asignados" role="tabpanel">
                 <div class="card mt-3">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive" *ngIf="listTestigoAsignados.length>0;else mesa_content">
                             <table class="table text-center align-middle">
                                 <thead class="text-dark align-middle">
                                     <tr>
                                         <th scope="col">NOMBRE COMPLETO</th>
                                         <th scope="col">CORREO ELECTRONICO</th>
-                                        <th scope="col">MUNICIPIOS</th>
+                                        <th scope="col">MESAS</th>
                                         <th scope="col">OPCIONES</th>
                                     </tr>
                                 </thead>
@@ -43,13 +43,16 @@
                                 </tbody>
                             </table>
                         </div>
+                        <ng-template #mesa_content>
+                            <p class="text-center mb-0">No hay Testigos con asignacion de mesa.</p>
+                        </ng-template>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="noasignados" role="tabpanel">
                 <div class="card mt-3">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive" *ngIf="listTestigoNoAsignados.length>0;else no_mesa_content">
                             <table class="table text-center align-middle">
                                 <thead class="text-dark align-middle">
                                     <tr>
@@ -72,9 +75,13 @@
                                 </tbody>
                             </table>
                         </div>
+                        <ng-template #no_mesa_content>
+                            <p class="text-center mb-0">No hay Testigos sin asignacion de mesa.</p>
+                        </ng-template>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <app-footer></app-footer>
 </section>
