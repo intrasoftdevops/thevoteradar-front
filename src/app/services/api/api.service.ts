@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable({
   providedIn: 'root'
@@ -217,6 +218,8 @@ export class ApiService {
   }
 
   setToken(token: any) {
+    const hola = CryptoJS.AES.encrypt(token, 'secret key 123').toString();
+    console.log("Encriptacion", hola);
     localStorage.setItem('token', token);
   }
 
