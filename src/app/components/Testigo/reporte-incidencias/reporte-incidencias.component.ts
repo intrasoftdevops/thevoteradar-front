@@ -3,6 +3,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, Validators, FormBuilder, FormControl, FormArray } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-reporte-incidencias',
@@ -25,7 +26,7 @@ export class ReporteIncidenciasComponent implements OnInit {
   incidenciaActual: any = {};
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService,
-    private customValidator: CustomValidationService) { }
+    private customValidator: CustomValidationService, private localData: LocalDataService) { }
 
   ngOnInit(): void {
     this.getIncidenciasDeTestigo();
@@ -78,7 +79,7 @@ export class ReporteIncidenciasComponent implements OnInit {
   }
 
   getMesasTetigo() {
-    this.apiService.getTestigo(this.apiService.getId()).subscribe((resp: any) => {
+    this.apiService.getTestigo(this.localData.getId()).subscribe((resp: any) => {
       const { mesas_asignadas } = resp;
       this.mesas_asignadas = mesas_asignadas;
     })

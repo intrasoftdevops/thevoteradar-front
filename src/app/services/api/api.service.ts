@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import * as CryptoJS from 'crypto-js';
+import { environment } from 'src/environments/environment';
+import { LocalDataService } from '../localData/local-data.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  _URL = "http://54.219.225.56/api";
+  _URL = environment.apiURL;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private localData: LocalDataService) { }
+
+  getHeaders() {
+    return { 'Accept': 'application/json', 'Authorization': "Bearer " + this.localData.getToken() };
   }
 
   login(data: any) {
@@ -33,23 +37,23 @@ export class ApiService {
   }
 
   getUser() {
-    return this.http.get(this._URL + "/users/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/users/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   updateUser(data: any) {
-    return this.http.put(this._URL + "/users/" + this.getId(), data, { headers: this.getHeaders() });
+    return this.http.put(this._URL + "/users/" + this.localData.getId(), data, { headers: this.getHeaders() });
   }
 
   getAssignedMunicipal() {
-    return this.http.get(this._URL + "/gerentes-municipio-asignado/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/gerentes-municipio-asignado/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   getMunicipalAdmin() {
-    return this.http.get(this._URL + "/municipios-administrador/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/municipios-administrador/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   getZoneGerente() {
-    return this.http.get(this._URL + "/zonas-gerente/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/zonas-gerente/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   getDepartmentAdmin() {
@@ -65,7 +69,7 @@ export class ApiService {
   }
 
   getSupervisores() {
-    return this.http.get(this._URL + "/supervisores-zona-asignada/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/supervisores-zona-asignada/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   getSupervisor(id: any) {
@@ -81,7 +85,7 @@ export class ApiService {
   }
 
   getStationsCoordinador() {
-    return this.http.get(this._URL + "/puestos-supervisor/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/puestos-supervisor/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   createCoordinador(data: any) {
@@ -89,7 +93,7 @@ export class ApiService {
   }
 
   getCoordinadores() {
-    return this.http.get(this._URL + "/coordinadores-puesto-asignado/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/coordinadores-puesto-asignado/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   getCoordinador(id: any) {
@@ -105,7 +109,7 @@ export class ApiService {
   }
 
   getTablesTestigo() {
-    return this.http.get(this._URL + "/mesas-coordinador/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/mesas-coordinador/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   createTestigo(data: any) {
@@ -113,7 +117,7 @@ export class ApiService {
   }
 
   getTestigos() {
-    return this.http.get(this._URL + "/testigos-mesa-asignada/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/testigos-mesa-asignada/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   getTestigo(id: any) {
@@ -161,7 +165,7 @@ export class ApiService {
   }
 
   getIncidenciasDeTestigo() {
-    return this.http.get(this._URL + "/incidencias-testigo/" + this.getId(), { headers: this.getHeaders() })
+    return this.http.get(this._URL + "/incidencias-testigo/" + this.localData.getId(), { headers: this.getHeaders() })
   }
 
   getIncidenciasDeCoordinador() {
@@ -185,7 +189,7 @@ export class ApiService {
   }
 
   getContactos() {
-    return this.http.get(this._URL + "/contactos-usuario/" + this.getId(), { headers: this.getHeaders() });
+    return this.http.get(this._URL + "/contactos-usuario/" + this.localData.getId(), { headers: this.getHeaders() });
   }
 
   getVotosTestigo() {
@@ -204,43 +208,17 @@ export class ApiService {
     return this.http.post(this._URL + "/reportes-mesa", data, { headers: this.getHeaders() });
   }
 
+  getInteresesCandidato() {
+    return this.http.get(this._URL + "/intereses-de-cliente", { headers: this.getHeaders() });
+  }
+
+  getImpugnaciones(data: any) {
+    return this.http.post(this._URL + "/get-reportes-revisar", data, { headers: this.getHeaders() });
+  }
+
   logout() {
     var data: any;
     return this.http.post(this._URL + "/logout", data, { headers: this.getHeaders() });
-  }
-
-  deleteCookies() {
-    localStorage.clear();
-  }
-
-  getHeaders() {
-    return { 'Accept': 'application/json', 'Authorization': "Bearer " + this.getToken() };
-  }
-
-  setToken(token: any) {
-    const hola = CryptoJS.AES.encrypt(token, 'secret key 123').toString();
-    console.log("Encriptacion", hola);
-    localStorage.setItem('token', token);
-  }
-
-  getToken() {
-    return localStorage.getItem('token');
-  }
-
-  setRol(rol: any) {
-    localStorage.setItem('rol', rol);
-  }
-
-  getRol() {
-    return localStorage.getItem('rol');
-  }
-
-  setId(id: any) {
-    localStorage.setItem('id', id);
-  }
-
-  getId() {
-    return localStorage.getItem('id');
   }
 
 }

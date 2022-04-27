@@ -20,6 +20,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "lodash"
+            ],
             "outputPath": "dist/voteradar-front",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -36,6 +39,14 @@
             "scripts": []
           },
           "configurations": {
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.stage.ts"
+                }
+              ]
+            },
             "production": {
               "budgets": [
                 {
@@ -71,6 +82,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
+            "staging": {
+              "browserTarget": "voteradar-front:build:staging"
+            },
             "production": {
               "browserTarget": "voteradar-front:build:production"
             },

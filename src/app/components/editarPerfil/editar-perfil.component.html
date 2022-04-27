@@ -4,6 +4,7 @@
     <app-menu-supervisor *ngIf="rol == 3"></app-menu-supervisor>
     <app-menu-coordinador *ngIf="rol == 4"></app-menu-coordinador>
     <app-menu-testigo *ngIf="rol == 5"></app-menu-testigo>
+    <app-menu-impugnador *ngIf="rol == 8"></app-menu-impugnador>
 
     <form class="container py-5" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
         <div class="bg-primary py-3 px-5 text-white">

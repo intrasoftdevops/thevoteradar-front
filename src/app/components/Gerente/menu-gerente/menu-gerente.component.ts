@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-menu-gerente',
@@ -13,7 +13,7 @@ export class MenuGerenteComponent implements OnInit {
   listSupervisorAsignados: any = [];
   listSupervisorNoAsignados: any = [];
 
-  constructor(private apiService: ApiService, private router: Router) { }
+  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService) { }
 
   ngOnInit() {
   }
@@ -21,11 +21,11 @@ export class MenuGerenteComponent implements OnInit {
   logout() {
     this.apiService.logout().subscribe({
       next: () => {
-        this.apiService.deleteCookies();
+        this.localData.deleteCookies();
         this.router.navigate(['']);
       },
       error: () => {
-        this.apiService.deleteCookies();
+        this.localData.deleteCookies();
         this.router.navigate(['']);
       }
     })

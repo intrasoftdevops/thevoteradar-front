@@ -6,6 +6,7 @@ import { AlertService } from '../../../services/alert/alert.service';
 import { Observable, Subscription } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-menu-admin',
@@ -27,7 +28,7 @@ export class MenuAdminComponent implements OnInit {
     como_te_dice: ['', Validators.required],
   });
 
-  constructor(private apiService: ApiService, private router: Router, private alertService: AlertService, private fb: FormBuilder, private customValidator: CustomValidationService) {
+  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private localData: LocalDataService) {
   }
 
   ngOnInit() {
@@ -36,11 +37,11 @@ export class MenuAdminComponent implements OnInit {
   logout() {
     this.apiService.logout().subscribe({
       next: () => {
-        this.apiService.deleteCookies();
+        this.localData.deleteCookies();
         this.router.navigate(['']);
       },
       error: () => {
-        this.apiService.deleteCookies();
+        this.localData.deleteCookies();
         this.router.navigate(['']);
       }
     })

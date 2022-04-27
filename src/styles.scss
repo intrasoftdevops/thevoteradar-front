@@ -12,6 +12,13 @@ body {
     background-color: #cecece;
 }
 
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+}
+
+
 section:not(#login) {
     min-height: 100vh;
     background-image: url("./assets/mapa.png") !important;

@@ -1,132 +1,155 @@
 <section>
     <app-menu-impugnador></app-menu-impugnador>
     <div class="container py-5">
-        <div class="bg-primary py-3 px-5 text-white">
-            <h4>Impugnaciones</h4>
+        <div class="card">
+            <div class="bg-primary py-3 px-5 text-white">
+                <h4>Impugnaciones</h4>
+            </div>
+            <div class="card-body">
+                <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
+                    <div class="form-group col-md-6 col-lg-4 pt-2">
+                        <label class="fw-bold form-label">Departamentos</label>
+                        <ng-select (change)="getSelectedValue($event)" [searchable]="false"
+                            class="custom-select rounded" notFoundText="No hay informacion disponible">
+                            <ng-option *ngFor="let candidato of dataCandidatos" [value]="candidato.codigo_unico">
+                                {{candidato.nombres}} {{candidato.apellidos}}</ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
         </div>
-        <ul class="nav nav-tabs mt-5" id="myTab">
-            <li class="nav-item" id="tab">
-                <button class="nav-link h4 px-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#impugnar"
-                    type="button" role="tab">IMPUGNAR</button>
-            </li>
-           
-            <li class="nav-item" id="tab">
-                <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#impugnados"
-                    type="button" role="tab">IMPUGNADOS</button>
-            </li>
+        <ng-container *ngIf="tabla">
+            <ul class="nav nav-tabs mt-5" id="myTab">
+                <li class="nav-item" id="tab">
+                    <button class="nav-link h4 px-5 active" id="home-tab" data-bs-toggle="tab"
+                        data-bs-target="#impugnar" type="button" role="tab">POR REVISAR</button>
+                </li>
+                <li class="nav-item" id="tab">
+                    <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#impugnados"
+                        type="button" role="tab">IMPUGNAR</button>
+                </li>
 
-            <li class="nav-item" id="tab">
-                <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noimpugnados"
-                    type="button" role="tab">NO IMPUGNADOS</button>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="impugnar" role="tabpanel">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <div class="table-responsive" >
-                            <table class="table text-center align-middle">
-                                <thead class="text-dark align-middle">
-                                    <tr>
-                                        <th scope="col">MUNICIPIO</th>
-                                        <th scope="col">ZONA</th>
-                                        <th scope="col">PUESTO DE VOTACION</th>
-                                        <th scope="col">MESA</th>
-                                        <th scope="col">VER ARCHIVO</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white" >
-                                        <td>Bogota D.C</td>
-                                        <td>01</td>
-                                        <td>Carcel Municipal</td>
-                                        <td>01</td>
-                                        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#impugnarmodal" >
-                                            Ver Reporte
-                                        </button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <li class="nav-item" id="tab">
+                    <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab"
+                        data-bs-target="#noimpugnados" type="button" role="tab">NO IMPUGNADOS</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="impugnar" role="tabpanel">
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <div class="table-responsive" *ngIf="dataRevisar.length>0;else revisar_content">
+                                <table class="table text-center align-middle">
+                                    <thead class="text-dark align-middle">
+                                        <tr>
+                                            <th scope="col">MUNICIPIO</th>
+                                            <th scope="col">ZONA</th>
+                                            <th scope="col">PUESTO DE VOTACION</th>
+                                            <th scope="col">MESA</th>
+                                            <th scope="col">VER ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white" *ngFor="let revisar of dataRevisar">
+                                            <td>Bogota D.C</td>
+                                            <td>01</td>
+                                            <td>{{revisar.codigo_puesto}}</td>
+                                            <td>{{revisar.mesa}}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#impugnarmodal"
+                                                    (click)="ModalRevisarActual(revisar)">
+                                                    Ver E-14
+                                                </button>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#impugnarmodal"
+                                                    (click)="ModalRevisarActual(revisar)">
+                                                    Ver Reporte
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <ng-template #revisar_content>
+                                <p class="text-center mb-0">No hay reportes por revisar.</p>
+                            </ng-template>
                         </div>
-                        <ng-template #municipio_content>
-                            <p class="text-center mb-0">No hay mas archivos para Impugnar.</p>
-                        </ng-template>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="impugnados" role="tabpanel">
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <div class="table-responsive" *ngIf="dataImpugnar.length>0;else impugnar_content">
+                                <table class="table text-center align-middle">
+                                    <thead class="text-dark align-middle">
+                                        <tr>
+                                            <th scope="col">MUNICIPIO</th>
+                                            <th scope="col">ZONA</th>
+                                            <th scope="col">PUESTO DE VOTACION</th>
+                                            <th scope="col">MESA</th>
+                                            <th scope="col">VER ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white" *ngFor="let impugnar of dataImpugnar">
+                                            <td>Medellin</td>
+                                            <td>02</td>
+                                            <td>Colegio Mar</td>
+                                            <td>08</td>
+                                            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#impugnadosmodal">
+                                                    Ver e-14
+                                                </button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <ng-template #impugnar_content>
+                                <p class="text-center mb-0">No hay reportes por impugnar.</p>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="noimpugnados" role="tabpanel">
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <div class="table-responsive" *ngIf="dataNoImpugnados.length>0;else noImpugnados_content">
+                                <table class="table text-center align-middle">
+                                    <thead class="text-dark align-middle">
+                                        <tr>
+                                            <th scope="col">MUNICIPIO</th>
+                                            <th scope="col">ZONA</th>
+                                            <th scope="col">PUESTO DE VOTACION</th>
+                                            <th scope="col">MESA</th>
+                                            <th scope="col">VER ARCHIVO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white" *ngFor="let noImpugnados of dataNoImpugnados">
+                                            <td>Berbenal</td>
+                                            <td>04</td>
+                                            <td>Universidad</td>
+                                            <td>254</td>
+                                            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#noimpugnadosmodal">
+                                                    Ver e-14
+                                                </button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <ng-template #noImpugnados_content>
+                                <p class="text-center mb-0">No hay reportes no impugnados.</p>
+                            </ng-template>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="impugnados" role="tabpanel">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <div class="table-responsive" >
-                            <table class="table text-center align-middle">
-                                <thead class="text-dark align-middle">
-                                    <tr>
-                                        <th scope="col">MUNICIPIO</th>
-                                        <th scope="col">ZONA</th>
-                                        <th scope="col">PUESTO DE VOTACION</th>
-                                        <th scope="col">MESA</th>
-                                        <th scope="col">VER ARCHIVO</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white" >
-                                        <td>Medellin</td>
-                                        <td>02</td>
-                                        <td>Colegio Mar</td>
-                                        <td>08</td>
-                                        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#impugnadosmodal" >
-                                            Ver e-14
-                                        </button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <ng-template #no_municipio_content>
-                            <p class="text-center mb-0">No hay archivos Impugnados</p>
-                        </ng-template>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="noimpugnados" role="tabpanel">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <div class="table-responsive" >
-                            <table class="table text-center align-middle">
-                                <thead class="text-dark align-middle">
-                                    <tr>
-                                        <th scope="col">MUNICIPIO</th>
-                                        <th scope="col">ZONA</th>
-                                        <th scope="col">PUESTO DE VOTACION</th>
-                                        <th scope="col">MESA</th>
-                                        <th scope="col">VER ARCHIVO</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white" >
-                                        <td>Berbenal</td>
-                                        <td>04</td>
-                                        <td>Universidad</td>
-                                        <td>254</td>
-                                        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#noimpugnadosmodal" >
-                                            Ver e-14
-                                        </button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <ng-template #no_municipio_content>
-                            <p class="text-center mb-0">No hay archivos Impugnados</p>
-                        </ng-template>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </ng-container>
     </div>
     <app-footer></app-footer>
-    
+
 
 </section>
 
@@ -140,7 +163,11 @@
                 </button>
             </div>
             <div class="modal-body">
-               
+                <p>N° Votos: {{dataRevisarActual.numero_votos}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No impugnar</button>
+                <button type="button" class="btn btn-primary">Impugnar</button>
             </div>
         </div>
     </div>
@@ -155,7 +182,7 @@
                 </button>
             </div>
             <div class="modal-body">
-               
+
             </div>
         </div>
     </div>
@@ -170,7 +197,7 @@
                 </button>
             </div>
             <div class="modal-body">
-               
+
             </div>
         </div>
     </div>

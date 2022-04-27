@@ -3,6 +3,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ApiService } from '../../services/api/api.service';
 import { AlertService } from '../../services/alert/alert.service';
 import { CustomValidationService } from 'src/app/services/validations/custom-validation.service';
+import { LocalDataService } from '../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-editar-perfil',
@@ -23,7 +24,7 @@ export class EditarPerfilComponent implements OnInit {
   });
   rol: any;
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService, private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getRol();
@@ -31,7 +32,7 @@ export class EditarPerfilComponent implements OnInit {
   }
 
   getRol() {
-    this.rol = localStorage.getItem('rol');
+    this.rol = this.localData.getRol();
   }
 
   onSubmit() {

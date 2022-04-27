@@ -169,11 +169,11 @@ const routes: Routes = [
     component: ReporteVotosTestigoComponent
   },
   {
-    path: 'Impugnar',
+    path: 'impugnar',
     component: ImpugnarComponent
   },
   {
-    path: 'ImpugnadorHome',
+    path: 'impugnadorHome',
     component: ImpugnadorHomeComponent
   },
   {

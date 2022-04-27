@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
-import Swal from 'sweetalert2';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-menu-coordinador',
@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 })
 export class MenuCoordinadorComponent implements OnInit {
 
-  constructor(private apiService: ApiService, private router: Router) { }
+  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService) { }
 
   listTestigoAsignados: any = [];
   listTestigoNoAsignados: any = [];
@@ -34,11 +34,11 @@ export class MenuCoordinadorComponent implements OnInit {
   logout() {
     this.apiService.logout().subscribe({
       next: () => {
-        this.apiService.deleteCookies();
+        this.localData.deleteCookies();
         this.router.navigate(['']);
       },
       error: () => {
-        this.apiService.deleteCookies();
+        this.localData.deleteCookies();
         this.router.navigate(['']);
       }
     })
