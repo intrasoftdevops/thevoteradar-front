@@ -13,7 +13,7 @@ export class ImpugnarComponent implements OnInit {
   dataRevisar: any = [];
   dataImpugnar: any = [];
   dataNoImpugnados: any = [];
-  dataRevisarActual:any={};
+  dataRevisarActual: any = {};
 
   constructor(private apiService: ApiService) { }
 
@@ -45,9 +45,14 @@ export class ImpugnarComponent implements OnInit {
     })
   }
 
-  ModalRevisarActual(revisar:any){
+  ModalRevisarActual(revisar: any) {
     console.log(revisar);
-    this.dataRevisarActual=revisar;
+    this.dataRevisarActual = revisar;
+  }
+
+  impugnar(actualImpugnacion: any) {
+    //const {}=actualImpugnacion;
+    console.log(actualImpugnacion)
   }
 
 }

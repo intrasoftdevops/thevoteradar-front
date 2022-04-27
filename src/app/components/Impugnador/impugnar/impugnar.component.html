@@ -166,8 +166,8 @@
                 <p>N° Votos: {{dataRevisarActual.numero_votos}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No impugnar</button>
-                <button type="button" class="btn btn-primary">Impugnar</button>
+                <button type="button" class="btn btn-secondary">No impugnar</button>
+                <button type="button" class="btn btn-primary" (click)="impugnar(dataRevisarActual)">Impugnar</button>
             </div>
         </div>
     </div>
