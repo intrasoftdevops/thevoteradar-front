@@ -2,7 +2,7 @@
     <app-menu-impugnador></app-menu-impugnador>
     <div class="container py-5">
         <div class="card">
-            <div class="bg-primary py-3 px-5 text-white">
+            <div class="bg-primary py-3 px-lg-5 text-white">
                 <h4>Impugnaciones</h4>
             </div>
             <div class="card-body">
@@ -21,16 +21,16 @@
         <ng-container *ngIf="tabla">
             <ul class="nav nav-tabs mt-5" id="myTab">
                 <li class="nav-item" id="tab">
-                    <button class="nav-link h4 px-5 active" id="home-tab" data-bs-toggle="tab"
+                    <button class="nav-link h4 px-lg-5 active" id="home-tab" data-bs-toggle="tab"
                         data-bs-target="#impugnar" type="button" role="tab">POR REVISAR</button>
                 </li>
                 <li class="nav-item" id="tab">
-                    <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#impugnados"
-                        type="button" role="tab">IMPUGNAR</button>
+                    <button class="nav-link h4 px-lg-5" id="profile-tab" data-bs-toggle="tab"
+                        data-bs-target="#impugnados" type="button" role="tab">IMPUGNAR</button>
                 </li>
 
                 <li class="nav-item" id="tab">
-                    <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab"
+                    <button class="nav-link h4 px-lg-5" id="profile-tab" data-bs-toggle="tab"
                         data-bs-target="#noimpugnados" type="button" role="tab">NO IMPUGNADOS</button>
                 </li>
             </ul>
@@ -42,27 +42,24 @@
                                 <table class="table text-center align-middle">
                                     <thead class="text-dark align-middle">
                                         <tr>
+                                            <th scope="col">DEPARTAMENTO</th>
                                             <th scope="col">MUNICIPIO</th>
                                             <th scope="col">ZONA</th>
-                                            <th scope="col">PUESTO DE VOTACION</th>
+                                            <th scope="col">PUESTO</th>
                                             <th scope="col">MESA</th>
-                                            <th scope="col">VER ARCHIVO</th>
+                                            <th scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="bg-white" *ngFor="let revisar of dataRevisar">
-                                            <td>Bogota D.C</td>
-                                            <td>01</td>
-                                            <td>{{revisar.codigo_puesto}}</td>
+                                            <td>{{revisar.departamento}}</td>
+                                            <td>{{revisar.municipio}}</td>
+                                            <td>{{revisar.zona}}</td>
+                                            <td>{{revisar.puesto}}</td>
                                             <td>{{revisar.mesa}}</td>
                                             <td>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#impugnarmodal"
-                                                    (click)="ModalRevisarActual(revisar)">
-                                                    Ver E-14
-                                                </button>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#impugnarmodal"
+                                                <button type="button" class="btn btn-primary btn-sm m-1"
+                                                    data-bs-toggle="modal" data-bs-target="#impugnarmodal"
                                                     (click)="ModalRevisarActual(revisar)">
                                                     Ver Reporte
                                                 </button>
@@ -77,6 +74,61 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal fade" id="impugnarmodal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="exampleModalLabel">Impugnar</h5>
+                                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                                    <i class="fa-solid fa-xmark text-white"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Departamento: </span><span>
+                                            {{dataRevisarActual.departamento}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Municipio: </span><span>
+                                            {{dataRevisarActual.municipio}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Zona: </span><span> {{dataRevisarActual.zona}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Puesto de votación: </span><span>
+                                            {{dataRevisarActual.puesto}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Mesa: </span><span> {{dataRevisarActual.mesa}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">N° Votos: </span><span>
+                                            {{dataRevisarActual.numero_votos}}</span>
+                                    </div>
+                                </div>
+                                <form class="form-group col-md-6 col-lg-4 pt-2" [formGroup]="createForm">
+                                    <label class="fw-bold form-label">
+                                        <span class="fw-bold">Categoria de impugnacion</span>
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <ng-select [items]="dataCategoriaImpugnacion" [searchable]="false"
+                                        class="custom-select rounded" bindLabel="nombre" bindValue="id"
+                                        notFoundText="No hay informacion disponible"
+                                        formControlName="categoria_impugnacion">
+                                    </ng-select>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" (click)="noImpugnar()">No
+                                    impugnar</button>
+                                <button type="button" class="btn btn-primary" (click)="impugnar()">Impugnar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tab-pane fade" id="impugnados" role="tabpanel">
                     <div class="card mt-3">
                         <div class="card-body">
@@ -84,23 +136,28 @@
                                 <table class="table text-center align-middle">
                                     <thead class="text-dark align-middle">
                                         <tr>
+                                            <th scope="col">DEPARTAMENTO</th>
                                             <th scope="col">MUNICIPIO</th>
                                             <th scope="col">ZONA</th>
-                                            <th scope="col">PUESTO DE VOTACION</th>
+                                            <th scope="col">PUESTO</th>
                                             <th scope="col">MESA</th>
-                                            <th scope="col">VER ARCHIVO</th>
+                                            <th scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="bg-white" *ngFor="let impugnar of dataImpugnar">
-                                            <td>Medellin</td>
-                                            <td>02</td>
-                                            <td>Colegio Mar</td>
-                                            <td>08</td>
-                                            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#impugnadosmodal">
-                                                    Ver e-14
-                                                </button></td>
+                                            <td>{{impugnar.departamento}}</td>
+                                            <td>{{impugnar.municipio}}</td>
+                                            <td>{{impugnar.zona}}</td>
+                                            <td>{{impugnar.puesto}}</td>
+                                            <td>{{impugnar.mesa}}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#impugnadosmodal"
+                                                    (click)="ModalImpugnarActual(impugnar)">
+                                                    Ver Reporte
+                                                </button>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -111,6 +168,49 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal fade" id="impugnadosmodal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="exampleModalLabel">Impugnados</h5>
+                                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                                    <i class="fa-solid fa-xmark text-white"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Departamento: </span><span>
+                                            {{dataImpugnarActual.departamento}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Municipio: </span><span>
+                                            {{dataImpugnarActual.municipio}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Zona: </span><span> {{dataImpugnarActual.zona}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Puesto de votación: </span><span>
+                                            {{dataImpugnarActual.puesto}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Mesa: </span><span> {{dataImpugnarActual.mesa}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">Categoria de impugnación: </span><span>
+                                            {{dataImpugnarActual.categoria_impugnacion}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 pb-2">
+                                        <span class="fw-bold">N° Votos: </span><span>
+                                            {{dataImpugnarActual.numero_votos}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tab-pane fade" id="noimpugnados" role="tabpanel">
                     <div class="card mt-3">
                         <div class="card-body">
@@ -118,23 +218,28 @@
                                 <table class="table text-center align-middle">
                                     <thead class="text-dark align-middle">
                                         <tr>
+                                            <th scope="col">DEPARTAMENTO</th>
                                             <th scope="col">MUNICIPIO</th>
                                             <th scope="col">ZONA</th>
-                                            <th scope="col">PUESTO DE VOTACION</th>
+                                            <th scope="col">PUESTO</th>
                                             <th scope="col">MESA</th>
-                                            <th scope="col">VER ARCHIVO</th>
+                                            <th scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="bg-white" *ngFor="let noImpugnados of dataNoImpugnados">
-                                            <td>Berbenal</td>
-                                            <td>04</td>
-                                            <td>Universidad</td>
-                                            <td>254</td>
-                                            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#noimpugnadosmodal">
-                                                    Ver e-14
-                                                </button></td>
+                                            <td>{{noImpugnados.departamento}}</td>
+                                            <td>{{noImpugnados.municipio}}</td>
+                                            <td>{{noImpugnados.zona}}</td>
+                                            <td>{{noImpugnados.puesto}}</td>
+                                            <td>{{noImpugnados.mesa}}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#noimpugnadosmodal"
+                                                    (click)="ModalNoImpugnarActual(noImpugnados)">
+                                                    Ver Reporte
+                                                </button>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -153,42 +258,8 @@
 
 </section>
 
-<div class="modal fade" id="impugnarmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Impugnar</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>N° Votos: {{dataRevisarActual.numero_votos}}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary">No impugnar</button>
-                <button type="button" class="btn btn-primary" (click)="impugnar(dataRevisarActual)">Impugnar</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="impugnadosmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Impugnados</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-        </div>
-    </div>
-</div>
 <div class="modal fade" id="noimpugnadosmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="exampleModalLabel">No Impugnados</h5>
@@ -197,7 +268,30 @@
                 </button>
             </div>
             <div class="modal-body">
-
+                <div class="row">
+                    <div class="col-md-6 col-lg-4 pb-2">
+                        <span class="fw-bold">Departamento: </span><span>
+                            {{dataNoImpugnarActual.departamento}}</span>
+                    </div>
+                    <div class="col-md-6 col-lg-4 pb-2">
+                        <span class="fw-bold">Municipio: </span><span>
+                            {{dataNoImpugnarActual.municipio}}</span>
+                    </div>
+                    <div class="col-md-6 col-lg-4 pb-2">
+                        <span class="fw-bold">Zona: </span><span> {{dataNoImpugnarActual.zona}}</span>
+                    </div>
+                    <div class="col-md-6 col-lg-4 pb-2">
+                        <span class="fw-bold">Puesto de votación: </span><span>
+                            {{dataNoImpugnarActual.puesto}}</span>
+                    </div>
+                    <div class="col-md-6 col-lg-4 pb-2">
+                        <span class="fw-bold">Mesa: </span><span> {{dataNoImpugnarActual.mesa}}</span>
+                    </div>
+                    <div class="col-md-6 col-lg-4 pb-2">
+                        <span class="fw-bold">N° Votos: </span><span>
+                            {{dataNoImpugnarActual.numero_votos}}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

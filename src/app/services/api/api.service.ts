@@ -217,11 +217,15 @@ export class ApiService {
   }
 
   impugnar(id: any, data: any) {
-    return this.http.put(this._URL + "/no-impugnar/" + id, data, { headers: this.getHeaders() });
+    return this.http.put(this._URL + "/impugnar/" + id, data, { headers: this.getHeaders() });
   }
 
   noImpugnar(id: any, data: any) {
-    return this.http.put(this._URL + "/impugnar/" + id, data, { headers: this.getHeaders() });
+    return this.http.put(this._URL + "/no-impugnar/" + id, data, { headers: this.getHeaders() });
+  }
+
+  getCategoriaImpugnacion() {
+    return this.http.get(this._URL + "/categorias-impugnacion", { headers: this.getHeaders() });
   }
 
   logout() {
