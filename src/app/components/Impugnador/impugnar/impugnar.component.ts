@@ -4,6 +4,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import Swal from 'sweetalert2';
+import { DomSanitizer, SafeResourceUrl, } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-impugnar',
@@ -29,8 +30,9 @@ export class ImpugnarComponent implements OnInit {
     numero_votos: [''],
   });
   indexRevisar: any;
+  url: SafeResourceUrl="";
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService,private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     this.getInteresesCandidato();
@@ -66,6 +68,7 @@ export class ImpugnarComponent implements OnInit {
       this.dataRevisar = resp.reportes_no_revisados;
       this.dataImpugnar = resp.reportes_revisados;
       this.dataNoImpugnados = resp.reportes_no_impugnados;
+      console.log(resp)
     })
   }
 
@@ -76,6 +79,8 @@ export class ImpugnarComponent implements OnInit {
   }
 
   ModalRevisarActual(revisar: any) {
+    console.log(revisar.e_14)
+    this.url = this.sanitizer.bypassSecurityTrustResourceUrl(revisar.e_14);
     this.dataRevisarActual = revisar;
     this.createForm.get('categoria_impugnacion')?.setValue(revisar.categoria_impugnacion);
     this.createForm.get('codigo_puesto')?.setValue(revisar.codigo_puesto);
