@@ -5,6 +5,7 @@ import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import Swal from 'sweetalert2';
 import { DomSanitizer, SafeResourceUrl, } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-impugnar',
@@ -30,9 +31,11 @@ export class ImpugnarComponent implements OnInit {
     numero_votos: [''],
   });
   indexRevisar: any;
-  url: SafeResourceUrl="";
+  urlRevisar: SafeResourceUrl = '';
+  urlImpugnados: SafeResourceUrl = '';
+  urlNoImpugnados: SafeResourceUrl = '';
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService,private sanitizer: DomSanitizer) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService, private sanitizer: DomSanitizer, private http: HttpClient) { }
 
   ngOnInit() {
     this.getInteresesCandidato();
@@ -79,8 +82,7 @@ export class ImpugnarComponent implements OnInit {
   }
 
   ModalRevisarActual(revisar: any) {
-    console.log(revisar.e_14)
-    this.url = this.sanitizer.bypassSecurityTrustResourceUrl(revisar.e_14);
+    this.urlRevisar = this.sanitizer.bypassSecurityTrustResourceUrl(revisar.e_14);
     this.dataRevisarActual = revisar;
     this.createForm.get('categoria_impugnacion')?.setValue(revisar.categoria_impugnacion);
     this.createForm.get('codigo_puesto')?.setValue(revisar.codigo_puesto);
@@ -90,10 +92,12 @@ export class ImpugnarComponent implements OnInit {
   }
 
   ModalImpugnarActual(impugnar: any) {
+    this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(impugnar.e_14);
     this.dataImpugnarActual = impugnar;
   }
 
   ModalNoImpugnarActual(noImpugnar: any) {
+    this.urlNoImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(noImpugnar.e_14);
     this.dataNoImpugnarActual = noImpugnar;
   }
 

@@ -228,6 +228,11 @@ export class ApiService {
     return this.http.get(this._URL + "/categorias-impugnacion", { headers: this.getHeaders() });
   }
 
+
+  getCliente(){
+    return this.http.get(this._URL + "/get-cliente", { headers: this.getHeaders() });
+  }
+
   logout() {
     var data: any;
     return this.http.post(this._URL + "/logout", data, { headers: this.getHeaders() });

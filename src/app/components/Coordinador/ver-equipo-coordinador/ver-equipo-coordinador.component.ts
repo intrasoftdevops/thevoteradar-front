@@ -2,12 +2,15 @@ import { Component, OnInit, } from '@angular/core';
 import { Filtro } from 'src/app/models/filtro';
 import { ApiService } from '../../../services/api/api.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { UrlTree } from '@angular/router';
+
 @Component({
   selector: 'app-ver-equipo-coordinador',
   templateUrl: './ver-equipo-coordinador.component.html',
   styleUrls: ['./ver-equipo-coordinador.component.scss']
 })
+
 export class VerEquipoCoordinadorComponent implements OnInit {
 
   tabla: boolean = false;
@@ -17,22 +20,33 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   listTestigos: any = [];
   selectedTable: any = [];
   filtro: any;
+  idCliente: any;
+  urlSafe!:SafeResourceUrl;
 
-  constructor(private apiService: ApiService, private localData: LocalDataService, private sanitizer: DomSanitizer) { }
+  constructor(private apiService: ApiService, private localData: LocalDataService, public sanitizer: DomSanitizer) { }
 
 
   ngOnInit(): void {
     this.getPuestos();
+    this.getUrl();
+    this.getCliente();
+  }
+
+  getCliente() {
+    this.apiService.getCliente().subscribe((resp: any) => {
+      const { id } = resp;
+      this.idCliente = id;
+    })
   }
 
   getUrl() {
-    const objeto = new Filtro(1, 1, 1);
-    //const objeto= new Filtro(1,4,1,'001_01','99_001_01','B2_99_001_01')
-    this.filtro = this.generar_filtro(objeto.rol, objeto.cliente, objeto.departamento, objeto.municipio, objeto.zona_votacion, objeto.puesto_votacion);
-    const url = "https://app.powerbi.com/reportEmbed?reportId=35ce5323-acad-49fc-af76-fb6665b3e10e&autoAuth=true&ctid=2009fbbb-7f05-4d0a-9beb-5bc1df6a7d3a&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly93YWJpLXBhYXMtMS1zY3VzLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0LyJ9" + this.filtro;
-    //console.log(url)
-    //console.log(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    //const objeto = new Filtro(1, 1, 1);
+    // const objeto= new Filtro({cliente:1,rol:4,departamento:1,municipio:`'001_01'`,zona_votacion:`'99_001_01'`,puesto_votacion:`'B2_99_001_01'`})
+    const objeto = new Filtro(1, 2, ['1','16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
+    this.filtro = '&'+objeto.generar_filtro().replace(new RegExp(" ", 'g'), "%20").replace(new RegExp("/", 'g'), "%2F").replace(new RegExp("'", 'g'), "%27");
+    const url = "https://app.powerbi.com/reportEmbed?reportId=35ce5323-acad-49fc-af76-fb6665b3e10e&autoAuth=true&ctid=2009fbbb-7f05-4d0a-9beb-5bc1df6a7d3a&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly93YWJpLXBhYXMtMS1zY3VzLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0LyJ9"+this.filtro;
+    this.urlSafe=this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    return this.urlSafe;
   }
 
   getSelectedStation(item: any) {
@@ -82,41 +96,5 @@ export class VerEquipoCoordinadorComponent implements OnInit {
     return codigo_unico;
   }
 
-  generar_filtro(rol: any, cliente: any, departamento: any, municipio: any, zona_votacion: any, puesto_votacion: any) {
-    let aux = ''
-    switch (rol) {
-      case 1:
-        aux = this.filtro_administrador(cliente, rol, departamento);
-        break;
-      case 2:
-        aux = this.filtro_gerente(cliente, rol, departamento, municipio);
-        break
-      case 3:
-        aux = this.filtro_supervisor(cliente, rol, departamento, municipio, zona_votacion);
-        break
-      case 4:
-        aux = this.filtro_coordinador(cliente, rol, departamento, municipio, zona_votacion, puesto_votacion);
-        break
-      default:
-        aux = ''
-        break;
-    }
-    return aux;
-  }
-
-
-  filtro_administrador(cliente: any, rol: any, departamento: any) {
-    return `&filter=candidatos/id eq ${cliente} and roles/id eq ${rol} and departamentos_votacion/codigo_unico in (${departamento})`
-  }
-  filtro_gerente(cliente: any, rol: any, departamento: any, municipio: any) {
-    return `&filter=candidatos/id eq ${cliente} and roles/id eq ${rol} and departamentos_votacion/codigo_unico in (${departamento}) and municipios_votacion/codigo_unico in (${municipio})`
-  }
-  filtro_supervisor(cliente: any, rol: any, departamento: any, municipio: any, zona_votacion: any) {
-    return `&filter=candidatos/id eq ${cliente} and roles/id eq ${rol} and departamentos_votacion/codigo_unico in (${departamento}) and municipios_votacion/codigo_unico in (${municipio}) and zonas_votacion/codigo_unico in (${zona_votacion}) `
-  }
-  filtro_coordinador(cliente: any, rol: any, departamento: any, municipio: any, zona_votacion: any, puesto_votacion: any) {
-    return `&filter=candidatos/id eq ${cliente} and roles/id eq ${rol} and departamentos_votacion/codigo_unico in (${departamento}) and municipios_votacion/codigo_unico in (${municipio}) and zonas_votacion/codigo_unico in (${zona_votacion}) 
-     and puestos_votacion/codigo_unico in (${puesto_votacion})`
-  }
 }
 
