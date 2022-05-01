@@ -229,7 +229,7 @@ export class ApiService {
   }
 
 
-  getCliente(){
+  getCliente() {
     return this.http.get(this._URL + "/get-cliente", { headers: this.getHeaders() });
   }
 

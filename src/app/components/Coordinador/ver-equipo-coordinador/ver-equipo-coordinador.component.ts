@@ -4,6 +4,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlTree } from '@angular/router';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-ver-equipo-coordinador',
@@ -21,7 +22,7 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   selectedTable: any = [];
   filtro: any;
   idCliente: any;
-  urlSafe!:SafeResourceUrl;
+  urlSafe!: SafeResourceUrl;
 
   constructor(private apiService: ApiService, private localData: LocalDataService, public sanitizer: DomSanitizer) { }
 
@@ -41,11 +42,10 @@ export class VerEquipoCoordinadorComponent implements OnInit {
 
   getUrl() {
     //const objeto = new Filtro(1, 1, 1);
-    // const objeto= new Filtro({cliente:1,rol:4,departamento:1,municipio:`'001_01'`,zona_votacion:`'99_001_01'`,puesto_votacion:`'B2_99_001_01'`})
-    const objeto = new Filtro(1, 2, ['1','16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
-    this.filtro = '&'+objeto.generar_filtro().replace(new RegExp(" ", 'g'), "%20").replace(new RegExp("/", 'g'), "%2F").replace(new RegExp("'", 'g'), "%27");
-    const url = "https://app.powerbi.com/reportEmbed?reportId=35ce5323-acad-49fc-af76-fb6665b3e10e&autoAuth=true&ctid=2009fbbb-7f05-4d0a-9beb-5bc1df6a7d3a&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly93YWJpLXBhYXMtMS1zY3VzLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0LyJ9"+this.filtro;
-    this.urlSafe=this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    const objeto = new Filtro(1, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
+    this.filtro = objeto.generar_filtro().replace(new RegExp(" ", "g"), "%20").replace(new RegExp("/", "g"), "%2F");
+    const url = environment.powerBiURL + this.filtro;
+    this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     return this.urlSafe;
   }
 

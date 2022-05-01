@@ -37,16 +37,16 @@ export class Filtro {
     }
 
     filtro_administrador() {
-        return `filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento})`
+        return `&filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento})`
     }
     filtro_gerente() {
-        return `filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio})`
+        return `&filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio})`
     }
     filtro_supervisor() {
-        return `filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio}) and zonas_votacion/codigo_unico in (${this.zona_votacion}) `
+        return `&filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio}) and zonas_votacion/codigo_unico in (${this.zona_votacion}) `
     }
     filtro_coordinador() {
-        return `filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio}) and zonas_votacion/codigo_unico in (${this.zona_votacion}) and puestos_votacion/codigo_unico in (${this.puesto_votacion})`
+        return `&filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio}) and zonas_votacion/codigo_unico in (${this.zona_votacion}) and puestos_votacion/codigo_unico in (${this.puesto_votacion})`
     }
 
     generar_linea(elemento: any) {
