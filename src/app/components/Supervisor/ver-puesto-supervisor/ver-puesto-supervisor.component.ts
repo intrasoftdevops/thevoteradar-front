@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import Swal from 'sweetalert2';
 import { ApiService } from '../../../services/api/api.service';
-import { AlertService } from '../../../services/alert/alert.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-ver-puesto-supervisor',
@@ -10,37 +9,68 @@ import { AlertService } from '../../../services/alert/alert.service';
 })
 export class VerPuestoSupervisorComponent implements OnInit {
 
-  tabla: boolean = false;
+  tabla: string = "ninguna";
   dataZones: any = [];
   dataStations: any = [];
   selectedStation: any = [];
   coordinadores: any = {};
   testigos: any = {};
+  testigosCoordinador: any = {};
+  searchForm: FormGroup = this.fb.group({
+    zonas: [null],
+    puestos: [null],
+  });
 
-  constructor(private apiService: ApiService, private alertService: AlertService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.getZonas();
+  }
 
+  get searchFormControl() {
+    return this.searchForm.controls;
   }
 
   getSelectedZone(item: any) {
+    this.searchFormControl['puestos'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { zona: codigo_unico };
       this.getNecesitadosZona(data);
-      this.tabla = true;
+      this.getPuestos(codigo_unico);
+      this.tabla = "coordinador"
     } else {
-      this.tabla = false;
+      this.tabla = "ninguna"
     }
+  }
+
+  getSelectedStation(item: any) {
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { puesto: codigo_unico }
+      this.getNecesitadosPuesto(data);
+      this.tabla = "testigo";
+    } else {
+      this.tabla = "coordinador"
+    }
+  }
+
+  getPuestos(data: any) {
+    this.apiService.getStationsCoordinador().subscribe((resp: any) => {
+      this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
+    })
   }
 
   getNecesitadosZona(data: any) {
     this.apiService.getNecesitadosZona(data).subscribe((resp: any) => {
-      console.log(resp)
       this.coordinadores = resp.coordinadores;
       this.testigos = resp.testigos;
-      this.tabla = true;
+    })
+  }
+
+  getNecesitadosPuesto(data: any) {
+    this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
+      this.testigosCoordinador = resp.testigos;
     })
   }
 
@@ -50,13 +80,6 @@ export class VerPuestoSupervisorComponent implements OnInit {
       return '(0%)';
     }
     return `(${Math.round(percent * 100) / 100}%)`;
-  }
-
-  validObjects() {
-    if ((Object.keys(this.coordinadores).length !== 0) && (Object.keys(this.testigos).length !== 0)) {
-      return true;
-    }
-    return false;
   }
 
   getZonas() {

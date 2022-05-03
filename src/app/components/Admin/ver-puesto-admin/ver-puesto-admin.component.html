@@ -6,67 +6,203 @@
         <h4>Consulta de puestos</h4>
       </div>
       <div class="card-body">
-        <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
+        <form class="row m-4 d-flex justify-content-center align-items-center align-items-center"
+          [formGroup]="searchForm">
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Departamentos</label>
             <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
               bindLabel="nombre_departamento_votacion" bindValue="nombre_departamento_votacion"
-              (change)="getSelectedDepartment($event)" notFoundText="No hay informacion disponible">
+              formControlName="departamentos" (change)="getSelectedDepartment($event)"
+              notFoundText="No hay informacion disponible">
             </ng-select>
           </div>
-        </div>
-        <div class="table-responsive" *ngIf="tabla && validObjects()">
-          <table class="table text-center align-middle">
-            <thead class="text-dark align-middle">
-              <tr>
-                <th scope="col">GERENTES</th>
-                <th scope="col">GERENTES POR ASIGNAR</th>
-                <th scope="col">SUPERVISORES</th>
-                <th scope="col">SUPERVISORES POR ASIGNAR</th>
-                <th scope="col">COORDINADORES</th>
-                <th scope="col">COORDINADORES POR ASIGNAR</th>
-                <th scope="col">TESTIGOS</th>
-                <th scope="col">TESTIGOS POR ASIGNAR</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-white">
-                <td [ngClass]="textColor(gerentes.cantidad_gerentes_existentes,gerentes.cantidad_gerentes_necesitados)">
-                  {{gerentes.cantidad_gerentes_existentes}}/{{gerentes.cantidad_gerentes_necesitados}}
-                  {{createPercent(gerentes.cantidad_gerentes_existentes,gerentes.cantidad_gerentes_necesitados)}}
-                </td>
-                <td>
-                  {{gerentes.cantidad_gerentes_por_asignar}}
-                </td>
-                <td
-                  [ngClass]="textColor(supervisores.cantidad_supervisores_existentes,supervisores.cantidad_supervisores_necesitados)">
-                  {{supervisores.cantidad_supervisores_existentes}}/{{supervisores.cantidad_supervisores_necesitados}}
-                  {{createPercent(supervisores.cantidad_supervisores_existentes,supervisores.cantidad_supervisores_necesitados)}}
-                </td>
-                <td>
-                  {{supervisores.cantidad_supervisores_por_asignar}}
-                </td>
-                <td
-                  [ngClass]="textColor(coordinadores.cantidad_coordinadores_existentes,coordinadores.cantidad_coordinadores_necesitados)">
-                  {{coordinadores.cantidad_coordinadores_existentes}}/{{coordinadores.cantidad_coordinadores_necesitados}}
-                  {{createPercent(coordinadores.cantidad_coordinadores_existentes,coordinadores.cantidad_coordinadores_necesitados)}}
-                </td>
-                <td>
-                  {{coordinadores.cantidad_coordinadores_por_asignar}}
-                </td>
-                <td [ngClass]="textColor(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)">
-                  {{testigos.cantidad_testigos_existentes}}/{{testigos.cantidad_testigos_necesitados}}
-                  {{createPercent(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)}}
-                </td>
-                <td>
-                  {{testigos.cantidad_testigos_por_asignar}}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Municipios</label>
+            <ng-select [items]="dataMunicipals" class="custom-select rounded" bindLabel="nombre"
+              (change)="getSelectedMunicipal($event)" bindValue="codigo_unico" formControlName="municipios"
+              notFoundText="No hay informacion disponible">
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Zonas</label>
+            <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
+              (change)="getSelectedZone($event)" notFoundText="No hay informacion disponible" formControlName="zonas">
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Puestos</label>
+            <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
+            (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible" formControlName="puestos">
+            </ng-select>
+          </div>
+        </form>
       </div>
     </div>
+    <ng-container [ngSwitch]="tabla">
+      <div class="card mt-5" *ngSwitchCase="'gerente'">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table text-center align-middle">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">GERENTES</th>
+                  <th scope="col">GERENTES POR ASIGNAR</th>
+                  <th scope="col">SUPERVISORES</th>
+                  <th scope="col">SUPERVISORES POR ASIGNAR</th>
+                  <th scope="col">COORDINADORES</th>
+                  <th scope="col">COORDINADORES POR ASIGNAR</th>
+                  <th scope="col">TESTIGOS</th>
+                  <th scope="col">TESTIGOS POR ASIGNAR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white">
+                  <td
+                    [ngClass]="textColor(gerentes.cantidad_gerentes_existentes,gerentes.cantidad_gerentes_necesitados)">
+                    {{gerentes.cantidad_gerentes_existentes}}/{{gerentes.cantidad_gerentes_necesitados}}
+                    {{createPercent(gerentes.cantidad_gerentes_existentes,gerentes.cantidad_gerentes_necesitados)}}
+                  </td>
+                  <td>
+                    {{gerentes.cantidad_gerentes_por_asignar}}
+                  </td>
+                  <td
+                    [ngClass]="textColor(supervisores.cantidad_supervisores_existentes,supervisores.cantidad_supervisores_necesitados)">
+                    {{supervisores.cantidad_supervisores_existentes}}/{{supervisores.cantidad_supervisores_necesitados}}
+                    {{createPercent(supervisores.cantidad_supervisores_existentes,supervisores.cantidad_supervisores_necesitados)}}
+                  </td>
+                  <td>
+                    {{supervisores.cantidad_supervisores_por_asignar}}
+                  </td>
+                  <td
+                    [ngClass]="textColor(coordinadores.cantidad_coordinadores_existentes,coordinadores.cantidad_coordinadores_necesitados)">
+                    {{coordinadores.cantidad_coordinadores_existentes}}/{{coordinadores.cantidad_coordinadores_necesitados}}
+                    {{createPercent(coordinadores.cantidad_coordinadores_existentes,coordinadores.cantidad_coordinadores_necesitados)}}
+                  </td>
+                  <td>
+                    {{coordinadores.cantidad_coordinadores_por_asignar}}
+                  </td>
+                  <td
+                    [ngClass]="textColor(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)">
+                    {{testigos.cantidad_testigos_existentes}}/{{testigos.cantidad_testigos_necesitados}}
+                    {{createPercent(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)}}
+                  </td>
+                  <td>
+                    {{testigos.cantidad_testigos_por_asignar}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-5" *ngSwitchCase="'supervisor'">
+        <div class="card-body">
+          <div class="table-responsive" *ngIf="tabla">
+            <table class="table text-center align-middle">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">SUPERVISORES</th>
+                  <th scope="col">SUPERVISORES POR ASIGNAR</th>
+                  <th scope="col">COORDINADORES</th>
+                  <th scope="col">COORDINADORES POR ASIGNAR</th>
+                  <th scope="col">TESTIGOS</th>
+                  <th scope="col">TESTIGOS POR ASIGNAR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white">
+                  <td
+                    [ngClass]="textColor(supervisoresGerente.cantidad_supervisores_existentes,supervisoresGerente.cantidad_supervisores_necesitadoss)">
+                    {{supervisoresGerente.cantidad_supervisores_existentes}}/{{supervisoresGerente.cantidad_supervisores_necesitadoss}}
+                    {{createPercent(supervisoresGerente.cantidad_supervisores_existentes,supervisoresGerente.cantidad_supervisores_necesitadoss)}}
+                  </td>
+                  <td>
+                    {{supervisoresGerente.cantidad_supervisores_por_asignar}}
+                  </td>
+                  <td
+                    [ngClass]="textColor(coordinadoresGerente.cantidad_coordinadores_existentes,coordinadoresGerente.cantidad_coordinadores_necesitados)">
+                    {{coordinadoresGerente.cantidad_coordinadores_existentes}}/{{coordinadoresGerente.cantidad_coordinadores_necesitados}}
+                    {{createPercent(coordinadoresGerente.cantidad_coordinadores_existentes,coordinadoresGerente.cantidad_coordinadores_necesitados)}}
+                  </td>
+                  <td>
+                    {{coordinadoresGerente.cantidad_coordinadores_por_asignar}}
+                  </td>
+                  <td
+                    [ngClass]="textColor(testigosGerente.cantidad_testigos_existentes,testigosGerente.cantidad_testigos_necesitados)">
+                    {{testigosGerente.cantidad_testigos_existentes}}/{{testigosGerente.cantidad_testigos_necesitados}}
+                    {{createPercent(testigosGerente.cantidad_testigos_existentes,testigosGerente.cantidad_testigos_necesitados)}}
+                  </td>
+                  <td>
+                    {{testigosGerente.cantidad_testigos_por_asignar}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-5" *ngSwitchCase="'coordinador'">
+        <div class="card-body">
+          <div class="table-responsive" *ngIf="tabla">
+            <table class="table text-center align-middle">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">COORDINADORES</th>
+                  <th scope="col">COORDINADORES POR ASIGNAR</th>
+                  <th scope="col">TESTIGOS</th>
+                  <th scope="col">TESTIGOS POR ASIGNAR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white">
+                  <td
+                    [ngClass]="textColor(coordinadoresSupervisor.cantidad_coordinadores_existentes,coordinadoresSupervisor.cantidad_coordinadores_necesitados)">
+                    {{coordinadoresSupervisor.cantidad_coordinadores_existentes}}/{{coordinadoresSupervisor.cantidad_coordinadores_necesitados}}
+                    {{createPercent(coordinadoresSupervisor.cantidad_coordinadores_existentes,coordinadoresSupervisor.cantidad_coordinadores_necesitados)}}
+                  </td>
+                  <td>
+                    {{coordinadoresSupervisor.cantidad_coordinadores_por_asignar}}
+                  </td>
+                  <td
+                    [ngClass]="textColor(testigosSupervisor.cantidad_testigos_existentes,testigosSupervisor.cantidad_testigos_necesitados)">
+                    {{testigosSupervisor.cantidad_testigos_existentes}}/{{testigosSupervisor.cantidad_testigos_necesitados}}
+                    {{createPercent(testigosSupervisor.cantidad_testigos_existentes,testigosSupervisor.cantidad_testigos_necesitados)}}
+                  </td>
+                  <td>
+                    {{testigosSupervisor.cantidad_testigos_por_asignar}}
+                  </td>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-5" *ngSwitchCase="'testigo'">
+        <div class="card-body">
+          <div class="table-responsive" *ngIf="tabla">
+            <table class="table text-center align-middle">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">TESTIGOS</th>
+                  <th scope="col">TESTIGOS POR ASIGNAR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white">
+                  <td
+                    [ngClass]="textColor(testigosCoordinador.cantidad_testigos_existentes,testigosCoordinador.cantidad_testigos_necesitados)">
+                    {{testigosCoordinador.cantidad_testigos_existentes}}/{{testigosCoordinador.cantidad_testigos_necesitados}}
+                    {{createPercent(testigosCoordinador.cantidad_testigos_existentes,testigosCoordinador.cantidad_testigos_necesitados)}}
+                  </td>
+                  <td>
+                    {{testigosCoordinador.cantidad_testigos_por_asignar}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </ng-container>
   </div>
   <app-footer></app-footer>
 </section>

@@ -8,7 +8,7 @@
             <div class="card-body">
                 <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
                     <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="fw-bold form-label">Departamentos</label>
+                        <label class="fw-bold form-label">Candidatos</label>
                         <ng-select (change)="getSelectedValue($event)" [searchable]="false"
                             class="custom-select rounded" notFoundText="No hay informacion disponible">
                             <ng-option *ngFor="let candidato of dataCandidatos" [value]="candidato.codigo_unico">

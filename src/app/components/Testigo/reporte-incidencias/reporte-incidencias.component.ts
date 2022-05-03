@@ -55,6 +55,8 @@ export class ReporteIncidenciasComponent implements OnInit {
 
       this.apiService.createIncidencias(uploadData).subscribe((resp: any) => {
 
+        this.createForm.reset();
+        this.files = [];
         this.alertService.successAlert(resp.message);
 
       })

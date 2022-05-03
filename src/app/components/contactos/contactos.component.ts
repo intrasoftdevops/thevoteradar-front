@@ -62,6 +62,7 @@ export class ContactosComponent implements OnInit {
   onSubmit() {
     if (this.createForm.valid) {
       this.apiService.createContacto(this.createForm.value).subscribe((resp: any) => {
+        this.createForm.reset();
         this.getContactos();
         this.successAlert(resp.message);
       })

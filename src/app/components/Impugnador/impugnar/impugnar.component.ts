@@ -113,7 +113,7 @@ export class ImpugnarComponent implements OnInit {
           this.ModalRevisarActual(this.dataRevisar[rand]);
           this.successAlert(resp.message);
         } else {
-          this.alertService.successAlert(resp.message);
+          this.successAlert(resp.message);
         }
       })
     } else {

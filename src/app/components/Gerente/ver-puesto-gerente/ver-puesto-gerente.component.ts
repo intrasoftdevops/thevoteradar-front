@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import Swal from 'sweetalert2';
 import { ApiService } from '../../../services/api/api.service';
-import { AlertService } from '../../../services/alert/alert.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-ver-puesto-gerente',
@@ -10,7 +9,7 @@ import { AlertService } from '../../../services/alert/alert.service';
 })
 export class VerPuestoGerenteComponent implements OnInit {
 
-  tabla: boolean = false;
+  tabla: string = "ninguna";
   dataMunicipals: any = [];
   dataZones: any = [];
   dataStations: any = [];
@@ -19,21 +18,61 @@ export class VerPuestoGerenteComponent implements OnInit {
   supervisores: any = {};
   coordinadores: any = {};
   testigos: any = {};
+  coordinadoresSupervisor: any = {};
+  testigosSupervisor: any = {};
+  testigosCoordinador: any = {};
+  searchForm: FormGroup = this.fb.group({
+    municipios: [null],
+    zonas: [null],
+    puestos: [null],
+  });
 
-  constructor(private apiService: ApiService, private alertService: AlertService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.getMunicipalAdmin();
   }
 
+  get searchFormControl() {
+    return this.searchForm.controls;
+  }
+
   getSelectedMunicipal(item: any) {
+    this.searchFormControl['zonas'].reset();
+    this.searchFormControl['puestos'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { municipio: codigo_unico };
       this.getNecesitadosMunicipio(data);
-      this.tabla = true;
+      this.getZonas(codigo_unico);
+      this.tabla = "supervisor";
     } else {
-      this.tabla = false;
+      this.tabla = "ninguna";
+    }
+  }
+
+  getSelectedZone(item: any) {
+    this.searchFormControl['puestos'].reset();
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { zona: codigo_unico }
+      this.getNecesitadosZona(data);
+      this.getPuestos(data);
+      this.tabla = "coordinador";
+    } else {
+      this.dataStations = [];
+      this.tabla = "supervisor"
+    }
+  }
+
+  getSelectedStation(item: any) {
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { puesto: codigo_unico }
+      this.getNecesitadosPuesto(data);
+      this.tabla = "testigo";
+    } else {
+      this.tabla = "coordinador"
     }
   }
 
@@ -43,13 +82,37 @@ export class VerPuestoGerenteComponent implements OnInit {
     });
   }
 
+  getZonas(data: any) {
+    this.apiService.getZoneGerente().subscribe((resp: any) => {
+      this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == data);
+    });
+  }
+
+  getPuestos(data: any) {
+    this.apiService.getPuestosySupervisores(data).subscribe((resp: any) => {
+      const { puestos } = resp;
+      this.dataStations = puestos;
+    })
+  }
+
   getNecesitadosMunicipio(data: any) {
     this.apiService.getNecesitadosMunicipio(data).subscribe((resp: any) => {
-      console.log(resp)
       this.supervisores = resp.supervisores;
       this.coordinadores = resp.coordinadores;
       this.testigos = resp.testigos;
-      this.tabla = true;
+    })
+  }
+
+  getNecesitadosZona(data: any) {
+    this.apiService.getNecesitadosZona(data).subscribe((resp: any) => {
+      this.coordinadoresSupervisor = resp.coordinadores;
+      this.testigosSupervisor = resp.testigos;
+    })
+  }
+
+  getNecesitadosPuesto(data: any) {
+    this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
+      this.testigosCoordinador = resp.testigos;
     })
   }
 
@@ -69,13 +132,6 @@ export class VerPuestoGerenteComponent implements OnInit {
       return '(0%)';
     }
     return `(${Math.round(percent * 100) / 100}%)`;
-  }
-
-  validObjects() {
-    if ((Object.keys(this.supervisores).length !== 0) && (Object.keys(this.coordinadores).length !== 0) && (Object.keys(this.testigos).length !== 0)) {
-      return true;
-    }
-    return false;
   }
 
   getCode(item: any) {
