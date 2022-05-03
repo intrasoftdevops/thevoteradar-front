@@ -30,9 +30,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.loginForm.value)
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value)
       this.apiService.login(this.loginForm.value).subscribe((resp: any) => {
 
         const { res, rol, token, id } = resp;

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../../../services/alert/alert.service';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-consultar-gerente',
@@ -14,7 +15,7 @@ export class ConsultarGerenteComponent implements OnInit {
   listGerenteNoAsignados: any = [];
   listMunicipals: any = [];
 
-  constructor(private apiService: ApiService, private router: Router, private alertService: AlertService) { }
+  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getGerentes();
@@ -43,6 +44,11 @@ export class ConsultarGerenteComponent implements OnInit {
       const { nombre } = municipal;
       return nombre;
     });
+  }
+
+  redirectUpdateGerente(id: any) {
+    const idEncrypt = this.localData.encryptIdUser(id);
+    this.router.navigate(["editarGerente",idEncrypt]);
   }
 
 }

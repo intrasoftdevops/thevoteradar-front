@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import Swal from 'sweetalert2';
+import { LocalDataService } from '../../../services/localData/local-data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-consultar-supervisor',
@@ -13,7 +14,7 @@ export class ConsultarSupervisorComponent implements OnInit {
   listSupervisorNoAsignados: any = [];
   listZones: any = [];
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService,private router: Router,private localData: LocalDataService) { }
 
   ngOnInit(): void {
     this.getSupervisores();
@@ -44,6 +45,11 @@ export class ConsultarSupervisorComponent implements OnInit {
       const { nombre } = zone;
       return nombre;
     });
+  }
+
+  redirectUpdateSupervisor(id: any) {
+    const idEncrypt = this.localData.encryptIdUser(id);
+    this.router.navigate(["editarSupervisor",idEncrypt]);
   }
 
 }

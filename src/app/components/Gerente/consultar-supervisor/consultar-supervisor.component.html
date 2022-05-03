@@ -32,9 +32,8 @@
                                     <td>{{supervisor.email}}</td>
                                     <td>{{listZones[index]}}</td>
                                     <td>
-                                        <a class="rounded-circle">
-                                            <i class="fas fa-pen text-primary"
-                                                routerLink="/editarSupervisor/{{supervisor.id}}"></i>
+                                        <a class="rounded-circle" (click)="redirectUpdateSupervisor(supervisor.id)">
+                                            <i class="fas fa-pen text-primary"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -64,9 +63,8 @@
                                     <td>{{supervisor.nombres}} {{supervisor.apellidos}}</td>
                                     <td>{{supervisor.email}}</td>
                                     <td>
-                                        <a class="rounded-circle">
-                                            <i class="fas fa-pen text-primary"
-                                                routerLink="/editarSupervisor/{{supervisor.id}}"></i>
+                                        <a class="rounded-circle" (click)="redirectUpdateSupervisor(supervisor.id)">
+                                            <i class="fas fa-pen text-primary"></i>
                                         </a>
                                     </td>
                                 </tr>

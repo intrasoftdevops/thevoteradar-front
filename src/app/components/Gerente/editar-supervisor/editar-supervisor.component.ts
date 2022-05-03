@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import { filter } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-editar-supervisor',
@@ -32,7 +32,7 @@ export class EditarSupervisorComponent implements OnInit {
   });
 
   constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
-    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService) { }
+    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService,private localData: LocalDataService) { }
 
   ngOnInit(): void {
     this.getSupervisor();
@@ -97,7 +97,7 @@ export class EditarSupervisorComponent implements OnInit {
   }
 
   getSupervisor() {
-    this.idSupervisor = this.activatedRoute.snapshot.params['id'];
+    this.idSupervisor = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getSupervisor(this.idSupervisor).subscribe((resp: any) => {
       const { municipios_asignados, supervisor, zonas_asignadas } = resp;
       console.log(resp)

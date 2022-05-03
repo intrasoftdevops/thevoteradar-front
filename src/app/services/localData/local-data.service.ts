@@ -40,4 +40,12 @@ export class LocalDataService {
     return CryptoJS.AES.decrypt(localStorage.getItem('keyC') ?? '', environment.key3).toString(CryptoJS.enc.Utf8);
   }
 
+  encryptIdUser(id: any){
+    return CryptoJS.AES.encrypt(id.toString(), environment.key4).toString();
+  }
+
+  decryptIdUser(id: any){
+    return CryptoJS.AES.decrypt(id.toString()?? '', environment.key4).toString(CryptoJS.enc.Utf8);
+  }
+
 }

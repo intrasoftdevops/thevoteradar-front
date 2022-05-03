@@ -33,9 +33,8 @@
                                     <td>{{coordinador.email}}</td>
                                     <td>{{listStations[index]}}</td>
                                     <td>
-                                        <a class="rounded-circle">
-                                            <i class="fas fa-pen text-primary"
-                                                routerLink="/editarCoordinador/{{coordinador.id}}"></i>
+                                        <a class="rounded-circle" (click)="redirectUpdateCoordinador(coordinador.id)">
+                                            <i class="fas fa-pen text-primary"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -65,9 +64,8 @@
                                     <td>{{coordinador.nombres}} {{coordinador.apellidos}}</td>
                                     <td>{{coordinador.email}}</td>
                                     <td>
-                                        <a class="rounded-circle">
-                                            <i class="fas fa-pen text-primary"
-                                                routerLink="/editarCoordinador/{{coordinador.id}}"></i>
+                                        <a class="rounded-circle" (click)="redirectUpdateCoordinador(coordinador.id)">
+                                            <i class="fas fa-pen text-primary"></i>
                                         </a>
                                     </td>
                                 </tr>

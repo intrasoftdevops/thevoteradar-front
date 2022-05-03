@@ -1,43 +1,39 @@
-<section>
-  <app-menu-coordinador></app-menu-coordinador>
-  <div class="container py-5">
-    <div class="card">
-      <div class="bg-primary py-3 px-5 text-white">
-        <h4>Consulta de puestos</h4>
+<div class="container py-5">
+  <div class="card">
+    <div class="bg-primary py-3 px-5 text-white">
+      <h4>Consulta de puestos</h4>
+    </div>
+    <div class="card-body">
+      <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="fw-bold form-label">Puestos de votacion</label>
+          <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
+            (change)="getSelectedStation($event)" bindValue="nombre_departamento_votacion"
+            notFoundText="No hay informacion disponible">
+          </ng-select>
+        </div>
       </div>
-      <div class="card-body">
-        <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Puestos de votacion</label>
-            <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
-              (change)="getSelectedStation($event)" bindValue="nombre_departamento_votacion"
-              notFoundText="No hay informacion disponible">
-            </ng-select>
-          </div>
-        </div>
-        <div class="table-responsive" *ngIf="tabla">
-          <table class="table text-center align-middle">
-            <thead class="text-dark align-middle">
-              <tr>
-                <th scope="col">TESTIGOS</th>
-                <th scope="col">TESTIGOS POR ASIGNAR</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-white">
-                <td [ngClass]="textColor(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)">
-                  {{testigos.cantidad_testigos_existentes}}/{{testigos.cantidad_testigos_necesitados}}
-                  {{createPercent(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)}}
-                </td>
-                <td>
-                  {{testigos.cantidad_testigos_por_asignar}}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="table-responsive" *ngIf="tabla">
+        <table class="table text-center align-middle">
+          <thead class="text-dark align-middle">
+            <tr>
+              <th scope="col">TESTIGOS</th>
+              <th scope="col">TESTIGOS POR ASIGNAR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-white">
+              <td [ngClass]="textColor(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)">
+                {{testigos.cantidad_testigos_existentes}}/{{testigos.cantidad_testigos_necesitados}}
+                {{createPercent(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)}}
+              </td>
+              <td>
+                {{testigos.cantidad_testigos_por_asignar}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-  <app-footer></app-footer>
-</section>
+</div>

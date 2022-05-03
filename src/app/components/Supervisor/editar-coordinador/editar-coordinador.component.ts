@@ -6,6 +6,7 @@ import { filter } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-editar-coordinador',
@@ -32,7 +33,7 @@ export class EditarCoordinadorComponent implements OnInit {
   });
 
   constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
-    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService) { }
+    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService,private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getCoordinador();
@@ -61,7 +62,6 @@ export class EditarCoordinadorComponent implements OnInit {
     console.log(this.updateForm.value)
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
-        
         this.apiService.updateCoordinador(this.idCoordinador, this.updateForm.value).subscribe((resp: any) => {
 
           this.alertService.successAlert(resp.res);
@@ -97,7 +97,7 @@ export class EditarCoordinadorComponent implements OnInit {
   }
 
   getCoordinador() {
-    this.idCoordinador = this.activatedRoute.snapshot.params['id'];
+    this.idCoordinador = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getCoordinador(this.idCoordinador).subscribe((resp: any) => {
       const { coordinador, puestos_asignados, zonas_asignadas } = resp;
 

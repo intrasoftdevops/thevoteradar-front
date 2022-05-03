@@ -1,108 +1,103 @@
-<section>
-    <app-menu-coordinador></app-menu-coordinador>
-    <form class="container py-5" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
-        <div class="card">
-            <div class="bg-primary py-3 px-5 text-white">
-                <h4 class="m-0">
-                    Editar Testigo
-                </h4>
-            </div>
-            <div class="card-body">
-                <h4 class="ms-4 fw-bolder">
-                    Datos Personales
-                </h4>
-                <div class="row m-4">
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="form-label">
-                            <span class="fw-bold">Nombres</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control border-2 border-dark rounded" formControlName="nombres"
-                            (keypress)="keypressValidator.keyPressLetters($event)" />
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="form-label">
-                            <span class="fw-bold">Apellidos</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control border-2 border-dark rounded" formControlName="apellidos"
-                            (keypress)="keypressValidator.keyPressLetters($event)" />
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="form-label">
-                            <span class="fw-bold">Genero</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id">
-                            <ng-option [value]="1">Masculino</ng-option>
-                            <ng-option [value]="2">Femenino</ng-option>
-                            <ng-option [value]="3">Otro</ng-option>
-                        </ng-select>
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="form-label">
-                            <span class="fw-bold">Tipo de documento</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <ng-select [searchable]="false" class="custom-select rounded"
-                            formControlName="tipo_documento_id">
-                            <ng-option [value]="1">Cedula de ciudadania</ng-option>
-                        </ng-select>
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="form-label">
-                            <span class="fw-bold">Numero de documento</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="number" class="form-control border-2 border-dark rounded"
-                            formControlName="numero_documento" (keypress)="keypressValidator.keyPressNumbers($event)">
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="form-label fw-bold">Telefono</label>
-                        <input type="number" class="form-control border-2 border-dark rounded"
-                            formControlName="telefono" (keypress)="keypressValidator.keyPressNumbers($event)">
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="form-label">
-                            <span class="fw-bold">Correo electronico</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="email" class="form-control border-2 border-dark rounded" formControlName="email">
-                        <small class="text-danger"
-                            *ngIf="updateFormControl['email'].errors?.['email'] || updateFormControl['email'].errors?.['invalidEmail']">
-                            Ingrese una direccion de correo electronico valido.
-                        </small>
-                    </div>
+<form class="container py-5" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+    <div class="card">
+        <div class="bg-primary py-3 px-5 text-white">
+            <h4 class="m-0">
+                Editar Testigo
+            </h4>
+        </div>
+        <div class="card-body">
+            <h4 class="ms-4 fw-bolder">
+                Datos Personales
+            </h4>
+            <div class="row m-4">
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Nombres</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="nombres"
+                        (keypress)="keypressValidator.keyPressLetters($event)" />
                 </div>
-                <hr class="mx-4 border border-primary rounded border-2" />
-                <h4 class="ms-4 fw-bolder">
-                    Lugar de Trabajo
-                </h4>
-                <div class="row mx-4 my-4">
-                    <div class="form-group col-md-6 col-lg-4 pt-3">
-                        <label class="fw-bold ">
-                            <span class="fw-bold">Puesto de votacion</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
-                            formControlName="puesto" bindLabel="nombre"
-                            bindValue="codigo_unico" (change)="getSelectedValue($event)"
-                            notFoundText="No hay informacion disponible">
-                        </ng-select>
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-3">
-                        <label class="fw-bold ">Mesas de votacion</label>
-                        <ng-select [items]="dataTables" class="custom-multiple-select rounded"
-                            formControlName="mesas" bindLabel="numero_mesa" bindValue="codigo_unico" [multiple]="true"
-                            notFoundText="No hay informacion disponible">
-                        </ng-select>
-                    </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Apellidos</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="apellidos"
+                        (keypress)="keypressValidator.keyPressLetters($event)" />
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Genero</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id">
+                        <ng-option [value]="1">Masculino</ng-option>
+                        <ng-option [value]="2">Femenino</ng-option>
+                        <ng-option [value]="3">Otro</ng-option>
+                    </ng-select>
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Tipo de documento</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="tipo_documento_id">
+                        <ng-option [value]="1">Cedula de ciudadania</ng-option>
+                    </ng-select>
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Numero de documento</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="number" class="form-control border-2 border-dark rounded"
+                        formControlName="numero_documento" (keypress)="keypressValidator.keyPressNumbers($event)">
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label fw-bold">Telefono</label>
+                    <input type="number" class="form-control border-2 border-dark rounded" formControlName="telefono"
+                        (keypress)="keypressValidator.keyPressNumbers($event)">
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Correo electronico</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="email" class="form-control border-2 border-dark rounded" formControlName="email">
+                    <small class="text-danger"
+                        *ngIf="updateFormControl['email'].errors?.['email'] || updateFormControl['email'].errors?.['invalidEmail']">
+                        Ingrese una direccion de correo electronico valido.
+                    </small>
+                </div>
+            </div>
+            <hr class="mx-4 border border-primary rounded border-2" />
+            <h4 class="ms-4 fw-bolder">
+                Lugar de Trabajo
+            </h4>
+            <div class="row mx-4 my-4">
+                <div class="form-group col-md-6 col-lg-4 pt-3">
+                    <label class="fw-bold ">
+                        <span class="fw-bold">Puesto de votacion</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
+                        formControlName="puesto" bindLabel="nombre" bindValue="codigo_unico"
+                        (change)="getSelectedValue($event)" notFoundText="No hay informacion disponible">
+                    </ng-select>
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-3">
+                    <label class="fw-bold ">Mesas de votacion</label>
+                    <ng-select [items]="dataTables" class="custom-multiple-select rounded" formControlName="mesas"
+                        bindLabel="numero_mesa" bindValue="codigo_unico" [multiple]="true"
+                        notFoundText="No hay informacion disponible">
+                    </ng-select>
                 </div>
             </div>
         </div>
-        <div class="d-flex justify-content-end pt-4">
-            <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">EDITAR
-            </button>
-        </div>
-    </form>
-</section>
+    </div>
+    <div class="d-flex justify-content-end pt-4">
+        <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">EDITAR
+        </button>
+    </div>
+</form>

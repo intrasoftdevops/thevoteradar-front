@@ -32,9 +32,8 @@
                                     <td>{{gerente.email}}</td>
                                     <td>{{listMunicipals[index]}}</td>
                                     <td>
-                                        <a class="rounded-circle">
-                                            <i class="fas fa-pen text-primary"
-                                                routerLink="/editarGerente/{{gerente.id}}"></i>
+                                        <a class="rounded-circle" (click)="redirectUpdateGerente(gerente.id)">
+                                            <i class="fas fa-pen text-primary"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -64,7 +63,7 @@
                                     <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
                                     <td>{{gerente.email}}</td>
                                     <td>
-                                        <a class="rounded-circle" routerLink="/editarGerente/{{gerente.id}}">
+                                        <a class="rounded-circle" (click)="redirectUpdateGerente(gerente.id)">
                                             <i class="fas fa-pen text-primary"></i>
                                         </a>
                                     </td>

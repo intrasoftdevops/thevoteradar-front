@@ -5,7 +5,8 @@ import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
-
+import { environment } from '../../../../environments/environment';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 @Component({
   selector: 'app-editar-gerente',
   templateUrl: './editar-gerente.component.html',
@@ -28,13 +29,13 @@ export class EditarGerenteComponent implements OnInit {
     telefono: [''],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     password: [''],
-    departamento: [[],Validators.required],
+    departamento: [[], Validators.required],
     municipios: [[]],
   });
   submitted = false;
 
   constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
-    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService) { }
+    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit() {
 
@@ -105,7 +106,7 @@ export class EditarGerenteComponent implements OnInit {
   }
 
   getGerente() {
-    this.idGerente = this.activatedRoute.snapshot.params['id'];
+    this.idGerente = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
 
       const { gerente, municipios_asignados, departamentos_asignados } = resp;

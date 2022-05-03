@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { AlertService } from '../../../services/alert/alert.service';
-import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-consultar-testigo',
@@ -14,7 +14,7 @@ export class ConsultarTestigoComponent implements OnInit {
   listTestigoNoAsignados: any = [];
   listTables: any = [];
 
-  constructor(private alertService: AlertService, private apiService: ApiService) { }
+  constructor(private apiService: ApiService,private router: Router,private localData: LocalDataService) { }
 
   ngOnInit(): void {
     this.getTestigos();
@@ -45,6 +45,11 @@ export class ConsultarTestigoComponent implements OnInit {
       const { numero_mesa } = table;
       return numero_mesa;
     });
+  }
+
+  redirectUpdateTestigo(id: any) {
+    const idEncrypt = this.localData.encryptIdUser(id);
+    this.router.navigate(["editarTestigo",idEncrypt]);
   }
 
 }

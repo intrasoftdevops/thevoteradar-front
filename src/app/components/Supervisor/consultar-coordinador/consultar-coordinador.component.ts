@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService } from '../../../services/alert/alert.service';
 import { ApiService } from '../../../services/api/api.service';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-consultar-coordinador',
@@ -14,7 +16,7 @@ export class ConsultarCoordinadorComponent implements OnInit {
   listCoordinadorNoAsignados: any = [];
   listStations: any = [];
 
-  constructor(private alertService: AlertService,private apiService: ApiService) { }
+  constructor(private apiService: ApiService,private router: Router,private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getCoordinadores();
@@ -46,6 +48,11 @@ export class ConsultarCoordinadorComponent implements OnInit {
       const { nombre } = zone;
       return nombre;
     });
+  }
+
+  redirectUpdateCoordinador(id: any) {
+    const idEncrypt = this.localData.encryptIdUser(id);
+    this.router.navigate(["editarCoordinador",idEncrypt]);
   }
 
 }

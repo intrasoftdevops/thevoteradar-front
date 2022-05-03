@@ -6,6 +6,7 @@ import { filter } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-editar-testigo',
@@ -32,7 +33,7 @@ export class EditarTestigoComponent implements OnInit {
   });
 
   constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
-    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService) { }
+    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getTestigo();
@@ -82,7 +83,7 @@ export class EditarTestigoComponent implements OnInit {
   }
 
   getTestigo() {
-    this.idTestigo = this.activatedRoute.snapshot.params['id'];
+    this.idTestigo = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getTestigo(this.idTestigo).subscribe((resp: any) => {
       const { testigo, puestos_asignados, mesas_asignadas } = resp;
 
