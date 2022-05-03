@@ -1,86 +1,82 @@
-<section>
-    <app-menu-admin></app-menu-admin>
-    <div class="container py-5">
-        <div class="bg-primary py-3 px-5 text-white">
-            <h4>Consultar gerentes</h4>
-        </div>
-        <ul class="nav nav-tabs mt-5" id="myTab">
-            <li class="nav-item" id="tab">
-                <button class="nav-link h4 px-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#asignados"
-                    type="button" role="tab">Asignados</button>
-            </li>
-            <li class="nav-item" id="tab">
-                <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noasignados"
-                    type="button" role="tab">No asignados</button>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="asignados" role="tabpanel">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <div class="table-responsive" *ngIf="listGerenteAsignados.length>0;else municipio_content">
-                            <table class="table text-center align-middle">
-                                <thead class="text-dark align-middle">
-                                    <tr>
-                                        <th scope="col">NOMBRE COMPLETO</th>
-                                        <th scope="col">CORREO ELECTRONICO</th>
-                                        <th scope="col">MUNICIPIOS</th>
-                                        <th scope="col">OPCIONES</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white" *ngFor="let gerente of listGerenteAsignados;let index=index">
-                                        <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
-                                        <td>{{gerente.email}}</td>
-                                        <td>{{listMunicipals[index]}}</td>
-                                        <td>
-                                            <a class="rounded-circle">
-                                                <i class="fas fa-pen text-primary"
-                                                    routerLink="/editarGerente/{{gerente.id}}"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <ng-template #municipio_content>
-                            <p class="text-center mb-0">No hay Gerentes con asignacion de municipio.</p>
-                        </ng-template>
+<div class="container py-5">
+    <div class="bg-primary py-3 px-5 text-white">
+        <h4>Consultar gerentes</h4>
+    </div>
+    <ul class="nav nav-tabs mt-5" id="myTab">
+        <li class="nav-item" id="tab">
+            <button class="nav-link h4 px-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#asignados"
+                type="button" role="tab">Asignados</button>
+        </li>
+        <li class="nav-item" id="tab">
+            <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noasignados"
+                type="button" role="tab">No asignados</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="asignados" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="table-responsive" *ngIf="listGerenteAsignados.length>0;else municipio_content">
+                        <table class="table text-center align-middle">
+                            <thead class="text-dark align-middle">
+                                <tr>
+                                    <th scope="col">NOMBRE COMPLETO</th>
+                                    <th scope="col">CORREO ELECTRONICO</th>
+                                    <th scope="col">MUNICIPIOS</th>
+                                    <th scope="col">OPCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white" *ngFor="let gerente of listGerenteAsignados;let index=index">
+                                    <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
+                                    <td>{{gerente.email}}</td>
+                                    <td>{{listMunicipals[index]}}</td>
+                                    <td>
+                                        <a class="rounded-circle">
+                                            <i class="fas fa-pen text-primary"
+                                                routerLink="/editarGerente/{{gerente.id}}"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                    <ng-template #municipio_content>
+                        <p class="text-center mb-0">No hay Gerentes con asignacion de municipio.</p>
+                    </ng-template>
                 </div>
             </div>
-            <div class="tab-pane fade" id="noasignados" role="tabpanel">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <div class="table-responsive" *ngIf="listGerenteNoAsignados.length>0;else no_municipio_content">
-                            <table class="table text-center align-middle">
-                                <thead class="text-dark align-middle">
-                                    <tr>
-                                        <th scope="col">NOMBRE COMPLETO</th>
-                                        <th scope="col">CORREO ELECTRONICO</th>
-                                        <th scope="col">OPCIONES</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white" *ngFor="let gerente of listGerenteNoAsignados;let index=index">
-                                        <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
-                                        <td>{{gerente.email}}</td>
-                                        <td>
-                                            <a class="rounded-circle" routerLink="/editarGerente/{{gerente.id}}">
-                                                <i class="fas fa-pen text-primary"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <ng-template #no_municipio_content>
-                            <p class="text-center mb-0">No hay Gerentes sin asignacion de municipio.</p>
-                        </ng-template>
+        </div>
+        <div class="tab-pane fade" id="noasignados" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="table-responsive" *ngIf="listGerenteNoAsignados.length>0;else no_municipio_content">
+                        <table class="table text-center align-middle">
+                            <thead class="text-dark align-middle">
+                                <tr>
+                                    <th scope="col">NOMBRE COMPLETO</th>
+                                    <th scope="col">CORREO ELECTRONICO</th>
+                                    <th scope="col">OPCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white" *ngFor="let gerente of listGerenteNoAsignados;let index=index">
+                                    <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
+                                    <td>{{gerente.email}}</td>
+                                    <td>
+                                        <a class="rounded-circle" routerLink="/editarGerente/{{gerente.id}}">
+                                            <i class="fas fa-pen text-primary"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                    <ng-template #no_municipio_content>
+                        <p class="text-center mb-0">No hay Gerentes sin asignacion de municipio.</p>
+                    </ng-template>
                 </div>
             </div>
         </div>
     </div>
-    <app-footer></app-footer>
-</section>
+</div>

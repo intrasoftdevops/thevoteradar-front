@@ -1,97 +1,93 @@
-<section>
-  <app-menu-supervisor></app-menu-supervisor>
-  <div class="container py-5">
-    <div class="card">
-      <div class="bg-primary py-3 px-5 text-white">
-        <h4>Mi Equipo</h4>
-      </div>
-      <div class="card-body">
-        <div class="row m-4 d-flex justify-content-center">
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Zonas</label>
-            <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-              (change)="getSelectedZone($event)" notFoundText="No hay informacion disponible">
-            </ng-select>
-          </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Puestos</label>
-            <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-              (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
-              [(ngModel)]="selectedStation">
-            </ng-select>
-          </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Mesas</label>
-            <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa"
-              bindValue="codigo_unico" (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
-              [(ngModel)]="selectedTable">
-            </ng-select>
-          </div>
+<div class="container py-5">
+  <div class="card">
+    <div class="bg-primary py-3 px-5 text-white">
+      <h4>Mi Equipo</h4>
+    </div>
+    <div class="card-body">
+      <div class="row m-4 d-flex justify-content-center">
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="fw-bold form-label">Zonas</label>
+          <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
+            (change)="getSelectedZone($event)" notFoundText="No hay informacion disponible">
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="fw-bold form-label">Puestos</label>
+          <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
+            (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
+            [(ngModel)]="selectedStation">
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="fw-bold form-label">Mesas</label>
+          <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa" bindValue="codigo_unico"
+            (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
+            [(ngModel)]="selectedTable">
+          </ng-select>
         </div>
       </div>
     </div>
-    <ng-container [ngSwitch]="tabla">
-      <div class="card mt-5" *ngSwitchCase="'coordinador'">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4>Coordinadores</h4>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive" *ngIf="listCoordinadores.length>0;else other_content">
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
-                <tr>
-                  <th scope="col">NOMBRES</th>
-                  <th scope="col">APELLIDOS</th>
-                  <th scope="col">TELEFONO</th>
-                  <th scope="col">CORREO ELECTRONICO</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let coordinador of listCoordinadores" class="bg-white">
-                  <td scope="row">{{coordinador.nombres}}</td>
-                  <td>{{coordinador.apellidos}}</td>
-                  <td>45621638</td>
-                  <td>{{coordinador.email}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <ng-template #other_content>
-            <p class="text-center">No hay Coordinador asignado para este puesto.</p>
-          </ng-template>
-        </div>
-      </div>
-      <div class="card mt-5" *ngSwitchCase="'testigo'">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4>Testigos</h4>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive" *ngIf="listTestigos.length>0;else other_content">
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
-                <tr>
-                  <th scope="col">NOMBRES</th>
-                  <th scope="col">APELLIDOS</th>
-                  <th scope="col">TELEFONO</th>
-                  <th scope="col">CORREO ELECTRONICO</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let testigo of listTestigos" class="bg-white">
-                  <td scope="row">{{testigo.nombres}}</td>
-                  <td>{{testigo.apellidos}}</td>
-                  <td>78213</td>
-                  <td>{{testigo.email}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <ng-template #other_content>
-            <p class="text-center">No hay Testigo asignado para esta mesa.</p>
-          </ng-template>
-        </div>
-      </div>
-    </ng-container>
   </div>
-  <app-footer></app-footer>
-</section>
+  <ng-container [ngSwitch]="tabla">
+    <div class="card mt-5" *ngSwitchCase="'coordinador'">
+      <div class="bg-primary py-3 px-5 text-white">
+        <h4>Coordinadores</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive" *ngIf="listCoordinadores.length>0;else other_content">
+          <table class="table table-curved text-center">
+            <thead class="text-dark">
+              <tr>
+                <th scope="col">NOMBRES</th>
+                <th scope="col">APELLIDOS</th>
+                <th scope="col">TELEFONO</th>
+                <th scope="col">CORREO ELECTRONICO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let coordinador of listCoordinadores" class="bg-white">
+                <td scope="row">{{coordinador.nombres}}</td>
+                <td>{{coordinador.apellidos}}</td>
+                <td>45621638</td>
+                <td>{{coordinador.email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #other_content>
+          <p class="text-center">No hay Coordinador asignado para este puesto.</p>
+        </ng-template>
+      </div>
+    </div>
+    <div class="card mt-5" *ngSwitchCase="'testigo'">
+      <div class="bg-primary py-3 px-5 text-white">
+        <h4>Testigos</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive" *ngIf="listTestigos.length>0;else other_content">
+          <table class="table table-curved text-center">
+            <thead class="text-dark">
+              <tr>
+                <th scope="col">NOMBRES</th>
+                <th scope="col">APELLIDOS</th>
+                <th scope="col">TELEFONO</th>
+                <th scope="col">CORREO ELECTRONICO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let testigo of listTestigos" class="bg-white">
+                <td scope="row">{{testigo.nombres}}</td>
+                <td>{{testigo.apellidos}}</td>
+                <td>78213</td>
+                <td>{{testigo.email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #other_content>
+          <p class="text-center">No hay Testigo asignado para esta mesa.</p>
+        </ng-template>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -1,162 +1,158 @@
-<section>
-    <app-menu-impugnador></app-menu-impugnador>
-    <div class="container py-5">
-        <div class="card">
-            <div class="bg-primary py-3 px-lg-5 text-white">
-                <h4>Impugnaciones</h4>
+<div class="container py-5">
+    <div class="card">
+        <div class="bg-primary py-3 px-lg-5 text-white">
+            <h4>Impugnaciones</h4>
+        </div>
+        <div class="card-body">
+            <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <label class="fw-bold form-label">Candidatos</label>
+                    <ng-select (change)="getSelectedValue($event)" [searchable]="false" class="custom-select rounded"
+                        notFoundText="No hay informacion disponible">
+                        <ng-option *ngFor="let candidato of dataCandidatos" [value]="candidato.codigo_unico">
+                            {{candidato.nombres}} {{candidato.apellidos}}</ng-option>
+                    </ng-select>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="fw-bold form-label">Candidatos</label>
-                        <ng-select (change)="getSelectedValue($event)" [searchable]="false"
-                            class="custom-select rounded" notFoundText="No hay informacion disponible">
-                            <ng-option *ngFor="let candidato of dataCandidatos" [value]="candidato.codigo_unico">
-                                {{candidato.nombres}} {{candidato.apellidos}}</ng-option>
-                        </ng-select>
+        </div>
+    </div>
+    <ng-container *ngIf="tabla">
+        <ul class="nav nav-tabs mt-5" id="myTab">
+            <li class="nav-item" id="tab">
+                <button class="nav-link h4 px-lg-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#impugnar"
+                    type="button" role="tab">POR REVISAR</button>
+            </li>
+            <li class="nav-item" id="tab">
+                <button class="nav-link h4 px-lg-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#impugnados"
+                    type="button" role="tab">IMPUGNAR</button>
+            </li>
+
+            <li class="nav-item" id="tab">
+                <button class="nav-link h4 px-lg-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noimpugnados"
+                    type="button" role="tab">NO IMPUGNADOS</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="impugnar" role="tabpanel">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="table-responsive" *ngIf="dataRevisar.length>0;else revisar_content">
+                            <table class="table text-center align-middle">
+                                <thead class="text-dark align-middle">
+                                    <tr>
+                                        <th scope="col">DEPARTAMENTO</th>
+                                        <th scope="col">MUNICIPIO</th>
+                                        <th scope="col">ZONA</th>
+                                        <th scope="col">PUESTO</th>
+                                        <th scope="col">MESA</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white" *ngFor="let revisar of dataRevisar">
+                                        <td>{{revisar.departamento}}</td>
+                                        <td>{{revisar.municipio}}</td>
+                                        <td>{{revisar.zona}}</td>
+                                        <td>{{revisar.puesto}}</td>
+                                        <td>{{revisar.mesa}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm m-1"
+                                                data-bs-toggle="modal" data-bs-target="#impugnarmodal"
+                                                (click)="ModalRevisarActual(revisar)">
+                                                Ver Reporte
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <ng-template #revisar_content>
+                            <p class="text-center mb-0">No hay reportes por revisar.</p>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="impugnados" role="tabpanel">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="table-responsive" *ngIf="dataImpugnar.length>0;else impugnar_content">
+                            <table class="table text-center align-middle">
+                                <thead class="text-dark align-middle">
+                                    <tr>
+                                        <th scope="col">DEPARTAMENTO</th>
+                                        <th scope="col">MUNICIPIO</th>
+                                        <th scope="col">ZONA</th>
+                                        <th scope="col">PUESTO</th>
+                                        <th scope="col">MESA</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white" *ngFor="let impugnar of dataImpugnar">
+                                        <td>{{impugnar.departamento}}</td>
+                                        <td>{{impugnar.municipio}}</td>
+                                        <td>{{impugnar.zona}}</td>
+                                        <td>{{impugnar.puesto}}</td>
+                                        <td>{{impugnar.mesa}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#impugnadosmodal"
+                                                (click)="ModalImpugnarActual(impugnar)">
+                                                Ver Reporte
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <ng-template #impugnar_content>
+                            <p class="text-center mb-0">No hay reportes por impugnar.</p>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="noimpugnados" role="tabpanel">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="table-responsive" *ngIf="dataNoImpugnados.length>0;else noImpugnados_content">
+                            <table class="table text-center align-middle">
+                                <thead class="text-dark align-middle">
+                                    <tr>
+                                        <th scope="col">DEPARTAMENTO</th>
+                                        <th scope="col">MUNICIPIO</th>
+                                        <th scope="col">ZONA</th>
+                                        <th scope="col">PUESTO</th>
+                                        <th scope="col">MESA</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white" *ngFor="let noImpugnados of dataNoImpugnados">
+                                        <td>{{noImpugnados.departamento}}</td>
+                                        <td>{{noImpugnados.municipio}}</td>
+                                        <td>{{noImpugnados.zona}}</td>
+                                        <td>{{noImpugnados.puesto}}</td>
+                                        <td>{{noImpugnados.mesa}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#noimpugnadosmodal"
+                                                (click)="ModalNoImpugnarActual(noImpugnados)">
+                                                Ver Reporte
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <ng-template #noImpugnados_content>
+                            <p class="text-center mb-0">No hay reportes no impugnados.</p>
+                        </ng-template>
                     </div>
                 </div>
             </div>
         </div>
-        <ng-container *ngIf="tabla">
-            <ul class="nav nav-tabs mt-5" id="myTab">
-                <li class="nav-item" id="tab">
-                    <button class="nav-link h4 px-lg-5 active" id="home-tab" data-bs-toggle="tab"
-                        data-bs-target="#impugnar" type="button" role="tab">POR REVISAR</button>
-                </li>
-                <li class="nav-item" id="tab">
-                    <button class="nav-link h4 px-lg-5" id="profile-tab" data-bs-toggle="tab"
-                        data-bs-target="#impugnados" type="button" role="tab">IMPUGNAR</button>
-                </li>
-
-                <li class="nav-item" id="tab">
-                    <button class="nav-link h4 px-lg-5" id="profile-tab" data-bs-toggle="tab"
-                        data-bs-target="#noimpugnados" type="button" role="tab">NO IMPUGNADOS</button>
-                </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="impugnar" role="tabpanel">
-                    <div class="card mt-3">
-                        <div class="card-body">
-                            <div class="table-responsive" *ngIf="dataRevisar.length>0;else revisar_content">
-                                <table class="table text-center align-middle">
-                                    <thead class="text-dark align-middle">
-                                        <tr>
-                                            <th scope="col">DEPARTAMENTO</th>
-                                            <th scope="col">MUNICIPIO</th>
-                                            <th scope="col">ZONA</th>
-                                            <th scope="col">PUESTO</th>
-                                            <th scope="col">MESA</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="bg-white" *ngFor="let revisar of dataRevisar">
-                                            <td>{{revisar.departamento}}</td>
-                                            <td>{{revisar.municipio}}</td>
-                                            <td>{{revisar.zona}}</td>
-                                            <td>{{revisar.puesto}}</td>
-                                            <td>{{revisar.mesa}}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-sm m-1"
-                                                    data-bs-toggle="modal" data-bs-target="#impugnarmodal"
-                                                    (click)="ModalRevisarActual(revisar)">
-                                                    Ver Reporte
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <ng-template #revisar_content>
-                                <p class="text-center mb-0">No hay reportes por revisar.</p>
-                            </ng-template>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="impugnados" role="tabpanel">
-                    <div class="card mt-3">
-                        <div class="card-body">
-                            <div class="table-responsive" *ngIf="dataImpugnar.length>0;else impugnar_content">
-                                <table class="table text-center align-middle">
-                                    <thead class="text-dark align-middle">
-                                        <tr>
-                                            <th scope="col">DEPARTAMENTO</th>
-                                            <th scope="col">MUNICIPIO</th>
-                                            <th scope="col">ZONA</th>
-                                            <th scope="col">PUESTO</th>
-                                            <th scope="col">MESA</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="bg-white" *ngFor="let impugnar of dataImpugnar">
-                                            <td>{{impugnar.departamento}}</td>
-                                            <td>{{impugnar.municipio}}</td>
-                                            <td>{{impugnar.zona}}</td>
-                                            <td>{{impugnar.puesto}}</td>
-                                            <td>{{impugnar.mesa}}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-sm"
-                                                    data-bs-toggle="modal" data-bs-target="#impugnadosmodal"
-                                                    (click)="ModalImpugnarActual(impugnar)">
-                                                    Ver Reporte
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <ng-template #impugnar_content>
-                                <p class="text-center mb-0">No hay reportes por impugnar.</p>
-                            </ng-template>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="noimpugnados" role="tabpanel">
-                    <div class="card mt-3">
-                        <div class="card-body">
-                            <div class="table-responsive" *ngIf="dataNoImpugnados.length>0;else noImpugnados_content">
-                                <table class="table text-center align-middle">
-                                    <thead class="text-dark align-middle">
-                                        <tr>
-                                            <th scope="col">DEPARTAMENTO</th>
-                                            <th scope="col">MUNICIPIO</th>
-                                            <th scope="col">ZONA</th>
-                                            <th scope="col">PUESTO</th>
-                                            <th scope="col">MESA</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="bg-white" *ngFor="let noImpugnados of dataNoImpugnados">
-                                            <td>{{noImpugnados.departamento}}</td>
-                                            <td>{{noImpugnados.municipio}}</td>
-                                            <td>{{noImpugnados.zona}}</td>
-                                            <td>{{noImpugnados.puesto}}</td>
-                                            <td>{{noImpugnados.mesa}}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-sm"
-                                                    data-bs-toggle="modal" data-bs-target="#noimpugnadosmodal"
-                                                    (click)="ModalNoImpugnarActual(noImpugnados)">
-                                                    Ver Reporte
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <ng-template #noImpugnados_content>
-                                <p class="text-center mb-0">No hay reportes no impugnados.</p>
-                            </ng-template>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </ng-container>
-    </div>
-    <app-footer></app-footer>
-</section>
+    </ng-container>
+</div>
 
 <div class="modal fade" id="impugnarmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">

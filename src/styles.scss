@@ -19,7 +19,7 @@ body {
 }
 
 
-section:not(#login) {
+#fondo {
     min-height: 100vh;
     background-image: url("./assets/mapa.png") !important;
     background-position: center !important;

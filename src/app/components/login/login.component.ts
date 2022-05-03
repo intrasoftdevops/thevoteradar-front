@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import packageJson from '../../../../package.json';
 import { AlertService } from '../../services/alert/alert.service';
 import { LocalDataService } from '../../services/localData/local-data.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -13,21 +13,28 @@ import { LocalDataService } from '../../services/localData/local-data.service';
 })
 export class LoginComponent implements OnInit {
 
-  user: any = {
-    numero_documento: '',
-    password: ''
-  }
+  loginForm: FormGroup = this.fb.group({
+    numero_documento: ['', Validators.required],
+    password: ['', Validators.required],
+  });
 
   public version: string = packageJson.version;
 
-  constructor(private apiService: ApiService, private router: Router, private alertService: AlertService, private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit() {
   }
 
-  login() {
-    this.apiService.login(this.user).subscribe({
-      next: (resp: any) => {
+  get createFormControl() {
+    return this.loginForm.controls;
+  }
+
+  onSubmit() {
+    console.log(this.loginForm.value)
+    if (this.loginForm.valid) {
+      console.log(this.loginForm.value)
+      this.apiService.login(this.loginForm.value).subscribe((resp: any) => {
+
         const { res, rol, token, id } = resp;
         if (res == true) {
           console.log(resp);
@@ -68,8 +75,10 @@ export class LoginComponent implements OnInit {
         } else {
           this.alertService.errorAlert(resp.message);
         }
-      },
-    })
+      })
+    } else {
+      this.alertService.errorAlert("Llene los campos obligatorios.");
+    }
   }
 
 }

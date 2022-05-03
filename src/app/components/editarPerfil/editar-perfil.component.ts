@@ -22,17 +22,11 @@ export class EditarPerfilComponent implements OnInit {
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
   });
-  rol: any;
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService, private localData: LocalDataService) { }
 
   ngOnInit() {
-    this.getRol();
     this.getUser();
-  }
-
-  getRol() {
-    this.rol = this.localData.getRol();
   }
 
   onSubmit() {
