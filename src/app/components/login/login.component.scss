@@ -28,7 +28,10 @@
 }
 
 .card {
-    background: linear-gradient(150deg, rgba(255, 255, 255, 0.4) 35%,rgba(255, 255, 255, 0.2) 50% )!important;
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.4) 35%, rgba(255, 255, 255, 0.2) 50%) !important;
     border-radius: 25px !important;
 }
 
+input::placeholder {
+    color: black !important;
+}

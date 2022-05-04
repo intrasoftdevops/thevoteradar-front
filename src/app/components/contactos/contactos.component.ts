@@ -73,6 +73,7 @@ export class ContactosComponent implements OnInit {
 
   deleteContacto(id: any) {
     Swal.fire({
+      icon: 'warning',
       title: '¿Esta seguro de borrar este contacto?',
       showCancelButton: true,
       confirmButtonText: 'Eliminar',
@@ -80,6 +81,7 @@ export class ContactosComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.apiService.deleteContacto(id).subscribe((resp: any) => {
+          this.successAlert(resp.message);
           this.getContactos();
         })
       }

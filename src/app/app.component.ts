@@ -17,6 +17,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    this.getRol();
     this.subscriber = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event) => {

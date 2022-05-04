@@ -6,37 +6,39 @@
     <div class="card-body">
       <div class="row m-4 d-flex justify-content-center">
         <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Departamentos</label>
+          <label class="fw-bold form-label">Equipo por departamento</label>
           <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
             bindLabel="nombre_departamento_votacion" bindValue="nombre_departamento_votacion"
-            (change)="getSelectedDepartment($event)" notFoundText="No hay informacion disponible">
+            placeholder="Seleccione departamento" (change)="getSelectedDepartment($event)"
+            notFoundText="No hay informacion disponible">
           </ng-select>
         </div>
         <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Municipios</label>
+          <label class="fw-bold form-label">Gerentes por departamento</label>
           <ng-select [items]="dataMunicipals" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
             (change)="getSelectedMunicipal($event)" notFoundText="No hay informacion disponible"
-            [(ngModel)]="selectedMunicipal">
+            placeholder="Seleccione municipio" [(ngModel)]="selectedMunicipal">
           </ng-select>
         </div>
         <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Zonas</label>
+          <label class="fw-bold form-label">Supervisores por zona</label>
           <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-            (change)="getSelectedZone($event)" notFoundText="No hay informacion disponible" [(ngModel)]="selectedZone">
+            placeholder="Seleccione zona" (change)="getSelectedZone($event)"
+            notFoundText="No hay informacion disponible" [(ngModel)]="selectedZone">
           </ng-select>
         </div>
         <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Puestos</label>
+          <label class="fw-bold form-label">Coordinadores por puesto</label>
           <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
             (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
-            [(ngModel)]="selectedStation">
+            placeholder="Seleccione puesto" [(ngModel)]="selectedStation">
           </ng-select>
         </div>
         <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Mesas</label>
+          <label class="fw-bold form-label">Testigos por mesa</label>
           <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa" bindValue="codigo_unico"
             (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
-            [(ngModel)]="selectedTable">
+            placeholder="Seleccione mesa" [(ngModel)]="selectedTable">
           </ng-select>
         </div>
       </div>

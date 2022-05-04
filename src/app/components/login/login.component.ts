@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
           this.localData.setRol(rol);
           this.localData.setId(id);
           if (res == true && rol == 1) {
-            this.router.navigate(['verPuestoAdmin']);
+            this.router.navigate(['consultarEstadoEquipoAdmin']);
           }
           else if (res == true && rol == 2) {
             this.router.navigate(['verPuestoGerente']);
@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit {
         }
       })
     } else {
-      this.alertService.errorAlert("Llene los campos obligatorios.");
+      this.alertService.errorAlert("No pueden existir campos vacios.");
     }
   }
 

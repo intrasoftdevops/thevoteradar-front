@@ -35,7 +35,7 @@ input {
 }
 
 input::placeholder {
-    color: white !important;
+    color: darken($color: white, $amount: 15) !important;
 }
 
 hr:not([size]) {
