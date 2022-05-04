@@ -1,23 +1,23 @@
 <div class="container py-5">
   <div class="card">
     <div class="bg-primary py-3 px-5 text-white">
-      <h4>Consulta de puestos</h4>
+      <h4>Estado de equipo</h4>
     </div>
     <div class="card-body">
       <form class="row m-4 d-flex justify-content-center align-items-center align-items-center"
         [formGroup]="searchForm">
         <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Zonas</label>
+          <label class="fw-bold form-label">Estado por zona</label>
           <ng-select [items]="dataZones" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
-            (change)="getSelectedZone($event)" bindValue="nombre_departamento_votacion"
+            (change)="getSelectedZone($event)" bindValue="nombre_departamento_votacion" placeholder="Seleccione zona"
             notFoundText="No hay informacion disponible" formControlName="zonas">
           </ng-select>
         </div>
         <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Puestos</label>
+          <label class="fw-bold form-label">Estado por puesto</label>
           <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
             (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
-            formControlName="puestos">
+            placeholder="Seleccione puesto" formControlName="puestos">
           </ng-select>
         </div>
       </form>
