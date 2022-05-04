@@ -3,7 +3,6 @@ import { Filtro } from 'src/app/models/filtro';
 import { ApiService } from '../../../services/api/api.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { UrlTree } from '@angular/router';
 import { environment } from 'src/environments/environment.prod';
 
 @Component({
@@ -42,7 +41,7 @@ export class VerEquipoCoordinadorComponent implements OnInit {
 
   getUrl() {
     //const objeto = new Filtro(1, 1, 1);
-    const objeto = new Filtro(1, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
+    const objeto = new Filtro(this.idCliente, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
     this.filtro = objeto.generar_filtro().replace(new RegExp(" ", "g"), "%20").replace(new RegExp("/", "g"), "%2F");
     const url = environment.powerBiURL + this.filtro;
     this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
