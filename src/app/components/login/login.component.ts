@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['consultarEstadoEquipoAdmin']);
           }
           else if (res == true && rol == 2) {
-            this.router.navigate(['verPuestoGerente']);
+            this.router.navigate(['consultarEstadoEquipoGerente']);
           }
           else if (res == true && rol == 3) {
             this.router.navigate(['verPuestoSupervisor']);

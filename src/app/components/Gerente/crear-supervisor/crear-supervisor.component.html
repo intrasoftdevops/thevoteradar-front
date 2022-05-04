@@ -16,7 +16,7 @@
                         <span class="text-danger">*</span>
                     </label>
                     <input type="text" class="form-control border-2 border-dark rounded" formControlName="nombres"
-                        (keypress)="keypressValidator.keyPressLetters($event)" />
+                        (keypress)="keypressValidator.keyPressLetters($event)" placeholder="Ingrese nombres" />
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label">
@@ -24,14 +24,15 @@
                         <span class="text-danger">*</span>
                     </label>
                     <input type="text" class="form-control border-2 border-dark rounded" formControlName="apellidos"
-                        (keypress)="keypressValidator.keyPressLetters($event)" />
+                        (keypress)="keypressValidator.keyPressLetters($event)" placeholder="Ingrese apellidos" />
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label">
                         <span class="fw-bold">Genero</span>
                         <span class="text-danger">*</span>
                     </label>
-                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id">
+                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id"
+                        placeholder="Seleccione genero">
                         <ng-option [value]="1">Masculino</ng-option>
                         <ng-option [value]="2">Femenino</ng-option>
                         <ng-option [value]="3">Otro</ng-option>
@@ -42,7 +43,8 @@
                         <span class="fw-bold">Tipo de documento</span>
                         <span class="text-danger">*</span>
                     </label>
-                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="tipo_documento_id">
+                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="tipo_documento_id"
+                        placeholder="Seleccione tipo de documento">
                         <ng-option [value]="1">Cedula de ciudadania</ng-option>
                     </ng-select>
                 </div>
@@ -52,19 +54,21 @@
                         <span class="text-danger">*</span>
                     </label>
                     <input type="number" class="form-control border-2 border-dark rounded"
-                        formControlName="numero_documento" (keypress)="keypressValidator.keyPressNumbers($event)">
+                        placeholder="Ingrese numero de documento" formControlName="numero_documento"
+                        (keypress)="keypressValidator.keyPressNumbers($event)">
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label fw-bold">Telefono</label>
                     <input type="number" class="form-control border-2 border-dark rounded" formControlName="telefono"
-                        (keypress)="keypressValidator.keyPressNumbers($event)">
+                        (keypress)="keypressValidator.keyPressNumbers($event)" placeholder="Ingrese numero de telefono">
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label">
                         <span class="fw-bold">Correo electronico</span>
                         <span class="text-danger">*</span>
                     </label>
-                    <input type="email" class="form-control border-2 border-dark rounded" formControlName="email">
+                    <input type="email" class="form-control border-2 border-dark rounded" formControlName="email"
+                        placeholder="Ingrese correo electronico">
                     <small class="text-danger"
                         *ngIf="createFormControl['email'].errors?.['email'] || createFormControl['email'].errors?.['invalidEmail']">
                         Ingrese una direccion de correo electronico valido.
@@ -93,14 +97,15 @@
                     </label>
                     <ng-select [items]="dataMunicipals" [searchable]="false" class="custom-select rounded"
                         formControlName="municipio" bindLabel="nombre" bindValue="codigo_unico"
-                        (change)="getSelectedValue($event)" notFoundText="No hay informacion disponible">
+                        placeholder="Seleccione municipio" (change)="getSelectedValue($event)"
+                        notFoundText="No hay informacion disponible">
                     </ng-select>
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="fw-bold form-label">Zonas de votacion</label>
                     <ng-select [items]="dataZones" class="custom-multiple-select rounded" formControlName="zonas"
                         bindLabel="nombre" bindValue="codigo_unico" [multiple]="true"
-                        notFoundText="No hay informacion disponible">
+                        notFoundText="No hay informacion disponible" placeholder="Seleccione zona(s)">
                     </ng-select>
                 </div>
             </div>

@@ -91,7 +91,7 @@ const routes: Routes = [
     component: VerEquipoAdminComponent
   },
   {
-    path: 'verEquipoGerente',
+    path: 'consultarEquipoGerente',
     component: VerEquipoGerenteComponent
   },
   {
@@ -108,7 +108,7 @@ const routes: Routes = [
   },
 
   {
-    path: 'verPuestoGerente',
+    path: 'consultarEstadoEquipoGerente',
     component: VerPuestoGerenteComponent
   },
 
