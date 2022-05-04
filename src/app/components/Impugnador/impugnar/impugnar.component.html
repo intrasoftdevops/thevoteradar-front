@@ -6,9 +6,9 @@
         <div class="card-body">
             <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
                 <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="fw-bold form-label">Candidatos</label>
+                    <label class="fw-bold form-label">Reportes por candidato</label>
                     <ng-select (change)="getSelectedValue($event)" [searchable]="false" class="custom-select rounded"
-                        notFoundText="No hay informacion disponible">
+                        notFoundText="No hay informacion disponible" placeholder="Seleccione candidato">
                         <ng-option *ngFor="let candidato of dataCandidatos" [value]="candidato.codigo_unico">
                             {{candidato.nombres}} {{candidato.apellidos}}</ng-option>
                     </ng-select>
@@ -197,7 +197,7 @@
                     </label>
                     <ng-select [items]="dataCategoriaImpugnacion" [searchable]="false" class="custom-select rounded"
                         bindLabel="nombre" bindValue="id" notFoundText="No hay informacion disponible"
-                        formControlName="categoria_impugnacion">
+                        formControlName="categoria_impugnacion" placeholder="Seleccione categoria">
                     </ng-select>
                 </form>
             </div>

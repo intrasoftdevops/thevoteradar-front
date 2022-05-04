@@ -28,7 +28,7 @@
                             </div>
                             <div class="col-6">
                                 <ng-select [items]="mesas_asignadas" [searchable]="false" class="custom-select rounded"
-                                    formControlName="codigo_mesa" bindLabel="numero_mesa" bindValue="codigo_unico"
+                                    formControlName="codigo_mesa" bindLabel="numero_mesa" bindValue="codigo_unico" placeholder="Seleccione mesa"
                                     (change)="getSelectedValue($event)" notFoundText="No hay informacion disponible">
                                 </ng-select>
                             </div>
@@ -52,8 +52,8 @@
                                         <td class="col-4">{{candidato.nombres}} {{candidato.apellidos}}</td>
                                         <td class="col-3">
                                             <div formGroupName="votos">
-                                                <input type="text" class="form-control form-control-sm border-primary"
-                                                    [formControlName]="index" />
+                                                <input type="text" class="form-control border-primary"
+                                                    [formControlName]="index" placeholder="Ingrese n° votos"/>
                                             </div>
                                         </td>
                                     </tr>
