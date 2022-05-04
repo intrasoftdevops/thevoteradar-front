@@ -7,11 +7,11 @@
             <div class="d-flex justify-content-center">
                 <div class="form-group col-md-6 col-lg-4 pt-2 m-4">
                     <label class="fw-bold form-label">
-                        Puesto de votacion
+                        Reportes por puestos
                     </label>
                     <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
                         bindLabel="nombre" bindValue="codigo_unico" (change)="getSelectedValue($event)"
-                        notFoundText="No hay informacion disponible">
+                        notFoundText="No hay informacion disponible" placeholder="Seleccione puestos">
                     </ng-select>
                 </div>
             </div>
