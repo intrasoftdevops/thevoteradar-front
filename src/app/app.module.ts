@@ -57,6 +57,7 @@ import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-adm
 import { CrearCoordinadorGerenteComponent } from './components/Gerente/crear-coordinador-gerente/crear-coordinador-gerente.component';
 import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo-gerente/crear-testigo-gerente.component';
 import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-testigo-supervisor/crear-testigo-supervisor.component';
+import { DropdownMenuUsersComponent } from './components/dropdown-menu-users/dropdown-menu-users.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-t
     CrearTestigoAdminComponent,
     CrearCoordinadorGerenteComponent,
     CrearTestigoGerenteComponent,
-    CrearTestigoSupervisorComponent
+    CrearTestigoSupervisorComponent,
+    DropdownMenuUsersComponent
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api/api.service';
-import { Router } from '@angular/router';
-import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-menu-testigo',
@@ -10,22 +7,9 @@ import { LocalDataService } from '../../../services/localData/local-data.service
 })
 export class MenuTestigoComponent implements OnInit {
 
-  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService) { }
+  constructor() { }
 
   ngOnInit(): void {
-  }
-
-  logout() {
-    this.apiService.logout().subscribe({
-      next: () => {
-        this.localData.deleteCookies();
-        this.router.navigate(['']);
-      },
-      error: () => {
-        this.localData.deleteCookies();
-        this.router.navigate(['']);
-      }
-    })
   }
 
 }

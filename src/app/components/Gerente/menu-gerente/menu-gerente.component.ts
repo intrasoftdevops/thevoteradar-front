@@ -10,25 +10,9 @@ import { LocalDataService } from '../../../services/localData/local-data.service
 })
 export class MenuGerenteComponent implements OnInit {
 
-  listSupervisorAsignados: any = [];
-  listSupervisorNoAsignados: any = [];
-
-  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService) { }
+  constructor() { }
 
   ngOnInit() {
-  }
-
-  logout() {
-    this.apiService.logout().subscribe({
-      next: () => {
-        this.localData.deleteCookies();
-        this.router.navigate(['']);
-      },
-      error: () => {
-        this.localData.deleteCookies();
-        this.router.navigate(['']);
-      }
-    })
   }
 
 }
