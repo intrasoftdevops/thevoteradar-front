@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { AlertService } from '../../../services/alert/alert.service';
+import { Filtro } from '../../../models/filtro';
+import { environment } from 'src/environments/environment';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-ver-equipo-admin',
@@ -9,7 +12,7 @@ import { AlertService } from '../../../services/alert/alert.service';
 })
 export class VerEquipoAdminComponent implements OnInit {
 
-  constructor(private apiService: ApiService, private alertService: AlertService) { }
+  constructor(private apiService: ApiService, private alertService: AlertService,private sanitizer: DomSanitizer) { }
 
   tabla: string = "ninguna";
   dataDepartments: any = [];
@@ -25,9 +28,31 @@ export class VerEquipoAdminComponent implements OnInit {
   selectedZone: any = [];
   selectedStation: any = [];
   selectedTable: any = [];
+  filtro: any;
+  idCliente: any;
+  urlSafe!: SafeResourceUrl;
+  showMap: boolean = false;
 
   ngOnInit() {
     this.getDepartmentAdmin();
+    this.getUrl();
+    this.getCliente();
+  }
+
+  getCliente() {
+    this.apiService.getCliente().subscribe((resp: any) => {
+      const { id } = resp;
+      this.idCliente = id;
+    })
+  }
+
+  getUrl() {
+    const objeto = new Filtro(1, 1, [1]);
+    //const objeto = new Filtro(this.idCliente, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
+    this.filtro = objeto.generar_filtro().replace(new RegExp(" ", "g"), "%20").replace(new RegExp("/", "g"), "%2F");
+    const url = environment.powerBiURL + this.filtro;
+    this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    return this.urlSafe;
   }
 
   getSelectedDepartment(item: any) {
@@ -143,6 +168,10 @@ export class VerEquipoAdminComponent implements OnInit {
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  showIframe() {
+    this.showMap = !this.showMap;
   }
 
 }

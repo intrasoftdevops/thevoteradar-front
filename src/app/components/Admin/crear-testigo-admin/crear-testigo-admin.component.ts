@@ -25,9 +25,8 @@ export class CrearTestigoAdminComponent implements OnInit {
     genero_id: [null, Validators.required],
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
-    telefono: [''],
+    telefono: ['',Validators.required],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
-    password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
     puesto: [[], Validators.required],
     mesas: [[]],
   });
@@ -88,7 +87,7 @@ export class CrearTestigoAdminComponent implements OnInit {
 
   onSubmit() {
     console.log(this.createForm.value)
-    if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
+    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
 
       if (this.createForm.valid) {
         console.log(this.createForm.value)

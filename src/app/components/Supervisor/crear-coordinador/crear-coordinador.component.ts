@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import Swal from 'sweetalert2';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
@@ -22,9 +21,8 @@ export class CrearCoordinadorComponent implements OnInit {
     genero_id: [null, Validators.required],
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
-    telefono: [''],
+    telefono: ['', Validators.required],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
-    password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
     zona: [[], Validators.required],
     puestos: [[]],
   });
@@ -56,7 +54,7 @@ export class CrearCoordinadorComponent implements OnInit {
 
   onSubmit() {
     console.log(this.createForm.value)
-    if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
+    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
 
       if (this.createForm.valid) {
         console.log(this.createForm.value)
@@ -79,7 +77,7 @@ export class CrearCoordinadorComponent implements OnInit {
     })
   }
 
-  getStationCoordinador(data:any) {
+  getStationCoordinador(data: any) {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
       this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
     })

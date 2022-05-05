@@ -58,7 +58,10 @@
                         (keypress)="keypressValidator.keyPressNumbers($event)">
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="form-label fw-bold">Telefono</label>
+                    <label class="form-label fw-bold">
+                        <span class="fw-bold">Telefono</span>
+                        <span class="text-danger">*</span>
+                    </label>
                     <input type="number" class="form-control border-2 border-dark rounded" formControlName="telefono"
                         (keypress)="keypressValidator.keyPressNumbers($event)" placeholder="Ingrese numero de telefono">
                 </div>
@@ -72,16 +75,6 @@
                     <small class="text-danger"
                         *ngIf="createFormControl['email'].errors?.['email'] || createFormControl['email'].errors?.['invalidEmail']">
                         Ingrese una direccion de correo electronico valido.
-                    </small>
-                </div>
-                <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Contraseña</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <input type="password" class="form-control border-2 border-dark rounded" formControlName="password">
-                    <small class="text-danger" *ngIf="createFormControl['password'].errors?.['minlength']">
-                        La contraseña debe tener al menos 8 caracteres.
                     </small>
                 </div>
             </div>

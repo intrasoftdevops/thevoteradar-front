@@ -24,7 +24,7 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
 
-  constructor(private apiService: ApiService, private localData: LocalDataService, public sanitizer: DomSanitizer) { }
+  constructor(private apiService: ApiService, private localData: LocalDataService, private sanitizer: DomSanitizer) { }
 
 
   ngOnInit(): void {
@@ -41,8 +41,8 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   }
 
   getUrl() {
-    //const objeto = new Filtro(1, 1, 1);
-    const objeto = new Filtro(this.idCliente, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
+    const objeto = new Filtro(1, 1, [1]);
+    //const objeto = new Filtro(this.idCliente, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
     this.filtro = objeto.generar_filtro().replace(new RegExp(" ", "g"), "%20").replace(new RegExp("/", "g"), "%2F");
     const url = environment.powerBiURL + this.filtro;
     this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import Swal from 'sweetalert2';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
@@ -21,9 +20,8 @@ export class CrearSupervisorComponent implements OnInit {
     genero_id: [null, Validators.required],
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
-    telefono: [''],
+    telefono: ['',Validators.required],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
-    password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
     municipio: [[], Validators.required],
     zonas: [[]],
   });
@@ -55,7 +53,7 @@ export class CrearSupervisorComponent implements OnInit {
 
   onSubmit() {
     console.log(this.createForm.value)
-    if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
+    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
 
       if (this.createForm.valid) {
         console.log(this.createForm.value)

@@ -286,3 +286,24 @@ ngx-dropzone-image-preview>ngx-dropzone-label {
 nav li .dropdown-menu li a:hover {
     background-color: $primary !important;
 }
+
+.iframe {
+    width: 100%;
+    height: calc(22vw + 22rem);
+}
+
+@media (max-width: 960px) {
+
+    .iframe {
+        height: calc(18vw + 18rem);
+    }
+
+}
+
+@media (max-width: 720px) {
+
+    .iframe {
+        height: calc(13vw + 13rem);
+    }
+
+}
