@@ -25,16 +25,19 @@
                         <tr>
                             <th scope="col">N° MESA</th>
                             <th scope="col">TESTIGO</th>
+                            <th scope="col">TELEFONO</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="bg-white" *ngFor="let mesa of listMesas">
                             <td>{{mesa.numero_mesa}}</td>
-                            <td>{{mesa.reporte.testigo_id}}</td>
+                            <td>{{mesa.reporte.testigo.nombres}} {{mesa.reporte.testigo.apellidos}}</td>
+                            <td>{{(mesa.reporte.testigo.telefono)?mesa.reporte.testigo.telefono:'No registrado'}}</td>
                             <td>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#incidenciaAbierta" (click)="ModalReporteActual(mesa)">
+                                <button type="button" class="btn btn-sm btn-primary text-truncate"
+                                    data-bs-toggle="modal" data-bs-target="#incidenciaAbierta"
+                                    (click)="ModalReporteActual(mesa)">
                                     Ver Reporte
                                 </button>
                             </td>
@@ -69,14 +72,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="bg-white" *ngFor="let candidato of listCantidatos">
-                                <td>0</td>
-                                <td>{{candidato.candidato_id}}</td>
-                                <td>{{candidato.numero_votos}}</td>
+                            <tr class="bg-white" *ngFor="let reporte of listReportes">
+                                <td>{{reporte.partido}}</td>
+                                <td>{{reporte.candidato.nombres}} {{reporte.candidato.apellidos}}</td>
+                                <td>{{reporte.numero_votos}}</td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr class="bg-primary text-white">
+                                <td></td>
+                                <td class="fw-bolder">Total de votos:</td>
+                                <td>{{totalVotosMesas}}</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
+                <p class="fw-bolder">Archivos adjuntos: </p>
                 <si-ng-lightbox [showPreviews]="true">
                     <img *ngFor="let img of photos" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
                         [siLightboxItem]="img.url_archivo" class="item w-100" />

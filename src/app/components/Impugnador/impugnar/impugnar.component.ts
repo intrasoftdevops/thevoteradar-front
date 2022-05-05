@@ -92,6 +92,7 @@ export class ImpugnarComponent implements OnInit {
   }
 
   ModalImpugnarActual(impugnar: any) {
+    console.log(impugnar)
     this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(impugnar.e_14);
     this.dataImpugnarActual = impugnar;
   }

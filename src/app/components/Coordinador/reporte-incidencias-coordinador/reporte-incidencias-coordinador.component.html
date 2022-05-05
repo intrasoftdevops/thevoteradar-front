@@ -23,7 +23,7 @@
                                     <th scope="col">PUESTO</th>
                                     <th scope="col">MESA</th>
                                     <th scope="col">TESTIGO</th>
-                                    <th scope="col"></th>
+                                    <th scope="col">OPCIONES</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -33,7 +33,8 @@
                                     <td>{{incidencia.nombre_testigo}}</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-primary text-truncate"
-                                            data-bs-toggle="modal" data-bs-target="#incidenciaAbierta">
+                                            (click)="ModalIncidenciaAbiertaActual(incidencia)" data-bs-toggle="modal"
+                                            data-bs-target="#incidenciaAbierta">
                                             Ver incidencia
                                         </button>
 
@@ -58,17 +59,18 @@
                                     <th scope="col">PUESTO</th>
                                     <th scope="col">MESA</th>
                                     <th scope="col">TESTIGO</th>
-                                    <th scope="col"></th>
+                                    <th scope="col">OPCIONES</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white" *ngFor="let incidencia of dataIncidenciasCerradas">
-                                    <td>{{incidencia.codigo_puesto}}</td>
-                                    <td>{{incidencia.codigo_mesa}}</td>
-                                    <td>{{incidencia.testigo_id}}</td>
+                                    <td>{{incidencia.puesto}}</td>
+                                    <td>{{incidencia.mesa}}</td>
+                                    <td>{{incidencia.nombre_testigo}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#incidenciaCerrada">
+                                        <button type="button" class="btn btn-sm btn-primary text-truncate"
+                                            data-bs-toggle="modal" data-bs-target="#incidenciaCerrada"
+                                            (click)="ModalIncidenciaCerradaActual(incidencia)">
                                             Ver incidencia
                                         </button>
                                     </td>
@@ -87,9 +89,9 @@
 
 <div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+        <form class="modal-content" [formGroup]="replyForm" (ngSubmit)="onSubmit()">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">REPORTE #1</h5>
+                <h5 class="modal-title" id="exampleModalLabel">REPORTE #{{incidenciaAbiertaActual.id}}</h5>
                 <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
                     <i class="fa-solid fa-xmark text-white"></i>
                 </button>
@@ -98,38 +100,40 @@
                 <h4 class="fw-bolder">Información de testigo</h4>
                 <div class="row mt-3">
                     <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Puesto: </span><span> Fraude</span></p>
+                        <p><span class="fw-bolder">Puesto: </span><span> {{incidenciaAbiertaActual.puesto}}</span></p>
                     </div>
                     <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Mesa: </span><span> Fraude</span></p>
+                        <p><span class="fw-bolder">Mesa: </span><span> {{incidenciaAbiertaActual.puesto}}</span></p>
                     </div>
                     <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Testigo: </span><span> Fraude</span></p>
+                        <p><span class="fw-bolder">Testigo: </span><span>{{incidenciaAbiertaActual.nombre_testigo}}</span></p>
                     </div>
                     <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Telefono: </span><span> Fraude</span></p>
+                        <p>
+                            <span class="fw-bolder">Telefono: </span>
+                            <span>{{(incidenciaAbiertaActual.telefono_testigo)?incidenciaAbiertaActual.telefono_testigo:'No registrado'}}</span></p>
                     </div>
                     <hr class="border border-primary rounded border-2">
                     <h4 class="fw-bolder">Información de reporte</h4>
-                    <p><span class="fw-bolder mt-3">Asunto: </span><span> Fraude</span></p>
+                    <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaAbiertaActual.categoria}}</span>
+                    </p>
                 </div>
                 <p class="fw-bolder">Descripcion: </p>
                 <p>
-                    Amet eiusmod eiusmod veniam exercitation pariatur officia magna adipisicing ad ipsum eiusmod
-                    consectetur aliquip et. Non pariatur exercitation reprehenderit eu aliquip pariatur deserunt sit
-                    dolor minim id. Dolor mollit pariatur officia occaecat commodo cupidatat. Pariatur duis dolor non
-                    irure eiusmod ullamco adipisicing reprehenderit commodo dolore minim laboris occaecat. Ut est irure
-                    ut veniam qui pariatur aute ipsum ullamco.
+                    {{incidenciaAbiertaActual.descripcion}}
                 </p>
-                <p class="fw-bolder">Archivo adjunto: </p>
-                <img src="../../../../assets/logo.png" class="w-100" alt="logo" />
-                <textarea class="form-control border-2 border-dark rounded" rows="2"
-                    placeholder="Escribir una respuesta"></textarea>
+                <p class="fw-bolder">Archivos adjuntos: </p>
+                <si-ng-lightbox [showPreviews]="true">
+                    <img *ngFor="let img of photosOpen" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
+                        [siLightboxItem]="img.url_archivo" class="item w-100" />
+                </si-ng-lightbox>
+                <textarea class="form-control border-2 border-dark rounded mt-3" rows="2"
+                    placeholder="Escribir una respuesta" formControlName="respuesta"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger">Cerrar incidencia</button>
+                <button type="submit" class="btn btn-danger">Cerrar incidencia</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -137,35 +141,46 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">REPORTE #1</h5>
+                <h5 class="modal-title" id="exampleModalLabel">REPORTE {{incidenciaCerradaActual.id}}</h5>
                 <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
                     <i class="fa-solid fa-xmark text-white"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p><span class="fw-bolder">Categoria: </span><span> Fraude</span></p>
-                <p><span class="fw-bolder">Asunto: </span><span> Compra de votos</span></p>
+                <h4 class="fw-bolder">Información de testigo</h4>
+                <div class="row mt-3">
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Puesto: </span><span> {{incidenciaCerradaActual.puesto}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Mesa: </span><span> {{incidenciaCerradaActual.puesto}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Testigo: </span><span>
+                                {{incidenciaCerradaActual.nombre_testigo}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Telefono: </span>
+                            <span>{{(incidenciaCerradaActual.telefono_testigo)?incidenciaCerradaActual.telefono_testigo:'No registrado'}}</span></p>
+                    </div>
+                    <hr class="border border-primary rounded border-2">
+                    <h4 class="fw-bolder">Información de reporte</h4>
+                    <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaCerradaActual.categoria}}</span></p>
+                </div>
                 <p class="fw-bolder">Descripcion: </p>
                 <p>
-                    Amet eiusmod eiusmod veniam exercitation pariatur officia magna adipisicing ad ipsum eiusmod
-                    consectetur aliquip et. Non pariatur exercitation reprehenderit eu aliquip pariatur deserunt sit
-                    dolor minim id. Dolor mollit pariatur officia occaecat commodo cupidatat. Pariatur duis dolor non
-                    irure eiusmod ullamco adipisicing reprehenderit commodo dolore minim laboris occaecat. Ut est irure
-                    ut veniam qui pariatur aute ipsum ullamco.
+                    {{incidenciaCerradaActual.descripcion}}
                 </p>
-                <p class="fw-bolder">Archivo adjunto: </p>
-                <img src="../../../../assets/logo.png" class="w-100" alt="logo" />
-                <p>
-                    Reprehenderit cillum reprehenderit do magna est ipsum elit veniam culpa est exercitation in magna.
-                    Duis nisi ea culpa ullamco sit officia esse. Fugiat voluptate amet ea aute cupidatat ipsum enim
-                    ullamco qui in fugiat fugiat. Eu id incididunt sunt minim laboris commodo ex esse ut irure minim
-                    incididunt sit. Do culpa ullamco non sunt in exercitation nisi id incididunt laboris non. Ipsum in
-                    irure anim nisi elit ad mollit consequat duis ipsum minim sit labore. Enim sunt ullamco enim cillum
-                    nostrud labore ea proident exercitation Lorem reprehenderit est voluptate.
+                <p class="fw-bolder">Archivos adjuntos: </p>
+                <si-ng-lightbox [showPreviews]="true">
+                    <img *ngFor="let img of photosClose" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
+                        [siLightboxItem]="img.url_archivo" class="item w-100" />
+                </si-ng-lightbox>
+                <p class="mt-3"><span class="fw-bolder">Respuesta: </span><span>{{incidenciaCerradaActual.respuesta}}</span>
                 </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success">Reabrir incidencia</button>
+                <button type="button" class="btn btn-success" (click)="openIncidencia()">Reabrir incidencia</button>
             </div>
         </div>
     </div>

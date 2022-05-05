@@ -176,6 +176,14 @@ export class ApiService {
     return this.http.post(this._URL + "/incidencias", data, { headers: this.getHeaders() });
   }
 
+  replyIncidencia(id:any,data:any){
+    return this.http.put(this._URL + "/responder-incidencia/" + id, data, { headers: this.getHeaders() });
+  }
+
+  openIncidencias(id:any,data:any) {
+    return this.http.put(this._URL + "/incidencias/" + id, data, { headers: this.getHeaders() });
+  }
+
   createContacto(data: any) {
     return this.http.post(this._URL + "/contactos", data, { headers: this.getHeaders() });
   }

@@ -13,8 +13,9 @@ export class ReporteVotosCoordinadorComponent implements OnInit {
   dataStations: any = [];
   listMesas: any = [];
   reporte: any = {};
-  listCantidatos: any = [];
+  listReportes: any = [];
   photos: any = [];
+  totalVotosMesas: number = 0;
 
   constructor(private apiService: ApiService) { }
 
@@ -25,10 +26,12 @@ export class ReporteVotosCoordinadorComponent implements OnInit {
   ModalReporteActual(mesa: any) {
     console.log(mesa)
     this.photos = [];
-    this.listCantidatos = [];
+    this.listReportes = [];
     this.reporte = mesa;
-    this.listCantidatos = mesa.reporte.reportes;
+    console.log(this.reporte.reporte)
+    this.listReportes = this.reporte.reporte.reportes;
     this.photos = mesa.reporte.archivos;
+    this.totalVotosMesas = this.listReportes.reduce((acc:any,obj:any,) => acc + (obj.numero_votos),0);
   }
 
   getVotosCoordinador(data: any) {
