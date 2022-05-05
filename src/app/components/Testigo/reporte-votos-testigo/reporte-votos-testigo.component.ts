@@ -80,6 +80,7 @@ export class ReporteVotosTestigoComponent implements OnInit {
 
   getCandidatos() {
     this.apiService.getCandidatos().subscribe((resp: any) => {
+      console.log(resp)
       const { candidatos } = resp;
       this.listCandidatos = candidatos;
       candidatos.forEach(() => {

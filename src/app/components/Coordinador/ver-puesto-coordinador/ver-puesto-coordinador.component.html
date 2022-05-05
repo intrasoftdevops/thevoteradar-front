@@ -1,7 +1,21 @@
 <div class="container py-5">
+  <div class="d-grid d-flex justify-content-end">
+    <button class="btn btn-sm btn-danger disabled">
+      - 50% Requerido
+    </button>
+    <button class="btn btn-sm btn-warning disabled">
+      + 50% Requerido
+    </button>
+    <button class="btn btn-sm btn-success disabled">
+      100% Requerido
+    </button>
+    <button class="btn btn-sm btn-primary disabled">
+      + 100% Requerido
+    </button>
+  </div>
   <div class="card">
     <div class="bg-primary py-3 px-5 text-white">
-      <h4>Estado de equipo</h4>
+      <h4>Estadisticas de equipo</h4>
     </div>
     <div class="card-body">
       <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
@@ -23,12 +37,12 @@
           </thead>
           <tbody>
             <tr class="bg-white">
-              <td [ngClass]="textColor(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)">
-                {{testigos.cantidad_testigos_existentes}}/{{testigos.cantidad_testigos_necesitados}}
-                {{createPercent(testigos.cantidad_testigos_existentes,testigos.cantidad_testigos_necesitados)}}
+              <td [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                {{testigos.testigos_con_mesa}}/{{testigos.cantidad_testigos_necesitados}}
+                {{createPercent(testigos.testigos_con_mesa,testigos.cantidad_testigos_necesitados)}}
               </td>
               <td>
-                {{testigos.cantidad_testigos_por_asignar}}
+                {{testigos.testigos_sin_mesa}}
               </td>
             </tr>
           </tbody>

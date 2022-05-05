@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { FormGroup, Validators, FormBuilder, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
@@ -19,14 +19,12 @@ export class ReporteIncidenciasComponent implements OnInit {
   dataIncidencias: any = [];
   createForm: FormGroup = this.fb.group({
     categoria_id: [null, Validators.required],
-    titulo: ['', Validators.required],
     descripcion: ['', Validators.required],
     codigo_mesa: [null, Validators.required],
   });
   incidenciaActual: any = {};
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService,
-    private customValidator: CustomValidationService, private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit(): void {
     this.getIncidenciasDeTestigo();
@@ -46,7 +44,6 @@ export class ReporteIncidenciasComponent implements OnInit {
 
       const uploadData = new FormData();
       uploadData.append('categoria_id', this.createForm.get('categoria_id')!.value);
-      uploadData.append('titulo', this.createForm.get('titulo')!.value);
       uploadData.append('descripcion', this.createForm.get('descripcion')!.value);
       for (let file in this.files) {
         uploadData.append("url_archivo[]", this.files[file]);
@@ -89,6 +86,7 @@ export class ReporteIncidenciasComponent implements OnInit {
 
   getIncidenciasDeTestigo() {
     this.apiService.getIncidenciasDeTestigo().subscribe((resp: any) => {
+      console.log(resp)
       this.dataIncidencias = resp;
     })
   }

@@ -11,25 +11,26 @@
                 <div class="card">
                     <div class="bg-primary py-3 px-4 text-white">
                         <div class="row py-1">
-                            <div class="col-6">
+                            <div class="col-5 col-sm-6">
                                 <p class="m-0 h4">
                                     Puesto de votacion:
                                 </p>
                             </div>
-                            <div class="col-6 d-flex justify-content-center align-items-center">
+                            <div class="col-7 col-sm-6 d-flex justify-content-center align-items-center">
                                 {{puestos_asignado}}
                             </div>
                         </div>
                         <div class="row py-1">
-                            <div class="col-6 d-flex align-items-center">
+                            <div class="col-5 col-sm-6 d-flex align-items-center">
                                 <p class="m-0 h4">
                                     Numero de mesa:
                                 </p>
                             </div>
-                            <div class="col-6">
+                            <div class="col-7 col-sm-6">
                                 <ng-select [items]="mesas_asignadas" [searchable]="false" class="custom-select rounded"
-                                    formControlName="codigo_mesa" bindLabel="numero_mesa" bindValue="codigo_unico" placeholder="Seleccione mesa"
-                                    (change)="getSelectedValue($event)" notFoundText="No hay informacion disponible">
+                                    formControlName="codigo_mesa" bindLabel="numero_mesa" bindValue="codigo_unico"
+                                    placeholder="Seleccione mesa" (change)="getSelectedValue($event)"
+                                    notFoundText="No hay informacion disponible">
                                 </ng-select>
                             </div>
                         </div>
@@ -39,7 +40,6 @@
                             <table class="table text-center align-middle">
                                 <thead class="table-dark align-middle">
                                     <tr>
-                                        <th scope="col"></th>
                                         <th scope="col">PARTIDO</th>
                                         <th scope="col">CANDIDATO</th>
                                         <th scope="col">N° VOTOS</th>
@@ -47,13 +47,12 @@
                                 </thead>
                                 <tbody>
                                     <tr class="bg-white" *ngFor="let candidato of listCandidatos;index as index">
-                                        <td class="fw-bolder col-1">{{index+1}}</td>
-                                        <td class="col-4">{{candidato.partido_politico_id}}</td>
+                                        <td class="col-5">{{candidato.partido}}</td>
                                         <td class="col-4">{{candidato.nombres}} {{candidato.apellidos}}</td>
                                         <td class="col-3">
                                             <div formGroupName="votos">
-                                                <input type="text" class="form-control border-primary"
-                                                    [formControlName]="index" placeholder="Ingrese n° votos"/>
+                                                <input type="text" class="form-control form-control-sm border-primary"
+                                                    [formControlName]="index" placeholder="Ingrese n° votos" />
                                             </div>
                                         </td>
                                     </tr>

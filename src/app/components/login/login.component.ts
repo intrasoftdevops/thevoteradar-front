@@ -41,19 +41,19 @@ export class LoginComponent implements OnInit {
           this.localData.setRol(rol);
           this.localData.setId(id);
           if (res == true && rol == 1) {
-            this.router.navigate(['consultarEstadoEquipoAdmin']);
+            this.router.navigate(['estadisticasEquipoAdmin']);
           }
           else if (res == true && rol == 2) {
-            this.router.navigate(['consultarEstadoEquipoGerente']);
+            this.router.navigate(['estadisticasEquipoGerente']);
           }
           else if (res == true && rol == 3) {
-            this.router.navigate(['consultarEstadoEquipoSupervisor']);
+            this.router.navigate(['estadisticasEquipoSupervisor']);
           }
           else if (res == true && rol == 4) {
-            this.router.navigate(['consultarEstadoEquipoCoordinador']);
+            this.router.navigate(['estadisticasEquipoCoordinador']);
           }
           else if (res == true && rol == 5) {
-            this.router.navigate(['reporteVotosTestigo']);
+            this.router.navigate(['reporteIncidencias']);
           }
           else if (res == true && rol == 6) {
             // TODO

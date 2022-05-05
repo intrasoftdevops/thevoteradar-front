@@ -4,11 +4,11 @@
     </div>
     <ul class="nav nav-tabs mt-5" id="myTab">
         <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#abiertos"
+            <button class="nav-link h4 px-md-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#abiertos"
                 type="button" role="tab">Abiertos</button>
         </li>
         <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cerrados"
+            <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cerrados"
                 type="button" role="tab">Cerrados</button>
         </li>
     </ul>
@@ -20,22 +20,20 @@
                         <table class="table text-center align-middle">
                             <thead class="text-dark align-middle">
                                 <tr>
-                                    <th scope="col"># REPORTE</th>
-                                    <th scope="col">PUESTO VOTACION</th>
-                                    <th scope="col">NOMBRE TESTIGO</th>
-                                    <th scope="col">MESA DE VOTACION</th>
+                                    <th scope="col">PUESTO</th>
+                                    <th scope="col">MESA</th>
+                                    <th scope="col">TESTIGO</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white" *ngFor="let incidencia of dataIncidenciasAbiertas">
-                                    <td>{{incidencia.id}}</td>
-                                    <td>{{incidencia.codigo_puesto}}</td>
-                                    <td>{{incidencia.testigo_id}}</td>
-                                    <td>{{incidencia.codigo_mesa}}</td>
+                                    <td>{{incidencia.puesto}}</td>
+                                    <td>{{incidencia.mesa}}</td>
+                                    <td>{{incidencia.nombre_testigo}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#incidenciaAbierta">
+                                        <button type="button" class="btn btn-sm btn-primary text-truncate"
+                                            data-bs-toggle="modal" data-bs-target="#incidenciaAbierta">
                                             Ver incidencia
                                         </button>
 
@@ -57,19 +55,17 @@
                         <table class="table text-center align-middle">
                             <thead class="text-dark align-middle">
                                 <tr>
-                                    <th scope="col"># REPORTE</th>
-                                    <th scope="col">PUESTO VOTACION</th>
-                                    <th scope="col">NOMBRE TESTIGO</th>
-                                    <th scope="col">MESA DE VOTACION</th>
+                                    <th scope="col">PUESTO</th>
+                                    <th scope="col">MESA</th>
+                                    <th scope="col">TESTIGO</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white" *ngFor="let incidencia of dataIncidenciasCerradas">
-                                    <td>{{incidencia.id}}</td>
                                     <td>{{incidencia.codigo_puesto}}</td>
-                                    <td>{{incidencia.testigo_id}}</td>
                                     <td>{{incidencia.codigo_mesa}}</td>
+                                    <td>{{incidencia.testigo_id}}</td>
                                     <td>
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#incidenciaCerrada">
@@ -99,8 +95,24 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p><span class="fw-bolder">Categoria: </span><span> Fraude</span></p>
-                <p><span class="fw-bolder">Asunto: </span><span> Compra de votos</span></p>
+                <h4 class="fw-bolder">Información de testigo</h4>
+                <div class="row mt-3">
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Puesto: </span><span> Fraude</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Mesa: </span><span> Fraude</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Testigo: </span><span> Fraude</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Telefono: </span><span> Fraude</span></p>
+                    </div>
+                    <hr class="border border-primary rounded border-2">
+                    <h4 class="fw-bolder">Información de reporte</h4>
+                    <p><span class="fw-bolder mt-3">Asunto: </span><span> Fraude</span></p>
+                </div>
                 <p class="fw-bolder">Descripcion: </p>
                 <p>
                     Amet eiusmod eiusmod veniam exercitation pariatur officia magna adipisicing ad ipsum eiusmod
@@ -111,7 +123,8 @@
                 </p>
                 <p class="fw-bolder">Archivo adjunto: </p>
                 <img src="../../../../assets/logo.png" class="w-100" alt="logo" />
-                <textarea class="form-control border-2 border-dark rounded" rows="4" placeholder="Escribir una respuesta"></textarea>
+                <textarea class="form-control border-2 border-dark rounded" rows="2"
+                    placeholder="Escribir una respuesta"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger">Cerrar incidencia</button>

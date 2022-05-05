@@ -12,6 +12,7 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 export class VerPuestoAdminComponent implements OnInit {
 
   tabla: string = "ninguna";
+  percent:number = 0;
   dataDepartments: any = [];
   dataMunicipals: any = [];
   dataZones: any = [];
@@ -155,22 +156,13 @@ export class VerPuestoAdminComponent implements OnInit {
     })
   }
 
-  textColor(existentes: any, necesitados: any) {
-    if (existentes == necesitados) {
-      return 'text-success';
-    } else if (existentes < necesitados) {
-      return 'text-primary';
-    } else {
-      return 'text-danger'
-    }
-  }
-
   createPercent(existentes: any, necesitados: any) {
-    const percent = (existentes / necesitados) * 100;
+    this.percent = Math.round((existentes / necesitados) * 100)/100;
     if (necesitados == 0) {
-      return '(0%)';
+      this.percent=0;
+      return `(${this.percent}%)`;
     }
-    return `(${Math.round(percent * 100) / 100}%)`;
+    return `(${this.percent}%)`;
   }
 
   getCode(item: any) {

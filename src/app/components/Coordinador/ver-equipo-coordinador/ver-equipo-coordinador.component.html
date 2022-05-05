@@ -1,11 +1,20 @@
 <div class="container py-5">
-
-  <iframe class="iframe" [src]="getUrl()" frameborder="0" allowFullScreen="true"></iframe>
-
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white">
-      <h4>Mi Equipo</h4>
-    </div>
+  <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
+    <h4>Mi Equipo de trabajo</h4>
+    <button class="btn btn-sm btn-info position-relative" data-bs-toggle="tooltip" data-bs-placement="top"
+      title="{{(showMap)?'Ver lista':'Ver mapa'}}" (click)="showIframe()">
+      <i class="fa-solid fa-map fa-lg text-white" *ngIf="!showMap;else list_content"></i>
+      <ng-template #list_content>
+        <i class="fa-solid fa-list fa-lg text-white"></i>
+      </ng-template>
+      <span
+        class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1">
+        <i class="fa-solid fa-repeat fa-sm"></i>
+      </span>
+    </button>
+  </div>
+  <iframe class="iframe" *ngIf="showMap" [src]="getUrl()" frameborder="0" allowFullScreen="true"></iframe>
+  <div class="card mt-5" *ngIf="!showMap">
     <div class="card-body">
       <div class="row m-4 d-flex justify-content-center">
         <div class="form-group col-md-6 col-lg-4 pt-2">

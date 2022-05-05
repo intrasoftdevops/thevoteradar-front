@@ -103,21 +103,21 @@ const routes: Routes = [
     component: VerEquipoCoordinadorComponent
   },
   {
-    path: 'consultarEstadoEquipoAdmin',
+    path: 'estadisticasEquipoAdmin',
     component: VerPuestoAdminComponent
   },
 
   {
-    path: 'consultarEstadoEquipoGerente',
+    path: 'estadisticasEquipoGerente',
     component: VerPuestoGerenteComponent
   },
 
   {
-    path: 'consultarEstadoEquipoSupervisor',
+    path: 'estadisticasEquipoSupervisor',
     component: VerPuestoSupervisorComponent
   },
   {
-    path: 'consultarEstadoEquipoCoordinador',
+    path: 'estadisticasEquipoCoordinador',
     component: VerPuestoCoordinadorComponent
   },
   {

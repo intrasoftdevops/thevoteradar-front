@@ -19,7 +19,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit {
 
   getIncidenciasDeCoordinador() {
     this.apiService.getIncidenciasDeCoordinador().subscribe((resp: any) => {
-      //this.dataIncidencias = resp;
+      console.log(resp)
       this.dataIncidenciasAbiertas = resp.filter((incidencia: any) => {
         return incidencia.estado === 0;
       }

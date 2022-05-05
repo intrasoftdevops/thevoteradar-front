@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import Swal from 'sweetalert2';
 import { ApiService } from '../../../services/api/api.service';
 import { AlertService } from '../../../services/alert/alert.service';
 
@@ -11,6 +10,7 @@ import { AlertService } from '../../../services/alert/alert.service';
 export class VerPuestoCoordinadorComponent implements OnInit {
 
   tabla: boolean = false;
+  percent:number = 0;
   dataStations: any = [];
   testigos: any = {};
 
@@ -55,11 +55,12 @@ export class VerPuestoCoordinadorComponent implements OnInit {
   }
 
   createPercent(existentes: any, necesitados: any) {
-    const percent = (existentes / necesitados) * 100;
+    this.percent = Math.round((existentes / necesitados) * 100) / 100;
     if (necesitados == 0) {
-      return '(0%)';
+      this.percent = 0;
+      return `(${this.percent}%)`;
     }
-    return `(${Math.round(percent * 100) / 100}%)`;
+    return `(${this.percent}%)`;
   }
 
   validObjects() {

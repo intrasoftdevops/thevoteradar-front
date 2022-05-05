@@ -1,8 +1,9 @@
 <div class="container">
   <div class="py-5">
-    <button class="btn btn-primary btn-lg " data-bs-toggle="offcanvas" data-bs-target="#offcanvasReporte">
+    <button class="btn btn-primary btn-lg" data-bs-toggle="offcanvas" data-bs-target="#offcanvasReporte"
+      data-bs-placement="top" title="Agregar reporte de incidencias">
       <i class="fas fa-plus-circle fa-2x align-middle"></i>
-      <span class="align-middle mx-3 fw-bold"> Agregar reporte de incidencias</span>
+      <span class="mx-3 fw-bold align-middle">Agregar incidencias</span>
     </button>
     <div class="card mt-3">
       <div class="card-body">
@@ -11,20 +12,18 @@
             <thead class="text-dark align-middle">
               <tr>
                 <th scope="col">CATEGORIA</th>
-                <th scope="col">ASUNTO</th>
                 <th scope="col">ESTADO</th>
-                <th scope="col"></th>
+                <th scope="col">OPCIONES</th>
               </tr>
             </thead>
             <tbody>
               <tr class="bg-white" *ngFor="let incidencia of dataIncidencias">
-                <td>{{incidencia.categoria_id}}</td>
-                <td>{{incidencia.titulo}}</td>
+                <td>{{incidencia.categoria}}</td>
                 <td>{{(incidencia.estado==0)?"Abierto":"Cerrado"}}</td>
                 <td>
-                  <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                  <button type="button" class="btn btn-sm btn-primary text-truncate" data-bs-toggle="modal" data-bs-placement="top" title="Ver reporte"
                     data-bs-target="#incidenciaAbierta" (click)="ModalIncidenciaActual(incidencia)">
-                    Ver incidencia
+                    Ver reporte
                   </button>
                 </td>
               </tr>
@@ -55,13 +54,6 @@
   <div
     class="offcanvas-body px-0 bg-secondary border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
     <form class="mx-4" [formGroup]="createForm" (ngSubmit)="onSubmit()">
-      <div class="form-group pt-3">
-        <label class="form-label">
-          <span class="fw-bold">Asunto</span>
-          <span class="text-danger">*</span>
-        </label>
-        <input type="text" class="form-control border-2 border-dark rounded" formControlName="titulo" />
-      </div>
       <div class="form-group pt-3">
         <label class="form-label">
           <span class="fw-bold">Asunto</span>
@@ -127,8 +119,7 @@
       </div>
       <div class="modal-body">
         <p><span class="fw-bolder">Estado: </span><span> {{(incidenciaActual.estado==0)?"Abierto":"Cerrado"}}</span></p>
-        <p><span class="fw-bolder">Categoria: </span><span> {{incidenciaActual.categoria_id}}</span></p>
-        <p><span class="fw-bolder">Asunto: </span><span> {{incidenciaActual.titulo}}</span></p>
+        <p><span class="fw-bolder">Categoria: </span><span> {{incidenciaActual.categoria}}</span></p>
         <p class="fw-bolder">Descripcion: </p>
         <p>
           {{incidenciaActual.descripcion}}

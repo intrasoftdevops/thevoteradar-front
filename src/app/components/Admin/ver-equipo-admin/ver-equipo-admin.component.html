@@ -1,7 +1,7 @@
 <div class="container py-5">
   <div class="card">
     <div class="bg-primary py-3 px-5 text-white">
-      <h4>Mi Equipo</h4>
+      <h4>Mi Equipo de trabajo</h4>
     </div>
     <div class="card-body">
       <div class="row m-4 d-flex justify-content-center">
@@ -14,7 +14,7 @@
           </ng-select>
         </div>
         <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Gerentes por departamento</label>
+          <label class="fw-bold form-label">Gerentes por municipio</label>
           <ng-select [items]="dataMunicipals" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
             (change)="getSelectedMunicipal($event)" notFoundText="No hay informacion disponible"
             placeholder="Seleccione municipio" [(ngModel)]="selectedMunicipal">

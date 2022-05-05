@@ -22,6 +22,7 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   filtro: any;
   idCliente: any;
   urlSafe!: SafeResourceUrl;
+  showMap: boolean = false;
 
   constructor(private apiService: ApiService, private localData: LocalDataService, public sanitizer: DomSanitizer) { }
 
@@ -93,6 +94,10 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  showIframe() {
+    this.showMap = !this.showMap;
   }
 
 }
