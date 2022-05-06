@@ -72,6 +72,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit {
     this.incidenciaAbiertaActual = {};
     this.incidenciaAbiertaActual = incidencia;
     this.photosOpen = incidencia.archivos;
+    console.log(this.photosOpen.url_archivo)
   }
 
   ModalIncidenciaCerradaActual(incidencia: any) {

@@ -276,6 +276,7 @@ ngx-dropzone-image-preview>img {
 
 ngx-dropzone-remove-badge {
     background: $primary !important;
+    opacity: 1 !important;
 }
 
 ngx-dropzone-image-preview>ngx-dropzone-label {
@@ -306,4 +307,9 @@ nav li .dropdown-menu li a:hover {
         height: calc(13vw + 13rem);
     }
 
+}
+
+.imgItem{
+    max-height: 100px;
+    object-fit: cover;
 }

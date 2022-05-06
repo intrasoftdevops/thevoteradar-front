@@ -88,9 +88,9 @@
                     </table>
                 </div>
                 <p class="fw-bolder">Archivos adjuntos: </p>
-                <si-ng-lightbox [showPreviews]="true">
+                <si-ng-lightbox [showPreviews]="true" *ngIf="photos.length>0" class="d-grid d-flex justify-content-center">
                     <img *ngFor="let img of photos" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
-                        [siLightboxItem]="img.url_archivo" class="item w-100" />
+                        [siLightboxItem]="img.url_archivo" class="imgItem col-4" />
                 </si-ng-lightbox>
             </div>
         </div>

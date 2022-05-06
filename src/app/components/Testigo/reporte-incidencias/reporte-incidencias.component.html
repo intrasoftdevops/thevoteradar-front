@@ -125,9 +125,10 @@
           {{incidenciaActual.descripcion}}
         </p>
         <p class="fw-bolder">Archivos adjuntos: </p>
-        <si-ng-lightbox [showPreviews]="true">
-          <img *ngFor="let img of photos" src="{{img}}" [previewSrc]="img" [siLightboxItem]="img" class="item w-100" />
-        </si-ng-lightbox>
+        <si-ng-lightbox [showPreviews]="true" *ngIf="photos.length>0" class="d-grid d-flex justify-content-center">
+          <img *ngFor="let img of photos" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
+              [siLightboxItem]="img.url_archivo" class="imgItem col-4" />
+      </si-ng-lightbox>
       </div>
     </div>
   </div>

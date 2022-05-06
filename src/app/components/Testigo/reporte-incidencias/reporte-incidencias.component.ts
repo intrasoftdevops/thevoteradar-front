@@ -66,9 +66,7 @@ export class ReporteIncidenciasComponent implements OnInit {
     this.photos = [];
     this.incidenciaActual = {};
     this.incidenciaActual = incidencia;
-    for (let i = 0; i < this.incidenciaActual.archivos.length; i++) {
-      this.photos.push(this.incidenciaActual.archivos[i].url_archivo);
-    }
+    this.photos = incidencia.archivos;
   }
 
   getCategoriasIncidencias() {
