@@ -87,7 +87,7 @@
           <span class="fw-bold">Archivo adjunto</span>
           <span class="text-danger">*</span>
         </label>
-        <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true">
+        <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true" [maxFileSize]="10000000">
           <ngx-dropzone-label>
             <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar Archivo (maximo 10MB)
           </ngx-dropzone-label>

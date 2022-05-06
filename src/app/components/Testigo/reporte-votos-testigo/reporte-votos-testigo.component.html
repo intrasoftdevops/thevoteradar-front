@@ -81,7 +81,7 @@
             </div>
             <div class="col-lg-5 d-flex flex-column justify-content-around" *ngIf="showUpload">
                 <h4 class="fw-bolder my-5 text-center">Adjuntar Prueba</h4>
-                <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true">
+                <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true" [maxFileSize]="10000000">
                     <ngx-dropzone-label>
                         <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar Archivo (maximo 10MB)
                     </ngx-dropzone-label>

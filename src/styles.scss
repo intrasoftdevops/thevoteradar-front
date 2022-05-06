@@ -6,15 +6,15 @@ $secondary: #cecece;
 @import "../node_modules/bootswatch/dist/cosmo/bootswatch";
 @import "../node_modules/@ng-select/ng-select/scss/default.theme.scss";
 @import "../node_modules/sweetalert2/src/variables.scss";
-$swal2-confirm-button-background-color: $primary !important;
-$swal2-cancel-button-background-color: $danger !important;
-$swal2-error: $danger !important;
-$swal2-deny-button-background-color: $danger !important;
-$swal2-success: $success !important;
+$swal2-confirm-button-background-color: $primary  !important;
+$swal2-cancel-button-background-color: $danger  !important;
+$swal2-error: $danger  !important;
+$swal2-deny-button-background-color: $danger  !important;
+$swal2-success: $success  !important;
 
 .swal2-icon.swal2-warning {
     border-color: lighten($color: $warning, $amount: 20) !important;
-    color: $warning !important;
+    color: $warning  !important;
 }
 
 @import "../node_modules/sweetalert2/src/sweetalert2.scss";
@@ -58,8 +58,14 @@ hr {
 
 #loginForm input {
     border-radius: 25px !important;
-    border: 2px solid $dark !important;
+    border: 2px solid $dark  !important;
     background-color: transparent !important;
+}
+
+input,select{
+    border-color: #000 !important;
+    border-width: 2px !important;
+    border-radius: 0.25rem !important;
 }
 
 .btn {
@@ -86,9 +92,9 @@ hr {
     position: absolute;
     padding-left: 1.5rem !important;
     z-index: 1;
-    border-left: 2px solid $primary !important;
-    border-top: 2px solid $primary !important;
-    border-bottom: 2px solid $primary !important;
+    border-left: 2px solid $primary  !important;
+    border-top: 2px solid $primary  !important;
+    border-bottom: 2px solid $primary  !important;
 }
 
 .welcomeBanner::before {
@@ -100,9 +106,9 @@ hr {
     height: 65px;
     background: white;
     transform: skew(30deg);
-    border-left: 2px solid $primary !important;
-    border-top: 2px solid $primary !important;
-    border-bottom: 2px solid $primary !important;
+    border-left: 2px solid $primary  !important;
+    border-top: 2px solid $primary  !important;
+    border-bottom: 2px solid $primary  !important;
 }
 
 @media (max-width: 992px) {
@@ -127,27 +133,33 @@ hr {
 
 
 // Set border-radius on the top-left and bottom-left of the first table data on the table row
-td:first-child,
-tbody>th:first-child {
+td:first-child {
     border-radius: 10px 0 0 10px !important;
-    border-top: 2px solid $primary !important;
-    border-bottom: 2px solid $primary !important;
-    border-left: 2px solid $primary !important;
+    border-top: 2px solid $primary  !important;
+    border-bottom: 2px solid $primary  !important;
+    border-left: 2px solid $primary  !important;
 }
 
 td,
 th :not(:first-child, :last-child) {
-    border-top: 2px solid $primary !important;
-    border-bottom: 2px solid $primary !important;
+    border-top: 2px solid $primary  !important;
+    border-bottom: 2px solid $primary  !important;
 }
 
 // Set border-radius on the top-right and bottom-right of the last table data on the table row
-td:last-child,
-tbody>th:last-child {
+td:last-child {
     border-radius: 0 10px 10px 0 !important;
-    border-top: 2px solid $primary !important;
-    border-bottom: 2px solid $primary !important;
-    border-right: 2px solid $primary !important;
+    border-top: 2px solid $primary  !important;
+    border-bottom: 2px solid $primary  !important;
+    border-right: 2px solid $primary  !important;
+}
+
+td:only-child{
+    border-radius: 10px !important;
+}
+
+td{
+    background-color:white !important;
 }
 
 table {
@@ -203,7 +215,7 @@ input[type=number] {
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
     color: white;
-    background-color: $primary !important;
+    background-color: $primary  !important;
     border-color: $primary;
 }
 
@@ -218,7 +230,7 @@ input[type=number] {
 }
 
 .link-active {
-    border-bottom: 5px solid $primary !important;
+    border-bottom: 5px solid $primary  !important;
 }
 
 .sublink-active {
@@ -264,28 +276,26 @@ input[type=number] {
 
 ngx-dropzone {
     height: 200px !important;
-    border: 2px dashed $primary !important;
+    border: 2px dashed $primary  !important;
     overflow-y: auto !important;
-}
-
-ngx-dropzone-image-preview,
-ngx-dropzone-image-preview>img {
-    width: 100% !important;
-    height: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    text-align: center !important;
 }
 
 ngx-dropzone-remove-badge {
-    background: $primary !important;
+    background: $primary  !important;
     opacity: 1 !important;
 }
 
 ngx-dropzone-image-preview>ngx-dropzone-label {
     color: white !important;
     text-shadow: 1px 1px 2px black, 0 0 1em $primary, 0 0 0.2em $primary;
+    overflow-wrap: anywhere !important;
 }
 
 nav li .dropdown-menu li a:hover {
-    background-color: $primary !important;
+    background-color: $primary  !important;
 }
 
 .iframe {
@@ -309,7 +319,7 @@ nav li .dropdown-menu li a:hover {
 
 }
 
-.imgItem{
+.imgItem {
     max-height: 100px;
     object-fit: cover;
 }

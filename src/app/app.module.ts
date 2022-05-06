@@ -58,6 +58,7 @@ import { CrearCoordinadorGerenteComponent } from './components/Gerente/crear-coo
 import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo-gerente/crear-testigo-gerente.component';
 import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-testigo-supervisor/crear-testigo-supervisor.component';
 import { DropdownMenuUsersComponent } from './components/dropdown-menu-users/dropdown-menu-users.component';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [
@@ -122,7 +123,8 @@ import { DropdownMenuUsersComponent } from './components/dropdown-menu-users/dro
     NgSelectModule,
     HammerModule, // <-- For Angular 9
     NgLightboxModule,
-    NgxDropzoneModule
+    NgxDropzoneModule,
+    DataTablesModule
   ],
   providers: [
     LoaderService,
