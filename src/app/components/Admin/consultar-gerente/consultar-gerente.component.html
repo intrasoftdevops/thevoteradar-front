@@ -18,11 +18,12 @@
                 <div class="card-body">
                     <div class="table-responsive my-4" *ngIf="listGerenteAsignados.length>0;else municipio_content">
                         <table datatable [dtOptions]="dtOptionsGerenteAsignados" [dtTrigger]="dtTrigger"
-                            class="table text-center align-middle row-border hover">
+                            class="table text-center align-middle w-100">
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">NOMBRE COMPLETO</th>
-                                    <th scope="col">CORREO ELECTRONICO</th>
+                                    <th scope="col">TELEFONO</th>
+                                    <th scope="col">EMAIL</th>
                                     <th scope="col">MUNICIPIOS</th>
                                     <th scope="col"></th>
                                 </tr>
@@ -30,11 +31,15 @@
                             <tbody>
                                 <tr class="text-center" *ngFor="let gerente of listGerenteAsignados;let index=index">
                                     <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
+                                    <td>{{gerente.telefono}}</td>
                                     <td>{{gerente.email}}</td>
                                     <td>{{listMunicipals[index]}}</td>
                                     <td>
-                                        <a class="rounded-circle" (click)="redirectUpdateGerente(gerente.id)">
-                                            <i class="fas fa-pen text-primary"></i>
+                                        <button class="btn align-middle mx-1" data-bs-toggle="modal" data-bs-target="#gerente" (click)="gerenteActualSeleccionado(gerente,listMunicipals[index])">
+                                            <i class="fa-solid fa-eye text-primary"></i>
+                                        </button>
+                                        <a class="rounded-circle align-middle mx-1" (click)="redirectUpdateGerente(gerente.id)">
+                                            <i class="fa-solid fa-pen"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -51,10 +56,12 @@
             <div class="card mt-3">
                 <div class="card-body">
                     <div class="table-responsive" *ngIf="listGerenteNoAsignados.length>0;else no_municipio_content">
-                        <table class="table text-center align-middle" datatable [dtOptions]="dtOptionsGerenteNoAsignados" [dtTrigger]="dtTrigger">
+                        <table class="table text-center align-middle w-100" datatable
+                            [dtOptions]="dtOptionsGerenteNoAsignados" [dtTrigger]="dtTrigger">
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">NOMBRE COMPLETO</th>
+                                    <th scope="col">TELEFONO</th>
                                     <th scope="col">CORREO ELECTRONICO</th>
                                     <th scope="col"></th>
                                 </tr>
@@ -62,9 +69,13 @@
                             <tbody>
                                 <tr class="bg-white" *ngFor="let gerente of listGerenteNoAsignados;let index=index">
                                     <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
+                                    <td>{{gerente.telefono}}</td>
                                     <td>{{gerente.email}}</td>
                                     <td>
-                                        <a class="rounded-circle" (click)="redirectUpdateGerente(gerente.id)">
+                                        <button class="btn align-middle mx-1">
+                                            <i class="fa-solid fa-eye text-primary" data-bs-toggle="modal" data-bs-target="#gerente" (click)="gerenteActualSeleccionado(gerente)"></i>
+                                        </button>
+                                        <a class="rounded-circle align-middle mx-1" (click)="redirectUpdateGerente(gerente.id)">
                                             <i class="fas fa-pen text-primary"></i>
                                         </a>
                                     </td>
@@ -80,3 +91,23 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="gerente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+          <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+            <i class="fa-solid fa-xmark text-white"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+            <p><span class="fw-bolder">Nombre completo: </span><span> {{gerenteActual.nombres}} {{gerenteActual.apellidos}}</span></p>
+            <p><span class="fw-bolder">Telefono: </span><span> {{gerenteActual.telefono}}</span></p>
+            <p><span class="fw-bolder">Correo electronico: </span><span> {{gerenteActual.email}}</span></p>
+            <p><span class="fw-bolder">Numero de documento: </span><span> {{gerenteActual.numero_documento}}</span></p>
+            <p [ngClass]="{'d-none': !municipiosActual}"><span class="fw-bolder">Municipios: </span><span> {{municipiosActual}}</span></p>
+        </div>
+      </div>
+    </div>
+  </div>

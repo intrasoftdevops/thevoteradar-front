@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { AlertService } from '../../../services/alert/alert.service';
 import { Filtro } from '../../../models/filtro';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-ver-equipo-admin',
@@ -12,7 +12,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class VerEquipoAdminComponent implements OnInit {
 
-  constructor(private apiService: ApiService, private alertService: AlertService,private sanitizer: DomSanitizer) { }
+  constructor(private apiService: ApiService,private sanitizer: DomSanitizer) { }
 
   tabla: string = "ninguna";
   dataDepartments: any = [];
@@ -32,6 +32,8 @@ export class VerEquipoAdminComponent implements OnInit {
   idCliente: any;
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
+  dtOptionsGerente: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
 
   ngOnInit() {
     this.getDepartmentAdmin();

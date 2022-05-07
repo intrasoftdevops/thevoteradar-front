@@ -62,7 +62,8 @@ hr {
     background-color: transparent !important;
 }
 
-input,select{
+input,
+select {
     border-color: #000 !important;
     border-width: 2px !important;
     border-radius: 0.25rem !important;
@@ -130,7 +131,19 @@ input,select{
 
 }
 
+.table> :not(caption, thead)>*>* {
+    border-bottom-width: 0px;
+}
 
+table>thead>*>* {
+    padding: 0 !important;
+    border-bottom-width: 0px !important;
+}
+
+table.dataTable>thead>tr>th:not(.sorting_disabled),
+table.dataTable>thead>tr>td:not(.sorting_disabled) {
+    padding-right: 30px !important;
+}
 
 // Set border-radius on the top-left and bottom-left of the first table data on the table row
 td:first-child {
@@ -154,17 +167,28 @@ td:last-child {
     border-right: 2px solid $primary  !important;
 }
 
-td:only-child{
+td:only-child {
     border-radius: 10px !important;
 }
 
-td{
-    background-color:white !important;
+td {
+    background-color: white !important;
+}
+
+td:not(:last-child){
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 table {
-    border-collapse: separate;
-    border-spacing: 0 1em;
+    border-collapse: separate !important;
+    border-spacing: 0 .7em !important;
+}
+
+table.dataTable:not(:first-child) {
+    border-spacing: 0 1em !important;
 }
 
 input::-webkit-outer-spin-button,

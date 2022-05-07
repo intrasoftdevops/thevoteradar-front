@@ -14,53 +14,21 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   listGerenteAsignados: any = [];
   listGerenteNoAsignados: any = [];
   listMunicipals: any = [];
+  gerenteActual: any={};
+  municipiosActual: any='';
   dtOptionsGerenteAsignados: DataTables.Settings = {};
   dtOptionsGerenteNoAsignados: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService) { }
 
-  ngOnDestroy() {
-    this.dtTrigger.unsubscribe();
+  ngOnInit() {
+    this.dataTableOptions();
+    this.getGerentes();
   }
 
-  ngOnInit() {
-    this.dtOptionsGerenteAsignados = {
-      pageLength: 10,
-      columns: [{
-        orderable: true,
-      }, {
-        orderable: true,
-        className: 'd-none d-md-block'
-      }, {
-        orderable: true,
-      },
-      {
-        orderable: false,
-      }
-      ],
-      responsive: true,
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
-      }
-    };
-    this.dtOptionsGerenteNoAsignados = {
-      pageLength: 10,
-      columns: [{
-        orderable: true,
-      }, {
-        orderable: true,
-      },
-      {
-        orderable: false,
-      }
-      ],
-      responsive: true,
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
-      }
-    };
-    this.getGerentes();
+  ngOnDestroy() {
+    this.dtTrigger.unsubscribe();
   }
 
   getGerentes() {
@@ -75,7 +43,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
           lastMunicipio = municipios.shift();
           this.listMunicipals.push(municipios.join(', ') + " y " + lastMunicipio);
         } else {
-          this.listMunicipals.push(municipios);
+          this.listMunicipals.push(municipios['0']);
         }
       }
       setTimeout(() => {
@@ -95,6 +63,58 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   redirectUpdateGerente(id: any) {
     const idEncrypt = this.localData.encryptIdUser(id);
     this.router.navigate(["editarGerente", idEncrypt]);
+  }
+
+  gerenteActualSeleccionado(gerente: any, municipios?:any) {
+    this.gerenteActual=gerente;
+    this.municipiosActual=municipios;
+  }
+
+  dataTableOptions() {
+    this.dtOptionsGerenteAsignados = {
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },{
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+       {
+        orderable: true,
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+    this.dtOptionsGerenteNoAsignados = {
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      },{
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+       {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
   }
 
 }
