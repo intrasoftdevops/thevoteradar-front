@@ -62,22 +62,8 @@
     </div>
     <div class="card-body">
       <div class="table-responsive my-4" *ngIf="listGerentes.length>0;else other_content">
-        <table class="table text-center align-middle w-100" datatable
-        [dtOptions]="dtOptionsGerente" [dtTrigger]="dtTrigger">
-          <thead class="text-dark">
-            <tr>
-              <th scope="col">NOMBRE COMPLETO</th>
-              <th scope="col">CORREO ELECTRONICO</th>
-              <th scope="col">TELEFONO</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let gerente of listGerentes" class="text-center">
-              <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
-              <td>{{gerente.email}}</td>
-              <td>{{gerente.telefono}}</td>
-            </tr>
-          </tbody>
+        <table class="table text-center align-middle w-100" datatable [dtOptions]="dtOptionsGerente"
+          [dtTrigger]="dtTrigger">
         </table>
       </div>
       <ng-template #other_content>
