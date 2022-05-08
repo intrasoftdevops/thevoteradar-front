@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { Filtro } from '../../../models/filtro';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-ver-equipo-admin',
   templateUrl: './ver-equipo-admin.component.html',
   styleUrls: ['./ver-equipo-admin.component.scss']
 })
-export class VerEquipoAdminComponent implements OnInit {
+export class VerEquipoAdminComponent implements OnInit, OnDestroy {
 
-  constructor(private apiService: ApiService,private sanitizer: DomSanitizer) { }
-
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement!: DataTableDirective;
   tabla: string = "ninguna";
   dataDepartments: any = [];
   dataMunicipals: any = [];
@@ -35,10 +36,16 @@ export class VerEquipoAdminComponent implements OnInit {
   dtOptionsGerente: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
+  constructor(private apiService: ApiService, private sanitizer: DomSanitizer) { }
+
   ngOnInit() {
     this.getDepartmentAdmin();
     this.getUrl();
     this.getCliente();
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
   }
 
   getCliente() {
@@ -78,6 +85,7 @@ export class VerEquipoAdminComponent implements OnInit {
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { municipio: codigo_unico }
+      this.dtTrigger.subscribe()
       this.getZonasyGerentes(data);
       this.tabla = "gerente";
     } else {
@@ -96,7 +104,9 @@ export class VerEquipoAdminComponent implements OnInit {
       this.tabla = "supervisor";
     } else {
       this.dataStations = [];
-      this.tabla = "gerente"
+      this.tabla = "gerente";
+      this.dtTrigger.subscribe();
+      this.dtTrigger.next(void 0);
     }
   }
 
@@ -141,6 +151,10 @@ export class VerEquipoAdminComponent implements OnInit {
       const { zonas, gerentes } = resp;
       this.dataZones = zonas;
       this.listGerentes = gerentes;
+      this.dataTableOptionsGerente();
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
@@ -175,5 +189,34 @@ export class VerEquipoAdminComponent implements OnInit {
   showIframe() {
     this.showMap = !this.showMap;
   }
+
+  dataTableOptionsGerente() {
+    this.dtOptionsGerente = {
+      data: this.listGerentes,
+      processing:true,
+      destroy: true,
+      pageLength: 10,
+      columns: [{
+        title: 'NOMBRE COMPLETO',
+        data: 'nombres',
+        orderable: true,
+      }, {
+        data: 'email',
+        title: 'CORREO ELECTRONICO',
+        orderable: true,
+      }, {
+        title: 'TELEFONO',
+        data: 'telefono',
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+  }
+
 
 }

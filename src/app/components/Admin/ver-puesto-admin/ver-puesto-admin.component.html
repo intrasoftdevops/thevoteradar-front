@@ -72,7 +72,7 @@
             <tbody>
               <tr class="bg-white">
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(gerentes.gerentes_con_municipio,gerentes.cantidad_gerentes_necesitados)">
                   {{gerentes.gerentes_con_municipio}}/{{gerentes.cantidad_gerentes_necesitados}}
                   {{createPercent(gerentes.gerentes_con_municipio,gerentes.cantidad_gerentes_necesitados)}}
                 </td>
@@ -80,7 +80,7 @@
                   {{gerentes.gerentes_sin_municipio}}
                 </td>
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(supervisores.supervisores_con_municipio,supervisores.cantidad_supervisores_necesitados)">
                   {{supervisores.supervisores_con_municipio}}/{{supervisores.cantidad_supervisores_necesitados}}
                   {{createPercent(supervisores.supervisores_con_municipio,supervisores.cantidad_supervisores_necesitados)}}
                 </td>
@@ -88,7 +88,7 @@
                   {{supervisores.supervisores_sin_zona}}
                 </td>
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(coordinadores.coordinadores_con_puesto,coordinadores.cantidad_coordinadores_necesitados)">
                   {{coordinadores.coordinadores_con_puesto}}/{{coordinadores.cantidad_coordinadores_necesitados}}
                   {{createPercent(coordinadores.coordinadores_con_puesto,coordinadores.cantidad_coordinadores_necesitados)}}
                 </td>
@@ -96,7 +96,7 @@
                   {{coordinadores.coordinadores_sin_puesto}}
                 </td>
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(testigos.testigos_con_mesa,testigos.cantidad_testigos_necesitadoss)">
                   {{testigos.testigos_con_mesa}}/{{testigos.cantidad_testigos_necesitados}}
                   {{createPercent(testigos.testigos_con_mesa,testigos.cantidad_testigos_necesitados)}}
                 </td>
@@ -126,7 +126,7 @@
             <tbody>
               <tr class="bg-white">
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(supervisoresGerente.supervisores_con_municipio,supervisoresGerente.cantidad_supervisores_necesitadoss)">
                   {{supervisoresGerente.supervisores_con_municipio}}/{{supervisoresGerente.cantidad_supervisores_necesitadoss}}
                   {{createPercent(supervisoresGerente.supervisores_con_municipio,supervisoresGerente.cantidad_supervisores_necesitadoss)}}
                 </td>
@@ -134,7 +134,7 @@
                   {{supervisoresGerente.supervisores_sin_zona}}
                 </td>
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(coordinadoresGerente.coordinadores_con_puesto,coordinadoresGerente.cantidad_coordinadores_necesitados)">
                   {{coordinadoresGerente.coordinadores_con_puesto}}/{{coordinadoresGerente.cantidad_coordinadores_necesitados}}
                   {{createPercent(coordinadoresGerente.coordinadores_con_puesto,coordinadoresGerente.cantidad_coordinadores_necesitados)}}
                 </td>
@@ -142,7 +142,7 @@
                   {{coordinadoresGerente.coordinadores_sin_puesto}}
                 </td>
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(testigosGerente.testigos_con_mesa,testigosGerente.cantidad_testigos_necesitados)">
                   {{testigosGerente.testigos_con_mesa}}/{{testigosGerente.cantidad_testigos_necesitados}}
                   {{createPercent(testigosGerente.testigos_con_mesa,testigosGerente.cantidad_testigos_necesitados)}}
                 </td>
@@ -170,7 +170,7 @@
             <tbody>
               <tr class="bg-white">
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(coordinadoresSupervisor.coordinadores_con_puesto,coordinadoresSupervisor.cantidad_coordinadores_necesitados)">
                   {{coordinadoresSupervisor.coordinadores_con_puesto}}/{{coordinadoresSupervisor.cantidad_coordinadores_necesitados}}
                   {{createPercent(coordinadoresSupervisor.coordinadores_con_puesto,coordinadoresSupervisor.cantidad_coordinadores_necesitados)}}
                 </td>
@@ -178,7 +178,7 @@
                   {{coordinadoresSupervisor.coordinadores_sin_puesto}}
                 </td>
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(testigosSupervisor.testigos_con_mesa,testigosSupervisor.cantidad_testigos_necesitados)">
                   {{testigosSupervisor.testigos_con_mesa}}/{{testigosSupervisor.cantidad_testigos_necesitados}}
                   {{createPercent(testigosSupervisor.testigos_con_mesa,testigosSupervisor.cantidad_testigos_necesitados)}}
                 </td>
@@ -203,7 +203,7 @@
             <tbody>
               <tr class="bg-white">
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
+                  [ngClass]="textColor(testigosCoordinador.testigos_con_mesa,testigosCoordinador.cantidad_testigos_necesitados)">
                   {{testigosCoordinador.testigos_con_mesa}}/{{testigosCoordinador.cantidad_testigos_necesitados}}
                   {{createPercent(testigosCoordinador.testigos_con_mesa,testigosCoordinador.cantidad_testigos_necesitados)}}
                 </td>

@@ -55,7 +55,7 @@
         <div class="tab-pane fade" id="noasignados" role="tabpanel">
             <div class="card mt-3">
                 <div class="card-body">
-                    <div class="table-responsive" *ngIf="listGerenteNoAsignados.length>0;else no_municipio_content">
+                    <div class="table-responsive my-4" *ngIf="listGerenteNoAsignados.length>0;else no_municipio_content">
                         <table class="table text-center align-middle w-100" datatable
                             [dtOptions]="dtOptionsGerenteNoAsignados" [dtTrigger]="dtTrigger">
                             <thead class="text-dark align-middle">
@@ -67,7 +67,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="bg-white" *ngFor="let gerente of listGerenteNoAsignados;let index=index">
+                                <tr class="text-center" *ngFor="let gerente of listGerenteNoAsignados;let index=index">
                                     <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
                                     <td>{{gerente.telefono}}</td>
                                     <td>{{gerente.email}}</td>

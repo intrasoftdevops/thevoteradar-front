@@ -72,6 +72,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
 
   dataTableOptions() {
     this.dtOptionsGerenteAsignados = {
+      processing: true,
       pageLength: 10,
       columns: [{
         orderable: true,
@@ -95,6 +96,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
       }
     };
     this.dtOptionsGerenteNoAsignados = {
+      processing: true,
       pageLength: 10,
       columns: [{
         orderable: true,

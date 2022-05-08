@@ -124,7 +124,7 @@ import { DataTablesModule } from 'angular-datatables';
     HammerModule, // <-- For Angular 9
     NgLightboxModule,
     NgxDropzoneModule,
-    DataTablesModule
+    DataTablesModule,
   ],
   providers: [
     LoaderService,
