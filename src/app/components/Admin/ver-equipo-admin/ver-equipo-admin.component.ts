@@ -34,6 +34,9 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
   dtOptionsGerente: DataTables.Settings = {};
+  dtOptionsSupervisor: DataTables.Settings = {};
+  dtOptionsCoordinador: DataTables.Settings = {};
+  dtOptionsTestigo: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private apiService: ApiService, private sanitizer: DomSanitizer) { }
@@ -163,6 +166,10 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
       const { puestos, supervisores } = resp;
       this.dataStations = puestos;
       this.listSupervisores = supervisores;
+      this.dataTableOptionsSupervisor();
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
@@ -171,6 +178,10 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
       const { mesas, coordinadores } = resp;
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
+      this.dataTableOptionsCoordinador();
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
@@ -178,6 +189,10 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
       const { testigos } = resp;
       this.listTestigos = testigos;
+      this.dataTableOptionsTestigo();
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
@@ -198,17 +213,19 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
       pageLength: 10,
       columns: [{
         title: 'NOMBRE COMPLETO',
-        data: 'nombres',
+        render: (data, type, row) => {
+          return `${row.nombres} ${row.apellidos}`;
+        },
         orderable: true,
       }, {
         data: 'email',
         title: 'CORREO ELECTRONICO',
         orderable: true,
+        className: 'd-none d-md-table-cell'
       }, {
         title: 'TELEFONO',
         data: 'telefono',
         orderable: true,
-        className: 'd-none d-lg-table-cell'
       }
       ],
       responsive: true,
@@ -218,5 +235,94 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
     };
   }
 
+  dataTableOptionsSupervisor() {
+    this.dtOptionsSupervisor = {
+      data: this.listSupervisores,
+      processing:true,
+      destroy: true,
+      pageLength: 10,
+      columns: [{
+        title: 'NOMBRE COMPLETO',
+        render: (data, type, row) => {
+          return `${row.nombres} ${row.apellidos}`;
+        },
+        orderable: true,
+      }, {
+        data: 'email',
+        title: 'CORREO ELECTRONICO',
+        orderable: true,
+        className: 'd-none d-md-table-cell'
+      }, {
+        title: 'TELEFONO',
+        data: 'telefono',
+        orderable: true,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+  }
+
+  dataTableOptionsCoordinador() {
+    this.dtOptionsCoordinador = {
+      data: this.listCoordinadores,
+      processing:true,
+      destroy: true,
+      pageLength: 10,
+      columns: [{
+        title: 'NOMBRE COMPLETO',
+        render: (data, type, row) => {
+          return `${row.nombres} ${row.apellidos}`;
+        },
+        orderable: true,
+      }, {
+        data: 'email',
+        title: 'CORREO ELECTRONICO',
+        orderable: true,
+        className: 'd-none d-md-table-cell'
+      }, {
+        title: 'TELEFONO',
+        data: 'telefono',
+        orderable: true,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+  }
+
+  dataTableOptionsTestigo() {
+    this.dtOptionsTestigo = {
+      data: this.listTestigos,
+      processing:true,
+      destroy: true,
+      pageLength: 10,
+      columns: [{
+        title: 'NOMBRE COMPLETO',
+        render: (data, type, row) => {
+          return `${row.nombres} ${row.apellidos}`;
+        },
+        orderable: true,
+      }, {
+        data: 'email',
+        title: 'CORREO ELECTRONICO',
+        orderable: true,
+        className: 'd-none d-md-table-cell'
+      }, {
+        title: 'TELEFONO',
+        data: 'telefono',
+        orderable: true,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+  }
 
 }

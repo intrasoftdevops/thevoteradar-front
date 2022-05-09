@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { AlertService } from '../../../services/alert/alert.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-ver-puesto-admin',
   templateUrl: './ver-puesto-admin.component.html',
   styleUrls: ['./ver-puesto-admin.component.scss']
 })
-export class VerPuestoAdminComponent implements OnInit {
+export class VerPuestoAdminComponent implements OnInit, OnDestroy {
 
   tabla: string = "ninguna";
   dataDepartments: any = [];
@@ -32,11 +33,21 @@ export class VerPuestoAdminComponent implements OnInit {
     zonas: [null],
     puestos: [null],
   });
+  dataStateDepartment: any = {};
+  dtOptionsGerente: DataTables.Settings = {};
+  dtOptionsSupervisor: DataTables.Settings = {};
+  dtOptionsCoordinador: DataTables.Settings = {};
+  dtOptionsTestigo: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private apiService: ApiService, private alertService: AlertService, private customValidator: CustomValidationService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.getDepartmentAdmin();
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
   }
 
   get searchFormControl() {
@@ -127,10 +138,11 @@ export class VerPuestoAdminComponent implements OnInit {
 
   getNecesitadosDepartamento(data: any) {
     this.apiService.getNecesitadosDepartamento(data).subscribe((resp: any) => {
-      this.gerentes = resp.gerentes;
-      this.supervisores = resp.supervisores;
-      this.coordinadores = resp.coordinadores;
-      this.testigos = resp.testigos;
+      this.dataStateDepartment = [resp];
+      this.dataTableOptionsGerente();
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
@@ -167,14 +179,14 @@ export class VerPuestoAdminComponent implements OnInit {
     let percent = Math.round((existentes / necesitados) * 100) / 100;
     if (percent == 100) {
       return "text-success";
-    } else if ((percent >= 0 && percent <= 50) && (existentes< necesitados)) {
+    } else if ((percent >= 0 && percent <= 50) && (existentes < necesitados)) {
       return "text-danger";
     } else if (percent > 50 && percent < 100) {
       return "text-warning";
     } else if (percent > 100) {
       return "text-primary";
     } else {
-      return "text-primary";
+      return "text-success";
     }
   }
 
@@ -183,4 +195,57 @@ export class VerPuestoAdminComponent implements OnInit {
     return codigo_unico;
   }
 
+  dataTableOptionsGerente() {
+    this.dtOptionsGerente = {
+      data: this.dataStateDepartment,
+      processing: true,
+      destroy: true,
+      pageLength: 10,
+      searchDelay: 5000,
+      columns: [{
+        title: 'GERENTES',
+        data: function (row, type, set) {
+          const percent = createPercent(row.gerentes.gerentes_con_municipio, row.gerentes.cantidad_gerentes_necesitados);
+            return `${row.gerentes.gerentes_con_municipio}/${row.gerentes.cantidad_gerentes_necesitados} ${percent}`;
+        },
+        createdCell: (td, cellData, rowData, row, col) => {
+          $(td).addClass(this.textColor(rowData.gerentes.gerentes_con_municipio, rowData.gerentes.cantidad_gerentes_necesitados));
+        },
+        orderable: false,
+      }, {
+        title: 'SUPERVISORES',
+        render: (data, type, row) => {
+          return `${row.supervisores.supervisores_con_municipio}/${row.supervisores.cantidad_supervisores_necesitados} ${this.createPercent(row.supervisores.supervisores_con_municipio, row.supervisores.cantidad_supervisores_necesitados)}`;
+        },
+        orderable: false,
+      }, {
+        title: 'COORDINADORES',
+        render: (data, type, row) => {
+          return `${row.coordinadores.coordinadores_con_puesto}/${row.coordinadores.cantidad_coordinadores_necesitados} ${this.createPercent(row.coordinadores.coordinadores_con_puesto, row.coordinadores.cantidad_coordinadores_necesitados)}`;
+        },
+        orderable: false,
+      }, {
+        title: 'TESTIGOS',
+        render: (data, type, row) => {
+          return `${row.testigos.testigos_con_mesa}/${row.testigos.cantidad_testigos_necesitados} ${this.createPercent(row.testigos.testigos_con_mesa, row.testigos.cantidad_testigos_necesitados)}`;
+        },
+        orderable: false,
+      },
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+  }
+
 }
+
+function createPercent(existentes: any, necesitados: any) {
+  const percent = Math.round((existentes / necesitados) * 100) / 100;
+    if (necesitados == 0) {
+      return `(0%)`;
+    }
+    return `(${percent}%)`;
+}
+

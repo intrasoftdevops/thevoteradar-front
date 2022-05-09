@@ -56,55 +56,8 @@
     <div class="card mt-5" *ngSwitchCase="'gerente'">
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table text-center align-middle">
-            <thead class="text-dark align-middle">
-              <tr>
-                <th scope="col">GERENTES</th>
-                <th scope="col">GERENTES POR ASIGNAR</th>
-                <th scope="col">SUPERVISORES</th>
-                <th scope="col">SUPERVISORES POR ASIGNAR</th>
-                <th scope="col">COORDINADORES</th>
-                <th scope="col">COORDINADORES POR ASIGNAR</th>
-                <th scope="col">TESTIGOS</th>
-                <th scope="col">TESTIGOS POR ASIGNAR</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-white">
-                <td
-                  [ngClass]="textColor(gerentes.gerentes_con_municipio,gerentes.cantidad_gerentes_necesitados)">
-                  {{gerentes.gerentes_con_municipio}}/{{gerentes.cantidad_gerentes_necesitados}}
-                  {{createPercent(gerentes.gerentes_con_municipio,gerentes.cantidad_gerentes_necesitados)}}
-                </td>
-                <td>
-                  {{gerentes.gerentes_sin_municipio}}
-                </td>
-                <td
-                  [ngClass]="textColor(supervisores.supervisores_con_municipio,supervisores.cantidad_supervisores_necesitados)">
-                  {{supervisores.supervisores_con_municipio}}/{{supervisores.cantidad_supervisores_necesitados}}
-                  {{createPercent(supervisores.supervisores_con_municipio,supervisores.cantidad_supervisores_necesitados)}}
-                </td>
-                <td>
-                  {{supervisores.supervisores_sin_zona}}
-                </td>
-                <td
-                  [ngClass]="textColor(coordinadores.coordinadores_con_puesto,coordinadores.cantidad_coordinadores_necesitados)">
-                  {{coordinadores.coordinadores_con_puesto}}/{{coordinadores.cantidad_coordinadores_necesitados}}
-                  {{createPercent(coordinadores.coordinadores_con_puesto,coordinadores.cantidad_coordinadores_necesitados)}}
-                </td>
-                <td>
-                  {{coordinadores.coordinadores_sin_puesto}}
-                </td>
-                <td
-                  [ngClass]="textColor(testigos.testigos_con_mesa,testigos.cantidad_testigos_necesitadoss)">
-                  {{testigos.testigos_con_mesa}}/{{testigos.cantidad_testigos_necesitados}}
-                  {{createPercent(testigos.testigos_con_mesa,testigos.cantidad_testigos_necesitados)}}
-                </td>
-                <td>
-                  {{testigos.testigos_sin_mesa}}
-                </td>
-              </tr>
-            </tbody>
+          <table class="table text-center align-middle w-100" datatable [dtOptions]="dtOptionsGerente"
+            [dtTrigger]="dtTrigger">
           </table>
         </div>
       </div>
