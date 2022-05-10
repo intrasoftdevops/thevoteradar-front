@@ -16,17 +16,15 @@ export class VerPuestoGerenteComponent implements OnInit {
   dataStations: any = [];
   selectedZone: any = [];
   selectedStation: any = [];
-  supervisores: any = {};
-  coordinadores: any = {};
-  testigos: any = {};
-  coordinadoresSupervisor: any = {};
-  testigosSupervisor: any = {};
-  testigosCoordinador: any = {};
   searchForm: FormGroup = this.fb.group({
     municipios: [null],
     zonas: [null],
     puestos: [null],
   });
+  dataStateMunicipal:any = [];
+  dataStateZone:any = [];
+  dataStateStation:any = [];
+  stateActual: any = {};
 
   constructor(private apiService: ApiService, private fb: FormBuilder) { }
 
@@ -80,6 +78,10 @@ export class VerPuestoGerenteComponent implements OnInit {
   getMunicipalAdmin() {
     this.apiService.getMunicipalGerente().subscribe(resp => {
       this.dataMunicipals = resp;
+      if (this.dataMunicipals.length > 0) {
+        this.searchForm.get('municipios')?.setValue(this.dataMunicipals[0].codigo_unico);
+        this.getSelectedMunicipal(this.dataMunicipals[0]);
+      }
     });
   }
 
@@ -98,37 +100,53 @@ export class VerPuestoGerenteComponent implements OnInit {
 
   getNecesitadosMunicipio(data: any) {
     this.apiService.getNecesitadosMunicipio(data).subscribe((resp: any) => {
-      this.supervisores = resp.supervisores;
-      this.coordinadores = resp.coordinadores;
-      this.testigos = resp.testigos;
+      this.dataStateMunicipal=[resp];
+      console.log(this.dataStateMunicipal)
     })
   }
 
   getNecesitadosZona(data: any) {
     this.apiService.getNecesitadosZona(data).subscribe((resp: any) => {
-      this.coordinadoresSupervisor = resp.coordinadores;
-      this.testigosSupervisor = resp.testigos;
+      this.dataStateZone=[resp];
     })
   }
 
   getNecesitadosPuesto(data: any) {
     this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
-      this.testigosCoordinador = resp.testigos;
+      this.dataStateStation=[resp];
     })
   }
 
   createPercent(existentes: any, necesitados: any) {
-    this.percent = Math.round((existentes / necesitados) * 100) / 100;
+    const percent = Math.round((existentes / necesitados) * 100) / 100;
     if (necesitados == 0) {
-      this.percent = 0;
-      return `(${this.percent}%)`;
+      return `(0%)`;
     }
-    return `(${this.percent}%)`;
+    return `(${percent}%)`;
+  }
+
+  textColor(existentes: any, necesitados: any) {
+    let percent = Math.round((existentes / necesitados) * 100) / 100;
+    if (percent == 100) {
+      return "text-success";
+    } else if ((percent >= 0 && percent <= 50) && (existentes < necesitados)) {
+      return "text-danger";
+    } else if (percent > 50 && percent < 100) {
+      return "text-warning";
+    } else if (percent > 100) {
+      return "text-primary";
+    } else {
+      return "text-success";
+    }
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  stateSeleccionado(state: any) {
+    this.stateActual=state;
   }
 
 }

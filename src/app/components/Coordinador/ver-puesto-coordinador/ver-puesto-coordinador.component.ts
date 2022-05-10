@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { AlertService } from '../../../services/alert/alert.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-ver-puesto-coordinador',
@@ -12,9 +12,13 @@ export class VerPuestoCoordinadorComponent implements OnInit {
   tabla: boolean = false;
   percent:number = 0;
   dataStations: any = [];
-  testigos: any = {};
+  searchForm: FormGroup = this.fb.group({
+    puestos: [null],
+  });
+  dataStateStation:any = [];
+  stateActual: any = {};
 
-  constructor(private apiService: ApiService, private alertService: AlertService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.getPuestos();
@@ -34,45 +38,49 @@ export class VerPuestoCoordinadorComponent implements OnInit {
   getPuestos() {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
+      if (this.dataStations.length > 0) {
+        this.searchForm.get('puestos')?.setValue(this.dataStations[0].codigo_unico);
+        this.getSelectedStation(this.dataStations[0]);
+      }
     })
   }
 
   getNecesitadosPuesto(data: any) {
     this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
-      this.testigos = resp.testigos;
-      this.tabla = true;
+      this.dataStateStation = [resp];
     })
   }
 
-  textColor(existentes: any, necesitados: any) {
-    if (existentes == necesitados) {
-      return 'text-success';
-    } else if (existentes < necesitados) {
-      return 'text-primary';
-    } else {
-      return 'text-danger'
-    }
-  }
-
   createPercent(existentes: any, necesitados: any) {
-    this.percent = Math.round((existentes / necesitados) * 100) / 100;
+    const percent = Math.round((existentes / necesitados) * 100) / 100;
     if (necesitados == 0) {
-      this.percent = 0;
-      return `(${this.percent}%)`;
+      return `(0%)`;
     }
-    return `(${this.percent}%)`;
+    return `(${percent}%)`;
   }
 
-  validObjects() {
-    if ((Object.keys(this.testigos).length !== 0)) {
-      return true;
+  textColor(existentes: any, necesitados: any) {
+    let percent = Math.round((existentes / necesitados) * 100) / 100;
+    if (percent == 100) {
+      return "text-success";
+    } else if ((percent >= 0 && percent <= 50) && (existentes < necesitados)) {
+      return "text-danger";
+    } else if (percent > 50 && percent < 100) {
+      return "text-warning";
+    } else if (percent > 100) {
+      return "text-primary";
+    } else {
+      return "text-success";
     }
-    return false;
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  stateSeleccionado(state: any) {
+    this.stateActual=state;
   }
 
 }

@@ -1,25 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertService } from '../../../services/alert/alert.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../../../services/localData/local-data.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-consultar-coordinador',
   templateUrl: './consultar-coordinador.component.html',
   styleUrls: ['./consultar-coordinador.component.scss']
 })
-export class ConsultarCoordinadorComponent implements OnInit {
+export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
 
   listCoordinadorAsignados: any = [];
   listCoordinadorNoAsignados: any = [];
   listStations: any = [];
+  dtOptionsCoordinadorAsignados: DataTables.Settings = {};
+  dtOptionsCoordinadorNoAsignados: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private apiService: ApiService,private router: Router,private localData: LocalDataService) { }
 
   ngOnInit() {
+    this.dataTableOptions();
     this.getCoordinadores();
+  }
+
+  ngOnDestroy() {
+    this.dtTrigger.unsubscribe();
   }
 
   getCoordinadores() {
@@ -38,8 +45,10 @@ export class ConsultarCoordinadorComponent implements OnInit {
         } else {
           this.listStations.push(puestos);
         }
-        //
       }
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
@@ -53,6 +62,55 @@ export class ConsultarCoordinadorComponent implements OnInit {
   redirectUpdateCoordinador(id: any) {
     const idEncrypt = this.localData.encryptIdUser(id);
     this.router.navigate(["editarCoordinador",idEncrypt]);
+  }
+
+  dataTableOptions() {
+    this.dtOptionsCoordinadorAsignados = {
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+        className: 'd-none d-lg-table-cell',
+      }, {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: true,
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+    this.dtOptionsCoordinadorNoAsignados = {
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
   }
 
 }

@@ -4,11 +4,11 @@
     </div>
     <ul class="nav nav-tabs mt-5" id="myTab">
         <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#asignados"
+            <button class="nav-link h4 px-md-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#asignados"
                 type="button" role="tab">Asignados</button>
         </li>
         <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noasignados"
+            <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noasignados"
                 type="button" role="tab">No asignados</button>
         </li>
     </ul>
@@ -16,20 +16,23 @@
         <div class="tab-pane fade show active" id="asignados" role="tabpanel">
             <div class="card mt-3">
                 <div class="card-body">
-                    <div class="table-responsive" *ngIf="listCoordinadorAsignados.length>0;else puesto_content">
-                        <table class="table text-center align-middle">
+                    <div class="table-responsive my-4" *ngIf="listCoordinadorAsignados.length>0;else puesto_content">
+                        <table datatable [dtOptions]="dtOptionsCoordinadorAsignados" [dtTrigger]="dtTrigger"
+                        class="table text-center align-middle w-100">
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">NOMBRE COMPLETO</th>
+                                    <th scope="col">TELEFONO</th>
                                     <th scope="col">CORREO ELECTRONICO</th>
                                     <th scope="col">PUESTOS</th>
-                                    <th scope="col">OPCIONES</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white"
                                     *ngFor="let coordinador of listCoordinadorAsignados;let index=index">
                                     <td>{{coordinador.nombres}} {{coordinador.apellidos}}</td>
+                                    <td>{{coordinador.telefono}}</td>
                                     <td>{{coordinador.email}}</td>
                                     <td>{{listStations[index]}}</td>
                                     <td>
@@ -50,18 +53,21 @@
         <div class="tab-pane fade" id="noasignados" role="tabpanel">
             <div class="card mt-3">
                 <div class="card-body">
-                    <div class="table-responsive" *ngIf="listCoordinadorNoAsignados.length>0;else no_puesto_content">
-                        <table class="table text-center align-middle">
+                    <div class="table-responsive my-4" *ngIf="listCoordinadorNoAsignados.length>0;else no_puesto_content">
+                        <table datatable [dtOptions]="dtOptionsCoordinadorNoAsignados" [dtTrigger]="dtTrigger"
+                        class="table text-center align-middle w-100">
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">NOMBRE COMPLETO</th>
+                                    <th scope="col">TELEFONO</th>
                                     <th scope="col">CORREO ELECTRONICO</th>
-                                    <th scope="col">OPCIONES</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white" *ngFor="let coordinador of listCoordinadorNoAsignados">
                                     <td>{{coordinador.nombres}} {{coordinador.apellidos}}</td>
+                                    <td>{{coordinador.telefono}}</td>
                                     <td>{{coordinador.email}}</td>
                                     <td>
                                         <a class="rounded-circle" (click)="redirectUpdateCoordinador(coordinador.id)">

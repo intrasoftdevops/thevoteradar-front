@@ -4,6 +4,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment.prod';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-ver-equipo-coordinador',
@@ -18,19 +19,26 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   dataStations: any = [];
   dataTables: any = [];
   listTestigos: any = [];
-  selectedTable: any = [];
   filtro: any;
   idCliente: any;
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
+  searchForm: FormGroup = this.fb.group({
+    puestos: [null],
+    mesas: [null]
+  });
 
-  constructor(private apiService: ApiService, private localData: LocalDataService, private sanitizer: DomSanitizer) { }
+  constructor(private apiService: ApiService, private sanitizer: DomSanitizer,private fb: FormBuilder) { }
 
 
   ngOnInit(): void {
     this.getPuestos();
     this.getUrl();
     this.getCliente();
+  }
+
+  get searchFormControl() {
+    return this.searchForm.controls;
   }
 
   getCliente() {
@@ -50,7 +58,7 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   }
 
   getSelectedStation(item: any) {
-    this.selectedTable = [];
+    this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       this.getMesas(codigo_unico);
@@ -75,12 +83,20 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   getPuestos() {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
+      if (this.dataStations.length > 0) {
+        this.searchForm.get('puestos')?.setValue(this.dataStations[0].codigo_unico);
+        this.getSelectedStation(this.dataStations[0]);
+      }
     })
   }
 
   getMesas(data: any) {
     this.apiService.getTablesTestigo().subscribe((resp: any) => {
       this.dataTables = resp.filter((dataTable: any) => dataTable.codigo_puesto_votacion == data);
+      if (this.dataTables.length > 0) {
+        this.searchForm.get('mesas')?.setValue(this.dataTables[0].codigo_unico);
+        this.getSelectedTable(this.dataTables[0]);
+      }
     })
   }
 

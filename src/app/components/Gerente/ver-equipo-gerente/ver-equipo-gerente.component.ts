@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
+import { Filtro } from 'src/app/models/filtro';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-ver-equipo-gerente',
@@ -7,8 +11,6 @@ import { ApiService } from '../../../services/api/api.service';
   styleUrls: ['./ver-equipo-gerente.component.scss']
 })
 export class VerEquipoGerenteComponent implements OnInit {
-
-  constructor(private apiService: ApiService) { }
 
   tabla: string = "ninguna";
   dataMunicipals: any = [];
@@ -18,19 +20,49 @@ export class VerEquipoGerenteComponent implements OnInit {
   listSupervisores: any = [];
   listCoordinadores: any = [];
   listTestigos: any = [];
-  selectedZone: any = [];
-  selectedStation: any = [];
-  selectedTable: any = [];
+  filtro: any;
+  idCliente: any;
+  urlSafe!: SafeResourceUrl;
+  showMap: boolean = false;
+  searchForm: FormGroup = this.fb.group({
+    municipios: [null],
+    zonas: [null],
+    puestos: [null],
+    mesas: [null]
+  });
 
+  constructor(private apiService: ApiService,private fb: FormBuilder,private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     this.getMunicipalAdmin();
+    this.getUrl();
+    this.getCliente();
+  }
+
+  get searchFormControl() {
+    return this.searchForm.controls;
+  }
+
+  getCliente() {
+    this.apiService.getCliente().subscribe((resp: any) => {
+      const { id } = resp;
+      this.idCliente = id;
+    })
+  }
+
+  getUrl() {
+    const objeto = new Filtro(1, 1, [1]);
+    //const objeto = new Filtro(this.idCliente, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
+    this.filtro = objeto.generar_filtro().replace(new RegExp(" ", "g"), "%20").replace(new RegExp("/", "g"), "%2F");
+    const url = environment.powerBiURL + this.filtro;
+    this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    return this.urlSafe;
   }
 
   getSelectedMunicipal(item: any) {
-    this.selectedZone = [];
-    this.selectedStation = [];
-    this.selectedTable = [];
+    this.searchFormControl['zonas'].reset();
+    this.searchFormControl['puestos'].reset();
+    this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       this.getZonas(codigo_unico);
@@ -42,8 +74,8 @@ export class VerEquipoGerenteComponent implements OnInit {
   }
 
   getSelectedZone(item: any) {
-    this.selectedStation = [];
-    this.selectedTable = [];
+    this.searchFormControl['puestos'].reset();
+    this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { zona: codigo_unico }
@@ -56,7 +88,7 @@ export class VerEquipoGerenteComponent implements OnInit {
   }
 
   getSelectedStation(item: any) {
-    this.selectedTable = [];
+    this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { puesto: codigo_unico }
@@ -82,12 +114,20 @@ export class VerEquipoGerenteComponent implements OnInit {
   getMunicipalAdmin() {
     this.apiService.getMunicipalGerente().subscribe(resp => {
       this.dataMunicipals = resp;
+      if (this.dataMunicipals.length > 0) {
+        this.searchForm.get('municipios')?.setValue(this.dataMunicipals[0].codigo_unico);
+        this.getSelectedMunicipal(this.dataMunicipals[0]);
+      }
     });
   }
 
   getZonas(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
       this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == data);
+      if (this.dataZones.length > 0) {
+        this.searchForm.get('zonas')?.setValue(this.dataZones[0].codigo_unico);
+        this.getSelectedZone(this.dataZones[0]);
+      }
     });
   }
 
@@ -118,6 +158,10 @@ export class VerEquipoGerenteComponent implements OnInit {
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  showIframe() {
+    this.showMap = !this.showMap;
   }
 
 }

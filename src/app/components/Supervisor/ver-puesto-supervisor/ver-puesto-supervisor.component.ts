@@ -14,13 +14,13 @@ export class VerPuestoSupervisorComponent implements OnInit {
   dataZones: any = [];
   dataStations: any = [];
   selectedStation: any = [];
-  coordinadores: any = {};
-  testigos: any = {};
-  testigosCoordinador: any = {};
   searchForm: FormGroup = this.fb.group({
     zonas: [null],
     puestos: [null],
   });
+  dataStateZone:any = [];
+  dataStateStation:any = [];
+  stateActual: any = {};
 
   constructor(private apiService: ApiService, private fb: FormBuilder) { }
 
@@ -64,35 +64,56 @@ export class VerPuestoSupervisorComponent implements OnInit {
 
   getNecesitadosZona(data: any) {
     this.apiService.getNecesitadosZona(data).subscribe((resp: any) => {
-      this.coordinadores = resp.coordinadores;
-      this.testigos = resp.testigos;
+     this.dataStateZone=[resp];
     })
   }
 
   getNecesitadosPuesto(data: any) {
     this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
-      this.testigosCoordinador = resp.testigos;
+      this.dataStateStation = [resp];
     })
   }
 
   createPercent(existentes: any, necesitados: any) {
-    this.percent = Math.round((existentes / necesitados) * 100) / 100;
+    const percent = Math.round((existentes / necesitados) * 100) / 100;
     if (necesitados == 0) {
-      this.percent = 0;
-      return `(${this.percent}%)`;
+      return `(0%)`;
     }
-    return `(${this.percent}%)`;
+    return `(${percent}%)`;
+  }
+
+  textColor(existentes: any, necesitados: any) {
+    let percent = Math.round((existentes / necesitados) * 100) / 100;
+    if (percent == 100) {
+      return "text-success";
+    } else if ((percent >= 0 && percent <= 50) && (existentes < necesitados)) {
+      return "text-danger";
+    } else if (percent > 50 && percent < 100) {
+      return "text-warning";
+    } else if (percent > 100) {
+      return "text-primary";
+    } else {
+      return "text-success";
+    }
   }
 
   getZonas() {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
       this.dataZones = resp;
+      if (this.dataZones.length > 0) {
+        this.searchForm.get('zonas')?.setValue(this.dataZones[0].codigo_unico);
+        this.getSelectedZone(this.dataZones[0]);
+      }
     })
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  stateSeleccionado(state: any) {
+    this.stateActual=state;
   }
 
 }

@@ -4,11 +4,11 @@
     </div>
     <ul class="nav nav-tabs mt-5" id="myTab">
         <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#asignados"
+            <button class="nav-link h4 px-md-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#asignados"
                 type="button" role="tab">Asignados</button>
         </li>
         <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noasignados"
+            <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noasignados"
                 type="button" role="tab">No asignados</button>
         </li>
     </ul>
@@ -16,19 +16,22 @@
         <div class="tab-pane fade show active" id="asignados" role="tabpanel">
             <div class="card mt-3">
                 <div class="card-body">
-                    <div class="table-responsive" *ngIf="listTestigoAsignados.length>0;else mesa_content">
-                        <table class="table text-center align-middle">
+                    <div class="table-responsive my-4" *ngIf="listTestigoAsignados.length>0;else mesa_content">
+                        <table datatable [dtOptions]="dtOptionsTestigoAsignados" [dtTrigger]="dtTrigger"
+                        class="table text-center align-middle w-100">
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">NOMBRE COMPLETO</th>
+                                    <th scope="col">TELEFONO</th>
                                     <th scope="col">CORREO ELECTRONICO</th>
                                     <th scope="col">MESAS</th>
-                                    <th scope="col">OPCIONES</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white" *ngFor="let testigo of listTestigoAsignados;let index=index">
                                     <td>{{testigo.nombres}} {{testigo.apellidos}}</td>
+                                    <td>{{testigo.telefono}}</td>
                                     <td>{{testigo.email}}</td>
                                     <td>{{listTables[index]}}</td>
                                     <td>
@@ -49,11 +52,13 @@
         <div class="tab-pane fade" id="noasignados" role="tabpanel">
             <div class="card mt-3">
                 <div class="card-body">
-                    <div class="table-responsive" *ngIf="listTestigoNoAsignados.length>0;else no_mesa_content">
-                        <table class="table text-center align-middle">
+                    <div class="table-responsive my-4" *ngIf="listTestigoNoAsignados.length>0;else no_mesa_content">
+                        <table datatable [dtOptions]="dtOptionsTestigoNoAsignados" [dtTrigger]="dtTrigger"
+                        class="table text-center align-middle w-100">
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">NOMBRE COMPLETO</th>
+                                    <th scope="col">TELEFONO</th>
                                     <th scope="col">CORREO ELECTRONICO</th>
                                     <th scope="col">OPCIONES</th>
                                 </tr>
@@ -61,6 +66,7 @@
                             <tbody>
                                 <tr class="bg-white" *ngFor="let testigo of listTestigoNoAsignados">
                                     <td>{{testigo.nombres}} {{testigo.apellidos}}</td>
+                                    <td>{{testigo.telefono}}</td>
                                     <td>{{testigo.email}}</td>
                                     <td>
                                         <a class="rounded-circle" (click)="redirectUpdateTestigo(testigo.id)">

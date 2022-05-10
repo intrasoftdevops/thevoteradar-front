@@ -23,7 +23,7 @@
         <div class="form-group col-md-6 col-lg-4 pt-2">
           <label class="fw-bold form-label">Estado por zona</label>
           <ng-select [items]="dataZones" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
-            (change)="getSelectedZone($event)" bindValue="nombre_departamento_votacion" placeholder="Seleccione zona"
+            (change)="getSelectedZone($event)" bindValue="codigo_unico" placeholder="Seleccione zona"
             notFoundText="No hay informacion disponible" formControlName="zonas">
           </ng-select>
         </div>
@@ -40,65 +40,148 @@
   <ng-container [ngSwitch]="tabla">
     <div class="card mt-5" *ngSwitchCase="'coordinador'">
       <div class="card-body">
-        <div class="table-responsive" *ngIf="tabla">
+        <div class="table-responsive" *ngIf="dataStateZone.length>0;else content_equipo">
           <table class="table text-center align-middle">
             <thead class="text-dark align-middle">
               <tr>
                 <th scope="col">COORDINADORES</th>
-                <th scope="col">COORDINADORES POR ASIGNAR</th>
-                <th scope="col">TESTIGOS</th>
-                <th scope="col">TESTIGOS POR ASIGNAR</th>
+                <th scope="col">POR ASIGNAR</th>
+                <th scope="col" class="d-none d-md-table-cell">TESTIGOS</th>
+                <th scope="col" class="d-none d-md-table-cell">POR ASIGNAR</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
-              <tr class="bg-white">
+              <tr class="bg-white" *ngFor="let state of dataStateZone">
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
-                  {{coordinadores.coordinadores_con_puesto}}/{{coordinadores.cantidad_coordinadores_necesitados}}
-                  {{createPercent(coordinadores.coordinadores_con_puesto,coordinadores.cantidad_coordinadores_necesitados)}}
+                  [ngClass]="textColor(state.coordinadores.coordinadores_con_puesto,state.coordinadores.cantidad_coordinadores_necesitados)">
+                  {{state.coordinadores.coordinadores_con_puesto}}/{{state.coordinadores.cantidad_coordinadores_necesitados}}
+                  {{createPercent(state.coordinadores.coordinadores_con_puesto,state.coordinadores.cantidad_coordinadores_necesitados)}}
                 </td>
                 <td>
-                  {{coordinadores.coordinadores_sin_puesto}}
+                  {{state.coordinadores.coordinadores_sin_puesto}}
                 </td>
-                <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
-                  {{testigos.testigos_con_mesa}}/{{testigos.cantidad_testigos_necesitados}}
-                  {{createPercent(testigos.testigos_con_mesa,testigos.cantidad_testigos_necesitados)}}
+                <td [ngClass]="textColor(state.testigos.testigos_con_mesa,state.testigos.cantidad_testigos_necesitados)"
+                  class="d-none d-md-table-cell">
+                  {{state.testigos.testigos_con_mesa}}/{{state.testigos.cantidad_testigos_necesitados}}
+                  {{createPercent(state.testigos.testigos_con_mesa,state.testigos.cantidad_testigos_necesitados)}}
+                </td>
+                <td class="d-none d-md-table-cell">
+                  {{state.testigos.testigos_sin_mesa}}
                 </td>
                 <td>
-                  {{testigos.testigos_sin_mesa}}
+                  <button class="btn align-middle mx-1" data-bs-toggle="modal" data-bs-target="#state"
+                    (click)="stateSeleccionado(state)">
+                    <i class="fa-solid fa-eye text-primary"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+        <ng-template #content_equipo>
+          <p class="text-center mb-0">No hay estadisticas de equipo actualmente.</p>
+        </ng-template>
       </div>
     </div>
     <div class="card mt-5" *ngSwitchCase="'testigo'">
       <div class="card-body">
-        <div class="table-responsive" *ngIf="tabla">
+        <div class="table-responsive" *ngIf="dataStateStation.length>0;else content_equipo">
           <table class="table text-center align-middle">
             <thead class="text-dark align-middle">
               <tr>
                 <th scope="col">TESTIGOS</th>
-                <th scope="col">TESTIGOS POR ASIGNAR</th>
+                <th scope="col">POR ASIGNAR</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
-              <tr class="bg-white">
+              <tr class="bg-white" *ngFor="let state of dataStateStation">
                 <td
-                  [ngClass]="{'text-success':percent==100,'text-danger':percent<=50,'text-warning':percent>=50,'text-primary':percent>100}">
-                  {{testigosCoordinador.testigos_con_mesa}}/{{testigosCoordinador.cantidad_testigos_necesitados}}
-                  {{createPercent(testigosCoordinador.testigos_con_mesa,testigosCoordinador.cantidad_testigos_necesitados)}}
+                  [ngClass]="textColor(state.testigos.testigos_con_mesa,state.testigos.cantidad_testigos_necesitados)">
+                  {{state.testigos.testigos_con_mesa}}/{{state.testigos.cantidad_testigos_necesitados}}
+                  {{createPercent(state.testigos.testigos_con_mesa,state.testigos.cantidad_testigos_necesitados)}}
                 </td>
                 <td>
-                  {{testigosCoordinador.testigos_sin_mesa}}
+                  {{state.testigos.testigos_sin_mesa}}
+                </td>
+                <td>
+                  <button class="btn align-middle mx-1" data-bs-toggle="modal" data-bs-target="#state"
+                    (click)="stateSeleccionado(state)">
+                    <i class="fa-solid fa-eye text-primary"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+        <ng-template #content_equipo>
+          <p class="text-center mb-0">No hay estadisticas de equipo actualmente.</p>
+        </ng-template>
       </div>
     </div>
   </ng-container>
+</div>
+
+<div class="modal fade" id="state" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Estadisticas de equipo</h5>
+        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark text-white"></i>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="stateActual.coordinadores">
+        <h4 class="fw-bolder">Informacion de coordinadores</h4>
+        <div class="row mt-3">
+          <div class="col-6">
+            <p><span class="fw-bolder">Con puesto: </span><span>
+                {{stateActual.coordinadores.coordinadores_con_puesto}}</span></p>
+          </div>
+          <div class="col-6">
+            <p><span class="fw-bolder">Sin puesto: </span><span>
+                {{stateActual.coordinadores.coordinadores_sin_puesto}}</span></p>
+          </div>
+          <div class="col-6">
+            <p><span class="fw-bolder">Necesarios: </span><span>
+                {{stateActual.coordinadores.cantidad_coordinadores_necesitados}}</span></p>
+          </div>
+          <hr class="border border-primary rounded border-2">
+          <h4 class="fw-bolder">Informacion de testigos</h4>
+          <div class="row mt-3">
+            <div class="col-6">
+              <p><span class="fw-bolder">Con mesa: </span><span>
+                  {{stateActual.testigos.testigos_con_mesa}}</span></p>
+            </div>
+            <div class="col-6">
+              <p><span class="fw-bolder">Sin mesa: </span><span>
+                  {{stateActual.testigos.testigos_sin_mesa}}</span></p>
+            </div>
+            <div class="col-6">
+              <p><span class="fw-bolder">Necesarios: </span><span>
+                  {{stateActual.testigos.cantidad_testigos_necesitados}}</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body" *ngIf="stateActual.testigos && !stateActual.coordinadores">
+        <h4 class="fw-bolder">Informacion de testigos</h4>
+        <div class="row mt-3">
+          <div class="col-6">
+            <p><span class="fw-bolder">Con mesa: </span><span>
+                {{stateActual.testigos.testigos_con_mesa}}</span></p>
+          </div>
+          <div class="col-6">
+            <p><span class="fw-bolder">Sin mesa: </span><span>
+                {{stateActual.testigos.testigos_sin_mesa}}</span></p>
+          </div>
+          <div class="col-6">
+            <p><span class="fw-bolder">Necesarios: </span><span>
+                {{stateActual.testigos.cantidad_testigos_necesitados}}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

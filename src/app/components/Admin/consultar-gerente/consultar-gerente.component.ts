@@ -49,7 +49,6 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
       setTimeout(() => {
         this.dtTrigger.next(void 0);
       });
-      console.log(this.listGerenteAsignados)
     });
   }
 

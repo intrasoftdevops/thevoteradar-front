@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Filtro } from 'src/app/models/filtro';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-ver-equipo-supervisor',
@@ -14,18 +18,47 @@ export class VerEquipoSupervisorComponent implements OnInit {
   dataTables: any = [];
   listCoordinadores: any = [];
   listTestigos: any = [];
-  selectedStation: any = [];
-  selectedTable: any = [];
+  filtro: any;
+  idCliente: any;
+  urlSafe!: SafeResourceUrl;
+  showMap: boolean = false;
+  searchForm: FormGroup = this.fb.group({
+    zonas: [null],
+    puestos: [null],
+    mesas: [null]
+  });
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService,private fb: FormBuilder,private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     this.getZonas();
+    this.getUrl();
+    this.getCliente();
+  }
+
+  get searchFormControl() {
+    return this.searchForm.controls;
+  }
+
+  getCliente() {
+    this.apiService.getCliente().subscribe((resp: any) => {
+      const { id } = resp;
+      this.idCliente = id;
+    })
+  }
+
+  getUrl() {
+    const objeto = new Filtro(1, 1, [1]);
+    //const objeto = new Filtro(this.idCliente, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
+    this.filtro = objeto.generar_filtro().replace(new RegExp(" ", "g"), "%20").replace(new RegExp("/", "g"), "%2F");
+    const url = environment.powerBiURL + this.filtro;
+    this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    return this.urlSafe;
   }
 
   getSelectedZone(item: any) {
-    this.selectedStation = [];
-    this.selectedTable = [];
+    this.searchFormControl['puestos'].reset();
+    this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       this.getPuestos(codigo_unico);
@@ -37,7 +70,7 @@ export class VerEquipoSupervisorComponent implements OnInit {
   }
 
   getSelectedStation(item: any) {
-    this.selectedTable = [];
+    this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { puesto: codigo_unico }
@@ -63,12 +96,20 @@ export class VerEquipoSupervisorComponent implements OnInit {
   getZonas() {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
       this.dataZones = resp;
+      if (this.dataZones.length > 0) {
+        this.searchForm.get('zonas')?.setValue(this.dataZones[0].codigo_unico);
+        this.getSelectedZone(this.dataZones[0]);
+      }
     })
   }
 
   getPuestos(data: any) {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
       this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
+      if (this.dataStations.length > 0) {
+        this.searchForm.get('puestos')?.setValue(this.dataStations[0].codigo_unico);
+        this.getSelectedStation(this.dataStations[0]);
+      }
     })
   }
 
@@ -90,6 +131,10 @@ export class VerEquipoSupervisorComponent implements OnInit {
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  showIframe() {
+    this.showMap = !this.showMap;
   }
 
 }

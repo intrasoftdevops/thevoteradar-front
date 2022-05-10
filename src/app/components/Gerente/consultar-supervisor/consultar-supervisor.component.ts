@@ -1,23 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-consultar-supervisor',
   templateUrl: './consultar-supervisor.component.html',
   styleUrls: ['./consultar-supervisor.component.scss']
 })
-export class ConsultarSupervisorComponent implements OnInit {
+export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
 
   listSupervisorAsignados: any = [];
   listSupervisorNoAsignados: any = [];
   listZones: any = [];
+  dtOptionsSupervisorAsignados: DataTables.Settings = {};
+  dtOptionsSupervisorNoAsignados: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
 
-  constructor(private apiService: ApiService,private router: Router,private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService) { }
 
   ngOnInit(): void {
+    this.dataTableOptions();
     this.getSupervisores();
+  }
+
+  ngOnDestroy() {
+    this.dtTrigger.unsubscribe();
   }
 
   getSupervisores() {
@@ -35,8 +44,10 @@ export class ConsultarSupervisorComponent implements OnInit {
         } else {
           this.listZones.push(zonas);
         }
-        //
       }
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
@@ -49,7 +60,56 @@ export class ConsultarSupervisorComponent implements OnInit {
 
   redirectUpdateSupervisor(id: any) {
     const idEncrypt = this.localData.encryptIdUser(id);
-    this.router.navigate(["editarSupervisor",idEncrypt]);
+    this.router.navigate(["editarSupervisor", idEncrypt]);
+  }
+
+  dataTableOptions() {
+    this.dtOptionsSupervisorAsignados = {
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+        className: 'd-none d-lg-table-cell',
+      }, {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: true,
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+    this.dtOptionsSupervisorNoAsignados = {
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
   }
 
 }

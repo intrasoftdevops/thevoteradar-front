@@ -13,161 +13,165 @@
       </span>
     </button>
   </div>
-  <iframe class="iframe" *ngIf="showMap" [src]="getUrl()" frameborder="0" allowFullScreen="true"></iframe>
-  <div class="card mt-5" *ngIf="!showMap">
-    <div class="card-body">
-      <form class="row m-4 d-flex justify-content-center" [formGroup]="searchForm">
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Equipo por departamento</label>
-          <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
-            bindLabel="nombre_departamento_votacion" bindValue="codigo_unico"
-            placeholder="Seleccione departamento" (change)="getSelectedDepartment($event)"
-            notFoundText="No hay informacion disponible" formControlName="departamentos">
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Gerentes por municipio</label>
-          <ng-select [items]="dataMunicipals" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-            (change)="getSelectedMunicipal($event)" notFoundText="No hay informacion disponible"
-            placeholder="Seleccione municipio" formControlName="municipios">
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Supervisores por zona</label>
-          <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-            placeholder="Seleccione zona" (change)="getSelectedZone($event)"
-            notFoundText="No hay informacion disponible" formControlName="zonas">
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Coordinadores por puesto</label>
-          <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-            (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
-            placeholder="Seleccione puesto" formControlName="puestos">
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Testigos por mesa</label>
-          <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa" bindValue="codigo_unico"
-            (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
-            placeholder="Seleccione mesa" formControlName="mesas">
-          </ng-select>
-        </div>
-      </form>
-    </div>
-  </div>
-  <ng-container [ngSwitch]="tabla">
-    <div class="card mt-5" *ngSwitchCase="'gerente'">
-      <div class="bg-primary py-3 px-5 text-white">
-        <h4>Gerentes</h4>
-      </div>
+  <iframe class="iframe" *ngIf="showMap;else content_map" [src]="getUrl()" frameborder="0"
+    allowFullScreen="true"></iframe>
+  <ng-template #content_map>
+    <div class="card mt-5">
       <div class="card-body">
-        <div class="table-responsive" *ngIf="listGerentes.length>0;else content_gerente">
-          <table class="table text-center align-middle w-100">
-            <thead class="text-dark align-middle">
-              <tr>
-                <th scope="col">NOMBRE COMPLETO</th>
-                <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
-                <th scope="col">TELEFONO</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-white" *ngFor="let gerente of listGerentes">
-                <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
-                <td class="d-none d-md-table-cell">{{gerente.email}}</td>
-                <td>{{gerente.telefono}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <ng-template #content_gerente>
-          <p class="text-center mb-0">No hay Gerente asignado para esta municipio.</p>
-        </ng-template>
+        <form class="row m-4 d-flex justify-content-center" [formGroup]="searchForm">
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Equipo por departamento</label>
+            <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
+              bindLabel="nombre_departamento_votacion" bindValue="codigo_unico" placeholder="Seleccione departamento"
+              (change)="getSelectedDepartment($event)" notFoundText="No hay informacion disponible"
+              formControlName="departamentos">
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Gerentes por municipio</label>
+            <ng-select [items]="dataMunicipals" class="custom-select rounded" bindLabel="nombre"
+              bindValue="codigo_unico" (change)="getSelectedMunicipal($event)"
+              notFoundText="No hay informacion disponible" placeholder="Seleccione municipio"
+              formControlName="municipios">
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Supervisores por zona</label>
+            <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
+              placeholder="Seleccione zona" (change)="getSelectedZone($event)"
+              notFoundText="No hay informacion disponible" formControlName="zonas">
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Coordinadores por puesto</label>
+            <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
+              (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
+              placeholder="Seleccione puesto" formControlName="puestos">
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Testigos por mesa</label>
+            <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa"
+              bindValue="codigo_unico" (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
+              placeholder="Seleccione mesa" formControlName="mesas">
+            </ng-select>
+          </div>
+        </form>
       </div>
     </div>
-    <div class="card mt-5" *ngSwitchCase="'supervisor'">
-      <div class="bg-primary py-3 px-5 text-white">
-        <h4>Supervisores</h4>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive" *ngIf="listGerentes.length>0;else content_supervisor">
-          <table class="table text-center align-middle w-100">
-            <thead class="text-dark align-middle">
-              <tr>
-                <th scope="col">NOMBRE COMPLETO</th>
-                <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
-                <th scope="col">TELEFONO</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-white" *ngFor="let supervisor of listSupervisores">
-                <td>{{supervisor.nombres}} {{supervisor.apellidos}}</td>
-                <td class="d-none d-md-table-cell">{{supervisor.email}}</td>
-                <td>{{supervisor.telefono}}</td>
-              </tr>
-            </tbody>
-          </table>
+    <ng-container [ngSwitch]="tabla">
+      <div class="card mt-5" *ngSwitchCase="'gerente'">
+        <div class="bg-primary py-3 px-5 text-white">
+          <h4>Gerentes</h4>
         </div>
-        <ng-template #content_supervisor>
-          <p class="text-center mb-0">No hay Supervisor asignado para esta zona.</p>
-        </ng-template>
-      </div>
-    </div>
-    <div class="card mt-5" *ngSwitchCase="'coordinador'">
-      <div class="bg-primary py-3 px-5 text-white">
-        <h4>Coordinadores</h4>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive" *ngIf="listCoordinadores.length>0;else content_coordinador">
-          <table class="table text-center align-middle w-100">
-            <thead class="text-dark align-middle">
-              <tr>
-                <th scope="col">NOMBRE COMPLETO</th>
-                <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
-                <th scope="col">TELEFONO</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-white" *ngFor="let coordinador of listCoordinadores">
-                <td>{{coordinador.nombres}} {{coordinador.apellidos}}</td>
-                <td class="d-none d-md-table-cell">{{coordinador.email}}</td>
-                <td>{{coordinador.telefono}}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="card-body">
+          <div class="table-responsive" *ngIf="listGerentes.length>0;else content_gerente">
+            <table class="table text-center align-middle w-100">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
+                  <th scope="col">TELEFONO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white" *ngFor="let gerente of listGerentes">
+                  <td>{{gerente.nombres}} {{gerente.apellidos}}</td>
+                  <td class="d-none d-md-table-cell">{{gerente.email}}</td>
+                  <td>{{gerente.telefono}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #content_gerente>
+            <p class="text-center mb-0">No hay Gerente asignado para esta municipio.</p>
+          </ng-template>
         </div>
-        <ng-template #content_coordinador>
-          <p class="text-center mb-0">No hay Coordinador asignado para este puesto.</p>
-        </ng-template>
       </div>
-    </div>
-    <div class="card mt-5" *ngSwitchCase="'testigo'">
-      <div class="bg-primary py-3 px-5 text-white">
-        <h4>Testigos</h4>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive" *ngIf="listCoordinadores.length>0;else content_testigo">
-          <table class="table text-center align-middle w-100">
-            <thead class="text-dark align-middle">
-              <tr>
-                <th scope="col">NOMBRE COMPLETO</th>
-                <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
-                <th scope="col">TELEFONO</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-white" *ngFor="let testigo of listTestigos">
-                <td>{{testigo.nombres}} {{testigo.apellidos}}</td>
-                <td class="d-none d-md-table-cell">{{testigo.email}}</td>
-                <td>{{testigo.telefono}}</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="card mt-5" *ngSwitchCase="'supervisor'">
+        <div class="bg-primary py-3 px-5 text-white">
+          <h4>Supervisores</h4>
         </div>
-        <ng-template #content_testigo>
-          <p class="text-center mb-0">No hay Testigo asignado para esta mesa.</p>
-        </ng-template>
+        <div class="card-body">
+          <div class="table-responsive" *ngIf="listGerentes.length>0;else content_supervisor">
+            <table class="table text-center align-middle w-100">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
+                  <th scope="col">TELEFONO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white" *ngFor="let supervisor of listSupervisores">
+                  <td>{{supervisor.nombres}} {{supervisor.apellidos}}</td>
+                  <td class="d-none d-md-table-cell">{{supervisor.email}}</td>
+                  <td>{{supervisor.telefono}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #content_supervisor>
+            <p class="text-center mb-0">No hay Supervisor asignado para esta zona.</p>
+          </ng-template>
+        </div>
       </div>
-    </div>
-  </ng-container>
+      <div class="card mt-5" *ngSwitchCase="'coordinador'">
+        <div class="bg-primary py-3 px-5 text-white">
+          <h4>Coordinadores</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive" *ngIf="listCoordinadores.length>0;else content_coordinador">
+            <table class="table text-center align-middle w-100">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
+                  <th scope="col">TELEFONO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white" *ngFor="let coordinador of listCoordinadores">
+                  <td>{{coordinador.nombres}} {{coordinador.apellidos}}</td>
+                  <td class="d-none d-md-table-cell">{{coordinador.email}}</td>
+                  <td>{{coordinador.telefono}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #content_coordinador>
+            <p class="text-center mb-0">No hay Coordinador asignado para este puesto.</p>
+          </ng-template>
+        </div>
+      </div>
+      <div class="card mt-5" *ngSwitchCase="'testigo'">
+        <div class="bg-primary py-3 px-5 text-white">
+          <h4>Testigos</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive" *ngIf="listCoordinadores.length>0;else content_testigo">
+            <table class="table text-center align-middle w-100">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
+                  <th scope="col">TELEFONO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white" *ngFor="let testigo of listTestigos">
+                  <td>{{testigo.nombres}} {{testigo.apellidos}}</td>
+                  <td class="d-none d-md-table-cell">{{testigo.email}}</td>
+                  <td>{{testigo.telefono}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #content_testigo>
+            <p class="text-center mb-0">No hay Testigo asignado para esta mesa.</p>
+          </ng-template>
+        </div>
+      </div>
+    </ng-container>
+  </ng-template>
 </div>

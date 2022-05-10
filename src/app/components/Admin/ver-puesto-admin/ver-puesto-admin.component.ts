@@ -17,7 +17,6 @@ export class VerPuestoAdminComponent implements OnInit {
   dataMunicipals: any = [];
   dataZones: any = [];
   dataStations: any = [];
-  testigosCoordinador: any = {};
   searchForm: FormGroup = this.fb.group({
     departamentos: [null],
     municipios: [null],
@@ -177,7 +176,7 @@ export class VerPuestoAdminComponent implements OnInit {
     return codigo_unico;
   }
 
-  stateDepartmaentSeleccionado(state: any) {
+  stateSeleccionado(state: any) {
     this.stateActual=state;
   }
 
