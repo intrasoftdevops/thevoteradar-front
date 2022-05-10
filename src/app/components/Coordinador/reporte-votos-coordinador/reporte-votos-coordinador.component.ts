@@ -36,6 +36,7 @@ export class ReporteVotosCoordinadorComponent implements OnInit {
 
   getVotosCoordinador(data: any) {
     this.apiService.getVotosCoordinador(data).subscribe((resp: any) => {
+      console.log(resp)
       const { puesto } = resp;
       const { mesas_reportadas } = puesto;
       this.listMesas = mesas_reportadas;

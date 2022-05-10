@@ -7,13 +7,14 @@
     </button>
     <div class="card mt-3">
       <div class="card-body">
-        <div class="table-responsive" *ngIf="dataIncidencias.length>0;else incidencias_content">
-          <table class="table text-center align-middle">
+        <div class="table-responsive my-4" *ngIf="dataIncidencias.length>0;else incidencias_content">
+          <table datatable [dtOptions]="dtOptionsIncidencias" [dtTrigger]="dtTrigger"
+          class="table text-center align-middle w-100">
             <thead class="text-dark align-middle">
               <tr>
                 <th scope="col">CATEGORIA</th>
                 <th scope="col">ESTADO</th>
-                <th scope="col">OPCIONES</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -21,10 +22,10 @@
                 <td>{{incidencia.categoria}}</td>
                 <td>{{(incidencia.estado==0)?"Abierto":"Cerrado"}}</td>
                 <td>
-                  <button type="button" class="btn btn-sm btn-primary text-truncate" data-bs-toggle="modal" data-bs-placement="top" title="Ver reporte"
-                    data-bs-target="#incidenciaAbierta" (click)="ModalIncidenciaActual(incidencia)">
-                    Ver reporte
-                  </button>
+                  <button type="button" class="btn align-middle mx-1" data-bs-toggle="modal" data-bs-placement="top" title="Ver reporte"
+                  data-bs-target="#incidenciaAbierta" (click)="ModalIncidenciaActual(incidencia)">
+                  <i class="fa-solid fa-eye text-primary"></i>
+              </button>
                 </td>
               </tr>
             </tbody>

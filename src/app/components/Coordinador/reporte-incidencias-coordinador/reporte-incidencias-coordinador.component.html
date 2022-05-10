@@ -16,14 +16,15 @@
         <div class="tab-pane fade show active" id="abiertos" role="tabpanel">
             <div class="card mt-3">
                 <div class="card-body">
-                    <div class="table-responsive" *ngIf="dataIncidenciasAbiertas.length>0;else open_content">
-                        <table class="table text-center align-middle">
+                    <div class="table-responsive my-4" *ngIf="dataIncidenciasAbiertas.length>0;else open_content">
+                        <table datatable [dtOptions]="dtOptionsIncidenciasAbiertas" [dtTrigger]="dtTrigger"
+                            class="table text-center align-middle w-100">
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">PUESTO</th>
                                     <th scope="col">MESA</th>
                                     <th scope="col">TESTIGO</th>
-                                    <th scope="col">OPCIONES</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -32,12 +33,11 @@
                                     <td>{{incidencia.mesa}}</td>
                                     <td>{{incidencia.nombre_testigo}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-primary text-truncate"
-                                            (click)="ModalIncidenciaAbiertaActual(incidencia)" data-bs-toggle="modal"
-                                            data-bs-target="#incidenciaAbierta">
-                                            Ver incidencia
+                                        <button class="btn align-middle mx-1" data-bs-toggle="modal"
+                                            data-bs-target="#incidenciaAbierta"
+                                            (click)="ModalIncidenciaAbiertaActual(incidencia)">
+                                            <i class="fa-solid fa-eye text-primary"></i>
                                         </button>
-
                                     </td>
                                 </tr>
                             </tbody>
@@ -52,14 +52,15 @@
         <div class="tab-pane fade" id="cerrados" role="tabpanel">
             <div class="card mt-3">
                 <div class="card-body">
-                    <div class="table-responsive" *ngIf="dataIncidenciasCerradas.length>0;else close_content">
-                        <table class="table text-center align-middle">
+                    <div class="table-responsive my-4" *ngIf="dataIncidenciasCerradas.length>0;else close_content">
+                        <table datatable [dtOptions]="dtOptionsIncidenciasCerradas" [dtTrigger]="dtTrigger"
+                            class="table text-center align-middle w-100">
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">PUESTO</th>
                                     <th scope="col">MESA</th>
                                     <th scope="col">TESTIGO</th>
-                                    <th scope="col">OPCIONES</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,10 +69,10 @@
                                     <td>{{incidencia.mesa}}</td>
                                     <td>{{incidencia.nombre_testigo}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-primary text-truncate"
-                                            data-bs-toggle="modal" data-bs-target="#incidenciaCerrada"
+                                        <button class="btn align-middle mx-1" data-bs-toggle="modal"
+                                            data-bs-target="#incidenciaCerrada"
                                             (click)="ModalIncidenciaCerradaActual(incidencia)">
-                                            Ver incidencia
+                                            <i class="fa-solid fa-eye text-primary"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -106,12 +107,15 @@
                         <p><span class="fw-bolder">Mesa: </span><span> {{incidenciaAbiertaActual.puesto}}</span></p>
                     </div>
                     <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Testigo: </span><span>{{incidenciaAbiertaActual.nombre_testigo}}</span></p>
+                        <p><span class="fw-bolder">Testigo:
+                            </span><span>{{incidenciaAbiertaActual.nombre_testigo}}</span></p>
                     </div>
                     <div class="col-lg-6 pb-2">
                         <p>
                             <span class="fw-bolder">Telefono: </span>
-                            <span>{{(incidenciaAbiertaActual.telefono_testigo)?incidenciaAbiertaActual.telefono_testigo:'No registrado'}}</span></p>
+                            <span>{{(incidenciaAbiertaActual.telefono_testigo)?incidenciaAbiertaActual.telefono_testigo:'No
+                                registrado'}}</span>
+                        </p>
                     </div>
                     <hr class="border border-primary rounded border-2">
                     <h4 class="fw-bolder">Información de reporte</h4>
@@ -123,7 +127,8 @@
                     {{incidenciaAbiertaActual.descripcion}}
                 </p>
                 <p class="fw-bolder">Archivos adjuntos: </p>
-                <si-ng-lightbox [showPreviews]="true" *ngIf="photosOpen.length>0" class="d-grid d-flex justify-content-center">
+                <si-ng-lightbox [showPreviews]="true" *ngIf="photosOpen.length>0"
+                    class="d-grid d-flex justify-content-center">
                     <img *ngFor="let img of photosOpen" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
                         [siLightboxItem]="img.url_archivo" class="imgItem col-4" />
                 </si-ng-lightbox>
@@ -161,22 +166,27 @@
                     </div>
                     <div class="col-lg-6 pb-2">
                         <p><span class="fw-bolder">Telefono: </span>
-                            <span>{{(incidenciaCerradaActual.telefono_testigo)?incidenciaCerradaActual.telefono_testigo:'No registrado'}}</span></p>
+                            <span>{{(incidenciaCerradaActual.telefono_testigo)?incidenciaCerradaActual.telefono_testigo:'No
+                                registrado'}}</span>
+                        </p>
                     </div>
                     <hr class="border border-primary rounded border-2">
                     <h4 class="fw-bolder">Información de reporte</h4>
-                    <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaCerradaActual.categoria}}</span></p>
+                    <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaCerradaActual.categoria}}</span>
+                    </p>
                 </div>
                 <p class="fw-bolder">Descripcion: </p>
                 <p>
                     {{incidenciaCerradaActual.descripcion}}
                 </p>
                 <p class="fw-bolder">Archivos adjuntos: </p>
-                <si-ng-lightbox [showPreviews]="true" *ngIf="photosClose.length>0" class="d-grid d-flex justify-content-center">
+                <si-ng-lightbox [showPreviews]="true" *ngIf="photosClose.length>0"
+                    class="d-grid d-flex justify-content-center">
                     <img *ngFor="let img of photosClose" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
                         [siLightboxItem]="img.url_archivo" class="imgItem col-4" />
                 </si-ng-lightbox>
-                <p class="mt-3"><span class="fw-bolder">Respuesta: </span><span>{{incidenciaCerradaActual.respuesta}}</span>
+                <p class="mt-3"><span class="fw-bolder">Respuesta:
+                    </span><span>{{incidenciaCerradaActual.respuesta}}</span>
                 </p>
             </div>
             <div class="modal-footer">

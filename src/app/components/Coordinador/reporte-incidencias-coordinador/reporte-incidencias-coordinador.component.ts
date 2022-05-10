@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-reporte-incidencias-coordinador',
   templateUrl: './reporte-incidencias-coordinador.component.html',
   styleUrls: ['./reporte-incidencias-coordinador.component.scss']
 })
-export class ReporteIncidenciasCoordinadorComponent implements OnInit {
+export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy {
 
   dataIncidenciasAbiertas: any = [];
   dataIncidenciasCerradas: any = [];
@@ -20,11 +21,19 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit {
   replyForm: FormGroup = this.fb.group({
     respuesta: ['', Validators.required],
   });
+  dtOptionsIncidenciasAbiertas: DataTables.Settings = {};
+  dtOptionsIncidenciasCerradas: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
   ngOnInit() {
+    this.dataTableOptions();
     this.getIncidenciasDeCoordinador();
+  }
+
+  ngOnDestroy() {
+    this.dtTrigger.unsubscribe();
   }
 
   get replyFormControl() {
@@ -64,6 +73,9 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit {
         return incidencia.estado === 1;
       }
       );
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
@@ -80,6 +92,50 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit {
     this.incidenciaCerradaActual = {};
     this.incidenciaCerradaActual = incidencia;
     this.photosClose = incidencia.archivos;
+  }
+
+  dataTableOptions() {
+    this.dtOptionsIncidenciasAbiertas = {
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+    this.dtOptionsIncidenciasCerradas = {
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+      },
+      {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
   }
 
 }

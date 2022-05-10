@@ -67,6 +67,10 @@ export class ReporteVotosTestigoComponent implements OnInit {
     this.apiService.getVotosTestigo().subscribe((resp: any) => {
       const { mesas_sin_reportar } = resp;
       this.mesas_asignadas = mesas_sin_reportar;
+      if (this.mesas_asignadas.length > 0) {
+        this.createForm.get('codigo_mesa')?.setValue(this.mesas_asignadas[0].codigo_unico);
+        this.getSelectedValue(this.mesas_asignadas[0]);
+      }
     })
   }
 

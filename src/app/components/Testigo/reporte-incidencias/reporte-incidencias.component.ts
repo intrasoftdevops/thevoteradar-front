@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-reporte-incidencias',
   templateUrl: './reporte-incidencias.component.html',
   styleUrls: ['./reporte-incidencias.component.scss']
 })
-export class ReporteIncidenciasComponent implements OnInit {
+export class ReporteIncidenciasComponent implements OnInit,OnDestroy {
 
   photos: any = [];
   files: File[] = [];
@@ -23,13 +24,20 @@ export class ReporteIncidenciasComponent implements OnInit {
     codigo_mesa: [null, Validators.required],
   });
   incidenciaActual: any = {};
+  dtOptionsIncidencias: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit(): void {
+    this.dataTableOptions();
     this.getIncidenciasDeTestigo();
     this.getMesasTetigo();
     this.getCategoriasIncidencias();
+  }
+
+  ngOnDestroy() {
+    this.dtTrigger.unsubscribe();
   }
 
   get createFormControl() {
@@ -86,6 +94,9 @@ export class ReporteIncidenciasComponent implements OnInit {
     this.apiService.getIncidenciasDeTestigo().subscribe((resp: any) => {
       console.log(resp)
       this.dataIncidencias = resp;
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
@@ -97,6 +108,26 @@ export class ReporteIncidenciasComponent implements OnInit {
   onRemove(event: any) {
     this.files.splice(this.files.indexOf(event), 1);
     console.log(this.files)
+  }
+
+  dataTableOptions() {
+    this.dtOptionsIncidencias = {
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
   }
 
 }
