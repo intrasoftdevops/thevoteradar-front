@@ -119,6 +119,7 @@ export class EditarGerenteComponent implements OnInit {
       this.updateForm.get('tipo_documento_id')?.setValue(gerente.tipo_documento_id);
       this.updateForm.get('numero_documento')?.setValue(gerente.numero_documento);
       this.updateForm.get('telefono')?.setValue(gerente.telefono);
+      console.log(this.getCodeMunicipals(municipios_asignados))
       this.updateForm.get('municipios')?.setValue(this.getCodeMunicipals(municipios_asignados));
       this.updateForm.get('departamento')?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
 

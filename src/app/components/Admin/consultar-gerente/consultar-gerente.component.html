@@ -72,8 +72,8 @@
                                     <td>{{gerente.telefono}}</td>
                                     <td>{{gerente.email}}</td>
                                     <td>
-                                        <button class="btn align-middle mx-1">
-                                            <i class="fa-solid fa-eye text-primary" data-bs-toggle="modal" data-bs-target="#gerente" (click)="gerenteActualSeleccionado(gerente)"></i>
+                                        <button class="btn align-middle mx-1" data-bs-toggle="modal" data-bs-target="#gerente" (click)="gerenteActualSeleccionado(gerente)">
+                                            <i class="fa-solid fa-eye text-primary"></i>
                                         </button>
                                         <a class="rounded-circle align-middle mx-1" (click)="redirectUpdateGerente(gerente.id)">
                                             <i class="fas fa-pen text-primary"></i>

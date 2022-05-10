@@ -10,22 +10,13 @@ import { Subject } from 'rxjs';
   templateUrl: './ver-puesto-admin.component.html',
   styleUrls: ['./ver-puesto-admin.component.scss']
 })
-export class VerPuestoAdminComponent implements OnInit, OnDestroy {
+export class VerPuestoAdminComponent implements OnInit {
 
   tabla: string = "ninguna";
   dataDepartments: any = [];
   dataMunicipals: any = [];
   dataZones: any = [];
   dataStations: any = [];
-  gerentes: any = {}
-  supervisores: any = {};
-  coordinadores: any = {};
-  testigos: any = {};
-  supervisoresGerente: any = {};
-  coordinadoresGerente: any = {};
-  testigosGerente: any = {};
-  coordinadoresSupervisor: any = {};
-  testigosSupervisor: any = {};
   testigosCoordinador: any = {};
   searchForm: FormGroup = this.fb.group({
     departamentos: [null],
@@ -33,21 +24,16 @@ export class VerPuestoAdminComponent implements OnInit, OnDestroy {
     zonas: [null],
     puestos: [null],
   });
-  dataStateDepartment: any = {};
-  dtOptionsGerente: DataTables.Settings = {};
-  dtOptionsSupervisor: DataTables.Settings = {};
-  dtOptionsCoordinador: DataTables.Settings = {};
-  dtOptionsTestigo: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
+  dataStateDepartment: any = [];
+  dataStateMunicipal:any = [];
+  dataStateZone:any = [];
+  dataStateStation:any = [];
+  stateActual: any = {};
 
   constructor(private apiService: ApiService, private alertService: AlertService, private customValidator: CustomValidationService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.getDepartmentAdmin();
-  }
-
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
   }
 
   get searchFormControl() {
@@ -112,6 +98,10 @@ export class VerPuestoAdminComponent implements OnInit, OnDestroy {
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
+      if (this.dataDepartments.length > 0) {
+        this.searchForm.get('departamentos')?.setValue(this.dataDepartments[0].codigo_unico);
+        this.getSelectedDepartment(this.dataDepartments[0]);
+      }
     })
   }
 
@@ -128,7 +118,6 @@ export class VerPuestoAdminComponent implements OnInit, OnDestroy {
     })
   }
 
-
   getPuestos(data: any) {
     this.apiService.getPuestosySupervisores(data).subscribe((resp: any) => {
       const { puestos } = resp;
@@ -139,31 +128,24 @@ export class VerPuestoAdminComponent implements OnInit, OnDestroy {
   getNecesitadosDepartamento(data: any) {
     this.apiService.getNecesitadosDepartamento(data).subscribe((resp: any) => {
       this.dataStateDepartment = [resp];
-      this.dataTableOptionsGerente();
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
-      });
     })
   }
 
   getNecesitadosMunicipio(data: any) {
     this.apiService.getNecesitadosMunicipio(data).subscribe((resp: any) => {
-      this.supervisoresGerente = resp.supervisores;
-      this.coordinadoresGerente = resp.coordinadores;
-      this.testigosGerente = resp.testigos;
+      this.dataStateMunicipal=[resp];
     })
   }
 
   getNecesitadosZona(data: any) {
     this.apiService.getNecesitadosZona(data).subscribe((resp: any) => {
-      this.coordinadoresSupervisor = resp.coordinadores;
-      this.testigosSupervisor = resp.testigos;
+      this.dataStateZone=[resp];
     })
   }
 
   getNecesitadosPuesto(data: any) {
     this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
-      this.testigosCoordinador = resp.testigos;
+      this.dataStateStation=[resp];
     })
   }
 
@@ -195,57 +177,10 @@ export class VerPuestoAdminComponent implements OnInit, OnDestroy {
     return codigo_unico;
   }
 
-  dataTableOptionsGerente() {
-    this.dtOptionsGerente = {
-      data: this.dataStateDepartment,
-      processing: true,
-      destroy: true,
-      pageLength: 10,
-      searchDelay: 5000,
-      columns: [{
-        title: 'GERENTES',
-        data: function (row, type, set) {
-          const percent = createPercent(row.gerentes.gerentes_con_municipio, row.gerentes.cantidad_gerentes_necesitados);
-            return `${row.gerentes.gerentes_con_municipio}/${row.gerentes.cantidad_gerentes_necesitados} ${percent}`;
-        },
-        createdCell: (td, cellData, rowData, row, col) => {
-          $(td).addClass(this.textColor(rowData.gerentes.gerentes_con_municipio, rowData.gerentes.cantidad_gerentes_necesitados));
-        },
-        orderable: false,
-      }, {
-        title: 'SUPERVISORES',
-        render: (data, type, row) => {
-          return `${row.supervisores.supervisores_con_municipio}/${row.supervisores.cantidad_supervisores_necesitados} ${this.createPercent(row.supervisores.supervisores_con_municipio, row.supervisores.cantidad_supervisores_necesitados)}`;
-        },
-        orderable: false,
-      }, {
-        title: 'COORDINADORES',
-        render: (data, type, row) => {
-          return `${row.coordinadores.coordinadores_con_puesto}/${row.coordinadores.cantidad_coordinadores_necesitados} ${this.createPercent(row.coordinadores.coordinadores_con_puesto, row.coordinadores.cantidad_coordinadores_necesitados)}`;
-        },
-        orderable: false,
-      }, {
-        title: 'TESTIGOS',
-        render: (data, type, row) => {
-          return `${row.testigos.testigos_con_mesa}/${row.testigos.cantidad_testigos_necesitados} ${this.createPercent(row.testigos.testigos_con_mesa, row.testigos.cantidad_testigos_necesitados)}`;
-        },
-        orderable: false,
-      },
-      ],
-      responsive: true,
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
-      }
-    };
+  stateDepartmaentSeleccionado(state: any) {
+    this.stateActual=state;
   }
 
 }
 
-function createPercent(existentes: any, necesitados: any) {
-  const percent = Math.round((existentes / necesitados) * 100) / 100;
-    if (necesitados == 0) {
-      return `(0%)`;
-    }
-    return `(${percent}%)`;
-}
 

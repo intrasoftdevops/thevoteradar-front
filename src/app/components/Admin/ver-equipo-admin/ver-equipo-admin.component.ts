@@ -1,20 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { Filtro } from '../../../models/filtro';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { DataTableDirective } from 'angular-datatables';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-ver-equipo-admin',
   templateUrl: './ver-equipo-admin.component.html',
   styleUrls: ['./ver-equipo-admin.component.scss']
 })
-export class VerEquipoAdminComponent implements OnInit, OnDestroy {
+export class VerEquipoAdminComponent implements OnInit {
 
-  @ViewChild(DataTableDirective, { static: false })
-  dtElement!: DataTableDirective;
   tabla: string = "ninguna";
   dataDepartments: any = [];
   dataMunicipals: any = [];
@@ -25,21 +22,19 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
   listSupervisores: any = [];
   listCoordinadores: any = [];
   listTestigos: any = [];
-  selectedMunicipal: any = [];
-  selectedZone: any = [];
-  selectedStation: any = [];
-  selectedTable: any = [];
   filtro: any;
   idCliente: any;
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
-  dtOptionsGerente: DataTables.Settings = {};
-  dtOptionsSupervisor: DataTables.Settings = {};
-  dtOptionsCoordinador: DataTables.Settings = {};
-  dtOptionsTestigo: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
+  searchForm: FormGroup = this.fb.group({
+    departamentos: [null],
+    municipios: [null],
+    zonas: [null],
+    puestos: [null],
+    mesas: [null]
+  });
 
-  constructor(private apiService: ApiService, private sanitizer: DomSanitizer) { }
+  constructor(private apiService: ApiService, private sanitizer: DomSanitizer, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.getDepartmentAdmin();
@@ -47,8 +42,8 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
     this.getCliente();
   }
 
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
+  get searchFormControl() {
+    return this.searchForm.controls;
   }
 
   getCliente() {
@@ -68,10 +63,10 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
   }
 
   getSelectedDepartment(item: any) {
-    this.selectedMunicipal = [];
-    this.selectedZone = [];
-    this.selectedStation = [];
-    this.selectedTable = [];
+    this.searchFormControl['municipios'].reset();
+    this.searchFormControl['zonas'].reset();
+    this.searchFormControl['puestos'].reset();
+    this.searchFormControl['mesas'].reset();
     if (item) {
       this.getMunicipalAdmin(item.codigo_unico);
       this.tabla = "ninguna"
@@ -82,13 +77,12 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
   }
 
   getSelectedMunicipal(item: any) {
-    this.selectedZone = [];
-    this.selectedStation = [];
-    this.selectedTable = [];
+    this.searchFormControl['zonas'].reset();
+    this.searchFormControl['puestos'].reset();
+    this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { municipio: codigo_unico }
-      this.dtTrigger.subscribe()
       this.getZonasyGerentes(data);
       this.tabla = "gerente";
     } else {
@@ -98,8 +92,8 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
   }
 
   getSelectedZone(item: any) {
-    this.selectedStation = [];
-    this.selectedTable = [];
+    this.searchFormControl['puestos'].reset();
+    this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { zona: codigo_unico }
@@ -108,13 +102,11 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
     } else {
       this.dataStations = [];
       this.tabla = "gerente";
-      this.dtTrigger.subscribe();
-      this.dtTrigger.next(void 0);
     }
   }
 
   getSelectedStation(item: any) {
-    this.selectedTable = [];
+    this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { puesto: codigo_unico }
@@ -140,12 +132,20 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
+      if (this.dataDepartments.length > 0) {
+        this.searchForm.get('departamentos')?.setValue(this.dataDepartments[0].codigo_unico);
+        this.getSelectedDepartment(this.dataDepartments[0]);
+      }
     })
   }
 
   getMunicipalAdmin(data: any) {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
       this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
+      if (this.dataMunicipals.length > 0) {
+        this.searchForm.get('municipios')?.setValue(this.dataMunicipals[0].codigo_unico);
+        this.getSelectedMunicipal(this.dataMunicipals[0]);
+      }
     })
   }
 
@@ -154,10 +154,6 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
       const { zonas, gerentes } = resp;
       this.dataZones = zonas;
       this.listGerentes = gerentes;
-      this.dataTableOptionsGerente();
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
-      });
     })
   }
 
@@ -166,10 +162,6 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
       const { puestos, supervisores } = resp;
       this.dataStations = puestos;
       this.listSupervisores = supervisores;
-      this.dataTableOptionsSupervisor();
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
-      });
     })
   }
 
@@ -178,10 +170,6 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
       const { mesas, coordinadores } = resp;
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
-      this.dataTableOptionsCoordinador();
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
-      });
     })
   }
 
@@ -189,10 +177,6 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
       const { testigos } = resp;
       this.listTestigos = testigos;
-      this.dataTableOptionsTestigo();
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
-      });
     })
   }
 
@@ -203,126 +187,6 @@ export class VerEquipoAdminComponent implements OnInit, OnDestroy {
 
   showIframe() {
     this.showMap = !this.showMap;
-  }
-
-  dataTableOptionsGerente() {
-    this.dtOptionsGerente = {
-      data: this.listGerentes,
-      processing:true,
-      destroy: true,
-      pageLength: 10,
-      columns: [{
-        title: 'NOMBRE COMPLETO',
-        render: (data, type, row) => {
-          return `${row.nombres} ${row.apellidos}`;
-        },
-        orderable: true,
-      }, {
-        data: 'email',
-        title: 'CORREO ELECTRONICO',
-        orderable: true,
-        className: 'd-none d-md-table-cell'
-      }, {
-        title: 'TELEFONO',
-        data: 'telefono',
-        orderable: true,
-      }
-      ],
-      responsive: true,
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
-      }
-    };
-  }
-
-  dataTableOptionsSupervisor() {
-    this.dtOptionsSupervisor = {
-      data: this.listSupervisores,
-      processing:true,
-      destroy: true,
-      pageLength: 10,
-      columns: [{
-        title: 'NOMBRE COMPLETO',
-        render: (data, type, row) => {
-          return `${row.nombres} ${row.apellidos}`;
-        },
-        orderable: true,
-      }, {
-        data: 'email',
-        title: 'CORREO ELECTRONICO',
-        orderable: true,
-        className: 'd-none d-md-table-cell'
-      }, {
-        title: 'TELEFONO',
-        data: 'telefono',
-        orderable: true,
-      }
-      ],
-      responsive: true,
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
-      }
-    };
-  }
-
-  dataTableOptionsCoordinador() {
-    this.dtOptionsCoordinador = {
-      data: this.listCoordinadores,
-      processing:true,
-      destroy: true,
-      pageLength: 10,
-      columns: [{
-        title: 'NOMBRE COMPLETO',
-        render: (data, type, row) => {
-          return `${row.nombres} ${row.apellidos}`;
-        },
-        orderable: true,
-      }, {
-        data: 'email',
-        title: 'CORREO ELECTRONICO',
-        orderable: true,
-        className: 'd-none d-md-table-cell'
-      }, {
-        title: 'TELEFONO',
-        data: 'telefono',
-        orderable: true,
-      }
-      ],
-      responsive: true,
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
-      }
-    };
-  }
-
-  dataTableOptionsTestigo() {
-    this.dtOptionsTestigo = {
-      data: this.listTestigos,
-      processing:true,
-      destroy: true,
-      pageLength: 10,
-      columns: [{
-        title: 'NOMBRE COMPLETO',
-        render: (data, type, row) => {
-          return `${row.nombres} ${row.apellidos}`;
-        },
-        orderable: true,
-      }, {
-        data: 'email',
-        title: 'CORREO ELECTRONICO',
-        orderable: true,
-        className: 'd-none d-md-table-cell'
-      }, {
-        title: 'TELEFONO',
-        data: 'telefono',
-        orderable: true,
-      }
-      ],
-      responsive: true,
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
-      }
-    };
   }
 
 }
