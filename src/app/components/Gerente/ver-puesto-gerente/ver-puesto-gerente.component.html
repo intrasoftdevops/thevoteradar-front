@@ -63,9 +63,9 @@
             <tbody>
               <tr class="bg-white" *ngFor="let state of dataStateMunicipal">
                 <td
-                  [ngClass]="textColor(state.supervisores.supervisores_con_municipio,state.supervisores.cantidad_supervisores_necesitadoss)">
-                  {{state.supervisores.supervisores_con_municipio}}/{{state.supervisores.cantidad_supervisores_necesitadoss}}
-                  {{createPercent(state.supervisores.supervisores_con_municipio,state.supervisores.cantidad_supervisores_necesitadoss)}}
+                  [ngClass]="textColor(state.supervisores.supervisores_con_zona,state.supervisores.cantidad_supervisores_necesitadoss)">
+                  {{state.supervisores.supervisores_con_zona}}/{{state.supervisores.cantidad_supervisores_necesitadoss}}
+                  {{createPercent(state.supervisores.supervisores_con_zona,state.supervisores.cantidad_supervisores_necesitadoss)}}
                 </td>
                 <td>
                   {{state.supervisores.supervisores_sin_zona}}
@@ -200,7 +200,7 @@
         <div class="row mt-3">
           <div class="col-6">
             <p><span class="fw-bolder">Con zona: </span><span>
-                {{stateActual.supervisores.supervisores_con_municipio}}</span></p>
+                {{stateActual.supervisores.supervisores_con_zona}}</span></p>
           </div>
           <div class="col-6">
             <p><span class="fw-bolder">Sin zona: </span><span>
