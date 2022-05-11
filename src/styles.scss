@@ -174,11 +174,11 @@ td:only-child {
     border-radius: 10px !important;
 }
 
-td {
+tbody td {
     background-color: white !important;
 }
 
-td:not(:last-child){
+tbody td:not(:last-child){
     max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;

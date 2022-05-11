@@ -4,23 +4,25 @@
             <h4>Lista de Reporte de Votos</h4>
         </div>
         <div class="card-body pt-0">
-            <div class="d-flex justify-content-center">
+            <form class="d-flex justify-content-center" [formGroup]="searchForm">
                 <div class="form-group col-md-6 col-lg-4 pt-2 m-4">
                     <label class="fw-bold form-label">
                         Reportes por puestos
                     </label>
                     <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
                         bindLabel="nombre" bindValue="codigo_unico" (change)="getSelectedValue($event)"
-                        notFoundText="No hay informacion disponible" placeholder="Seleccione puestos">
+                        notFoundText="No hay informacion disponible" placeholder="Seleccione puestos"
+                        formControlName="puestos">
                     </ng-select>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
-    <div class="card mt-5" *ngIf="tabla">
+    <div class="card mt-5" [hidden]="!tabla">
         <div class="card-body">
-            <div class="table-responsive" *ngIf="listMesas.length>0;else table_content">
-                <table class="table text-center align-middle">
+            <div class="table-responsive my-4" [hidden]="listMesas.length<=0">
+                <table datatable [dtOptions]="dtOptionsVotosReportados" [dtTrigger]="dtTrigger"
+                class="table text-center align-middle w-100">
                     <thead class="text-dark align-middle">
                         <tr>
                             <th scope="col">N° MESA</th>
@@ -35,19 +37,18 @@
                             <td>{{mesa.reporte.testigo.nombres}} {{mesa.reporte.testigo.apellidos}}</td>
                             <td>{{(mesa.reporte.testigo.telefono)?mesa.reporte.testigo.telefono:'No registrado'}}</td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-primary text-truncate"
-                                    data-bs-toggle="modal" data-bs-target="#incidenciaAbierta"
-                                    (click)="ModalReporteActual(mesa)">
-                                    Ver Reporte
+                                <button class="btn align-middle mx-1" data-bs-toggle="modal"
+                                    data-bs-target="#incidenciaAbierta" (click)="ModalReporteActual(mesa)">
+                                    <i class="fa-solid fa-eye text-primary"></i>
                                 </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <ng-template #table_content>
+            <div [hidden]="listMesas.length>0">
                 <p class="text-center mb-0">No hay resporte de votos para este puesto.</p>
-            </ng-template>
+            </div>
         </div>
     </div>
 </div>
@@ -81,14 +82,15 @@
                         <tfoot>
                             <tr class="bg-primary text-white">
                                 <td></td>
-                                <td class="fw-bolder">Total de votos:</td>
+                                <td class="fw-bolder">Total de votos: </td>
                                 <td>{{totalVotosMesas}}</td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
                 <p class="fw-bolder">Archivos adjuntos: </p>
-                <si-ng-lightbox [showPreviews]="true" *ngIf="photos.length>0" class="d-grid d-flex justify-content-center">
+                <si-ng-lightbox [showPreviews]="true" *ngIf="photos.length>0"
+                    class="d-grid d-flex justify-content-center">
                     <img *ngFor="let img of photos" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
                         [siLightboxItem]="img.url_archivo" class="imgItem col-4" />
                 </si-ng-lightbox>

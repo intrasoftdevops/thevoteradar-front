@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import Swal from 'sweetalert2';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-reporte-votos-coordinador',
   templateUrl: './reporte-votos-coordinador.component.html',
   styleUrls: ['./reporte-votos-coordinador.component.scss']
 })
-export class ReporteVotosCoordinadorComponent implements OnInit {
+export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
 
   tabla: boolean = false;
   dataStations: any = [];
@@ -16,11 +18,24 @@ export class ReporteVotosCoordinadorComponent implements OnInit {
   listReportes: any = [];
   photos: any = [];
   totalVotosMesas: number = 0;
+  searchForm: FormGroup = this.fb.group({
+    puestos: [null],
+  });
+  dtOptionsVotosReportados: DataTables.Settings = {};
+  dtOptionsVotosNoReportados: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChild(DataTableDirective) dtElement!: DataTableDirective;
+  notFirstTime = false;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private chRef: ChangeDetectorRef) { }
 
   ngOnInit() {
+    this.dataTableOptions();
     this.getStationsTestigo();
+  }
+
+  ngOnDestroy() {
+    this.dtTrigger.unsubscribe();
   }
 
   ModalReporteActual(mesa: any) {
@@ -31,21 +46,33 @@ export class ReporteVotosCoordinadorComponent implements OnInit {
     console.log(this.reporte.reporte)
     this.listReportes = this.reporte.reporte.reportes;
     this.photos = mesa.reporte.archivos;
-    this.totalVotosMesas = this.listReportes.reduce((acc:any,obj:any,) => acc + (obj.numero_votos),0);
+    this.totalVotosMesas = this.listReportes.reduce((acc: any, obj: any,) => acc + (obj.numero_votos), 0);
   }
 
   getVotosCoordinador(data: any) {
     this.apiService.getVotosCoordinador(data).subscribe((resp: any) => {
-      console.log(resp)
       const { puesto } = resp;
       const { mesas_reportadas } = puesto;
       this.listMesas = mesas_reportadas;
+      if (this.notFirstTime) {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
+      }
+      this.notFirstTime = true;
+      setTimeout(() => {
+        this.dtTrigger.next(void 0);
+      });
     })
   }
 
   getStationsTestigo() {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
+      if (this.dataStations.length > 0) {
+        this.searchForm.get('puestos')?.setValue(this.dataStations[0].codigo_unico);
+        this.getSelectedValue(this.dataStations[0]);
+      }
     })
   }
 
@@ -57,8 +84,39 @@ export class ReporteVotosCoordinadorComponent implements OnInit {
     } else {
       this.tabla = false;
       this.listMesas = [];
+      if (this.notFirstTime) {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          setTimeout(() => {
+            this.dtTrigger.next(void 0);
+          });
+        });
+      }
     }
   }
 
+  dataTableOptions() {
+    this.dtOptionsVotosReportados = {
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+        className: 'd-none d-lg-table-cell'
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+    console.log(this.listMesas)
+  }
 
 }
