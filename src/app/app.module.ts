@@ -59,6 +59,9 @@ import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo
 import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-testigo-supervisor/crear-testigo-supervisor.component';
 import { DropdownMenuUsersComponent } from './components/dropdown-menu-users/dropdown-menu-users.component';
 import { DataTablesModule } from 'angular-datatables';
+import { NgxPermissionsModule } from 'ngx-permissions';
+import { ForbiddenComponent } from './components/forbidden/forbidden.component';
+import { LogoutPermissionsGuard } from './permissions/logout-permissions-guard';
 
 @NgModule({
   declarations: [
@@ -112,7 +115,8 @@ import { DataTablesModule } from 'angular-datatables';
     CrearCoordinadorGerenteComponent,
     CrearTestigoGerenteComponent,
     CrearTestigoSupervisorComponent,
-    DropdownMenuUsersComponent
+    DropdownMenuUsersComponent,
+    ForbiddenComponent
   ],
   imports: [
     BrowserModule,
@@ -125,8 +129,10 @@ import { DataTablesModule } from 'angular-datatables';
     NgLightboxModule,
     NgxDropzoneModule,
     DataTablesModule,
+    NgxPermissionsModule.forRoot(),
   ],
   providers: [
+    LogoutPermissionsGuard,
     LoaderService,
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }
   ],

@@ -1,6 +1,6 @@
 <div class="container py-5">
     <div class="card">
-        <div class="bg-primary py-3 px-lg-5 text-white">
+        <div class="bg-primary py-3 px-5 text-white">
             <h4>Impugnaciones</h4>
         </div>
         <div class="card-body">
@@ -16,19 +16,19 @@
             </div>
         </div>
     </div>
-    <ng-container *ngIf="tabla">
+    <div [hidden]="!tabla">
         <ul class="nav nav-tabs mt-5" id="myTab">
             <li class="nav-item" id="tab">
-                <button class="nav-link h4 px-lg-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#impugnar"
+                <button class="nav-link h4 px-md-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#impugnar"
                     type="button" role="tab">POR REVISAR</button>
             </li>
             <li class="nav-item" id="tab">
-                <button class="nav-link h4 px-lg-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#impugnados"
+                <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#impugnados"
                     type="button" role="tab">IMPUGNAR</button>
             </li>
 
             <li class="nav-item" id="tab">
-                <button class="nav-link h4 px-lg-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noimpugnados"
+                <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noimpugnados"
                     type="button" role="tab">NO IMPUGNADOS</button>
             </li>
         </ul>
@@ -36,8 +36,9 @@
             <div class="tab-pane fade show active" id="impugnar" role="tabpanel">
                 <div class="card mt-3">
                     <div class="card-body">
-                        <div class="table-responsive" *ngIf="dataRevisar.length>0;else revisar_content">
-                            <table class="table text-center align-middle">
+                        <div class="table-responsive my-4" [hidden]="dataRevisar.length<=0">
+                            <table datatable [dtOptions]="dtOptionsRevisar" [dtTrigger]="dtTrigger"
+                                class="table text-center align-middle w-100">
                                 <thead class="text-dark align-middle">
                                     <tr>
                                         <th scope="col">DEPARTAMENTO</th>
@@ -56,27 +57,27 @@
                                         <td>{{revisar.puesto}}</td>
                                         <td>{{revisar.mesa}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-sm m-1"
-                                                data-bs-toggle="modal" data-bs-target="#impugnarmodal"
-                                                (click)="ModalRevisarActual(revisar)">
-                                                Ver Reporte
+                                            <button class="btn align-middle mx-1" data-bs-toggle="modal"
+                                                data-bs-target="#impugnarmodal" (click)="ModalRevisarActual(revisar)">
+                                                <i class="fa-solid fa-eye text-primary"></i>
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <ng-template #revisar_content>
+                        <div *ngIf="dataRevisar.length<=0">
                             <p class="text-center mb-0">No hay reportes por revisar.</p>
-                        </ng-template>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="impugnados" role="tabpanel">
                 <div class="card mt-3">
                     <div class="card-body">
-                        <div class="table-responsive" *ngIf="dataImpugnar.length>0;else impugnar_content">
-                            <table class="table text-center align-middle">
+                        <div class="table-responsive my-4" [hidden]="dataImpugnar.length<=0">
+                            <table datatable [dtOptions]="dtOptionsImpugnar" [dtTrigger]="dtTrigger"
+                                class="table text-center align-middle w-100">
                                 <thead class="text-dark align-middle">
                                     <tr>
                                         <th scope="col">DEPARTAMENTO</th>
@@ -95,27 +96,28 @@
                                         <td>{{impugnar.puesto}}</td>
                                         <td>{{impugnar.mesa}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            <button class="btn align-middle mx-1" data-bs-toggle="modal"
                                                 data-bs-target="#impugnadosmodal"
                                                 (click)="ModalImpugnarActual(impugnar)">
-                                                Ver Reporte
+                                                <i class="fa-solid fa-eye text-primary"></i>
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <ng-template #impugnar_content>
+                        <div *ngIf="dataImpugnar.length<=0">
                             <p class="text-center mb-0">No hay reportes por impugnar.</p>
-                        </ng-template>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="noimpugnados" role="tabpanel">
                 <div class="card mt-3">
                     <div class="card-body">
-                        <div class="table-responsive" *ngIf="dataNoImpugnados.length>0;else noImpugnados_content">
-                            <table class="table text-center align-middle">
+                        <div class="table-responsive my-4" [hidden]="dataNoImpugnados.length<=0">
+                            <table datatable [dtOptions]="dtOptionsNoImpugnar" [dtTrigger]="dtTrigger"
+                                class="table text-center align-middle w-100">
                                 <thead class="text-dark align-middle">
                                     <tr>
                                         <th scope="col">DEPARTAMENTO</th>
@@ -134,24 +136,24 @@
                                         <td>{{noImpugnados.puesto}}</td>
                                         <td>{{noImpugnados.mesa}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            <button class="btn align-middle mx-1" data-bs-toggle="modal"
                                                 data-bs-target="#noimpugnadosmodal"
                                                 (click)="ModalNoImpugnarActual(noImpugnados)">
-                                                Ver Reporte
+                                                <i class="fa-solid fa-eye text-primary"></i>
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <ng-template #noImpugnados_content>
+                        <div *ngIf="dataNoImpugnados.length<=0">
                             <p class="text-center mb-0">No hay reportes no impugnados.</p>
-                        </ng-template>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </ng-container>
+    </div>
 </div>
 
 <div class="modal fade" id="impugnarmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

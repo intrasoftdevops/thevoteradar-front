@@ -201,8 +201,8 @@
                 <td>
                   {{state.coordinadores.coordinadores_sin_puesto}}
                 </td>
-                <td
-                  [ngClass]="textColor(state.testigos.testigos_con_mesa,state.testigos.cantidad_testigos_necesitados)" class="d-none d-lg-table-cell">
+                <td [ngClass]="textColor(state.testigos.testigos_con_mesa,state.testigos.cantidad_testigos_necesitados)"
+                  class="d-none d-lg-table-cell">
                   {{state.testigos.testigos_con_mesa}}/{{state.testigos.cantidad_testigos_necesitados}}
                   {{createPercent(state.testigos.testigos_con_mesa,state.testigos.cantidad_testigos_necesitados)}}
                 </td>
@@ -289,57 +289,6 @@
           </div>
           <hr class="border border-primary rounded border-2">
           <h4 class="fw-bolder">Informacion de supervisores</h4>
-          <div class="row mt-3">
-            <div class="col-6">
-              <p><span class="fw-bolder">Con zona: </span><span>
-                  {{stateActual.supervisores.supervisores_con_zona}}</span></p>
-            </div>
-            <div class="col-6">
-              <p><span class="fw-bolder">Sin zona: </span><span>
-                  {{stateActual.supervisores.supervisores_sin_zona}}</span></p>
-            </div>
-            <div class="col-6">
-              <p><span class="fw-bolder">Necesarios: </span><span>
-                  {{stateActual.supervisores.cantidad_supervisores_necesitados}}</span></p>
-            </div>
-            <hr class="border border-primary rounded border-2">
-          </div>
-          <h4 class="fw-bolder">Informacion de coordinadores</h4>
-          <div class="row mt-3">
-            <div class="col-6">
-              <p><span class="fw-bolder">Con puesto: </span><span>
-                  {{stateActual.coordinadores.coordinadores_con_puesto}}</span></p>
-            </div>
-            <div class="col-6">
-              <p><span class="fw-bolder">Sin puesto: </span><span>
-                  {{stateActual.coordinadores.coordinadores_sin_puesto}}</span></p>
-            </div>
-            <div class="col-6">
-              <p><span class="fw-bolder">Necesarios: </span><span>
-                  {{stateActual.coordinadores.cantidad_coordinadores_necesitados}}</span></p>
-            </div>
-            <hr class="border border-primary rounded border-2">
-            <h4 class="fw-bolder">Informacion de testigos</h4>
-            <div class="row mt-3">
-              <div class="col-6">
-                <p><span class="fw-bolder">Con mesa: </span><span>
-                    {{stateActual.testigos.testigos_con_mesa}}</span></p>
-              </div>
-              <div class="col-6">
-                <p><span class="fw-bolder">Sin mesa: </span><span>
-                    {{stateActual.testigos.testigos_sin_mesa}}</span></p>
-              </div>
-              <div class="col-6">
-                <p><span class="fw-bolder">Necesarios: </span><span>
-                    {{stateActual.testigos.cantidad_testigos_necesitados}}</span></p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-body" *ngIf="stateActual.supervisores && !stateActual.gerentes">
-        <h4 class="fw-bolder">Informacion de supervisores</h4>
-        <div class="row mt-3">
           <div class="col-6">
             <p><span class="fw-bolder">Con zona: </span><span>
                 {{stateActual.supervisores.supervisores_con_zona}}</span></p>
@@ -350,12 +299,10 @@
           </div>
           <div class="col-6">
             <p><span class="fw-bolder">Necesarios: </span><span>
-                {{stateActual.supervisores.cantidad_supervisores_necesitadoss}}</span></p>
+                {{stateActual.supervisores.cantidad_supervisores_necesitados}}</span></p>
           </div>
           <hr class="border border-primary rounded border-2">
-        </div>
-        <h4 class="fw-bolder">Informacion de coordinadores</h4>
-        <div class="row mt-3">
+          <h4 class="fw-bolder">Informacion de coordinadores</h4>
           <div class="col-6">
             <p><span class="fw-bolder">Con puesto: </span><span>
                 {{stateActual.coordinadores.coordinadores_con_puesto}}</span></p>
@@ -383,6 +330,51 @@
               <p><span class="fw-bolder">Necesarios: </span><span>
                   {{stateActual.testigos.cantidad_testigos_necesitados}}</span></p>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body" *ngIf="stateActual.supervisores && !stateActual.gerentes">
+        <h4 class="fw-bolder">Informacion de supervisores</h4>
+        <div class="col-6">
+          <p><span class="fw-bolder">Con zona: </span><span>
+              {{stateActual.supervisores.supervisores_con_zona}}</span></p>
+        </div>
+        <div class="col-6">
+          <p><span class="fw-bolder">Sin zona: </span><span>
+              {{stateActual.supervisores.supervisores_sin_zona}}</span></p>
+        </div>
+        <div class="col-6">
+          <p><span class="fw-bolder">Necesarios: </span><span>
+              {{stateActual.supervisores.cantidad_supervisores_necesitadoss}}</span></p>
+        </div>
+        <hr class="border border-primary rounded border-2">
+        <h4 class="fw-bolder">Informacion de coordinadores</h4>
+        <div class="col-6">
+          <p><span class="fw-bolder">Con puesto: </span><span>
+              {{stateActual.coordinadores.coordinadores_con_puesto}}</span></p>
+        </div>
+        <div class="col-6">
+          <p><span class="fw-bolder">Sin puesto: </span><span>
+              {{stateActual.coordinadores.coordinadores_sin_puesto}}</span></p>
+        </div>
+        <div class="col-6">
+          <p><span class="fw-bolder">Necesarios: </span><span>
+              {{stateActual.coordinadores.cantidad_coordinadores_necesitados}}</span></p>
+        </div>
+        <hr class="border border-primary rounded border-2">
+        <h4 class="fw-bolder">Informacion de testigos</h4>
+        <div class="row mt-3">
+          <div class="col-6">
+            <p><span class="fw-bolder">Con mesa: </span><span>
+                {{stateActual.testigos.testigos_con_mesa}}</span></p>
+          </div>
+          <div class="col-6">
+            <p><span class="fw-bolder">Sin mesa: </span><span>
+                {{stateActual.testigos.testigos_sin_mesa}}</span></p>
+          </div>
+          <div class="col-6">
+            <p><span class="fw-bolder">Necesarios: </span><span>
+                {{stateActual.testigos.cantidad_testigos_necesitados}}</span></p>
           </div>
         </div>
       </div>
@@ -420,22 +412,22 @@
         </div>
       </div>
       <div class="modal-body" *ngIf="stateActual.testigos && !stateActual.coordinadores">
-          <h4 class="fw-bolder">Informacion de testigos</h4>
-          <div class="row mt-3">
-            <div class="col-6">
-              <p><span class="fw-bolder">Con mesa: </span><span>
-                  {{stateActual.testigos.testigos_con_mesa}}</span></p>
-            </div>
-            <div class="col-6">
-              <p><span class="fw-bolder">Sin mesa: </span><span>
-                  {{stateActual.testigos.testigos_sin_mesa}}</span></p>
-            </div>
-            <div class="col-6">
-              <p><span class="fw-bolder">Necesarios: </span><span>
-                  {{stateActual.testigos.cantidad_testigos_necesitados}}</span></p>
-            </div>
+        <h4 class="fw-bolder">Informacion de testigos</h4>
+        <div class="row mt-3">
+          <div class="col-6">
+            <p><span class="fw-bolder">Con mesa: </span><span>
+                {{stateActual.testigos.testigos_con_mesa}}</span></p>
+          </div>
+          <div class="col-6">
+            <p><span class="fw-bolder">Sin mesa: </span><span>
+                {{stateActual.testigos.testigos_sin_mesa}}</span></p>
+          </div>
+          <div class="col-6">
+            <p><span class="fw-bolder">Necesarios: </span><span>
+                {{stateActual.testigos.cantidad_testigos_necesitados}}</span></p>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>

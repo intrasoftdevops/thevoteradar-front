@@ -1,4 +1,4 @@
-<section id="fondo" *ngIf="rol;else other_content">
+<section id="fondo" *ngIf="rol && rol!=0;else other_content">
     <ng-container>
         <app-menu-admin *ngIf="rol == 1"></app-menu-admin>
         <app-menu-gerente *ngIf="rol == 2"></app-menu-gerente>

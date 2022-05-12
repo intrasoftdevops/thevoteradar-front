@@ -104,7 +104,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
         orderable: true,
       }, {
         orderable: true,
-        className: 'd-none d-lg-table-cell'
+        className: 'd-none d-md-table-cell'
       },
       {
         orderable: false,
@@ -125,7 +125,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
       },
       {
         orderable: true,
-        className: 'd-none d-lg-table-cell'
+        className: 'd-none d-md-table-cell'
       },
       {
         orderable: false,

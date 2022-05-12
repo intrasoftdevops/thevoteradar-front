@@ -54,15 +54,8 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
       const { puesto } = resp;
       const { mesas_reportadas } = puesto;
       this.listMesas = mesas_reportadas;
-      if (this.notFirstTime) {
-        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy();
-        });
-      }
+      this.renderer();
       this.notFirstTime = true;
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
-      });
     })
   }
 
@@ -84,14 +77,7 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
     } else {
       this.tabla = false;
       this.listMesas = [];
-      if (this.notFirstTime) {
-        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy();
-          setTimeout(() => {
-            this.dtTrigger.next(void 0);
-          });
-        });
-      }
+      this.renderer();
     }
   }
 
@@ -105,7 +91,7 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
         orderable: true,
       }, {
         orderable: true,
-        className: 'd-none d-lg-table-cell'
+        className: 'd-none d-md-table-cell'
       },
       {
         orderable: false,
@@ -116,7 +102,17 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
       }
     };
-    console.log(this.listMesas)
+  }
+
+  renderer() {
+    if (this.notFirstTime) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.destroy();
+      });
+    }
+    setTimeout(() => {
+      this.dtTrigger.next(void 0);
+    });
   }
 
 }

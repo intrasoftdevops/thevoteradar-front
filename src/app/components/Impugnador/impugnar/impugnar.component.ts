@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
@@ -6,13 +6,15 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 import Swal from 'sweetalert2';
 import { DomSanitizer, SafeResourceUrl, } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-impugnar',
   templateUrl: './impugnar.component.html',
   styleUrls: ['./impugnar.component.scss']
 })
-export class ImpugnarComponent implements OnInit {
+export class ImpugnarComponent implements OnInit, OnDestroy {
 
   dataCandidatos: any = [];
   tabla: boolean = false;
@@ -34,12 +36,23 @@ export class ImpugnarComponent implements OnInit {
   urlRevisar: SafeResourceUrl = '';
   urlImpugnados: SafeResourceUrl = '';
   urlNoImpugnados: SafeResourceUrl = '';
+  dtOptionsRevisar: DataTables.Settings = {};
+  dtOptionsImpugnar: DataTables.Settings = {};
+  dtOptionsNoImpugnar: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChild(DataTableDirective) dtElement!: DataTableDirective;
+  notFirstTime = false;
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService, private sanitizer: DomSanitizer, private http: HttpClient) { }
 
   ngOnInit() {
+    this.dataTableOptions();
     this.getInteresesCandidato();
     this.getCategoriaImpugnacion();
+  }
+
+  ngOnDestroy() {
+    this.dtTrigger.unsubscribe();
   }
 
   get createFormControl() {
@@ -57,6 +70,7 @@ export class ImpugnarComponent implements OnInit {
       this.tabla = true;
     } else {
       this.tabla = false;
+      this.renderer();
     }
   }
 
@@ -71,7 +85,8 @@ export class ImpugnarComponent implements OnInit {
       this.dataRevisar = resp.reportes_no_revisados;
       this.dataImpugnar = resp.reportes_revisados;
       this.dataNoImpugnados = resp.reportes_no_impugnados;
-      console.log(resp)
+      this.renderer();
+      this.notFirstTime = true;
     })
   }
 
@@ -142,6 +157,92 @@ export class ImpugnarComponent implements OnInit {
     Swal.fire({
       icon: 'success',
       title: message,
+    });
+  }
+
+  dataTableOptions() {
+    this.dtOptionsRevisar = {
+      destroy: true,
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+    this.dtOptionsImpugnar = {
+      destroy: true,
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+    this.dtOptionsNoImpugnar = {
+      destroy: true,
+      processing: true,
+      pageLength: 10,
+      columns: [{
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+      }, {
+        orderable: true,
+      },
+      {
+        orderable: false,
+      }
+      ],
+      responsive: true,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    };
+  }
+
+  renderer() {
+    if (this.notFirstTime) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.destroy();
+      });
+    }
+    setTimeout(() => {
+      this.dtTrigger.next(void 0);
     });
   }
 

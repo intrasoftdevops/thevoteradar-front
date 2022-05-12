@@ -113,8 +113,9 @@
                     <div class="col-lg-6 pb-2">
                         <p>
                             <span class="fw-bolder">Telefono: </span>
-                            <span>{{(incidenciaAbiertaActual.telefono_testigo)?incidenciaAbiertaActual.telefono_testigo:'No
-                                registrado'}}</span>
+                            <span>
+                                {{incidenciaAbiertaActual.telefono_testigo}}
+                            </span>
                         </p>
                     </div>
                     <hr class="border border-primary rounded border-2">
@@ -166,15 +167,14 @@
                     </div>
                     <div class="col-lg-6 pb-2">
                         <p><span class="fw-bolder">Telefono: </span>
-                            <span>{{(incidenciaCerradaActual.telefono_testigo)?incidenciaCerradaActual.telefono_testigo:'No
-                                registrado'}}</span>
+                            <span>{{incidenciaCerradaActual.telefono_testigo}}</span>
                         </p>
                     </div>
                     <hr class="border border-primary rounded border-2">
-                    <h4 class="fw-bolder">Información de reporte</h4>
-                    <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaCerradaActual.categoria}}</span>
-                    </p>
                 </div>
+                <h4 class="fw-bolder">Información de reporte</h4>
+                <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaCerradaActual.categoria}}</span>
+                </p>
                 <p class="fw-bolder">Descripcion: </p>
                 <p>
                     {{incidenciaCerradaActual.descripcion}}

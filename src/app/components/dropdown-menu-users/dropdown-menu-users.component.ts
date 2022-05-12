@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../../services/localData/local-data.service';
 import { ApiService } from '../../services/api/api.service';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   selector: 'app-dropdown-menu-users',
@@ -10,7 +11,7 @@ import { ApiService } from '../../services/api/api.service';
 })
 export class DropdownMenuUsersComponent implements OnInit {
 
-  constructor(private apiService: ApiService, private router:Router,private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private router:Router,private localData: LocalDataService, private permissionsService: NgxPermissionsService) { }
 
   ngOnInit(): void {
   }
@@ -20,10 +21,12 @@ export class DropdownMenuUsersComponent implements OnInit {
       next: () => {
         this.localData.deleteCookies();
         this.router.navigate(['']);
+        this.permissionsService.addPermission(["0"]);
       },
       error: () => {
         this.localData.deleteCookies();
         this.router.navigate(['']);
+        this.permissionsService.addPermission(["0"]);
       }
     })
   }

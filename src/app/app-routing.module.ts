@@ -32,7 +32,6 @@ import { ReporteVotosCoordinadorComponent } from './components/Coordinador/repor
 import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
 import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos-testigo/reporte-votos-testigo.component';
 import { ImpugnarComponent } from './components/Impugnador/impugnar/impugnar.component';
-import { MenuImpugnadorComponent } from './components/Impugnador/menu-impugnador/menu-impugnador.component';
 import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home/impugnador-home.component';
 import { CrearSupervisorAdminComponent } from './components/Admin/crear-supervisor-admin/crear-supervisor-admin.component';
 import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordinador-admin/crear-coordinador-admin.component';
@@ -40,134 +39,351 @@ import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-adm
 import { CrearCoordinadorGerenteComponent } from './components/Gerente/crear-coordinador-gerente/crear-coordinador-gerente.component';
 import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo-gerente/crear-testigo-gerente.component';
 import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-testigo-supervisor/crear-testigo-supervisor.component';
+import { NgxPermissionsGuard } from 'ngx-permissions';
+import { ForbiddenComponent } from './components/forbidden/forbidden.component';
+import { LogoutPermissionsGuard } from './permissions/logout-permissions-guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [LogoutPermissionsGuard],
   },
   {
-    path: 'gerenteHome',
-    component: GerenteHomeComponent
+    path: 'forbidden',
+    component: ForbiddenComponent,
   },
   {
     path: 'adminHome',
-    component: AdminHomeComponent
+    component: AdminHomeComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
+  },
+  {
+    path: 'gerenteHome',
+    component: GerenteHomeComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["2"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'supervisorHome',
-    component: SupervisorHomeComponent
+    component: SupervisorHomeComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["3"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'coordinadorHome',
-    component: CoordinadorHomeComponent
+    canActivate: [NgxPermissionsGuard],
+    component: CoordinadorHomeComponent,
+    data: {
+      permissions: {
+        only: ["4"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'testigoHome',
-    component: TestigoHomeComponent
+    component: TestigoHomeComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["5"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'crearGerente',
-    component: CrearGerenteComponent
+    component: CrearGerenteComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'crearSupervisor',
-    component: CrearSupervisorComponent
+    component: CrearSupervisorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: [2],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'crearCoordinador',
-    component: CrearCoordinadorComponent
+    component: CrearCoordinadorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["3"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'crearTestigo',
-    component: CrearTestigoComponent
+    component: CrearTestigoComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["4"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'editarGerente/:id',
-    component: EditarGerenteComponent
+    component: EditarGerenteComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'consultarEquipoAdmin',
-    component: VerEquipoAdminComponent
+    component: VerEquipoAdminComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'consultarEquipoGerente',
-    component: VerEquipoGerenteComponent
+    component: VerEquipoGerenteComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: [2],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'consultarEquipoSupervisor',
-    component: VerEquipoSupervisorComponent
+    component: VerEquipoSupervisorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["3"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'consultarEquipoCoordinador',
-    component: VerEquipoCoordinadorComponent
+    component: VerEquipoCoordinadorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["4"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'estadisticasEquipoAdmin',
-    component: VerPuestoAdminComponent
+    component: VerPuestoAdminComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
-
   {
     path: 'estadisticasEquipoGerente',
-    component: VerPuestoGerenteComponent
+    component: VerPuestoGerenteComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: [2],
+        redirectTo: '/forbidden'
+      }
+    }
   },
-
   {
     path: 'estadisticasEquipoSupervisor',
-    component: VerPuestoSupervisorComponent
+    component: VerPuestoSupervisorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["3"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'estadisticasEquipoCoordinador',
-    component: VerPuestoCoordinadorComponent
+    component: VerPuestoCoordinadorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["4"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'editarSupervisor/:id',
-    component: EditarSupervisorComponent
+    component: EditarSupervisorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: [2],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'editarCoordinador/:id',
-    component: EditarCoordinadorComponent
+    component: EditarCoordinadorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["3"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'editarTestigo/:id',
-    component: EditarTestigoComponent
+    component: EditarTestigoComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["4"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'consultarGerente',
-    component: ConsultarGerenteComponent
+    component: ConsultarGerenteComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'consultarSupervisor',
-    component: ConsultarSupervisorComponent
+    component: ConsultarSupervisorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: [2],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'consultarCoordinador',
-    component: ConsultarCoordinadorComponent
+    component: ConsultarCoordinadorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["3"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'consultarTestigo',
-    component: ConsultarTestigoComponent
+    component: ConsultarTestigoComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["4"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'reporteIncidencias',
-    component: ReporteIncidenciasComponent
+    component: ReporteIncidenciasComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["5"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'editarPerfil',
-    component: EditarPerfilComponent
+    component: EditarPerfilComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: [1, 2, 3, 4, 5],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'reporteIncidenciasCoordinador',
-    component: ReporteIncidenciasCoordinadorComponent
+    component: ReporteIncidenciasCoordinadorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["4"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'reporteVotosCoordinador',
-    component: ReporteVotosCoordinadorComponent
+    component: ReporteVotosCoordinadorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["4"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'reporteVotosTestigo',
-    component: ReporteVotosTestigoComponent
+    component: ReporteVotosTestigoComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["5"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
+  //No olvidar cambiar id para poder utilizar el forbidden.
   {
     path: 'impugnar',
     component: ImpugnarComponent
@@ -178,27 +394,69 @@ const routes: Routes = [
   },
   {
     path: 'crearSupervisorAdmin',
-    component: CrearSupervisorAdminComponent
+    component: CrearSupervisorAdminComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'crearCoordinadorAdmin',
-    component: CrearCoordinadorAdminComponent
+    component: CrearCoordinadorAdminComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'crearTestigoAdmin',
-    component: CrearTestigoAdminComponent
+    component: CrearTestigoAdminComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'crearCoordinadorGerente',
-    component: CrearCoordinadorGerenteComponent
+    component: CrearCoordinadorGerenteComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: [2],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'crearTestigoGerente',
-    component: CrearTestigoGerenteComponent
+    component: CrearTestigoGerenteComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: [2],
+        redirectTo: '/forbidden'
+      }
+    }
   },
   {
     path: 'crearTestigoSupervisor',
-    component: CrearTestigoSupervisorComponent
+    component: CrearTestigoSupervisorComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["3"],
+        redirectTo: '/forbidden'
+      }
+    }
   }
 ];
 

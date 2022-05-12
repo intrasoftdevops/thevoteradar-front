@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { filter, Subscription } from 'rxjs';
 import { LocalDataService } from './services/localData/local-data.service';
 
@@ -9,24 +10,30 @@ import { LocalDataService } from './services/localData/local-data.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'voteradar-front';
-  rol: any;
+  rol: any = '';
   subscriber!: Subscription;
 
-  constructor(private localData: LocalDataService, private router: Router) {
+  constructor(private localData: LocalDataService, private router: Router,
+    private permissionsService: NgxPermissionsService) {
   }
 
   ngOnInit() {
-    this.getRol();
+    this.permissionsService.addPermission([this.getRol()]);
     this.subscriber = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe((event) => {
-      this.getRol();
+    ).subscribe(({ urlAfterRedirects }: any) => {
+      this.permissionsService.addPermission([this.getRol()]);
+      localStorage.setItem('previosUrl', urlAfterRedirects);
+      if (localStorage.getItem('previosUrl')=="/forbidden") {
+        this.router.navigate(['']);
+      }
     });
   }
 
-  getRol() {
-    this.rol = this.localData.getRol();
+  getRol(): any {
+    this.rol = this.localData.getRol()!='' ?this.localData.getRol(): ["0"];
+    console.log(this.rol)
+    return this.rol;
   }
 
 }

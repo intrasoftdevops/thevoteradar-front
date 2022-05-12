@@ -5,6 +5,7 @@ import packageJson from '../../../../package.json';
 import { AlertService } from '../../services/alert/alert.service';
 import { LocalDataService } from '../../services/localData/local-data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,7 @@ export class LoginComponent implements OnInit {
 
   public version: string = packageJson.version;
 
-  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService) { }
 
   ngOnInit() {
   }
@@ -32,7 +33,6 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     if (this.loginForm.valid) {
       this.apiService.login(this.loginForm.value).subscribe((resp: any) => {
-
         const { res, rol, token, id } = resp;
         if (res == true) {
           console.log(resp);
@@ -40,6 +40,8 @@ export class LoginComponent implements OnInit {
           this.localData.setToken(token);
           this.localData.setRol(rol);
           this.localData.setId(id);
+          this.permissionsService.addPermission([this.localData.getRol()]);
+
           if (res == true && rol == 1) {
             this.router.navigate(['estadisticasEquipoAdmin']);
           }

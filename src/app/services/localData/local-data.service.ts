@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import CryptoJS from 'crypto-js';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalDataService {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   deleteCookies() {
     localStorage.clear();
@@ -25,10 +26,11 @@ export class LocalDataService {
   setRol(rol: any) {
     const rolEncrypt = CryptoJS.AES.encrypt(rol.toString(), environment.key2).toString();
     localStorage.setItem('keyB', rolEncrypt);
+    this.router.navigateByUrl('/');
   }
 
   getRol() {
-    return CryptoJS.AES.decrypt(localStorage.getItem('keyB') ?? '', environment.key2).toString(CryptoJS.enc.Utf8);
+    return CryptoJS.AES.decrypt(localStorage.getItem('keyB') ?? "0", environment.key2).toString(CryptoJS.enc.Utf8);
   }
 
   setId(id: any) {
