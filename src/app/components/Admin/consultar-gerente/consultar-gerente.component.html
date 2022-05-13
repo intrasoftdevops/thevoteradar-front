@@ -35,12 +35,22 @@
                                     <td>{{gerente.email}}</td>
                                     <td>{{listMunicipals[index]}}</td>
                                     <td>
-                                        <button class="btn align-middle mx-1" data-bs-toggle="modal" data-bs-target="#gerente" (click)="gerenteActualSeleccionado(gerente,listMunicipals[index])">
-                                            <i class="fa-solid fa-eye text-primary"></i>
-                                        </button>
-                                        <a class="rounded-circle align-middle mx-1" (click)="redirectUpdateGerente(gerente.id)">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
+                                        <div class="d-grid gap-1 d-md-flex justify-content-center align-items-center">
+                                            <button class="btn align-middle" data-bs-toggle="modal"
+                                                data-bs-target="#gerente"
+                                                (click)="gerenteActualSeleccionado(gerente,listMunicipals[index])"
+                                                data-bs-placement="top" title="Ver más">
+                                                <i class="fa-solid fa-eye text-primary"></i>
+                                            </button>
+                                            <button class="btn align-middle" (click)="redirectUpdateGerente(gerente.id)"
+                                                data-bs-placement="top" title="Editar información">
+                                                <i class="fa-solid fa-pen text-primary"></i>
+                                            </button>
+                                            <button class="btn align-middle" data-bs-placement="top"
+                                                title="Cambiar de rol">
+                                                <i class="fa-solid fa-people-arrows-left-right text-primary"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -55,7 +65,8 @@
         <div class="tab-pane fade" id="noasignados" role="tabpanel">
             <div class="card mt-3">
                 <div class="card-body">
-                    <div class="table-responsive my-4" *ngIf="listGerenteNoAsignados.length>0;else no_municipio_content">
+                    <div class="table-responsive my-4"
+                        *ngIf="listGerenteNoAsignados.length>0;else no_municipio_content">
                         <table class="table text-center align-middle w-100" datatable
                             [dtOptions]="dtOptionsGerenteNoAsignados" [dtTrigger]="dtTrigger">
                             <thead class="text-dark align-middle">
@@ -72,12 +83,21 @@
                                     <td>{{gerente.telefono}}</td>
                                     <td>{{gerente.email}}</td>
                                     <td>
-                                        <button class="btn align-middle mx-1" data-bs-toggle="modal" data-bs-target="#gerente" (click)="gerenteActualSeleccionado(gerente)">
-                                            <i class="fa-solid fa-eye text-primary"></i>
-                                        </button>
-                                        <a class="rounded-circle align-middle mx-1" (click)="redirectUpdateGerente(gerente.id)">
-                                            <i class="fas fa-pen text-primary"></i>
-                                        </a>
+                                        <div class="d-grid gap-1 d-md-flex justify-content-center align-items-center">
+                                            <button class="btn align-middle" data-bs-toggle="modal"
+                                                data-bs-target="#gerente" (click)="gerenteActualSeleccionado(gerente)"
+                                                data-bs-placement="top" title="Ver más">
+                                                <i class="fa-solid fa-eye text-primary"></i>
+                                            </button>
+                                            <button class="btn align-middle" (click)="redirectUpdateGerente(gerente.id)"
+                                                data-bs-placement="top" title="Editar información">
+                                                <i class="fa-solid fa-pen text-primary"></i>
+                                            </button>
+                                            <button class="btn align-middle" data-bs-placement="top"
+                                                title="Cambiar de rol">
+                                                <i class="fa-solid fa-people-arrows-left-right text-primary"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -94,20 +114,23 @@
 
 <div class="modal fade" id="gerente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title" id="exampleModalLabel">Información</h5>
-          <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-            <i class="fa-solid fa-xmark text-white"></i>
-          </button>
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><span class="fw-bolder">Nombre completo: </span><span> {{gerenteActual.nombres}}
+                        {{gerenteActual.apellidos}}</span></p>
+                <p><span class="fw-bolder">Telefono: </span><span> {{gerenteActual.telefono}}</span></p>
+                <p><span class="fw-bolder">Correo electronico: </span><span> {{gerenteActual.email}}</span></p>
+                <p><span class="fw-bolder">Numero de documento: </span><span> {{gerenteActual.numero_documento}}</span>
+                </p>
+                <p [ngClass]="{'d-none': !municipiosActual}"><span class="fw-bolder">Municipios: </span><span>
+                        {{municipiosActual}}</span></p>
+            </div>
         </div>
-        <div class="modal-body">
-            <p><span class="fw-bolder">Nombre completo: </span><span> {{gerenteActual.nombres}} {{gerenteActual.apellidos}}</span></p>
-            <p><span class="fw-bolder">Telefono: </span><span> {{gerenteActual.telefono}}</span></p>
-            <p><span class="fw-bolder">Correo electronico: </span><span> {{gerenteActual.email}}</span></p>
-            <p><span class="fw-bolder">Numero de documento: </span><span> {{gerenteActual.numero_documento}}</span></p>
-            <p [ngClass]="{'d-none': !municipiosActual}"><span class="fw-bolder">Municipios: </span><span> {{municipiosActual}}</span></p>
-        </div>
-      </div>
     </div>
-  </div>
+</div>

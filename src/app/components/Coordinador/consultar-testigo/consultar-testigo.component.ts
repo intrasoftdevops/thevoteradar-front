@@ -17,6 +17,8 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy{
   dtOptionsTestigoAsignados: DataTables.Settings = {};
   dtOptionsTestigoNoAsignados: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  testigoActual: any={};
+  mesasActual: any='';
 
   constructor(private apiService: ApiService,private router: Router,private localData: LocalDataService) { }
 
@@ -61,6 +63,11 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy{
   redirectUpdateTestigo(id: any) {
     const idEncrypt = this.localData.encryptIdUser(id);
     this.router.navigate(["editarTestigo",idEncrypt]);
+  }
+
+  testigoActualSeleccionado(testigo: any, mesas?:any) {
+    this.testigoActual=testigo;
+    this.mesasActual=mesas;
   }
 
   dataTableOptions() {

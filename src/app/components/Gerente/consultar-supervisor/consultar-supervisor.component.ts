@@ -17,6 +17,8 @@ export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
   dtOptionsSupervisorAsignados: DataTables.Settings = {};
   dtOptionsSupervisorNoAsignados: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  supervisorActual: any={};
+  zonasActual: any='';
 
   constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService) { }
 
@@ -63,6 +65,11 @@ export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
     this.router.navigate(["editarSupervisor", idEncrypt]);
   }
 
+  supervisorActualSeleccionado(supervisor: any, zonas?:any) {
+    this.supervisorActual=supervisor;
+    this.zonasActual=zonas;
+  }
+
   dataTableOptions() {
     this.dtOptionsSupervisorAsignados = {
       processing: true,
@@ -71,7 +78,7 @@ export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
         orderable: true,
       }, {
         orderable: true,
-        className: 'd-none d-lg-table-cell',
+        className: 'd-none d-md-table-cell',
       }, {
         orderable: true,
         className: 'd-none d-lg-table-cell'
@@ -95,11 +102,11 @@ export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
         orderable: true,
       }, {
         orderable: true,
-        className: 'd-none d-lg-table-cell'
+        className: 'd-none d-md-table-cell'
       },
       {
         orderable: true,
-        className: 'd-none d-lg-table-cell'
+        className: 'd-none d-md-table-cell'
       },
       {
         orderable: false,

@@ -301,7 +301,7 @@ const routes: Routes = [
     canActivate: [NgxPermissionsGuard],
     data: {
       permissions: {
-        only: [2],
+        only: [1, 2],
         redirectTo: '/forbidden'
       }
     }
@@ -312,7 +312,7 @@ const routes: Routes = [
     canActivate: [NgxPermissionsGuard],
     data: {
       permissions: {
-        only: ["3"],
+        only: [1, 2, 3],
         redirectTo: '/forbidden'
       }
     }
@@ -323,7 +323,7 @@ const routes: Routes = [
     canActivate: [NgxPermissionsGuard],
     data: {
       permissions: {
-        only: ["4"],
+        only: [1, 2, 3, 4],
         redirectTo: '/forbidden'
       }
     }

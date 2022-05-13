@@ -3,7 +3,15 @@
         <h4>Edita tus datos</h4>
     </div>
     <div class="d-flex justify-content-center">
-        <i class="fa-solid fa-circle-user fa-10x my-4 text-dark bg-primary rounded-circle"></i>
+        <div class="position-relative my-4">
+            <i
+                class="fa-solid fa-circle-user fa-10x text-white bg-info rounded-circle border border-primary border-5"></i>
+            <button type="button"
+                class="btn btn-primary position-absolute bottom-0 end-0 border border-light rounded-circle text-center border-2"
+                style="width: 51px;height: 51px" data-bs-toggle="modal" data-bs-target="#perfilModal">
+                <i class="fa-solid fa-camera text-white fa-xl"></i>
+            </button>
+        </div>
     </div>
     <div class="card">
         <div class="card-body">
@@ -79,3 +87,31 @@
         <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">EDITAR</button>
     </div>
 </form>
+<div class="modal fade" id="perfilModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Editar foto de perfil</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true"
+                    [maxFileSize]="10000000" [multiple]="false">
+                    <ngx-dropzone-label>
+                        <i class="fas fa-paperclip text-primary fa-lg"></i> Adjunta tu foto de perfil (Maximo 10MB)
+                    </ngx-dropzone-label>
+                    <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
+                        [removable]="true" (removed)="onRemove(f)">
+                        <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+                    </ngx-dropzone-image-preview>
+                </ngx-dropzone>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Editar foto</button>
+            </div>
+        </div>
+    </div>
+</div>

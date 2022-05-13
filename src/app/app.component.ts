@@ -23,16 +23,17 @@ export class AppComponent {
       filter(event => event instanceof NavigationEnd)
     ).subscribe(({ urlAfterRedirects }: any) => {
       this.permissionsService.addPermission([this.getRol()]);
-      localStorage.setItem('previosUrl', urlAfterRedirects);
-      if (localStorage.getItem('previosUrl')=="/forbidden") {
+      if (urlAfterRedirects != "/forbidden") {
+        localStorage.setItem('previosUrl', urlAfterRedirects);
+      }
+      if (localStorage.getItem('previosUrl') == "/forbidden") {
         this.router.navigate(['']);
       }
     });
   }
 
   getRol(): any {
-    this.rol = this.localData.getRol()!='' ?this.localData.getRol(): ["0"];
-    console.log(this.rol)
+    this.rol = this.localData.getRol() != '' ? this.localData.getRol() : ["0"];
     return this.rol;
   }
 

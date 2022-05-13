@@ -37,7 +37,7 @@ table.dataTable>thead .sorting_desc_disabled:before {
     @extend %fa-icon;
     @extend .fa-solid;
     right: 1em !important;
-    content: fa-content($fa-var-arrow-up) !important;
+    content: fa-content($fa-var-arrow-up-long) !important;
 }
 
 table.dataTable>thead .sorting:after,
@@ -48,7 +48,7 @@ table.dataTable>thead .sorting_desc_disabled:after {
     @extend %fa-icon;
     @extend .fa-solid;
     right: 0em !important;
-    content: fa-content($fa-var-arrow-down) !important;
+    content: fa-content($fa-var-arrow-down-long) !important;
 }
 
 body {

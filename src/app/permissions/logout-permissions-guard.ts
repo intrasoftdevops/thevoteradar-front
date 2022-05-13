@@ -1,7 +1,6 @@
 import { LocalDataService } from '../services/localData/local-data.service';
-import { CanActivate, NavigationEnd, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { filter } from 'rxjs';
 import { NgxPermissionsService } from 'ngx-permissions';
 
 @Injectable()

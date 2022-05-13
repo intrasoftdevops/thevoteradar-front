@@ -10,13 +10,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ms-auto text-center">
         <li class="nav-item align-middle">
-          <a class="nav-link px-3 text-white" aria-current="page" [routerLink]="['/adminHome']"
+          <a class="nav-link px-xl-3 text-white" aria-current="page" [routerLink]="['/adminHome']"
             [routerLinkActive]="['link-active']">
             <i class="fa-solid fa-house fa-lg align-middle"></i> &nbsp; <span class="fs-5 align-middle">Inicio</span>
           </a>
         </li>
         <li class="nav-item dropdown align-middle" [routerLinkActive]="['link-active']">
-          <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+          <a class="nav-link px-xl-3 text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             <i class="fa-solid fa-user-plus fa-lg align-middle"></i> &nbsp; <span class="fs-5 align-middle">Crear
               usuarios</span>
@@ -49,7 +49,7 @@
           </ul>
         </li>
         <li class="nav-item dropdown align-middle" [routerLinkActive]="['link-active']">
-          <a class="nav-link px-3 text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+          <a class="nav-link px-xl-3 text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             <i class="fa-solid fa-magnifying-glass fa-lg align-middle"></i> &nbsp; <span
               class="fs-5 align-middle">Consultar</span>
@@ -67,16 +67,43 @@
                 Consultar estadisticas de equipo
               </a>
             </li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown align-middle" [routerLinkActive]="['link-active']">
+          <a class="nav-link px-xl-3 text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="fa-solid fa-users fa-lg align-middle"></i> &nbsp; <span
+              class="fs-5 align-middle">Usuarios</span>
+          </a>
+          <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
             <li>
               <a class="dropdown-item text-white" [routerLink]="['/consultarGerente']"
                 [routerLinkActive]="['sublink-active']">
                 Consultar gerentes
               </a>
             </li>
+            <li>
+              <a class="dropdown-item text-white" [routerLink]="['/consultarSupervisor']"
+                [routerLinkActive]="['sublink-active']">
+                Consultar supervisores
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item text-white" [routerLink]="['/consultarCoordinador']"
+                [routerLinkActive]="['sublink-active']">
+                Consultar coordinadores
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item text-white" [routerLink]="['/consultarTestigo']"
+                [routerLinkActive]="['sublink-active']">
+                Consultar testigos
+              </a>
+            </li>
           </ul>
         </li>
         <li class="nav-item align-middle">
-          <a class="nav-link px-3 text-white" data-bs-toggle="offcanvas" href="#offcanvasExample"
+          <a class="nav-link px-xl-3 text-white" data-bs-toggle="offcanvas" href="#offcanvasExample"
             [routerLinkActive]="['link-active']" role="button" aria-controls="offcanvasExample">
             <i class="fa-solid fa-address-book fa-lg align-middle"></i> &nbsp; <span
               class="fs-5 align-middle">Contactos</span>

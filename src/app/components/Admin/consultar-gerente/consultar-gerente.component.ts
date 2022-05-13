@@ -77,7 +77,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
         orderable: true,
       }, {
         orderable: true,
-        className: 'd-none d-lg-table-cell',
+        className: 'd-none d-md-table-cell',
       },{
         orderable: true,
         className: 'd-none d-lg-table-cell'
@@ -101,11 +101,11 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
         orderable: true,
       },{
         orderable: true,
-        className: 'd-none d-lg-table-cell'
+        className: 'd-none d-md-table-cell',
       },
        {
         orderable: true,
-        className: 'd-none d-lg-table-cell'
+        className: 'd-none d-md-table-cell',
       },
       {
         orderable: false,

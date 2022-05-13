@@ -12,6 +12,7 @@ import { LocalDataService } from '../../services/localData/local-data.service';
 })
 export class EditarPerfilComponent implements OnInit {
 
+  files: File[] = [];
   updateForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
@@ -27,6 +28,14 @@ export class EditarPerfilComponent implements OnInit {
 
   ngOnInit() {
     this.getUser();
+  }
+
+  get createFormControl() {
+    return this.updateForm.controls;
+  }
+
+  get keypressValidator() {
+    return this.customValidator;
   }
 
   onSubmit() {
@@ -61,12 +70,15 @@ export class EditarPerfilComponent implements OnInit {
     })
   }
 
-  get createFormControl() {
-    return this.updateForm.controls;
+  onSelect(event: any) {
+    this.files=[];
+    this.files.push(...event.addedFiles);
+    console.log(this.files)
   }
 
-  get keypressValidator() {
-    return this.customValidator;
+  onRemove(event: any) {
+    this.files.splice(this.files.indexOf(event), 1);
+    console.log(this.files)
   }
 
 }

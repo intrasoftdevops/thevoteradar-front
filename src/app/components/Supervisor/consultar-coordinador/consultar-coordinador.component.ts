@@ -17,6 +17,8 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
   dtOptionsCoordinadorAsignados: DataTables.Settings = {};
   dtOptionsCoordinadorNoAsignados: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  coordinadorActual: any={};
+  puestosActual: any='';
 
   constructor(private apiService: ApiService,private router: Router,private localData: LocalDataService) { }
 
@@ -64,6 +66,11 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
     this.router.navigate(["editarCoordinador",idEncrypt]);
   }
 
+  coordinadorActualSeleccionado(coordinador: any, puestos?:any) {
+    this.coordinadorActual=coordinador;
+    this.puestosActual=puestos;
+  }
+
   dataTableOptions() {
     this.dtOptionsCoordinadorAsignados = {
       processing: true,
@@ -72,7 +79,7 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
         orderable: true,
       }, {
         orderable: true,
-        className: 'd-none d-lg-table-cell',
+        className: 'd-none d-md-table-cell',
       }, {
         orderable: true,
         className: 'd-none d-lg-table-cell'
@@ -96,11 +103,11 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
         orderable: true,
       }, {
         orderable: true,
-        className: 'd-none d-lg-table-cell'
+        className: 'd-none d-md-table-cell'
       },
       {
         orderable: true,
-        className: 'd-none d-lg-table-cell'
+        className: 'd-none d-md-table-cell'
       },
       {
         orderable: false,
