@@ -107,6 +107,7 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
   renderer() {
     if (this.notFirstTime) {
       this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.draw();
         dtInstance.destroy();
       });
     }

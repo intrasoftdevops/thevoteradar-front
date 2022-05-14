@@ -4,16 +4,17 @@
             <h4>Impugnaciones</h4>
         </div>
         <div class="card-body">
-            <div class="row m-4 d-flex justify-content-center align-items-center align-items-center">
+            <form class="row m-4 d-flex justify-content-center align-items-center align-items-center"
+                [formGroup]="searchForm">
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="fw-bold form-label">Reportes por candidato</label>
-                    <ng-select (change)="getSelectedValue($event)" [searchable]="false" class="custom-select rounded"
-                        notFoundText="No hay informacion disponible" placeholder="Seleccione candidato">
-                        <ng-option *ngFor="let candidato of dataCandidatos" [value]="candidato.codigo_unico">
-                            {{candidato.nombres}} {{candidato.apellidos}}</ng-option>
+                    <ng-select [items]="dataCandidatos" bindLabel="fullName" bindValue="codigo_unico"
+                        (change)="getSelectedValue($event)" class="custom-select rounded"
+                        notFoundText="No hay informacion disponible" placeholder="Seleccione candidato"
+                        formControlName="candidato">
                     </ng-select>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
     <div [hidden]="!tabla">
@@ -37,7 +38,7 @@
                 <div class="card mt-3">
                     <div class="card-body">
                         <div class="table-responsive my-4" [hidden]="dataRevisar.length<=0">
-                            <table datatable [dtOptions]="dtOptionsRevisar" [dtTrigger]="dtTrigger"
+                            <table id="first-table" datatable [dtOptions]="dtOptions[0]" [dtTrigger]="dtTrigger1"
                                 class="table text-center align-middle w-100">
                                 <thead class="text-dark align-middle">
                                     <tr>
@@ -76,7 +77,7 @@
                 <div class="card mt-3">
                     <div class="card-body">
                         <div class="table-responsive my-4" [hidden]="dataImpugnar.length<=0">
-                            <table datatable [dtOptions]="dtOptionsImpugnar" [dtTrigger]="dtTrigger"
+                            <table  id="second-table" datatable [dtOptions]="dtOptions[1]" [dtTrigger]="dtTrigger2"
                                 class="table text-center align-middle w-100">
                                 <thead class="text-dark align-middle">
                                     <tr>
@@ -116,7 +117,7 @@
                 <div class="card mt-3">
                     <div class="card-body">
                         <div class="table-responsive my-4" [hidden]="dataNoImpugnados.length<=0">
-                            <table datatable [dtOptions]="dtOptionsNoImpugnar" [dtTrigger]="dtTrigger"
+                            <table  id="third-table" datatable [dtOptions]="dtOptions[2]" [dtTrigger]="dtTrigger3"
                                 class="table text-center align-middle w-100">
                                 <thead class="text-dark align-middle">
                                     <tr>

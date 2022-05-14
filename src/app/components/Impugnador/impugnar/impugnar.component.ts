@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, QueryList, ViewChildren, ChangeDetectorRef } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
@@ -16,6 +16,9 @@ import { DataTableDirective } from 'angular-datatables';
 })
 export class ImpugnarComponent implements OnInit, OnDestroy {
 
+  @ViewChildren(DataTableDirective)
+  dtElements!: QueryList<any>;
+
   dataCandidatos: any = [];
   tabla: boolean = false;
   dataRevisar: any = [];
@@ -32,18 +35,21 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     candidato: [''],
     numero_votos: [''],
   });
+  searchForm: FormGroup = this.fb.group({
+    candidato: [null],
+  });
   indexRevisar: any;
   urlRevisar: SafeResourceUrl = '';
   urlImpugnados: SafeResourceUrl = '';
   urlNoImpugnados: SafeResourceUrl = '';
-  dtOptionsRevisar: DataTables.Settings = {};
-  dtOptionsImpugnar: DataTables.Settings = {};
-  dtOptionsNoImpugnar: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
-  @ViewChild(DataTableDirective) dtElement!: DataTableDirective;
+  dtOptions: DataTables.Settings[] = [];
+  dtTrigger1: Subject<any> = new Subject<any>();
+  dtTrigger2: Subject<any> = new Subject<any>();
+  dtTrigger3: Subject<any> = new Subject<any>();
   notFirstTime = false;
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService, private sanitizer: DomSanitizer, private http: HttpClient) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService,
+    private sanitizer: DomSanitizer, private chRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.dataTableOptions();
@@ -52,7 +58,9 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.dtTrigger.unsubscribe();
+    this.dtTrigger1.unsubscribe();
+    this.dtTrigger2.unsubscribe();
+    this.dtTrigger3.unsubscribe();
   }
 
   get createFormControl() {
@@ -65,7 +73,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   getSelectedValue(item: any) {
     if (item) {
-      const data = { candidato_comparacion: item };
+      const data = { candidato_comparacion: item.codigo_unico };
       this.getImpugnaciones(data);
       this.tabla = true;
     } else {
@@ -77,11 +85,17 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   getInteresesCandidato() {
     this.apiService.getInteresesCandidato().subscribe((resp: any) => {
       this.dataCandidatos = resp;
+      if (this.dataCandidatos.length > 0) {
+        this.dataCandidatos.map((i: any) => { i.fullName = i.nombres + ' ' + i.apellidos; return i; });
+        this.searchForm.get('candidato')?.setValue(this.dataCandidatos[0].codigo_unico);
+        this.getSelectedValue(this.dataCandidatos[0]);
+      }
     })
   }
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
+      console.log(resp)
       this.dataRevisar = resp.reportes_no_revisados;
       this.dataImpugnar = resp.reportes_revisados;
       this.dataNoImpugnados = resp.reportes_no_impugnados;
@@ -122,8 +136,10 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       console.log(this.createForm.value)
       this.apiService.impugnar(this.dataRevisarActual.id, this.createForm.value).subscribe((resp: any) => {
         this.indexRevisar = this.dataRevisar.findIndex((i: any) => i.id === this.dataRevisarActual.id);
-        this.dataRevisar.splice(this.indexRevisar, 1);
+        this.indexRevisar !== -1 && this.dataRevisar.splice(this.indexRevisar, 1);
+        this.dataRevisar = this.dataRevisar;
         this.dataImpugnar.push(this.dataRevisarActual);
+        console.log(this.dataRevisar);
         if (this.dataRevisar.length > 0) {
           var rand = Math.floor(Math.random() * this.dataRevisar.length);
           this.ModalRevisarActual(this.dataRevisar[rand]);
@@ -131,6 +147,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
         } else {
           this.successAlert(resp.message);
         }
+        this.renderer();
       })
     } else {
       this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -141,8 +158,10 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     this.createForm.get('categoria_impugnacion')?.setValue(null);
     this.apiService.noImpugnar(this.dataRevisarActual.id, this.createForm.value).subscribe((resp: any) => {
       this.indexRevisar = this.dataRevisar.findIndex((i: any) => i.id === this.dataRevisarActual.id);
-      this.dataRevisar.splice(this.indexRevisar, 1);
+      this.indexRevisar !== -1 && this.dataRevisar.splice(this.indexRevisar, 1);
+      this.dataRevisar = this.dataRevisar;
       this.dataNoImpugnados.push(this.dataRevisarActual);
+      console.log(this.dataRevisar);
       if (this.dataRevisar.length > 0) {
         var rand = Math.floor(Math.random() * this.dataRevisar.length);
         this.ModalRevisarActual(this.dataRevisar[rand]);
@@ -150,6 +169,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       } else {
         this.alertService.successAlert(resp.message);
       }
+      this.renderer();
     })
   }
 
@@ -161,7 +181,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   }
 
   dataTableOptions() {
-    this.dtOptionsRevisar = {
+    this.dtOptions[0] = {
       destroy: true,
       processing: true,
       pageLength: 10,
@@ -185,7 +205,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
       }
     };
-    this.dtOptionsImpugnar = {
+    this.dtOptions[1] = {
       destroy: true,
       processing: true,
       pageLength: 10,
@@ -209,7 +229,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
       }
     };
-    this.dtOptionsNoImpugnar = {
+    this.dtOptions[2] = {
       destroy: true,
       processing: true,
       pageLength: 10,
@@ -237,12 +257,18 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   renderer() {
     if (this.notFirstTime) {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.destroy();
+      this.dtElements.forEach((dtElement: DataTableDirective) => {
+        console.log(dtElement)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.draw();
+          dtInstance.destroy();
+        });
       });
     }
     setTimeout(() => {
-      this.dtTrigger.next(void 0);
+      this.dtTrigger1.next(void 0);
+      this.dtTrigger2.next(void 0);
+      this.dtTrigger3.next(void 0);
     });
   }
 
