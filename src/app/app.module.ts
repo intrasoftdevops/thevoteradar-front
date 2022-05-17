@@ -62,6 +62,8 @@ import { DataTablesModule } from 'angular-datatables';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { LogoutPermissionsGuard } from './permissions/logout-permissions-guard';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CambiarRolGerenteComponent } from './components/Admin/cambiar-rol-gerente/cambiar-rol-gerente.component';
 
 @NgModule({
   declarations: [
@@ -116,7 +118,8 @@ import { LogoutPermissionsGuard } from './permissions/logout-permissions-guard';
     CrearTestigoGerenteComponent,
     CrearTestigoSupervisorComponent,
     DropdownMenuUsersComponent,
-    ForbiddenComponent
+    ForbiddenComponent,
+    CambiarRolGerenteComponent
   ],
   imports: [
     BrowserModule,
@@ -130,6 +133,7 @@ import { LogoutPermissionsGuard } from './permissions/logout-permissions-guard';
     NgxDropzoneModule,
     DataTablesModule,
     NgxPermissionsModule.forRoot(),
+    NgbModule
   ],
   providers: [
     LogoutPermissionsGuard,

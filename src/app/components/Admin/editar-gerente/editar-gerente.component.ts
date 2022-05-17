@@ -5,7 +5,6 @@ import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
-import { environment } from '../../../../environments/environment';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 @Component({
   selector: 'app-editar-gerente',
@@ -86,6 +85,7 @@ export class EditarGerenteComponent implements OnInit {
 
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
+      console.log(resp)
       this.dataDepartments = resp;
       this.getMunicipalAdmin();
     })
@@ -93,7 +93,7 @@ export class EditarGerenteComponent implements OnInit {
 
   getMunicipalAdmin() {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-
+      console.log(resp)
       if (this.updateFormControl['departamento'].value) {
         this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControl['departamento'].value);
       }

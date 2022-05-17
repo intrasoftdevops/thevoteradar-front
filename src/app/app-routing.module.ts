@@ -42,6 +42,7 @@ import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-t
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { LogoutPermissionsGuard } from './permissions/logout-permissions-guard';
+import { CambiarRolGerenteComponent } from './components/Admin/cambiar-rol-gerente/cambiar-rol-gerente.component';
 
 const routes: Routes = [
   {
@@ -345,7 +346,7 @@ const routes: Routes = [
     canActivate: [NgxPermissionsGuard],
     data: {
       permissions: {
-        only: [1, 2, 3, 4, 5],
+        only: [1, 2, 3, 4, 5, 8],
         redirectTo: '/forbidden'
       }
     }
@@ -457,7 +458,18 @@ const routes: Routes = [
         redirectTo: '/forbidden'
       }
     }
-  }
+  },
+  {
+    path: 'cambiarRolGerente/:id',
+    component: CambiarRolGerenteComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: ["1"],
+        redirectTo: '/forbidden'
+      }
+    }
+  },
 ];
 
 @NgModule({

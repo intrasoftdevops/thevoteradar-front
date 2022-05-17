@@ -3,6 +3,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-consultar-gerente',
@@ -20,7 +21,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   dtOptionsGerenteNoAsignados: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
-  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService,private fb: FormBuilder) { }
 
   ngOnInit() {
     this.dataTableOptions();
@@ -62,6 +63,11 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   redirectUpdateGerente(id: any) {
     const idEncrypt = this.localData.encryptIdUser(id);
     this.router.navigate(["editarGerente", idEncrypt]);
+  }
+
+  redirectSwitchRolGerente(id: any) {
+    const idEncrypt = this.localData.encryptIdUser(id);
+    this.router.navigate(["cambiarRolGerente", idEncrypt]);
   }
 
   gerenteActualSeleccionado(gerente: any, municipios?:any) {

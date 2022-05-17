@@ -47,8 +47,7 @@
                                                 <i class="fa-solid fa-pen text-primary"></i>
                                             </button>
                                             <button class="btn align-middle" data-bs-placement="top"
-                                                title="Cambiar de rol" data-bs-toggle="modal"
-                                                data-bs-target="#cambiarRol">
+                                                title="Cambiar de rol" (click)="redirectSwitchRolGerente(gerente.id)">
                                                 <i class="fa-solid fa-people-arrows-left-right text-primary"></i>
                                             </button>
                                         </div>
@@ -132,33 +131,6 @@
                 </p>
                 <p [ngClass]="{'d-none': !municipiosActual}"><span class="fw-bolder">Municipios: </span><span>
                         {{municipiosActual}}</span></p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="cambiarRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Cambiar rol</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Rol</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <ng-select [searchable]="false" class="custom-select rounded" placeholder="Seleccione rol">
-                        <ng-option [value]="2">Gerente</ng-option>
-                        <ng-option [value]="3">Supervisor</ng-option>
-                        <ng-option [value]="4">Coordinador</ng-option>
-                        <ng-option [value]="5">Testigo</ng-option>
-                    </ng-select>
-                </div>
             </div>
         </div>
     </div>

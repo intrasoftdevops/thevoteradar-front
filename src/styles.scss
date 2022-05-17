@@ -1,7 +1,7 @@
 $primary: #64248b;
 $dark: #000;
 $secondary: #cecece;
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap');
 @import "../node_modules/bootswatch/dist/cosmo/variables";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "../node_modules/bootswatch/dist/cosmo/bootswatch";
@@ -16,7 +16,6 @@ $swal2-confirm-button-background-color: $primary  !important;
 $swal2-cancel-button-background-color: $danger  !important;
 $swal2-error: $danger  !important;
 $swal2-deny-button-background-color: $danger  !important;
-$swal2-success: $success  !important;
 
 .swal2-icon.swal2-warning {
     border-color: lighten($color: $warning, $amount: 20) !important;
@@ -95,9 +94,9 @@ hr {
 
 input,
 select {
-    border-color: #000 !important;
-    border-width: 2px !important;
-    border-radius: 0.25rem !important;
+    border-color: #000!important;
+    border-width: 2px!important;
+    border-radius: 0.25rem!important;
 }
 
 .btn {
@@ -355,7 +354,7 @@ nav li .dropdown-menu li a:hover {
 
 .iframe {
     width: 100%;
-    height: calc(22vw + 22rem);
+    height: calc(20vw + 20rem);
 }
 
 @media (max-width: 960px) {
@@ -377,4 +376,50 @@ nav li .dropdown-menu li a:hover {
 .imgItem {
     max-height: 100px;
     object-fit: cover;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    border: 1px solid $dark;
+    -webkit-text-fill-color: $dark;
+    box-shadow: 0 0 0px 1000px transparent inset;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.popover {
+    border-radius: 15px !important;
+    max-width: 100% !important;
+    //left: 15px !important;
+}
+
+@media (max-width: 1281px) {
+    .popover {
+        width: 37vw !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .popover {
+        width: 47vw !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .popover {
+        width: 72vw !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .popover {
+        width: 92vw !important;
+    }
 }

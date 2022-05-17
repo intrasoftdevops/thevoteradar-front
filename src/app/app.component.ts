@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
+import { NgxPermissionsService } from 'ngx-permissions';
 import { filter, Subscription } from 'rxjs';
 import { LocalDataService } from './services/localData/local-data.service';
 
