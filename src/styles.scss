@@ -10,7 +10,6 @@ $secondary: #cecece;
 @import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "../node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
 @import "../node_modules/@fortawesome/fontawesome-free/scss/brands.scss";
-@import "../node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
 @import "../node_modules/@fortawesome/fontawesome-free/scss/variables";
 $swal2-confirm-button-background-color: $primary  !important;
 $swal2-cancel-button-background-color: $danger  !important;
@@ -94,9 +93,9 @@ hr {
 
 input,
 select {
-    border-color: #000!important;
-    border-width: 2px!important;
-    border-radius: 0.25rem!important;
+    border-color: #000 !important;
+    border-width: 2px !important;
+    border-radius: 0.25rem !important;
 }
 
 .btn {
@@ -422,4 +421,9 @@ select:-webkit-autofill:focus {
     .popover {
         width: 92vw !important;
     }
+}
+
+icon-change-rol {
+    width: 20px!important;
+    height: 20px!important;
 }
