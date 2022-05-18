@@ -13,8 +13,9 @@
       </span>
     </button>
   </div>
-  <iframe class="iframe" *ngIf="showMap;else content_map" [src]="getUrl()" frameborder="0"
-    allowFullScreen="true"></iframe>
+  <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe;else content_map">
+    <iframe [src]="urlSafe" frameborder="0" allowFullScreen="true"></iframe>
+  </div>
   <ng-template #content_map>
     <div class="card mt-5">
       <div class="card-body">

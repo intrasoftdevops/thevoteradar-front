@@ -43,7 +43,7 @@ export class Filtro {
         return `&filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio})`
     }
     filtro_supervisor() {
-        return `&filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio}) and zonas_votacion/codigo_unico in (${this.zona_votacion}) `
+        return `&filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio}) and zonas_votacion/codigo_unico in (${this.zona_votacion})`
     }
     filtro_coordinador() {
         return `&filter=candidatos/id eq ${this.cliente} and roles/id eq ${this.rol} and departamentos_votacion/codigo_unico in (${this.departamento}) and municipios_votacion/codigo_unico in (${this.municipio}) and zonas_votacion/codigo_unico in (${this.zona_votacion}) and puestos_votacion/codigo_unico in (${this.puesto_votacion})`
@@ -64,17 +64,11 @@ export class Filtro {
     }
 
     generar_numero(elemento: any) {
-        let aux = ``
-        if (elemento.length == 1) { aux = `'${elemento[0]}'` }
-        else {
-            elemento.forEach((e: any, i: any) => {
-                if (i == elemento.length - 1)
-                    aux += `${e}`
-                else
-                    aux += `${e},`
-            })
+        let numberArray = [];
+        for (var i = 0; i < elemento.length; i++) {
+            numberArray.push(parseInt(elemento[i]));
         }
-        return aux
+        return numberArray;
     }
 
 }

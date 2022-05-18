@@ -23,7 +23,6 @@ export class VerEquipoAdminComponent implements OnInit {
   listCoordinadores: any = [];
   listTestigos: any = [];
   filtro: any;
-  idCliente: any;
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
   searchForm: FormGroup = this.fb.group({
@@ -33,33 +32,33 @@ export class VerEquipoAdminComponent implements OnInit {
     puestos: [null],
     mesas: [null]
   });
+  dataGraphics: any = {};
 
   constructor(private apiService: ApiService, private sanitizer: DomSanitizer, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.getDepartmentAdmin();
-    this.getUrl();
-    this.getCliente();
+    this.getDataGraphics();
   }
 
   get searchFormControl() {
     return this.searchForm.controls;
   }
 
-  getCliente() {
-    this.apiService.getCliente().subscribe((resp: any) => {
-      const { id } = resp;
-      this.idCliente = id;
+  getDataGraphics() {
+    this.apiService.getDataGraphics().subscribe((resp: any) => {
+      this.dataGraphics = resp;
+      console.log(this.dataGraphics);
+      this.getUrl();
     })
   }
 
   getUrl() {
-    const objeto = new Filtro(1, 1, [1]);
+    const objeto = new Filtro(this.dataGraphics.cliente, 1, this.dataGraphics.departamentos);
     //const objeto = new Filtro(this.idCliente, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
     this.filtro = objeto.generar_filtro().replace(new RegExp(" ", "g"), "%20").replace(new RegExp("/", "g"), "%2F");
     const url = environment.powerBiURL + this.filtro;
     this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    return this.urlSafe;
   }
 
   getSelectedDepartment(item: any) {

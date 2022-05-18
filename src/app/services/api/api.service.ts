@@ -176,11 +176,11 @@ export class ApiService {
     return this.http.post(this._URL + "/incidencias", data, { headers: this.getHeaders() });
   }
 
-  replyIncidencia(id:any,data:any){
+  replyIncidencia(id: any, data: any) {
     return this.http.put(this._URL + "/responder-incidencia/" + id, data, { headers: this.getHeaders() });
   }
 
-  openIncidencias(id:any,data:any) {
+  openIncidencias(id: any, data: any) {
     return this.http.put(this._URL + "/incidencias/" + id, data, { headers: this.getHeaders() });
   }
 
@@ -237,8 +237,8 @@ export class ApiService {
   }
 
 
-  getCliente() {
-    return this.http.get(this._URL + "/get-cliente", { headers: this.getHeaders() });
+  getDataGraphics() {
+    return this.http.get(this._URL + "/info-usuario", { headers: this.getHeaders() });
   }
 
   logout() {
