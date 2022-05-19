@@ -46,7 +46,7 @@
                                                 data-bs-placement="top" title="Editar información">
                                                 <i class="fa-solid fa-pen text-primary"></i>
                                             </button>
-                                            <button class="btn align-middle" data-bs-placement="top"
+                                            <button class="btn align-middle d-none" data-bs-placement="top"
                                                 title="Cambiar de rol" (click)="redirectSwitchRolGerente(gerente.id)">
                                                 <img src="../../../../assets/changeRol.svg" class="icon-change-rol">
                                             </button>
@@ -93,10 +93,9 @@
                                                 data-bs-placement="top" title="Editar información">
                                                 <i class="fa-solid fa-pen text-primary"></i>
                                             </button>
-                                            <button class="btn align-middle" data-bs-placement="top"
-                                                title="Cambiar de rol" data-bs-toggle="modal"
-                                                data-bs-target="#cambiarRol">
-                                                <i class="fa-solid fa-people-arrows-left-right text-primary"></i>
+                                            <button class="btn align-middle d-none" data-bs-placement="top"
+                                                title="Cambiar de rol" (click)="redirectSwitchRolGerente(gerente.id)">
+                                                <img src="../../../../assets/changeRol.svg" class="icon-change-rol">
                                             </button>
                                         </div>
                                     </td>

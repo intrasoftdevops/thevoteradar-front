@@ -47,9 +47,9 @@
                                                 data-bs-placement="top" title="Editar información">
                                                 <i class="fa-solid fa-pen text-primary"></i>
                                             </button>
-                                            <button class="btn align-middle" data-bs-placement="top"
+                                            <button class="btn align-middle d-none" data-bs-placement="top"
                                                 title="Cambiar de rol">
-                                                <i class="fa-solid fa-people-arrows-left-right text-primary"></i>
+                                                <img src="../../../../assets/changeRol.svg" class="icon-change-rol">
                                             </button>
                                         </div>
                                     </td>
@@ -95,9 +95,9 @@
                                                 data-bs-placement="top" title="Editar información">
                                                 <i class="fa-solid fa-pen text-primary"></i>
                                             </button>
-                                            <button class="btn align-middle" data-bs-placement="top"
+                                            <button class="btn align-middle d-none" data-bs-placement="top"
                                                 title="Cambiar de rol">
-                                                <i class="fa-solid fa-people-arrows-left-right text-primary"></i>
+                                                <img src="../../../../assets/changeRol.svg" class="icon-change-rol">
                                             </button>
                                         </div>
                                     </td>
@@ -109,29 +109,6 @@
                         <p class="text-center mb-0">No hay Supervisores sin asignacion de zona.</p>
                     </ng-template>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="supervisor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Información</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p><span class="fw-bolder">Nombre completo: </span><span> {{supervisorActual.nombres}}
-                        {{supervisorActual.apellidos}}</span></p>
-                <p><span class="fw-bolder">Telefono: </span><span> {{supervisorActual.telefono}}</span></p>
-                <p><span class="fw-bolder">Correo electronico: </span><span> {{supervisorActual.email}}</span></p>
-                <p><span class="fw-bolder">Numero de documento: </span><span>
-                        {{supervisorActual.numero_documento}}</span></p>
-                <p [ngClass]="{'d-none': !zonasActual}"><span class="fw-bolder">Zonas: </span><span>
-                        {{zonasActual}}</span></p>
             </div>
         </div>
     </div>

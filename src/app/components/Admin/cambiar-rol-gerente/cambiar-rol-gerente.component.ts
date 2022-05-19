@@ -16,14 +16,36 @@ export class CambiarRolGerenteComponent implements OnInit {
   dataMunicipals: any = [];
   dataZones: any = [];
   dataStations: any = [];
-  createForm: FormGroup = this.fb.group({
-    departamentos: [null],
+  dataTables: any = [];
+  updateFormGerente: FormGroup = this.fb.group({
+    rol: [null],
+    departamento: [null],
     municipios: [null],
+  });
+  updateFormSupervisor: FormGroup = this.fb.group({
+    rol: [null],
+    departamento: [null],
+    municipio: [null],
     zonas: [null],
+  });
+  updateFormCoordinador: FormGroup = this.fb.group({
+    rol: [null],
+    departamento: [null],
+    municipio: [null],
+    zona: [null],
     puestos: [null],
+  });
+  updateFormTestigo: FormGroup = this.fb.group({
+    rol: [null],
+    departamento: [null],
+    municipio: [null],
+    zona: [null],
+    puesto: [null],
+    mesas: [null],
   });
   subscriber: any;
   idGerente: any;
+  rolActual: any;
 
   constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService, private localData: LocalDataService, private activatedRoute: ActivatedRoute) { }
 
@@ -37,8 +59,12 @@ export class CambiarRolGerenteComponent implements OnInit {
     });
   }
 
-  get createFormControl() {
-    return this.createForm.controls;
+  get updateFormControlGerente() {
+    return this.updateFormGerente.controls;
+  }
+
+  get updateFormControlSupervisor() {
+    return this.updateFormSupervisor.controls;
   }
 
   getGerente() {
@@ -46,29 +72,25 @@ export class CambiarRolGerenteComponent implements OnInit {
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
 
       const { gerente, municipios_asignados, departamentos_asignados } = resp;
-      console.log(this.getCodeMunicipals(departamentos_asignados)[0])
-      console.log(this.getCodeMunicipals(municipios_asignados))
-      this.createForm.get('municipios')?.setValue(this.getCodeMunicipals(municipios_asignados));
-      this.createForm.get('departamentos')?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
+      this.rolActual = gerente.rol_id;
+      this.updateFormGerente.get('rol')?.setValue(gerente.rol_id);
+      this.updateFormGerente.get('municipios')?.setValue(this.getCodeMunicipals(municipios_asignados));
+      this.updateFormGerente.get('departamento')?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
 
     })
   }
 
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      console.log(resp)
       this.dataDepartments = resp;
-      console.log(resp)
       this.getMunicipalAdmin();
     })
   }
 
   getMunicipalAdmin() {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      console.log(resp)
-      if (this.createFormControl['departamentos'].value) {
-        this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.createFormControl['departamentos'].value);
-        console.log(this.dataMunicipals)
+      if (this.updateFormControlGerente['departamento'].value) {
+        this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControlGerente['departamento'].value);
       }
 
     });

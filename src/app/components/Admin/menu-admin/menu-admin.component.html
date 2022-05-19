@@ -72,8 +72,7 @@
         <li class="nav-item dropdown align-middle" [routerLinkActive]="['link-active']">
           <a class="nav-link px-xl-3 text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
-            <i class="fa-solid fa-users fa-lg align-middle"></i> &nbsp; <span
-              class="fs-5 align-middle">Usuarios</span>
+            <i class="fa-solid fa-users fa-lg align-middle"></i> &nbsp; <span class="fs-5 align-middle">Usuarios</span>
           </a>
           <ul class="dropdown-menu bg-dark border border-secondary" aria-labelledby="navbarDropdown">
             <li>
@@ -83,19 +82,19 @@
               </a>
             </li>
             <li>
-              <a class="dropdown-item text-white" [routerLink]="['/consultarSupervisor']"
+              <a class="dropdown-item text-white d-none" [routerLink]="['/consultarSupervisor']"
                 [routerLinkActive]="['sublink-active']">
                 Consultar supervisores
               </a>
             </li>
             <li>
-              <a class="dropdown-item text-white" [routerLink]="['/consultarCoordinador']"
+              <a class="dropdown-item text-white d-none" [routerLink]="['/consultarCoordinador']"
                 [routerLinkActive]="['sublink-active']">
                 Consultar coordinadores
               </a>
             </li>
             <li>
-              <a class="dropdown-item text-white" [routerLink]="['/consultarTestigo']"
+              <a class="dropdown-item text-white d-none" [routerLink]="['/consultarTestigo']"
                 [routerLinkActive]="['sublink-active']">
                 Consultar testigos
               </a>

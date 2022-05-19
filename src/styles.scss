@@ -423,7 +423,8 @@ select:-webkit-autofill:focus {
     }
 }
 
-icon-change-rol {
-    width: 20px!important;
-    height: 20px!important;
+.icon-change-rol {
+    content: "";
+    height: 1.5em;
+    width: 1.5em;
 }
