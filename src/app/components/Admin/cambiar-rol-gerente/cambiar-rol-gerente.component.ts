@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
 import { ApiService } from '../../../services/api/api.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-cambiar-rol-gerente',
@@ -17,37 +18,38 @@ export class CambiarRolGerenteComponent implements OnInit {
   dataZones: any = [];
   dataStations: any = [];
   dataTables: any = [];
+  dataGerente: any = {};
   updateFormGerente: FormGroup = this.fb.group({
-    rol: [null],
-    departamento: [null],
+    nuevo_rol: [null, Validators.required],
+    departamento: [null, Validators.required],
     municipios: [null],
   });
   updateFormSupervisor: FormGroup = this.fb.group({
-    rol: [null],
-    departamento: [null],
-    municipio: [null],
+    nuevo_rol: [null, Validators.required],
+    departamento: [null, Validators.required],
+    municipio: [null, Validators.required],
     zonas: [null],
   });
   updateFormCoordinador: FormGroup = this.fb.group({
-    rol: [null],
-    departamento: [null],
-    municipio: [null],
-    zona: [null],
+    nuevo_rol: [null, Validators.required],
+    departamento: [null, Validators.required],
+    municipio: [null, Validators.required],
+    zona: [null, Validators.required],
     puestos: [null],
   });
   updateFormTestigo: FormGroup = this.fb.group({
-    rol: [null],
-    departamento: [null],
-    municipio: [null],
-    zona: [null],
-    puesto: [null],
+    nuevo_rol: [null, Validators.required],
+    departamento: [null, Validators.required],
+    municipio: [null, Validators.required],
+    zona: [null, Validators.required],
+    puesto: [null, Validators.required],
     mesas: [null],
   });
   subscriber: any;
   idGerente: any;
   rolActual: any;
 
-  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService, private localData: LocalDataService, private activatedRoute: ActivatedRoute) { }
+  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService, private localData: LocalDataService, private activatedRoute: ActivatedRoute, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getGerente();
@@ -67,13 +69,64 @@ export class CambiarRolGerenteComponent implements OnInit {
     return this.updateFormSupervisor.controls;
   }
 
+  get updateFormControlCoordinador() {
+    return this.updateFormCoordinador.controls;
+  }
+
+  get updateFormControlTestigo() {
+    return this.updateFormTestigo.controls;
+  }
+
+  onSubmit() {
+    if (this.rolActual == 2) {
+      if (this.updateFormGerente.valid) {
+        console.log(this.updateFormGerente.value)
+      } else {
+
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+    } else if (this.rolActual == 3) {
+      if (this.updateFormSupervisor.valid) {
+        delete this.updateFormSupervisor.value.departamento;
+        console.log(this.updateFormSupervisor.value)
+      } else {
+
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+    } else if (this.rolActual == 4) {
+      if (this.updateFormCoordinador.valid) {
+        delete this.updateFormCoordinador.value.departamento;
+        delete this.updateFormCoordinador.value.municipio;
+        console.log(this.updateFormCoordinador.value)
+      } else {
+
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+    } else if (this.rolActual == 5) {
+      if (this.updateFormTestigo.valid) {
+        delete this.updateFormTestigo.value.departamento;
+        delete this.updateFormTestigo.value.municipio;
+        delete this.updateFormTestigo.value.zona;
+        console.log(this.updateFormTestigo.value);
+        this.apiService.changeRole(this.idGerente, this.updateFormTestigo.value).subscribe((resp: any) => {
+          console.log(resp)
+        })
+      } else {
+
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+    }
+  }
+
   getGerente() {
     this.idGerente = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
 
       const { gerente, municipios_asignados, departamentos_asignados } = resp;
+      console.log(resp)
       this.rolActual = gerente.rol_id;
-      this.updateFormGerente.get('rol')?.setValue(gerente.rol_id);
+      this.dataGerente = gerente;
+      this.updateFormGerente.get('nuevo_rol')?.setValue(gerente.rol_id);
       this.updateFormGerente.get('municipios')?.setValue(this.getCodeMunicipals(municipios_asignados));
       this.updateFormGerente.get('departamento')?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
 
@@ -89,11 +142,38 @@ export class CambiarRolGerenteComponent implements OnInit {
 
   getMunicipalAdmin() {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      if (this.updateFormControlGerente['departamento'].value) {
+      if (this.updateFormControlGerente['departamento'].value && this.rolActual == 2) {
         this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControlGerente['departamento'].value);
+      } else if (this.updateFormControlSupervisor['departamento'].value && this.rolActual == 3) {
+        this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControlSupervisor['departamento'].value);
+      } else if (this.updateFormControlCoordinador['departamento'].value && this.rolActual == 4) {
+        this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControlCoordinador['departamento'].value);
+      } else if (this.updateFormControlTestigo['departamento'].value && this.rolActual == 5) {
+        this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControlTestigo['departamento'].value);
       }
 
     });
+  }
+
+  getZonas(data: any) {
+    this.apiService.getZonasyGerentes(data).subscribe((resp: any) => {
+      const { zonas } = resp;
+      this.dataZones = zonas;
+    })
+  }
+
+  getPuestos(data: any) {
+    this.apiService.getPuestosySupervisores(data).subscribe((resp: any) => {
+      const { puestos } = resp;
+      this.dataStations = puestos;
+    })
+  }
+
+  getMesas(data: any) {
+    this.apiService.getMesasyCoordinadores(data).subscribe((resp: any) => {
+      const { mesas } = resp;
+      this.dataTables = mesas;
+    })
   }
 
   getCodeMunicipals(data: any) {
@@ -101,6 +181,121 @@ export class CambiarRolGerenteComponent implements OnInit {
       const { codigo_unico } = seletedData;
       return codigo_unico;
     });
+  }
+
+  getCode(item: any) {
+    const { codigo_unico } = item;
+    return codigo_unico;
+  }
+
+  getSelectedRol(item: any) {
+    this.dataMunicipals = [];
+    this.dataZones = [];
+    this.dataStations = [];
+    this.dataTables = [];
+    //Gerente
+    this.updateFormControlGerente['departamento'].reset();
+    this.updateFormControlGerente['municipios'].reset();
+    //Supervisor
+    this.updateFormControlSupervisor['departamento'].reset();
+    this.updateFormControlSupervisor['municipio'].reset();
+    this.updateFormControlSupervisor['zonas'].reset();
+    //Coordinador
+    this.updateFormControlCoordinador['departamento'].reset();
+    this.updateFormControlCoordinador['municipio'].reset();
+    this.updateFormControlCoordinador['zona'].reset();
+    this.updateFormControlCoordinador['puestos'].reset();
+    //Testigo
+    this.updateFormControlTestigo['departamento'].reset();
+    this.updateFormControlTestigo['municipio'].reset();
+    this.updateFormControlTestigo['zona'].reset();
+    this.updateFormControlTestigo['puesto'].reset();
+    this.updateFormControlTestigo['mesas'].reset();
+    if (item) {
+      this.rolActual = item;
+      this.updateFormGerente.get('nuevo_rol')?.setValue(item);
+      this.updateFormSupervisor.get('nuevo_rol')?.setValue(item);
+      this.updateFormCoordinador.get('nuevo_rol')?.setValue(item);
+      this.updateFormTestigo.get('nuevo_rol')?.setValue(item);
+      if (item == 2) {
+        this.getGerente();
+        this.getDepartmentAdmin();
+      }
+    }
+  }
+
+  getSelectedDepartment(item: any) {
+    //Gerente
+    this.updateFormControlGerente['municipios'].reset();
+    //Supervisor
+    this.updateFormControlSupervisor['municipio'].reset();
+    this.updateFormControlSupervisor['zonas'].reset();
+    //Coordinador
+    this.updateFormControlCoordinador['municipio'].reset();
+    this.updateFormControlCoordinador['zona'].reset();
+    this.updateFormControlCoordinador['puestos'].reset();
+    //Testigo
+    this.updateFormControlTestigo['municipio'].reset();
+    this.updateFormControlTestigo['zona'].reset();
+    this.updateFormControlTestigo['puesto'].reset();
+    this.updateFormControlTestigo['mesas'].reset();
+    if (item) {
+      this.getMunicipalAdmin();
+    } else {
+      this.dataMunicipals = [];
+      this.dataZones = [];
+      this.dataStations = [];
+      this.dataTables = [];
+    }
+  }
+
+  getSelectedMunicipal(item: any) {
+    //Supervisor
+    this.updateFormControlSupervisor['zonas'].reset();
+    //Coordinador
+    this.updateFormControlCoordinador['zona'].reset();
+    this.updateFormControlCoordinador['puestos'].reset();
+    //Testigo
+    this.updateFormControlTestigo['zona'].reset();
+    this.updateFormControlTestigo['puesto'].reset();
+    this.updateFormControlTestigo['mesas'].reset();
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { municipio: codigo_unico }
+      this.getZonas(data);
+    } else {
+      this.dataZones = [];
+      this.dataStations = [];
+      this.dataTables = [];
+    }
+  }
+
+  getSelectedZone(item: any) {
+    //Coordinador
+    this.updateFormControlCoordinador['puestos'].reset();
+    //Testigo
+    this.updateFormControlTestigo['puesto'].reset();
+    this.updateFormControlTestigo['mesas'].reset();
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { zona: codigo_unico }
+      this.getPuestos(data);
+    } else {
+      this.dataStations = [];
+      this.dataTables = [];
+    }
+  }
+
+  getSelectedStation(item: any) {
+    //Testigo
+    this.updateFormControlTestigo['mesas'].reset();
+    if (item) {
+      const codigo_unico = this.getCode(item);
+      const data = { puesto: codigo_unico }
+      this.getMesas(data);
+    } else {
+      this.dataTables = [];
+    }
   }
 
 }

@@ -236,6 +236,9 @@ export class ApiService {
     return this.http.get(this._URL + "/categorias-impugnacion", { headers: this.getHeaders() });
   }
 
+  changeRole(id: any, data: any) {
+    return this.http.post(this._URL + "/cambiar-usuario/" + id, data, { headers: this.getHeaders() });
+  }
 
   getDataGraphics() {
     return this.http.get(this._URL + "/info-usuario", { headers: this.getHeaders() });
