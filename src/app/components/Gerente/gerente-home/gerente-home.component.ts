@@ -10,8 +10,8 @@ export class GerenteHomeComponent implements OnInit {
   safeURL: any;
 
   constructor(private _sanitizer: DomSanitizer) {
-    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/SQNtGoM3FVU");
-   }
+    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/bNU_d8rei4k");
+  }
 
   ngOnInit(): void {
   }

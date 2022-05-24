@@ -113,9 +113,8 @@ select {
 }
 
 .welcomeBanner {
-    background: white;
     width: 35%;
-    top: 81%;
+    top: 80vh;
     right: 0px;
     height: 65px;
     display: block;
@@ -134,7 +133,7 @@ select {
     left: -27px;
     width: 45px;
     height: 65px;
-    background: white;
+    background: $white;
     transform: skew(30deg);
     border-left: 2px solid $primary  !important;
     border-top: 2px solid $primary  !important;
@@ -144,7 +143,7 @@ select {
 @media (max-width: 992px) {
 
     .welcomeBanner {
-        top: 75%;
+        top: 75vh;
         width: 45%;
     }
 
@@ -153,7 +152,7 @@ select {
 @media (max-width: 768px) {
 
     .welcomeBanner {
-        top: 75%;
+        top: 75vh;
         width: 75%;
         padding-left: 2rem !important;
     }
@@ -427,4 +426,8 @@ select:-webkit-autofill:focus {
     content: "";
     height: 1.5em;
     width: 1.5em;
+}
+
+.toast-body {
+    padding: 0 !important;
 }

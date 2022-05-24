@@ -1,5 +1,5 @@
 <div class="container py-5">
-    <div class="card" *ngIf="rolActual">
+    <div class="card">
         <div class="bg-primary py-3 px-5 text-white">
             <h4 class="m-0">
                 Editar rol
@@ -16,10 +16,22 @@
                         <span>{{dataGerente.nombres}} {{dataGerente.apellidos}}</span>
                     </p>
                 </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2">
+                    <p>
+                        <span class="fw-bolder">Departamento: </span>
+                        <span>{{dataDepartmentGerente}}</span>
+                    </p>
+                </div>
+                <div class="form-group col-md-6 col-lg-4 pt-2" *ngIf="dataMunicipalsGerente">
+                    <p>
+                        <span class="fw-bolder">Municipios: </span>
+                        <span>{{dataMunicipalsGerente}}</span>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-    <form [formGroup]="updateFormGerente" (ngSubmit)="onSubmit()" *ngIf="rolActual==2">
+    <form [formGroup]="updateForm" *ngIf="!rolActual">
         <div class="card mt-5">
             <div class="card-body">
                 <div class="row mx-4 my-4">
@@ -29,37 +41,14 @@
                             <span class="text-danger">*</span>
                         </label>
                         <ng-select [searchable]="false" class="custom-select rounded" placeholder="Seleccione rol"
-                            formControlName="nuevo_rol" (change)="getSelectedRol($event)" [clearable]="false">
-                            <ng-option [value]="2">Gerente</ng-option>
+                            formControlName="nuevo_rol" (change)="getSelectedRol($event)">
                             <ng-option [value]="3">Supervisor</ng-option>
                             <ng-option [value]="4">Coordinador</ng-option>
                             <ng-option [value]="5">Testigo</ng-option>
                         </ng-select>
                     </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="fw-bold form-label">
-                            <span class="fw-bold">Departamento</span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
-                            bindLabel="nombre_departamento_votacion" bindValue="codigo_unico"
-                            formControlName="departamento" notFoundText="No hay informacion disponible"
-                            placeholder="Seleccione departamento" (change)="getSelectedDepartment($event)">
-                        </ng-select>
-                    </div>
-                    <div class="form-group col-md-6 col-lg-4 pt-2">
-                        <label class="fw-bold form-label">Municipios</label>
-                        <ng-select [items]="dataMunicipals" class="custom-multiple-select rounded" bindLabel="nombre"
-                            bindValue="codigo_unico" formControlName="municipios" [multiple]="true"
-                            notFoundText="No hay informacion disponible" placeholder="Seleccione municipio">
-                        </ng-select>
-                    </div>
                 </div>
             </div>
-        </div>
-        <div class="d-flex justify-content-end pt-4">
-            <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">EDITAR
-            </button>
         </div>
     </form>
     <form [formGroup]="updateFormSupervisor" (ngSubmit)="onSubmit()" *ngIf="rolActual==3">
@@ -72,8 +61,7 @@
                             <span class="text-danger">*</span>
                         </label>
                         <ng-select [searchable]="false" class="custom-select rounded" placeholder="Seleccione rol"
-                            formControlName="nuevo_rol" (change)="getSelectedRol($event)" [clearable]="false">
-                            <ng-option [value]="2">Gerente</ng-option>
+                            formControlName="nuevo_rol" (change)="getSelectedRol($event)">
                             <ng-option [value]="3">Supervisor</ng-option>
                             <ng-option [value]="4">Coordinador</ng-option>
                             <ng-option [value]="5">Testigo</ng-option>
@@ -125,8 +113,7 @@
                             <span class="text-danger">*</span>
                         </label>
                         <ng-select [searchable]="false" class="custom-select rounded" placeholder="Seleccione rol"
-                            formControlName="nuevo_rol" (change)="getSelectedRol($event)" [clearable]="false">
-                            <ng-option [value]="2">Gerente</ng-option>
+                            formControlName="nuevo_rol" (change)="getSelectedRol($event)">
                             <ng-option [value]="3">Supervisor</ng-option>
                             <ng-option [value]="4">Coordinador</ng-option>
                             <ng-option [value]="5">Testigo</ng-option>
@@ -188,8 +175,7 @@
                             <span class="text-danger">*</span>
                         </label>
                         <ng-select [searchable]="false" class="custom-select rounded" placeholder="Seleccione rol"
-                            formControlName="nuevo_rol" (change)="getSelectedRol($event)" [clearable]="false">
-                            <ng-option [value]="2">Gerente</ng-option>
+                            formControlName="nuevo_rol" (change)="getSelectedRol($event)">
                             <ng-option [value]="3">Supervisor</ng-option>
                             <ng-option [value]="4">Coordinador</ng-option>
                             <ng-option [value]="5">Testigo</ng-option>
