@@ -59,7 +59,6 @@ export class EditarTestigoComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.updateForm.value)
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
 

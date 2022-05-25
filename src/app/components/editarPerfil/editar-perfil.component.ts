@@ -39,11 +39,9 @@ export class EditarPerfilComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.updateForm.value)
     if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
 
       if (this.updateForm.valid) {
-        console.log(this.updateForm.value)
         this.apiService.updateUser(this.updateForm.value).subscribe((resp: any) => {
 
           this.alertService.successAlert(resp.message);

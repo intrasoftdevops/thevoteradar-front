@@ -24,7 +24,7 @@
           <label class="fw-bold form-label">Estado por puesto</label>
           <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
             (change)="getSelectedStation($event)" bindValue="codigo_unico" notFoundText="No hay informacion disponible"
-            placeholder="Seleccione puesto" formControlName="puestos">
+            placeholder="Seleccione puesto" formControlName="puestos" [clearAllText]="'Borrar todo'">
           </ng-select>
         </div>
       </form>

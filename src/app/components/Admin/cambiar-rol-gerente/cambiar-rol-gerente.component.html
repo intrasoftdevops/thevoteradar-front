@@ -41,7 +41,8 @@
                             <span class="text-danger">*</span>
                         </label>
                         <ng-select [searchable]="false" class="custom-select rounded" placeholder="Seleccione rol"
-                            formControlName="nuevo_rol" (change)="getSelectedRol($event)">
+                            formControlName="nuevo_rol" (change)="getSelectedRol($event)"
+                            [clearAllText]="'Borrar todo'">
                             <ng-option [value]="3">Supervisor</ng-option>
                             <ng-option [value]="4">Coordinador</ng-option>
                             <ng-option [value]="5">Testigo</ng-option>
@@ -61,7 +62,8 @@
                             <span class="text-danger">*</span>
                         </label>
                         <ng-select [searchable]="false" class="custom-select rounded" placeholder="Seleccione rol"
-                            formControlName="nuevo_rol" (change)="getSelectedRol($event)">
+                            formControlName="nuevo_rol" (change)="getSelectedRol($event)"
+                            [clearAllText]="'Borrar todo'">
                             <ng-option [value]="3">Supervisor</ng-option>
                             <ng-option [value]="4">Coordinador</ng-option>
                             <ng-option [value]="5">Testigo</ng-option>
@@ -74,8 +76,9 @@
                         </label>
                         <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
                             bindLabel="nombre_departamento_votacion" bindValue="codigo_unico"
-                            formControlName="departamento" notFoundText="No hay informacion disponible"
-                            placeholder="Seleccione departamento" (change)="getSelectedDepartment($event)">
+                            [clearAllText]="'Borrar todo'" formControlName="departamento"
+                            notFoundText="No hay informacion disponible" placeholder="Seleccione departamento"
+                            (change)="getSelectedDepartment($event)">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
@@ -85,14 +88,16 @@
                         </label>
                         <ng-select [items]="dataMunicipals" class="custom-select rounded" bindLabel="nombre"
                             bindValue="codigo_unico" formControlName="municipio" (change)="getSelectedMunicipal($event)"
-                            notFoundText="No hay informacion disponible" placeholder="Seleccione municipio">
+                            notFoundText="No hay informacion disponible" placeholder="Seleccione municipio"
+                            [clearAllText]="'Borrar todo'">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
                         <label class="fw-bold form-label">Zonas</label>
                         <ng-select [items]="dataZones" class="custom-multiple-select rounded" bindLabel="nombre"
                             bindValue="codigo_unico" placeholder="Seleccione zona" [multiple]="true"
-                            notFoundText="No hay informacion disponible" formControlName="zonas">
+                            notFoundText="No hay informacion disponible" formControlName="zonas"
+                            [clearAllText]="'Borrar todo'">
                         </ng-select>
                     </div>
                 </div>
@@ -113,7 +118,8 @@
                             <span class="text-danger">*</span>
                         </label>
                         <ng-select [searchable]="false" class="custom-select rounded" placeholder="Seleccione rol"
-                            formControlName="nuevo_rol" (change)="getSelectedRol($event)">
+                            formControlName="nuevo_rol" (change)="getSelectedRol($event)"
+                            [clearAllText]="'Borrar todo'">
                             <ng-option [value]="3">Supervisor</ng-option>
                             <ng-option [value]="4">Coordinador</ng-option>
                             <ng-option [value]="5">Testigo</ng-option>
@@ -126,8 +132,9 @@
                         </label>
                         <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
                             bindLabel="nombre_departamento_votacion" bindValue="codigo_unico"
-                            formControlName="departamento" notFoundText="No hay informacion disponible"
-                            placeholder="Seleccione departamento" (change)="getSelectedDepartment($event)">
+                            [clearAllText]="'Borrar todo'" formControlName="departamento"
+                            notFoundText="No hay informacion disponible" placeholder="Seleccione departamento"
+                            (change)="getSelectedDepartment($event)">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
@@ -137,7 +144,8 @@
                         </label>
                         <ng-select [items]="dataMunicipals" class="custom-select rounded" bindLabel="nombre"
                             bindValue="codigo_unico" formControlName="municipio" (change)="getSelectedMunicipal($event)"
-                            notFoundText="No hay informacion disponible" placeholder="Seleccione municipio">
+                            notFoundText="No hay informacion disponible" placeholder="Seleccione municipio"
+                            [clearAllText]="'Borrar todo'">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
@@ -147,14 +155,15 @@
                         </label>
                         <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre"
                             bindValue="codigo_unico" placeholder="Seleccione zona" (change)="getSelectedZone($event)"
-                            notFoundText="No hay informacion disponible" formControlName="zona">
+                            notFoundText="No hay informacion disponible" formControlName="zona"
+                            [clearAllText]="'Borrar todo'">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
                         <label class="fw-bold form-label">Puestos</label>
                         <ng-select [items]="dataStations" class="custom-multiple-select rounded" bindLabel="nombre"
                             bindValue="codigo_unico" notFoundText="No hay informacion disponible" [multiple]="true"
-                            placeholder="Seleccione puesto" formControlName="puestos">
+                            placeholder="Seleccione puesto" formControlName="puestos" [clearAllText]="'Borrar todo'">
                         </ng-select>
                     </div>
                 </div>
@@ -175,7 +184,8 @@
                             <span class="text-danger">*</span>
                         </label>
                         <ng-select [searchable]="false" class="custom-select rounded" placeholder="Seleccione rol"
-                            formControlName="nuevo_rol" (change)="getSelectedRol($event)">
+                            formControlName="nuevo_rol" (change)="getSelectedRol($event)"
+                            [clearAllText]="'Borrar todo'">
                             <ng-option [value]="3">Supervisor</ng-option>
                             <ng-option [value]="4">Coordinador</ng-option>
                             <ng-option [value]="5">Testigo</ng-option>
@@ -188,8 +198,9 @@
                         </label>
                         <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
                             bindLabel="nombre_departamento_votacion" bindValue="codigo_unico"
-                            formControlName="departamento" notFoundText="No hay informacion disponible"
-                            placeholder="Seleccione departamento" (change)="getSelectedDepartment($event)">
+                            [clearAllText]="'Borrar todo'" formControlName="departamento"
+                            notFoundText="No hay informacion disponible" placeholder="Seleccione departamento"
+                            (change)="getSelectedDepartment($event)">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
@@ -199,7 +210,8 @@
                         </label>
                         <ng-select [items]="dataMunicipals" class="custom-select rounded" bindLabel="nombre"
                             bindValue="codigo_unico" formControlName="municipio" (change)="getSelectedMunicipal($event)"
-                            notFoundText="No hay informacion disponible" placeholder="Seleccione municipio">
+                            notFoundText="No hay informacion disponible" placeholder="Seleccione municipio"
+                            [clearAllText]="'Borrar todo'">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
@@ -209,7 +221,8 @@
                         </label>
                         <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre"
                             bindValue="codigo_unico" placeholder="Seleccione zona" (change)="getSelectedZone($event)"
-                            notFoundText="No hay informacion disponible" formControlName="zona">
+                            notFoundText="No hay informacion disponible" formControlName="zona"
+                            [clearAllText]="'Borrar todo'">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
@@ -220,14 +233,14 @@
                         <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre"
                             bindValue="codigo_unico" notFoundText="No hay informacion disponible"
                             (change)="getSelectedStation($event)" placeholder="Seleccione puesto"
-                            formControlName="puesto">
+                            [clearAllText]="'Borrar todo'" formControlName="puesto">
                         </ng-select>
                     </div>
                     <div class="form-group col-md-6 col-lg-4 pt-2">
                         <label class="fw-bold form-label">Mesas</label>
                         <ng-select [items]="dataTables" class="custom-multiple-select rounded" bindLabel="numero_mesa"
                             bindValue="codigo_unico" notFoundText="No hay informacion disponible" [multiple]="true"
-                            placeholder="Seleccione mesa" formControlName="mesas">
+                            placeholder="Seleccione mesa" formControlName="mesas" [clearAllText]="'Borrar todo'">
                         </ng-select>
                     </div>
                 </div>

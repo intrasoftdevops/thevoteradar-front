@@ -12,7 +12,7 @@
                     <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
                         bindLabel="nombre" bindValue="codigo_unico" (change)="getSelectedValue($event)"
                         notFoundText="No hay informacion disponible" placeholder="Seleccione puestos"
-                        formControlName="puestos">
+                        formControlName="puestos" [clearAllText]="'Borrar todo'">
                     </ng-select>
                 </div>
             </form>

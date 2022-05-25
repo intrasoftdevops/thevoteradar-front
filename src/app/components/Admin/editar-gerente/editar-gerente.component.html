@@ -32,7 +32,7 @@
                         <span class="text-danger">*</span>
                     </label>
                     <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id"
-                        placeholder="Seleccione genero">
+                        placeholder="Seleccione genero" [clearAllText]="'Borrar todo'">
                         <ng-option [value]="1">Masculino</ng-option>
                         <ng-option [value]="2">Femenino</ng-option>
                         <ng-option [value]="3">Otro</ng-option>
@@ -44,7 +44,7 @@
                         <span class="text-danger">*</span>
                     </label>
                     <ng-select [searchable]="false" class="custom-select rounded" formControlName="tipo_documento_id"
-                        placeholder="Seleccione tipo de documento">
+                        placeholder="Seleccione tipo de documento" [clearAllText]="'Borrar todo'">
                         <ng-option [value]="1">Cedula de ciudadania</ng-option>
                     </ng-select>
                 </div>
@@ -87,13 +87,13 @@
                     </label>
                     <ng-select [items]="dataDepartments" [searchable]="false" class="custom-select rounded"
                         placeholder="Seleccione departamento" formControlName="departamento"
-                        bindLabel="nombre_departamento_votacion" bindValue="codigo_unico"
+                        bindLabel="nombre_departamento_votacion" bindValue="codigo_unico" [clearAllText]="'Borrar todo'"
                         (change)="getSelectedValue($event)" notFoundText="No hay informacion disponible">
                     </ng-select>
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-3">
                     <label class="fw-bold ">Municipios de votacion</label>
-                    <ng-select [items]="dataMunicipals" class="custom-multiple-select rounded"
+                    <ng-select [items]="dataMunicipals" class="custom-multiple-select rounded" [clearAllText]="'Borrar todo'"
                         placeholder="Seleccione municipio(s)" formControlName="municipios" bindLabel="nombre"
                         bindValue="codigo_unico" [multiple]="true" notFoundText="No hay informacion disponible">
                     </ng-select>

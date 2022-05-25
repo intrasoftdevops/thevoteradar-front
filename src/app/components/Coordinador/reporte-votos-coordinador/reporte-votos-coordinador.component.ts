@@ -39,11 +39,9 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
   }
 
   ModalReporteActual(mesa: any) {
-    console.log(mesa)
     this.photos = [];
     this.listReportes = [];
     this.reporte = mesa;
-    console.log(this.reporte.reporte)
     this.listReportes = this.reporte.reporte.reportes;
     this.photos = mesa.reporte.archivos;
     this.totalVotosMesas = this.listReportes.reduce((acc: any, obj: any,) => acc + (obj.numero_votos), 0);

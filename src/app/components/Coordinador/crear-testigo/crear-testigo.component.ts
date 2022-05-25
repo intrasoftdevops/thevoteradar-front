@@ -52,11 +52,9 @@ export class CrearTestigoComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.createForm.value)
     if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
 
       if (this.createForm.valid) {
-        console.log(this.createForm.value)
         this.apiService.createTestigo(this.createForm.value).subscribe((resp: any) => {
 
           this.alertService.successAlert(resp.message);

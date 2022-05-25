@@ -70,7 +70,6 @@ export class EditarGerenteComponent implements OnInit {
   onSubmit() {
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
-        console.log(this.updateForm.value)
         this.apiService.updateGerente(this.idGerente, this.updateForm.value).subscribe((resp: any) => {
 
           this.alertService.successAlert(resp.res);
@@ -85,7 +84,6 @@ export class EditarGerenteComponent implements OnInit {
 
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      console.log(resp)
       this.dataDepartments = resp;
       this.getMunicipalAdmin();
     })
@@ -93,7 +91,6 @@ export class EditarGerenteComponent implements OnInit {
 
   getMunicipalAdmin() {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      console.log(resp)
       if (this.updateFormControl['departamento'].value) {
         this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControl['departamento'].value);
       }
@@ -119,7 +116,6 @@ export class EditarGerenteComponent implements OnInit {
       this.updateForm.get('tipo_documento_id')?.setValue(gerente.tipo_documento_id);
       this.updateForm.get('numero_documento')?.setValue(gerente.numero_documento);
       this.updateForm.get('telefono')?.setValue(gerente.telefono);
-      console.log(this.getCodeMunicipals(municipios_asignados))
       this.updateForm.get('municipios')?.setValue(this.getCodeMunicipals(municipios_asignados));
       this.updateForm.get('departamento')?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
 

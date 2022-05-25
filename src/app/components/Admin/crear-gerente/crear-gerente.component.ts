@@ -20,7 +20,7 @@ export class CrearGerenteComponent implements OnInit {
     genero_id: [null, Validators.required],
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
-    telefono: ['',Validators.required],
+    telefono: ['', Validators.required],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     departamento: [[], Validators.required],
     municipios: [[]],
@@ -52,11 +52,9 @@ export class CrearGerenteComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.createForm.value)
     if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
 
       if (this.createForm.valid) {
-        console.log(this.createForm.value)
         this.apiService.createGerente(this.createForm.value).subscribe((resp: any) => {
           this.alertService.successAlert(resp.message);
         })
@@ -75,9 +73,7 @@ export class CrearGerenteComponent implements OnInit {
 
   getMunicipalAdmin(data: any) {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      console.log(resp)
       this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
-      console.log(this.dataMunicipals)
     });
   }
 

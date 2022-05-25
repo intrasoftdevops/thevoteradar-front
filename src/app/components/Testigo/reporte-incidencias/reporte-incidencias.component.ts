@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
-import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
 
@@ -45,8 +44,6 @@ export class ReporteIncidenciasComponent implements OnInit,OnDestroy {
   }
 
   onSubmit() {
-
-    console.log(this.createForm.value)
 
     if (this.createForm.valid && this.files.length > 0) {
 
@@ -92,7 +89,6 @@ export class ReporteIncidenciasComponent implements OnInit,OnDestroy {
 
   getIncidenciasDeTestigo() {
     this.apiService.getIncidenciasDeTestigo().subscribe((resp: any) => {
-      console.log(resp)
       this.dataIncidencias = resp;
       setTimeout(() => {
         this.dtTrigger.next(void 0);
@@ -102,12 +98,10 @@ export class ReporteIncidenciasComponent implements OnInit,OnDestroy {
 
   onSelect(event: any) {
     this.files.push(...event.addedFiles);
-    console.log(this.files)
   }
 
   onRemove(event: any) {
     this.files.splice(this.files.indexOf(event), 1);
-    console.log(this.files)
   }
 
   dataTableOptions() {

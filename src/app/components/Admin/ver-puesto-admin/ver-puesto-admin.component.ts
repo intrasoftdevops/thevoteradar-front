@@ -133,7 +133,6 @@ export class VerPuestoAdminComponent implements OnInit {
   getNecesitadosMunicipio(data: any) {
     this.apiService.getNecesitadosMunicipio(data).subscribe((resp: any) => {
       this.dataStateMunicipal=[resp];
-      console.log(resp)
     })
   }
 

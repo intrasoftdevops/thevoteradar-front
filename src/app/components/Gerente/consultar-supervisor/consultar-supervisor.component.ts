@@ -33,7 +33,6 @@ export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
 
   getSupervisores() {
     this.apiService.getSupervisores().subscribe((resp: any) => {
-      console.log(resp)
       const { supervisores_asignados, supervisores_no_asignados } = resp;
       this.listSupervisorAsignados = supervisores_asignados;
       this.listSupervisorNoAsignados = supervisores_no_asignados;

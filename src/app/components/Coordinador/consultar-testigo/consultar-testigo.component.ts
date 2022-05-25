@@ -33,7 +33,6 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy{
 
   getTestigos() {
     this.apiService.getTestigos().subscribe((resp: any) => {
-      console.log(resp)
       const { testigos_asignados, testigos_no_asignados } = resp;
       this.listTestigoAsignados = testigos_asignados;
       this.listTestigoNoAsignados = testigos_no_asignados;

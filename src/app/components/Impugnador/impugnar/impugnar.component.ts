@@ -5,7 +5,6 @@ import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import Swal from 'sweetalert2';
 import { DomSanitizer, SafeResourceUrl, } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 
@@ -95,7 +94,6 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
-      console.log(resp)
       this.dataRevisar = resp.reportes_no_revisados;
       this.dataImpugnar = resp.reportes_revisados;
       this.dataNoImpugnados = resp.reportes_no_impugnados;
@@ -121,7 +119,6 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   }
 
   ModalImpugnarActual(impugnar: any) {
-    console.log(impugnar)
     this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(impugnar.e_14);
     this.dataImpugnarActual = impugnar;
   }
@@ -133,13 +130,11 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   impugnar() {
     if (this.createForm.valid) {
-      console.log(this.createForm.value)
       this.apiService.impugnar(this.dataRevisarActual.id, this.createForm.value).subscribe((resp: any) => {
         this.indexRevisar = this.dataRevisar.findIndex((i: any) => i.id === this.dataRevisarActual.id);
         this.indexRevisar !== -1 && this.dataRevisar.splice(this.indexRevisar, 1);
         this.dataRevisar = this.dataRevisar;
         this.dataImpugnar.push(this.dataRevisarActual);
-        console.log(this.dataRevisar);
         if (this.dataRevisar.length > 0) {
           var rand = Math.floor(Math.random() * this.dataRevisar.length);
           this.ModalRevisarActual(this.dataRevisar[rand]);
@@ -161,7 +156,6 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       this.indexRevisar !== -1 && this.dataRevisar.splice(this.indexRevisar, 1);
       this.dataRevisar = this.dataRevisar;
       this.dataNoImpugnados.push(this.dataRevisarActual);
-      console.log(this.dataRevisar);
       if (this.dataRevisar.length > 0) {
         var rand = Math.floor(Math.random() * this.dataRevisar.length);
         this.ModalRevisarActual(this.dataRevisar[rand]);
@@ -258,7 +252,6 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   renderer() {
     if (this.notFirstTime) {
       this.dtElements.forEach((dtElement: DataTableDirective) => {
-        console.log(dtElement)
         dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           dtInstance.draw();
           dtInstance.destroy();

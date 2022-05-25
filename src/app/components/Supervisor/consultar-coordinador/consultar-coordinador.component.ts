@@ -33,9 +33,7 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
 
   getCoordinadores() {
     this.apiService.getCoordinadores().subscribe((resp: any) => {
-      console.log(resp)
       const { coordinadores_asignados, coordinadores_no_asignados } = resp;
-      console.log(coordinadores_asignados)
       this.listCoordinadorAsignados = coordinadores_asignados;
       this.listCoordinadorNoAsignados = coordinadores_no_asignados;
       for (let coordinador of this.listCoordinadorAsignados) {

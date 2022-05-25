@@ -40,7 +40,6 @@ export class LoginComponent implements OnInit {
       this.apiService.login(this.loginForm.value).subscribe((resp: any) => {
         const { res, rol, token, id } = resp;
         if (res == true) {
-          console.log(resp);
           this.localData.deleteCookies();
           this.localData.setToken(token);
           this.localData.setRol(rol);

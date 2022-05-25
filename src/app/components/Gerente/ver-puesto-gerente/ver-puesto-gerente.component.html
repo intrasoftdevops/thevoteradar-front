@@ -24,13 +24,13 @@
           <label class="fw-bold form-label">Estado por municipio</label>
           <ng-select [items]="dataMunicipals" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
             (change)="getSelectedMunicipal($event)" bindValue="codigo_unico" placeholder="Seleccione municipio"
-            notFoundText="No hay informacion disponible" formControlName="municipios">
+            notFoundText="No hay informacion disponible" formControlName="municipios" [clearAllText]="'Borrar todo'">
           </ng-select>
         </div>
         <div class="form-group col-md-6 col-lg-4 pt-2">
           <label class="fw-bold form-label">Estado por zona</label>
           <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-            placeholder="Seleccione zona" (change)="getSelectedZone($event)"
+            placeholder="Seleccione zona" (change)="getSelectedZone($event)" [clearAllText]="'Borrar todo'"
             notFoundText="No hay informacion disponible" formControlName="zonas">
           </ng-select>
         </div>
@@ -38,7 +38,7 @@
           <label class="fw-bold form-label">Estado por puesto</label>
           <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
             (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
-            placeholder="Seleccione puesto" formControlName="puestos">
+            placeholder="Seleccione puesto" formControlName="puestos" [clearAllText]="'Borrar todo'">
           </ng-select>
         </div>
       </form>

@@ -470,6 +470,10 @@ const routes: Routes = [
       }
     }
   },
+  {
+    path: '**',
+    redirectTo: localStorage.getItem('previousUrl') ?? '/'
+  },
 ];
 
 @NgModule({

@@ -38,7 +38,7 @@
                         <span class="text-danger">*</span>
                     </label>
                     <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id"
-                        placeholder="Seleccione genero">
+                        placeholder="Seleccione genero" [clearAllText]="'Borrar todo'">
                         <ng-option [value]="1">Masculino</ng-option>
                         <ng-option [value]="2">Femenino</ng-option>
                         <ng-option [value]="3">Otro</ng-option>
@@ -50,7 +50,7 @@
                         <span class="text-danger">*</span>
                     </label>
                     <ng-select [searchable]="false" class="custom-select rounded" formControlName="tipo_documento_id"
-                        placeholder="Seleccione tipo de documemto">
+                        placeholder="Seleccione tipo de documemto" [clearAllText]="'Borrar todo'">
                         <ng-option [value]="1">Cedula de ciudadania</ng-option>
                     </ng-select>
                 </div>

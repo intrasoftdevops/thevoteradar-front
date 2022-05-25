@@ -31,7 +31,7 @@
                         <span class="fw-bold">Genero</span>
                         <span class="text-danger">*</span>
                     </label>
-                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id" placeholder="Seleccione genero">
+                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id" placeholder="Seleccione genero" [clearAllText]="'Borrar todo'">
                         <ng-option [value]="1">Masculino</ng-option>
                         <ng-option [value]="2">Femenino</ng-option>
                         <ng-option [value]="3">Otro</ng-option>
@@ -42,7 +42,7 @@
                         <span class="fw-bold">Tipo de documento</span>
                         <span class="text-danger">*</span>
                     </label>
-                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="tipo_documento_id" placeholder="Seleccione tipo de documento">
+                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="tipo_documento_id" placeholder="Seleccione tipo de documento" [clearAllText]="'Borrar todo'">
                         <ng-option [value]="1">Cedula de ciudadania</ng-option>
                     </ng-select>
                 </div>
@@ -85,7 +85,7 @@
                         <span class="text-danger">*</span>
                     </label>
                     <ng-select [items]="dataMunicipals" class="custom-select rounded" bindLabel="nombre"
-                        bindValue="codigo_unico" (change)="getSelectedMunicipal($event)"
+                        bindValue="codigo_unico" (change)="getSelectedMunicipal($event)" [clearAllText]="'Borrar todo'"
                         notFoundText="No hay informacion disponible" placeholder="Seleccione municipio">
                     </ng-select>
                 </div>
@@ -94,7 +94,7 @@
                         <span class="fw-bold">Zona de votacion</span>
                         <span class="text-danger">*</span>
                     </label>
-                    <ng-select [items]="dataZones" [searchable]="false" class="custom-select rounded"
+                    <ng-select [items]="dataZones" [searchable]="false" class="custom-select rounded" [clearAllText]="'Borrar todo'"
                         formControlName="zona" bindLabel="nombre" bindValue="codigo_unico" placeholder="Seleccione zona"
                         (change)="getSelectedZone($event)" notFoundText="No hay informacion disponible">
                     </ng-select>
@@ -102,7 +102,7 @@
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="fw-bold form-label">Puestos de votacion</label>
                     <ng-select [items]="dataStations" class="custom-multiple-select rounded" formControlName="puestos"
-                        bindLabel="nombre" bindValue="codigo_unico" [multiple]="true"
+                        bindLabel="nombre" bindValue="codigo_unico" [multiple]="true" [clearAllText]="'Borrar todo'"
                         notFoundText="No hay informacion disponible" placeholder="Selecione puesto(s)">
                     </ng-select>
                 </div>

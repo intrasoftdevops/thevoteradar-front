@@ -30,7 +30,7 @@
                                 <ng-select [items]="mesas_asignadas" [searchable]="false" class="custom-select rounded"
                                     formControlName="codigo_mesa" bindLabel="numero_mesa" bindValue="codigo_unico"
                                     placeholder="Seleccione mesa" (change)="getSelectedValue($event)"
-                                    notFoundText="No hay informacion disponible">
+                                    notFoundText="No hay informacion disponible" [clearAllText]="'Borrar todo'">
                                 </ng-select>
                             </div>
                         </div>

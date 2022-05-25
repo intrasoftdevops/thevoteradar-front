@@ -23,7 +23,7 @@
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Equipo por municipio</label>
             <ng-select [items]="dataMunicipals" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
-              bindValue="codigo_unico" (change)="getSelectedMunicipal($event)"
+              bindValue="codigo_unico" (change)="getSelectedMunicipal($event)" [clearAllText]="'Borrar todo'"
               notFoundText="No hay informacion disponible" placeholder="Seleccione municipio"
               formControlName="municipios">
             </ng-select>
@@ -31,7 +31,7 @@
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Supervisores por zona</label>
             <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-              placeholder="Seleccione zona" (change)="getSelectedZone($event)"
+              placeholder="Seleccione zona" (change)="getSelectedZone($event)" [clearAllText]="'Borrar todo'"
               notFoundText="No hay informacion disponible" formControlName="zonas">
             </ng-select>
           </div>
@@ -39,14 +39,14 @@
             <label class="fw-bold form-label">Coordinadores por puesto</label>
             <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
               (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
-              placeholder="Seleccione puesto" formControlName="puestos">
+              placeholder="Seleccione puesto" formControlName="puestos" [clearAllText]="'Borrar todo'">
             </ng-select>
           </div>
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Testigos por mesa</label>
             <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa"
               bindValue="codigo_unico" (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
-              placeholder="Seleccione mesa" formControlName="mesas">
+              placeholder="Seleccione mesa" formControlName="mesas" [clearAllText]="'Borrar todo'">
             </ng-select>
           </div>
         </form>

@@ -43,7 +43,6 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   getDataGraphics() {
     this.apiService.getDataGraphics().subscribe((resp: any) => {
       this.dataGraphics=resp;
-      console.log(resp);
       this.getUrl();
     })
   }

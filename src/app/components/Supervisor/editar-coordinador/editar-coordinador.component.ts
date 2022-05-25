@@ -33,7 +33,7 @@ export class EditarCoordinadorComponent implements OnInit {
   });
 
   constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
-    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService,private localData: LocalDataService) { }
+    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getCoordinador();
@@ -59,7 +59,6 @@ export class EditarCoordinadorComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.updateForm.value)
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
         this.apiService.updateCoordinador(this.idCoordinador, this.updateForm.value).subscribe((resp: any) => {
@@ -101,8 +100,6 @@ export class EditarCoordinadorComponent implements OnInit {
     this.apiService.getCoordinador(this.idCoordinador).subscribe((resp: any) => {
       const { coordinador, puestos_asignados, zonas_asignadas } = resp;
 
-      console.log(resp)
-
       this.updateForm.get('nombres')?.setValue(coordinador.nombres);
       this.updateForm.get('apellidos')?.setValue(coordinador.apellidos);
       this.updateForm.get('genero_id')?.setValue(coordinador.genero_id);
@@ -113,7 +110,7 @@ export class EditarCoordinadorComponent implements OnInit {
       this.updateForm.get('telefono')?.setValue(coordinador.telefono);
       this.updateForm.get('puestos')?.setValue(this.getCodeMunicipals(puestos_asignados));
       this.updateForm.get('zona')?.setValue(this.getCodeMunicipals(zonas_asignadas)[0]);
-     
+
     })
   }
 

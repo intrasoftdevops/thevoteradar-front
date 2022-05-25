@@ -101,7 +101,6 @@ export class VerPuestoGerenteComponent implements OnInit {
   getNecesitadosMunicipio(data: any) {
     this.apiService.getNecesitadosMunicipio(data).subscribe((resp: any) => {
       this.dataStateMunicipal=[resp];
-      console.log(this.dataStateMunicipal)
     })
   }
 

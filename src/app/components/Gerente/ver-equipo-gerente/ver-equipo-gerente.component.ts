@@ -45,7 +45,6 @@ export class VerEquipoGerenteComponent implements OnInit {
   getDataGraphics() {
     this.apiService.getDataGraphics().subscribe((resp: any) => {
       this.dataGraphics = resp;
-      console.log(this.dataGraphics)
       this.getUrl();
     })
   }
@@ -141,7 +140,6 @@ export class VerEquipoGerenteComponent implements OnInit {
   getMesasyCoordinadores(data: any) {
     this.apiService.getMesasyCoordinadores(data).subscribe((resp: any) => {
       const { mesas, coordinadores } = resp;
-      console.log(resp)
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
     })

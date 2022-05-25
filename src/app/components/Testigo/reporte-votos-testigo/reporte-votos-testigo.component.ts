@@ -22,14 +22,12 @@ export class ReporteVotosTestigoComponent implements OnInit {
   puestos_asignado: any = "";
   files: File[] = [];
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService,
-    private customValidator: CustomValidationService, private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getVotosTestigo();
     this.getMesasTetigo();
     this.getCandidatos();
-    console.log(this.createForm.value)
   }
 
   get createFormControl() {
@@ -41,7 +39,6 @@ export class ReporteVotosTestigoComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.createForm.value);
     if (this.createForm.valid && this.files.length > 0) {
 
       const uploadData = new FormData();
@@ -78,13 +75,11 @@ export class ReporteVotosTestigoComponent implements OnInit {
     this.apiService.getTestigo(this.localData.getId()).subscribe((resp: any) => {
       const { puestos_asignados } = resp;
       this.puestos_asignado = puestos_asignados[0].nombre;
-      console.log(resp)
     })
   }
 
   getCandidatos() {
     this.apiService.getCandidatos().subscribe((resp: any) => {
-      console.log(resp)
       const { candidatos } = resp;
       this.listCandidatos = candidatos;
       candidatos.forEach(() => {
@@ -93,7 +88,6 @@ export class ReporteVotosTestigoComponent implements OnInit {
           this.fb.control('', Validators.required)
         );
       });
-      console.log(this.listCandidatos)
     })
   }
 
@@ -110,12 +104,10 @@ export class ReporteVotosTestigoComponent implements OnInit {
 
   onSelect(event: any) {
     this.files.push(...event.addedFiles);
-    console.log(this.files)
   }
 
   onRemove(event: any) {
     this.files.splice(this.files.indexOf(event), 1);
-    console.log(this.files)
   }
 
 }

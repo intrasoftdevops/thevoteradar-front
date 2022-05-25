@@ -42,7 +42,6 @@ export class VerEquipoSupervisorComponent implements OnInit {
   getDataGraphics() {
     this.apiService.getDataGraphics().subscribe((resp: any) => {
       this.dataGraphics = resp;
-      console.log(this.dataGraphics)
       this.getUrl();
     })
   }

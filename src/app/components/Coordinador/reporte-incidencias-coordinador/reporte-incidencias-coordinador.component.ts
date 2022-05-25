@@ -41,9 +41,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
   }
 
   onSubmit() {
-    console.log(this.replyForm.value)
     if (this.replyForm.valid) {
-      console.log(this.replyForm.value)
       this.apiService.replyIncidencia(this.incidenciaAbiertaActual.id, this.replyForm.value).subscribe((resp: any) => {
 
         this.alertService.successAlert(resp.message);
@@ -64,7 +62,6 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
 
   getIncidenciasDeCoordinador() {
     this.apiService.getIncidenciasDeCoordinador().subscribe((resp: any) => {
-      console.log(resp)
       this.dataIncidenciasAbiertas = resp.filter((incidencia: any) => {
         return incidencia.estado === 0;
       }
@@ -84,7 +81,6 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
     this.incidenciaAbiertaActual = {};
     this.incidenciaAbiertaActual = incidencia;
     this.photosOpen = incidencia.archivos;
-    console.log(this.photosOpen.url_archivo)
   }
 
   ModalIncidenciaCerradaActual(incidencia: any) {
