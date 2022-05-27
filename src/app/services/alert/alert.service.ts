@@ -26,7 +26,7 @@ export class AlertService {
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.reload();
+        location.reload();
       }
     });
   }

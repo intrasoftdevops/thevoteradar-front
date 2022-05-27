@@ -1,7 +1,7 @@
 <div class="container py-5">
   <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
     <h4>Mi Equipo de trabajo</h4>
-    <button class="btn btn-sm btn-info position-relative" data-bs-toggle="tooltip" data-bs-placement="top"
+    <!--<button class="btn btn-sm btn-info position-relative" data-bs-toggle="tooltip" data-bs-placement="top"
       title="{{(showMap)?'Ver lista':'Ver mapa'}}" (click)="showIframe()">
       <i class="fa-solid fa-map fa-lg text-white" *ngIf="!showMap;else list_content"></i>
       <ng-template #list_content>
@@ -11,7 +11,7 @@
         class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1">
         <i class="fa-solid fa-repeat fa-sm"></i>
       </span>
-    </button>
+    </button>-->
   </div>
   <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe;else content_map">
     <iframe [src]="urlSafe" frameborder="0" allowFullScreen="true"></iframe>

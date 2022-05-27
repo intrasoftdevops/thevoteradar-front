@@ -35,7 +35,8 @@ export class VerEquipoGerenteComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMunicipalAdmin();
-    this.getDataGraphics();
+    //this.getDataGraphics();
+    this.getUrl();
   }
 
   get searchFormControl() {
@@ -50,10 +51,10 @@ export class VerEquipoGerenteComponent implements OnInit {
   }
 
   getUrl() {
-    const objeto = new Filtro(this.dataGraphics.cliente, 2, this.dataGraphics.departamentos, this.dataGraphics.municipios);
+    //const objeto = new Filtro(this.dataGraphics.cliente, 2, this.dataGraphics.departamentos, this.dataGraphics.municipios);
     //const objeto = new Filtro(this.idCliente, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
-    this.filtro = objeto.generar_filtro().replace(new RegExp(" ", "g"), "%20").replace(new RegExp("/", "g"), "%2F");
-    const url = environment.powerBiURL + this.filtro;
+    //this.filtro = objeto.generar_filtro().replace(new RegExp(" ", "g"), "%20").replace(new RegExp("/", "g"), "%2F");
+    let url = environment.powerBiURL;
     this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
