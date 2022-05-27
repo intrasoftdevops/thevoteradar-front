@@ -26,7 +26,7 @@
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-md-7 col-lg-7 py-2 order-2 order-lg-1">
                 <div class="ratio" style="--bs-aspect-ratio: 50%;">
-                    <iframe [src]='safeURL' frameborder="0" allowfullscreen></iframe>
+                    <iframe [src]='safeURL' loading="lazy" frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
             <form class="col-md-7 col-lg-5 col-xl-4 py-2 order-1 order-lg-2" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
