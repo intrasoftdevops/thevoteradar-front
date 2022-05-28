@@ -1,16 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-reporte-incidencias-coordinador',
   templateUrl: './reporte-incidencias-coordinador.component.html',
   styleUrls: ['./reporte-incidencias-coordinador.component.scss']
 })
-export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy {
+export class ReporteIncidenciasCoordinadorComponent implements OnInit, OnDestroy {
 
   dataIncidenciasAbiertas: any = [];
   dataIncidenciasCerradas: any = [];
@@ -24,6 +25,9 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
   dtOptionsIncidenciasAbiertas: DataTables.Settings = {};
   dtOptionsIncidenciasCerradas: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChild(DataTableDirective)
+  dtElement!: any;
+  notFirstTime = false;
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
@@ -48,7 +52,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
 
       })
     } else {
-      this.alertService.errorAlert("Llene los campos obligatorios.");
+      this.alertService.errorAlert("Por favor escriba una respuesta para cerrar esta incidencia.");
     }
   }
 
@@ -70,10 +74,21 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
         return incidencia.estado === 1;
       }
       );
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
-      });
+      this.renderer();
+      this.notFirstTime = true;
     })
+  }
+
+  renderer() {
+    if (this.notFirstTime) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.draw();
+        dtInstance.destroy();
+      });
+    }
+    setTimeout(() => {
+      this.dtTrigger.next(void 0);
+    });
   }
 
   ModalIncidenciaAbiertaActual(incidencia: any) {
@@ -93,6 +108,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
   dataTableOptions() {
     this.dtOptionsIncidenciasAbiertas = {
       processing: true,
+      destroy: true,
       pageLength: 10,
       columns: [{
         orderable: true,
@@ -113,6 +129,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit,OnDestroy 
     };
     this.dtOptionsIncidenciasCerradas = {
       processing: true,
+      destroy: true,
       pageLength: 10,
       columns: [{
         orderable: true,

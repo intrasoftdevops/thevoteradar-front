@@ -23,7 +23,7 @@
                         <div class="row py-1">
                             <div class="col-5 col-sm-6 d-flex align-items-center">
                                 <p class="m-0 h4">
-                                    Numero de mesa:
+                                    Numero de mesa:<span class="text-danger h4">*</span>
                                 </p>
                             </div>
                             <div class="col-7 col-sm-6">
@@ -80,8 +80,9 @@
                 </div>
             </div>
             <div class="col-lg-5 d-flex flex-column justify-content-around" *ngIf="showUpload">
-                <h4 class="fw-bolder my-5 text-center">Adjuntar Prueba</h4>
-                <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true" [maxFileSize]="10000000">
+                <span class="fw-bolder my-5 text-center h4">Adjuntar Prueba<span class="text-danger h4">*</span></span>
+                <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true"
+                    [maxFileSize]="10000000">
                     <ngx-dropzone-label>
                         <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar Archivo (maximo 10MB)
                     </ngx-dropzone-label>

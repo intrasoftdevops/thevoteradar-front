@@ -129,9 +129,9 @@
                 </p>
                 <p class="fw-bolder">Archivos adjuntos: </p>
                 <si-ng-lightbox [showPreviews]="true" *ngIf="photosOpen.length>0"
-                    class="d-grid d-flex justify-content-center">
+                    class="row row-cols-3 d-flex justify-content-center">
                     <img *ngFor="let img of photosOpen" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
-                        [siLightboxItem]="img.url_archivo" class="imgItem col-4" />
+                        [siLightboxItem]="img.url_archivo" class="imgItem py-1" />
                 </si-ng-lightbox>
                 <textarea class="form-control border-2 border-dark rounded mt-3" rows="2"
                     placeholder="Escribir una respuesta" formControlName="respuesta"></textarea>
@@ -180,11 +180,13 @@
                     {{incidenciaCerradaActual.descripcion}}
                 </p>
                 <p class="fw-bolder">Archivos adjuntos: </p>
-                <si-ng-lightbox [showPreviews]="true" *ngIf="photosClose.length>0"
-                    class="d-grid d-flex justify-content-center">
-                    <img *ngFor="let img of photosClose" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
-                        [siLightboxItem]="img.url_archivo" class="imgItem col-4" />
-                </si-ng-lightbox>
+                <div class="w-100">
+                    <si-ng-lightbox [showPreviews]="true" *ngIf="photosClose.length>0"
+                        class="row row-cols-3 d-flex justify-content-center">
+                        <img *ngFor="let img of photosClose" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
+                            [siLightboxItem]="img.url_archivo" class="imgItem py-1" />
+                    </si-ng-lightbox>
+                </div>
                 <p class="mt-3"><span class="fw-bolder">Respuesta:
                     </span><span>{{incidenciaCerradaActual.respuesta}}</span>
                 </p>

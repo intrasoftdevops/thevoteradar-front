@@ -60,7 +60,6 @@ export class EditarSupervisorComponent implements OnInit {
   onSubmit() {
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
-        console.log(this.updateForm.value)
         this.apiService.updateSupervisor(this.idSupervisor, this.updateForm.value).subscribe((resp: any) => {
 
           this.alertService.successAlert(resp.res);
@@ -100,7 +99,6 @@ export class EditarSupervisorComponent implements OnInit {
     this.idSupervisor = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getSupervisor(this.idSupervisor).subscribe((resp: any) => {
       const { municipios_asignados, supervisor, zonas_asignadas } = resp;
-      console.log(resp)
 
       this.updateForm.get('nombres')?.setValue(supervisor.nombres);
       this.updateForm.get('apellidos')?.setValue(supervisor.apellidos);
