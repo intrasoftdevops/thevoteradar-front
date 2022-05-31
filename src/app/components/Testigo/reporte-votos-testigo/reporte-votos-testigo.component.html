@@ -80,11 +80,11 @@
                 </div>
             </div>
             <div class="col-lg-5 d-flex flex-column justify-content-around" *ngIf="showUpload">
-                <span class="fw-bolder my-5 text-center h4">Adjuntar Prueba<span class="text-danger h4">*</span></span>
+                <span class="fw-bolder my-5 text-center h4">Adjuntar E-14<span class="text-danger h4">*</span></span>
                 <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true"
                     [maxFileSize]="10000000">
                     <ngx-dropzone-label>
-                        <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar Archivo (maximo 10MB)
+                        <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar E-14 (maximo 10MB)
                     </ngx-dropzone-label>
                     <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
                         [removable]="true" (removed)="onRemove(f)">

@@ -61,9 +61,10 @@ import { DropdownMenuUsersComponent } from './components/dropdown-menu-users/dro
 import { DataTablesModule } from 'angular-datatables';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
-import { LogoutPermissionsGuard } from './permissions/logout-permissions-guard';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CambiarRolGerenteComponent } from './components/Admin/cambiar-rol-gerente/cambiar-rol-gerente.component';
+import { AuthGuard } from './guards/AuthGuard/auth.guard';
+import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
 
 @NgModule({
   declarations: [
@@ -136,7 +137,8 @@ import { CambiarRolGerenteComponent } from './components/Admin/cambiar-rol-geren
     NgbModule
   ],
   providers: [
-    LogoutPermissionsGuard,
+    AuthGuard,
+    LogoutGuard,
     LoaderService,
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }
   ],

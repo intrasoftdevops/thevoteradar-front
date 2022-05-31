@@ -1,15 +1,15 @@
 <div class="container py-5">
     <div class="bg-primary py-3 px-5 text-white">
-        <h4>Lista de incidentes</h4>
+        <h4>Lista de novedades</h4>
     </div>
     <ul class="nav nav-tabs mt-5" id="myTab">
         <li class="nav-item" id="tab">
             <button class="nav-link h4 px-md-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#abiertos"
-                type="button" role="tab">Abiertos</button>
+                type="button" role="tab">Abiertas</button>
         </li>
         <li class="nav-item" id="tab">
             <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cerrados"
-                type="button" role="tab">Cerrados</button>
+                type="button" role="tab">Cerradas</button>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -44,7 +44,7 @@
                         </table>
                     </div>
                     <ng-template #open_content>
-                        <p class="text-center mb-0">No hay incidencias abiertas por el momento.</p>
+                        <p class="text-center mb-0">No hay novedades abiertas por el momento.</p>
                     </ng-template>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                         </table>
                     </div>
                     <ng-template #close_content>
-                        <p class="text-center mb-0">No hay incidencias cerradas por el momento.</p>
+                        <p class="text-center mb-0">No hay novedades cerradas por el momento.</p>
                     </ng-template>
                 </div>
             </div>
@@ -137,7 +137,7 @@
                     placeholder="Escribir una respuesta" formControlName="respuesta"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-danger">Cerrar incidencia</button>
+                <button type="submit" class="btn btn-danger">Cerrar novedad</button>
             </div>
         </form>
     </div>
@@ -192,7 +192,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" (click)="openIncidencia()">Reabrir incidencia</button>
+                <button type="button" class="btn btn-success" (click)="openIncidencia()">Reabrir novedad</button>
             </div>
         </div>
     </div>

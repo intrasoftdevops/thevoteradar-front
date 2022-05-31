@@ -1,9 +1,9 @@
 <div class="container">
   <div class="py-5">
     <button class="btn btn-primary btn-lg" data-bs-toggle="offcanvas" data-bs-target="#offcanvasReporte"
-      data-bs-placement="top" title="Agregar reporte de incidencias">
+      data-bs-placement="top" title="Agregar reporte de novedades">
       <i class="fas fa-plus-circle fa-2x align-middle"></i>
-      <span class="mx-3 fw-bold align-middle">Agregar incidencias</span>
+      <span class="mx-3 fw-bold align-middle">Agregar novedades</span>
     </button>
     <div class="card mt-3">
       <div class="card-body">
@@ -32,7 +32,7 @@
           </table>
         </div>
         <ng-template #incidencias_content>
-          <p class="text-center mb-0">No hay incidencias.</p>
+          <p class="text-center mb-0">No hay novedades.</p>
         </ng-template>
       </div>
     </div>
@@ -43,7 +43,7 @@
 <div class="offcanvas offcanvas-start w-35 " tabindex="-1" id="offcanvasReporte" data-bs-keyboard="false">
   <div class="c-contactos bg-primary py-4">
     <div class="offcanvas-header ">
-      <h4 class="offcanvas-title text-white" id="offcanvas">Crear Reporte</h4>
+      <h4 class="offcanvas-title text-white" id="offcanvas">Reportar novedad</h4>
       <div class="d-flex align-items-end">
         <button type="button" class="btn p-0" data-bs-dismiss="offcanvas" aria-label="Close">
           <i class="fa-solid fa-xmark text-white fa-2xl"></i>
@@ -81,17 +81,17 @@
           <span class="text-danger">*</span>
         </label>
         <textarea class="form-control border-2 border-dark rounded" rows="5" formControlName="descripcion"
-          placeholder="Escriba una descripcion de la incidencia"></textarea>
+          placeholder="Escriba una descripcion de la novedad"></textarea>
       </div>
       <div class="form-group pt-3">
         <label class="form-label">
-          <span class="fw-bold">Archivo adjunto</span>
+          <span class="fw-bold">Adjuntar evidencia</span>
           <span class="text-danger">*</span>
         </label>
         <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true"
           [maxFileSize]="10000000">
           <ngx-dropzone-label>
-            <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar Archivo (maximo 10MB)
+            <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar archivo (maximo 10MB)
           </ngx-dropzone-label>
           <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
             [removable]="true" (removed)="onRemove(f)">
@@ -101,7 +101,7 @@
       </div>
       <div class="d-flex justify-content-end pt-5">
         <button type="submit" class="btn btn-primary ">
-          Enviar Reporte
+          Enviar novedad
         </button>
       </div>
     </form>

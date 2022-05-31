@@ -39,16 +39,16 @@ import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-adm
 import { CrearCoordinadorGerenteComponent } from './components/Gerente/crear-coordinador-gerente/crear-coordinador-gerente.component';
 import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo-gerente/crear-testigo-gerente.component';
 import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-testigo-supervisor/crear-testigo-supervisor.component';
-import { NgxPermissionsGuard } from 'ngx-permissions';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
-import { LogoutPermissionsGuard } from './permissions/logout-permissions-guard';
 import { CambiarRolGerenteComponent } from './components/Admin/cambiar-rol-gerente/cambiar-rol-gerente.component';
+import { AuthGuard } from './guards/AuthGuard/auth.guard';
+import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: LoginComponent,
-    canActivate: [LogoutPermissionsGuard],
+    canActivate: [LogoutGuard]
   },
   {
     path: 'forbidden',
@@ -57,417 +57,314 @@ const routes: Routes = [
   {
     path: 'adminHome',
     component: AdminHomeComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
     path: 'gerenteHome',
     component: GerenteHomeComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["2"],
-        redirectTo: '/forbidden'
-      }
+      rol: [2]
     }
   },
   {
     path: 'supervisorHome',
     component: SupervisorHomeComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["3"],
-        redirectTo: '/forbidden'
-      }
+      rol: [3]
     }
   },
   {
     path: 'coordinadorHome',
-    canActivate: [NgxPermissionsGuard],
     component: CoordinadorHomeComponent,
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["4"],
-        redirectTo: '/forbidden'
-      }
+      rol: [4]
     }
   },
   {
     path: 'testigoHome',
     component: TestigoHomeComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["5"],
-        redirectTo: '/forbidden'
-      }
+      rol: [5]
     }
   },
   {
     path: 'crearGerente',
     component: CrearGerenteComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
     path: 'crearSupervisor',
     component: CrearSupervisorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [2],
-        redirectTo: '/forbidden'
-      }
+      rol: [2]
     }
   },
   {
     path: 'crearCoordinador',
     component: CrearCoordinadorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["3"],
-        redirectTo: '/forbidden'
-      }
+      rol: [3]
     }
   },
   {
     path: 'crearTestigo',
     component: CrearTestigoComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["4"],
-        redirectTo: '/forbidden'
-      }
+      rol: [4]
     }
   },
   {
     path: 'editarGerente/:id',
     component: EditarGerenteComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
     path: 'consultarEquipoAdmin',
     component: VerEquipoAdminComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
     path: 'consultarEquipoGerente',
     component: VerEquipoGerenteComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [2],
-        redirectTo: '/forbidden'
-      }
+      rol: [2]
     }
   },
   {
     path: 'consultarEquipoSupervisor',
     component: VerEquipoSupervisorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["3"],
-        redirectTo: '/forbidden'
-      }
+      rol: [3]
     }
   },
   {
     path: 'consultarEquipoCoordinador',
     component: VerEquipoCoordinadorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["4"],
-        redirectTo: '/forbidden'
-      }
+      rol: [4]
     }
   },
   {
     path: 'estadisticasEquipoAdmin',
     component: VerPuestoAdminComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
     path: 'estadisticasEquipoGerente',
     component: VerPuestoGerenteComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [2],
-        redirectTo: '/forbidden'
-      }
+      rol: [2]
     }
   },
   {
     path: 'estadisticasEquipoSupervisor',
     component: VerPuestoSupervisorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["3"],
-        redirectTo: '/forbidden'
-      }
+      rol: [3]
     }
   },
   {
     path: 'estadisticasEquipoCoordinador',
     component: VerPuestoCoordinadorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["4"],
-        redirectTo: '/forbidden'
-      }
+      rol: [4]
     }
   },
   {
     path: 'editarSupervisor/:id',
     component: EditarSupervisorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [2],
-        redirectTo: '/forbidden'
-      }
+      rol: [2]
     }
   },
   {
     path: 'editarCoordinador/:id',
     component: EditarCoordinadorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["3"],
-        redirectTo: '/forbidden'
-      }
+      rol: [3]
     }
   },
   {
     path: 'editarTestigo/:id',
     component: EditarTestigoComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["4"],
-        redirectTo: '/forbidden'
-      }
+      rol: [4]
     }
   },
   {
     path: 'consultarGerente',
     component: ConsultarGerenteComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
     path: 'consultarSupervisor',
     component: ConsultarSupervisorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [1, 2],
-        redirectTo: '/forbidden'
-      }
+      rol: [1, 2]
     }
   },
   {
     path: 'consultarCoordinador',
     component: ConsultarCoordinadorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [1, 2, 3],
-        redirectTo: '/forbidden'
-      }
+      rol: [1, 2, 3]
     }
   },
   {
     path: 'consultarTestigo',
     component: ConsultarTestigoComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [1, 2, 3, 4],
-        redirectTo: '/forbidden'
-      }
+      rol: [1, 2, 3, 4]
     }
   },
   {
     path: 'reporteIncidencias',
     component: ReporteIncidenciasComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["5"],
-        redirectTo: '/forbidden'
-      }
+      rol: [5]
     }
   },
   {
     path: 'editarPerfil',
     component: EditarPerfilComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [1, 2, 3, 4, 5, 8],
-        redirectTo: '/forbidden'
-      }
+      rol: [1, 2, 3, 4, 5, 8]
     }
   },
   {
     path: 'reporteIncidenciasCoordinador',
     component: ReporteIncidenciasCoordinadorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["4"],
-        redirectTo: '/forbidden'
-      }
+      rol: [4]
     }
   },
   {
     path: 'reporteVotosCoordinador',
     component: ReporteVotosCoordinadorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["4"],
-        redirectTo: '/forbidden'
-      }
+      rol: [4]
     }
   },
   {
     path: 'reporteVotosTestigo',
     component: ReporteVotosTestigoComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["5"],
-        redirectTo: '/forbidden'
-      }
+      rol: [5]
     }
   },
   //No olvidar cambiar id para poder utilizar el forbidden.
   {
     path: 'impugnar',
-    component: ImpugnarComponent
+    component: ImpugnarComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [8]
+    }
   },
   {
     path: 'impugnadorHome',
-    component: ImpugnadorHomeComponent
+    component: ImpugnadorHomeComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [8]
+    }
   },
   {
     path: 'crearSupervisorAdmin',
     component: CrearSupervisorAdminComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
     path: 'crearCoordinadorAdmin',
     component: CrearCoordinadorAdminComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
     path: 'crearTestigoAdmin',
     component: CrearTestigoAdminComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
     path: 'crearCoordinadorGerente',
     component: CrearCoordinadorGerenteComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [2],
-        redirectTo: '/forbidden'
-      }
+      rol: [2]
     }
   },
   {
     path: 'crearTestigoGerente',
     component: CrearTestigoGerenteComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: [2],
-        redirectTo: '/forbidden'
-      }
+      rol: [2]
     }
   },
   {
     path: 'crearTestigoSupervisor',
     component: CrearTestigoSupervisorComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["3"],
-        redirectTo: '/forbidden'
-      }
+      rol: [3]
     }
   },
   {
     path: 'cambiarRolGerente/:id',
     component: CambiarRolGerenteComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [AuthGuard],
     data: {
-      permissions: {
-        only: ["1"],
-        redirectTo: '/forbidden'
-      }
+      rol: [1]
     }
   },
   {
