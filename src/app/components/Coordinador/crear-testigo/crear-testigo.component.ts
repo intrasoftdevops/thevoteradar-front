@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import Swal from 'sweetalert2';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
@@ -37,7 +36,8 @@ export class CrearTestigoComponent implements OnInit {
       mesas: [],
     });
     if (item) {
-      this.getTablesTestigo(item.codigo_unico);
+      const puesto = { puesto: item.codigo_unico };
+      this.getTablesTestigo(puesto);
     } else {
       this.dataTables = [];
     }
@@ -74,8 +74,8 @@ export class CrearTestigoComponent implements OnInit {
   }
 
   getTablesTestigo(data: any) {
-    this.apiService.getTablesTestigo().subscribe((resp: any) => {
-      this.dataTables = resp.filter((dataTable: any) => dataTable.codigo_puesto_votacion == data);
+    this.apiService.getMesasSinAsignar(data).subscribe((resp: any) => {
+      this.dataTables = resp;
     })
   }
 

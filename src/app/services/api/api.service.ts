@@ -244,6 +244,10 @@ export class ApiService {
     return this.http.get(this._URL + "/info-usuario", { headers: this.getHeaders() });
   }
 
+  getMesasSinAsignar(data: any) {
+    return this.http.post(this._URL + "/mesas-sin-asignar", data, { headers: this.getHeaders() });
+  }
+
   logout() {
     var data: any;
     return this.http.post(this._URL + "/logout", data, { headers: this.getHeaders() });

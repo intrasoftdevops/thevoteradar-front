@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ApiService } from '../../services/api/api.service';
 import { AlertService } from '../../services/alert/alert.service';
 import { CustomValidationService } from 'src/app/services/validations/custom-validation.service';
 import { LocalDataService } from '../../services/localData/local-data.service';
+import { RxwebValidators } from '@rxweb/reactive-form-validators';
 
 @Component({
   selector: 'app-editar-perfil',
@@ -21,7 +22,15 @@ export class EditarPerfilComponent implements OnInit {
     numero_documento: ['', Validators.required],
     telefono: [''],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    password: [''],
+  });
+
+  @Input() password = "";
+  @Input() confirmedPassword = "";
+
+  updatePasswordForm: FormGroup = this.fb.group({
     password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
+    confirmedPassword: ['', Validators.compose([Validators.required, Validators.minLength(8), RxwebValidators.compare({ fieldName: 'password' })])],
   });
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService, private localData: LocalDataService) { }
@@ -30,8 +39,12 @@ export class EditarPerfilComponent implements OnInit {
     this.getUser();
   }
 
-  get createFormControl() {
+  get updateFormControl() {
     return this.updateForm.controls;
+  }
+
+  get updatePasswordFormControl() {
+    return this.updatePasswordForm.controls;
   }
 
   get keypressValidator() {
@@ -39,7 +52,7 @@ export class EditarPerfilComponent implements OnInit {
   }
 
   onSubmit() {
-    if ((!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) && !this.createFormControl['password'].errors?.['minlength']) {
+    if ((!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) && !this.updateFormControl['password'].errors?.['minlength']) {
 
       if (this.updateForm.valid) {
         this.apiService.updateUser(this.updateForm.value).subscribe((resp: any) => {
@@ -51,6 +64,19 @@ export class EditarPerfilComponent implements OnInit {
         this.alertService.errorAlert("Llene los campos obligatorios.");
       }
 
+    }
+  }
+
+  onSubmitPassword() {
+
+    if (this.updatePasswordForm.valid) {
+      this.apiService.updateUser({ password: this.updatePasswordFormControl['password'].value }).subscribe((resp: any) => {
+
+        this.alertService.successAlert(resp.message);
+
+      })
+    } else {
+      this.alertService.errorAlert("Llene los campos obligatorios.");
     }
   }
 
@@ -69,7 +95,7 @@ export class EditarPerfilComponent implements OnInit {
   }
 
   onSelect(event: any) {
-    this.files=[];
+    this.files = [];
     this.files.push(...event.addedFiles);
     console.log(this.files)
   }

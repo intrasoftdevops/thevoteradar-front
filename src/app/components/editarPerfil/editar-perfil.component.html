@@ -76,7 +76,7 @@
                     <input type="email" class="form-control border-2 border-dark rounded" formControlName="email"
                         placeholder="Ingrese correo electronico">
                     <small class="text-danger"
-                        *ngIf="createFormControl['email'].errors?.['email'] || createFormControl['email'].errors?.['invalidEmail']">
+                        *ngIf="updateFormControl['email'].errors?.['email'] || updateFormControl['email'].errors?.['invalidEmail']">
                         Ingrese una direccion de correo electronico valido.
                     </small>
                 </div>
@@ -84,6 +84,10 @@
         </div>
     </div>
     <div class="d-flex justify-content-end pt-4">
+        <button type="button" class="btn btn-lg btn-primary mx-2 rounded" data-bs-toggle="modal"
+            data-bs-target="#cambiarContraseña">
+            CAMBIAR CONTRASEÑA
+        </button>
         <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">EDITAR</button>
     </div>
 </form>
@@ -114,5 +118,53 @@
                 <button type="button" class="btn btn-primary">Editar foto</button>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cambiarContraseña" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" [formGroup]="updatePasswordForm" (ngSubmit)="onSubmitPassword()">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Cambiar contraseña</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Contraseña</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="password" class="form-control border-2 border-dark rounded" formControlName="password"
+                        placeholder="Ingrese nueva contraseña" autocomplete="off"/>
+                    <small class="text-danger"
+                        *ngIf="updatePasswordFormControl['password'].errors?.['minlength']">
+                        La contraseña no debe ser menor a 8 caracteres.
+                    </small>
+                </div>
+                <div class="form-group pt-2">
+                    <label class="form-label">
+                        <span class="fw-bold">Repetir nueva contraseña</span>
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="password" class="form-control border-2 border-dark rounded"
+                        formControlName="confirmedPassword" placeholder="Ingrese nueva contraseña" autocomplete="off" />
+                    <small class="text-danger"
+                        *ngIf="updatePasswordFormControl['confirmedPassword'].errors?.['minlength']">
+                        La contraseña no debe ser menor a 8 caracteres.
+                    </small>
+                    <small class="text-danger"
+                        *ngIf="updatePasswordFormControl['confirmedPassword'].errors?.['compare']">
+                        La contraseñas no coinciden.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
+            </div>
+        </form>
     </div>
 </div>
