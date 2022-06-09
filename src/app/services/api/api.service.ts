@@ -248,6 +248,10 @@ export class ApiService {
     return this.http.post(this._URL + "/mesas-sin-asignar", data, { headers: this.getHeaders() });
   }
 
+  getIdOnlineUser() {
+    return this.http.get(this._URL + "/getId", { headers: this.getHeaders() });
+  }
+
   logout() {
     var data: any;
     return this.http.post(this._URL + "/logout", data, { headers: this.getHeaders() });

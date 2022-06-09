@@ -15,7 +15,7 @@ import { AlertService } from '../services/alert/alert.service';
 export class LoaderInterceptor implements HttpInterceptor {
   private requests: HttpRequest<any>[] = [];
 
-  constructor(private loaderService: LoaderService,private alertService: AlertService) { }
+  constructor(private loaderService: LoaderService, private alertService: AlertService) { }
 
   removeRequest(req: HttpRequest<any>) {
     const i = this.requests.indexOf(req);
@@ -32,7 +32,7 @@ export class LoaderInterceptor implements HttpInterceptor {
     //console.log("No of requests--->" + this.requests.length);
 
     this.loaderService.isLoading.next(true);
-    return Observable.create((observer:any) => {
+    return Observable.create((observer: any) => {
       const subscription = next.handle(req)
         .subscribe(
           event => {
@@ -44,7 +44,7 @@ export class LoaderInterceptor implements HttpInterceptor {
           },
           err => {
             console.log(err);
-            this.alertService.errorAlert(err.message);
+            this.alertService.errorAlert("Ha ocurrido un error. Por favor intente nuevamente.");
             this.removeRequest(req);
             observer.error(err);
           },
