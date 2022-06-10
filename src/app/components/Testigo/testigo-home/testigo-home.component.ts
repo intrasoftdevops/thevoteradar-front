@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { CustomValidationService } from '../../../services/validations/custom-validation.service';
-import { ApiService } from '../../../services/api/api.service';
-import { AlertService } from '../../../services/alert/alert.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-testigo-home',
@@ -11,10 +7,12 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./testigo-home.component.scss']
 })
 export class TestigoHomeComponent implements OnInit {
-  safeURL: any;
+
+  videos: string[] = ["https://www.youtube.com/embed/g40iqIY243s", "https://www.youtube.com/embed/FZVAxoBYWyg"];
+  sanitizedVideos!: SafeResourceUrl[];
 
   constructor(private _sanitizer: DomSanitizer) {
-    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/bNU_d8rei4k");
+    this.sanitizedVideos = this.videos.map(video => this._sanitizer.bypassSecurityTrustResourceUrl(video));
   }
   ngOnInit() {
   }
