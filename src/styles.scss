@@ -327,6 +327,7 @@ input[type=number] {
 }
 
 ngx-dropzone {
+    width: 100% !important;
     height: 200px !important;
     border: 2px dashed $primary  !important;
     overflow-y: auto !important;
@@ -340,10 +341,14 @@ ngx-dropzone-remove-badge {
     opacity: 1 !important;
 }
 
-ngx-dropzone-image-preview>ngx-dropzone-label {
+ngx-dropzone-image-preview>ngx-dropzone-label,
+ngx-dropzone-video-preview>ngx-dropzone-label {
     color: white !important;
     text-shadow: 1px 1px 2px black, 0 0 1em $primary, 0 0 0.2em $primary;
-    overflow-wrap: anywhere !important;
+    width: 200px !important;
+    white-space: nowrap!important;
+    overflow: hidden!important;
+    text-overflow: ellipsis!important;
 }
 
 nav li .dropdown-menu li a:hover {

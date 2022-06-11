@@ -39,7 +39,6 @@
   </div>
 </div>
 <!-- REPORTAR INCIDENCIA -->
-
 <div class="offcanvas offcanvas-start w-35 " tabindex="-1" id="offcanvasReporte" data-bs-keyboard="false">
   <div class="c-contactos bg-primary py-4">
     <div class="offcanvas-header ">
@@ -84,20 +83,39 @@
           placeholder="Escriba una descripcion de la novedad"></textarea>
       </div>
       <div class="form-group pt-3">
-        <label class="form-label">
-          <span class="fw-bold">Adjuntar evidencia</span>
-          <span class="text-danger">*</span>
+        <label class="form-label fw-bold">
+          Adjuntar evidencia
         </label>
-        <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true"
-          [maxFileSize]="10000000">
-          <ngx-dropzone-label>
-            <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar archivo (maximo 10MB)
-          </ngx-dropzone-label>
-          <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
-            [removable]="true" (removed)="onRemove(f)">
-            <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
-          </ngx-dropzone-image-preview>
-        </ngx-dropzone>
+        <div>
+          <ngx-dropzone (change)="onSelect($event)"
+            [accept]="'image/bmp, image/gif ,image/png, image/jpeg, image/jpg,image/tif, video/mp4, video/avi, video/mkv, video/flv, video/mov, video/wmv, video/divx'"
+            [expandable]="true" [maxFileSize]="1000000000">
+            <ngx-dropzone-label>
+              <p class="mb-0 px-4">
+                <i class="fas fa-paperclip text-primary fa-lg"></i>
+                Adjuntar archivo
+              </p>
+              <hr class="mx-3 border border-primary rounded border-2">
+              <p class="mb-0 px-4 fst-italic">
+                (Imagenes máximo 10MB y videos máximo 100MB)
+              </p>
+            </ngx-dropzone-label>
+            <ng-container *ngFor="let f of files">
+              <ng-container *ngIf="f.type.includes('image')">
+                <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" [file]="f" [removable]="true"
+                  (removed)="onRemove(f)">
+                  <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+                </ngx-dropzone-image-preview>
+              </ng-container>
+              <ng-container *ngIf="f.type.includes('video')">
+                <ngx-dropzone-video-preview ngProjectAs="ngx-dropzone-preview" [file]="f" [removable]="true"
+                  (removed)="onRemove(f)">
+                  <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+                </ngx-dropzone-video-preview>
+              </ng-container>
+            </ng-container>
+          </ngx-dropzone>
+        </div>
       </div>
       <div class="d-flex justify-content-end pt-5">
         <button type="submit" class="btn btn-primary ">
@@ -105,8 +123,6 @@
         </button>
       </div>
     </form>
-
-
   </div>
 </div>
 

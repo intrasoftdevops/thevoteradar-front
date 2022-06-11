@@ -81,10 +81,18 @@
             </div>
             <div class="col-lg-5 d-flex flex-column justify-content-around" *ngIf="showUpload">
                 <span class="fw-bolder my-5 text-center h4">Adjuntar E-14<span class="text-danger h4">*</span></span>
-                <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true"
+                <ngx-dropzone (change)="onSelect($event)"
+                    [accept]="'image/bmp, image/gif ,image/png, image/jpeg, image/jpg,image/tif'" [expandable]="true"
                     [maxFileSize]="10000000">
                     <ngx-dropzone-label>
-                        <i class="fas fa-paperclip text-primary fa-lg"></i> Adjuntar E-14 (maximo 10MB)
+                        <p class="mb-0 px-4">
+                            <i class="fas fa-paperclip text-primary fa-lg"></i>
+                            Adjuntar E-14
+                        </p>
+                        <hr class="mx-3 border border-primary rounded border-2">
+                        <p class="mb-0 px-4 fst-italic">
+                            (Imagenes máximo 10MB)
+                        </p>
                     </ngx-dropzone-label>
                     <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
                         [removable]="true" (removed)="onRemove(f)">

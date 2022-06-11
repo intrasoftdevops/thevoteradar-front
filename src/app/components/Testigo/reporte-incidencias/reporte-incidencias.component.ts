@@ -10,7 +10,7 @@ import { Subject } from 'rxjs';
   templateUrl: './reporte-incidencias.component.html',
   styleUrls: ['./reporte-incidencias.component.scss']
 })
-export class ReporteIncidenciasComponent implements OnInit,OnDestroy {
+export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
 
   photos: any = [];
   files: File[] = [];
@@ -45,7 +45,7 @@ export class ReporteIncidenciasComponent implements OnInit,OnDestroy {
 
   onSubmit() {
 
-    if (this.createForm.valid && this.files.length > 0) {
+    if (this.createForm.valid) {
 
       const uploadData = new FormData();
       uploadData.append('categoria_id', this.createForm.get('categoria_id')!.value);
@@ -101,6 +101,7 @@ export class ReporteIncidenciasComponent implements OnInit,OnDestroy {
   }
 
   onRemove(event: any) {
+    console.log(event);
     this.files.splice(this.files.indexOf(event), 1);
   }
 
