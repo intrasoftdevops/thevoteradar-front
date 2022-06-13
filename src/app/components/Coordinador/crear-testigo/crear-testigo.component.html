@@ -2,12 +2,12 @@
     <div class="card">
         <div class="bg-primary py-3 px-5 text-white">
             <h4 class="m-0">
-                Añadir Testigo
+                Añadir testigo
             </h4>
         </div>
         <div class="card-body">
             <h4 class="ms-4 fw-bolder">
-                Datos Personales
+                Datos personales
             </h4>
             <div class="row m-4">
                 <div class="form-group col-md-6 col-lg-4 pt-2">
@@ -28,11 +28,11 @@
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label">
-                        <span class="fw-bold">Genero</span>
+                        <span class="fw-bold">Género</span>
                         <span class="text-danger">*</span>
                     </label>
                     <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id"
-                        placeholder="Seleccione genero" [clearAllText]="'Borrar todo'">
+                        placeholder="Seleccione género" [clearAllText]="'Borrar todo'">
                         <ng-option [value]="1">Masculino</ng-option>
                         <ng-option [value]="2">Femenino</ng-option>
                         <ng-option [value]="3">Otro</ng-option>
@@ -50,7 +50,7 @@
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label">
-                        <span class="fw-bold">Numero de documento</span>
+                        <span class="fw-bold">Número de documento</span>
                         <span class="text-danger">*</span>
                     </label>
                     <input type="number" class="form-control border-2 border-dark rounded"
@@ -59,33 +59,33 @@
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label fw-bold">
-                        <span class="fw-bold">Telefono</span>
+                        <span class="fw-bold">Teléfono</span>
                         <span class="text-danger">*</span>
                     </label>
                     <input type="number" class="form-control border-2 border-dark rounded" formControlName="telefono"
-                        (keypress)="keypressValidator.keyPressNumbers($event)" placeholder="Ingrese numero de telefono">
+                        (keypress)="keypressValidator.keyPressNumbers($event)" placeholder="Ingrese numero de teléfono">
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="form-label">
-                        <span class="fw-bold">Correo electronico</span>
+                        <span class="fw-bold">Correo electrónico</span>
                         <span class="text-danger">*</span>
                     </label>
                     <input type="email" class="form-control border-2 border-dark rounded" formControlName="email"
-                        placeholder="Ingrese correo electronico">
+                        placeholder="Ingrese correo electrónico">
                     <small class="text-danger"
                         *ngIf="createFormControl['email'].errors?.['email'] || createFormControl['email'].errors?.['invalidEmail']">
-                        Ingrese una direccion de correo electronico valido.
+                        Ingrese una direccion de correo electrónico valido.
                     </small>
                 </div>
             </div>
             <hr class="mx-4 border border-primary rounded border-2" />
             <h4 class="ms-4 fw-bolder">
-                Lugar de Trabajo
+                Lugar de trabajo
             </h4>
             <div class="row mx-4 my-4">
                 <div class="form-group col-md-6 col-lg-4 pt-2">
                     <label class="fw-bold form-label">
-                        <span class="fw-bold">Puesto de votacion</span>
+                        <span class="fw-bold">Puesto de votación</span>
                         <span class="text-danger">*</span>
                     </label>
                     <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
@@ -95,7 +95,7 @@
                     </ng-select>
                 </div>
                 <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="fw-bold form-label">Mesas de votacion</label>
+                    <label class="fw-bold form-label">Mesas de votación</label>
                     <ng-select [items]="dataTables" class="custom-multiple-select rounded" formControlName="mesas"
                         bindLabel="numero_mesa" bindValue="codigo_unico" [multiple]="true" [clearAllText]="'Borrar todo'"
                         notFoundText="No hay informacion disponible" placeholder="Seleccione mesa(s)">

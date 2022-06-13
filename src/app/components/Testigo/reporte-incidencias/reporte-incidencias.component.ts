@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
 
   photos: any = [];
+  videos: any = [];
   files: File[] = [];
   categoryIncidencias: any = [];
   mesas_asignadas: any = [];
@@ -69,9 +70,11 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
 
   ModalIncidenciaActual(incidencia: any) {
     this.photos = [];
+    this.videos = [];
     this.incidenciaActual = {};
     this.incidenciaActual = incidencia;
-    this.photos = incidencia.archivos;
+    this.photos = incidencia.archivos_imagenes;
+    this.videos = incidencia.archivos_videos;
   }
 
   getCategoriasIncidencias() {
@@ -90,6 +93,7 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   getIncidenciasDeTestigo() {
     this.apiService.getIncidenciasDeTestigo().subscribe((resp: any) => {
       this.dataIncidencias = resp;
+      console.log(this.dataIncidencias);
       setTimeout(() => {
         this.dtTrigger.next(void 0);
       });

@@ -18,7 +18,9 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit, OnDestroy
   incidenciaAbiertaActual: any = {};
   incidenciaCerradaActual: any = {};
   photosOpen: any = [];
+  videosOpen: any = [];
   photosClose: any = [];
+  videosClose: any = [];
   replyForm: FormGroup = this.fb.group({
     respuesta: ['', Validators.required],
   });
@@ -93,16 +95,20 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit, OnDestroy
 
   ModalIncidenciaAbiertaActual(incidencia: any) {
     this.photosOpen = [];
+    this.videosOpen = [];
     this.incidenciaAbiertaActual = {};
     this.incidenciaAbiertaActual = incidencia;
-    this.photosOpen = incidencia.archivos;
+    this.photosOpen = incidencia.archivos_imagenes;
+    this.videosOpen = incidencia.archivos_videos;
   }
 
   ModalIncidenciaCerradaActual(incidencia: any) {
     this.photosClose = [];
+    this.videosClose = [];
     this.incidenciaCerradaActual = {};
     this.incidenciaCerradaActual = incidencia;
-    this.photosClose = incidencia.archivos;
+    this.photosClose = incidencia.archivos_imagenes;
+    this.videosClose = incidencia.archivos_videos;
   }
 
   dataTableOptions() {

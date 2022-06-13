@@ -13,7 +13,7 @@
                         <div class="row py-1">
                             <div class="col-5 col-sm-6">
                                 <p class="m-0 h4">
-                                    Puesto de votacion:
+                                    Puesto de votación:
                                 </p>
                             </div>
                             <div class="col-7 col-sm-6 d-flex justify-content-center align-items-center">
@@ -23,7 +23,7 @@
                         <div class="row py-1">
                             <div class="col-5 col-sm-6 d-flex align-items-center">
                                 <p class="m-0 h4">
-                                    Numero de mesa:<span class="text-danger h4">*</span>
+                                    Número de mesa:<span class="text-danger h4">*</span>
                                 </p>
                             </div>
                             <div class="col-7 col-sm-6">
@@ -42,7 +42,10 @@
                                     <tr>
                                         <th scope="col">PARTIDO</th>
                                         <th scope="col">CANDIDATO</th>
-                                        <th scope="col">N° VOTOS</th>
+                                        <th scope="col">
+                                            N° VOTOS
+                                            <span class="text-danger">*</span>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -91,7 +94,7 @@
                         </p>
                         <hr class="mx-3 border border-primary rounded border-2">
                         <p class="mb-0 px-4 fst-italic">
-                            (Imagenes máximo 10MB)
+                            (Imágenes máximo 10MB)
                         </p>
                     </ngx-dropzone-label>
                     <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"

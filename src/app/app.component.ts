@@ -44,9 +44,9 @@ export class AppComponent {
   getIdOnlineUser(): any {
     this.apiService.getIdOnlineUser().subscribe({
       error: (e) => {
-        console.log(e);
-        this.localData.deleteCookies();
+        console.log(e)
         this.router.navigate(['']);
+        this.localData.deleteCookies();
       }
     })
   }

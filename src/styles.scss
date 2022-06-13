@@ -346,9 +346,9 @@ ngx-dropzone-video-preview>ngx-dropzone-label {
     color: white !important;
     text-shadow: 1px 1px 2px black, 0 0 1em $primary, 0 0 0.2em $primary;
     width: 200px !important;
-    white-space: nowrap!important;
-    overflow: hidden!important;
-    text-overflow: ellipsis!important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 nav li .dropdown-menu li a:hover {
@@ -377,7 +377,7 @@ nav li .dropdown-menu li a:hover {
 }
 
 .imgItem {
-    max-height: 100px;
+    max-height: 150px;
     object-fit: cover;
 }
 
@@ -400,6 +400,7 @@ select:-webkit-autofill:focus {
 .popover {
     border-radius: 15px !important;
     max-width: 100% !important;
+    border: 2px solid $primary  !important;
     //left: 15px !important;
 }
 

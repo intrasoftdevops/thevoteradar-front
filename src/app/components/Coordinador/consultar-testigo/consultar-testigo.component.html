@@ -1,6 +1,6 @@
 <div class="container py-5">
     <div class="bg-primary py-3 px-5 text-white">
-        <h4>Consultar Testigo</h4>
+        <h4>Consultar testigo</h4>
     </div>
     <ul class="nav nav-tabs mt-5" id="myTab">
         <li class="nav-item" id="tab">
@@ -22,8 +22,8 @@
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">NOMBRE COMPLETO</th>
-                                    <th scope="col">TELEFONO</th>
-                                    <th scope="col">CORREO ELECTRONICO</th>
+                                    <th scope="col">TELÉFONO</th>
+                                    <th scope="col">CORREO ELECTRÓNICO</th>
                                     <th scope="col">MESAS</th>
                                     <th scope="col"></th>
                                 </tr>
@@ -57,7 +57,7 @@
                         </table>
                     </div>
                     <ng-template #mesa_content>
-                        <p class="text-center mb-0">No hay Testigos con asignacion de mesa.</p>
+                        <p class="text-center mb-0">No hay testigos con asignacion de mesa.</p>
                     </ng-template>
                 </div>
             </div>
@@ -71,8 +71,8 @@
                             <thead class="text-dark align-middle">
                                 <tr>
                                     <th scope="col">NOMBRE COMPLETO</th>
-                                    <th scope="col">TELEFONO</th>
-                                    <th scope="col">CORREO ELECTRONICO</th>
+                                    <th scope="col">TELÉFONO</th>
+                                    <th scope="col">CORREO ELECTRÓNICO</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -103,7 +103,7 @@
                         </table>
                     </div>
                     <ng-template #no_mesa_content>
-                        <p class="text-center mb-0">No hay Testigos sin asignacion de mesa.</p>
+                        <p class="text-center mb-0">No hay testigos sin asignacion de mesa.</p>
                     </ng-template>
                 </div>
             </div>
@@ -123,9 +123,9 @@
             <div class="modal-body">
                 <p><span class="fw-bolder">Nombre completo: </span><span> {{testigoActual.nombres}}
                         {{testigoActual.apellidos}}</span></p>
-                <p><span class="fw-bolder">Telefono: </span><span> {{testigoActual.telefono}}</span></p>
-                <p><span class="fw-bolder">Correo electronico: </span><span> {{testigoActual.email}}</span></p>
-                <p><span class="fw-bolder">Numero de documento: </span><span>
+                <p><span class="fw-bolder">Teléfono: </span><span> {{testigoActual.telefono}}</span></p>
+                <p><span class="fw-bolder">Correo electrónico: </span><span> {{testigoActual.email}}</span></p>
+                <p><span class="fw-bolder">Número de documento: </span><span>
                         {{testigoActual.numero_documento}}</span></p>
                 <p [ngClass]="{'d-none': !mesasActual}"><span class="fw-bolder">Mesas: </span><span>
                         {{mesasActual}}</span></p>

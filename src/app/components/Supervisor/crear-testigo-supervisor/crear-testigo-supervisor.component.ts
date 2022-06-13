@@ -21,7 +21,7 @@ export class CrearTestigoSupervisorComponent implements OnInit {
     genero_id: [null, Validators.required],
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
-    telefono: ['',Validators.required],
+    telefono: ['', Validators.required],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     puesto: [[], Validators.required],
     mesas: [[]],
@@ -71,7 +71,7 @@ export class CrearTestigoSupervisorComponent implements OnInit {
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { puesto: codigo_unico }
-      this.getMesasyCoordinadores(data);
+      this.getTablesTestigo(data);
     }
   }
 
@@ -87,10 +87,9 @@ export class CrearTestigoSupervisorComponent implements OnInit {
     })
   }
 
-  getMesasyCoordinadores(data: any) {
-    this.apiService.getMesasyCoordinadores(data).subscribe((resp: any) => {
-      const { mesas } = resp;
-      this.dataTables = mesas;
+  getTablesTestigo(data: any) {
+    this.apiService.getMesasSinAsignar(data).subscribe((resp: any) => {
+      this.dataTables = resp;
     })
   }
 

@@ -1,7 +1,7 @@
 <div class="container py-5">
     <div class="card">
         <div class="bg-primary py-3 px-5 text-white">
-            <h4>Lista de Reporte de Votos</h4>
+            <h4>Reporte de votos</h4>
         </div>
         <div class="card-body pt-0">
             <form class="d-flex justify-content-center" [formGroup]="searchForm">
@@ -27,7 +27,7 @@
                         <tr>
                             <th scope="col">N° MESA</th>
                             <th scope="col">TESTIGO</th>
-                            <th scope="col">TELEFONO</th>
+                            <th scope="col">TELÉFONO</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -69,7 +69,7 @@
                         <p><span class="fw-bolder">Testigo: </span><span> {{reporte.reporte.testigo.nombres}} {{reporte.reporte.testigo.apellidos}}</span></p>
                     </div>
                     <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Telefono: </span>
+                        <p><span class="fw-bolder">Teléfono: </span>
                             <span>{{reporte.reporte.testigo.telefono}}</span>
                         </p>
                     </div>
