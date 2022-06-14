@@ -69,6 +69,7 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   }
 
   ModalIncidenciaActual(incidencia: any) {
+    console.log(incidencia);
     this.photos = [];
     this.videos = [];
     this.incidenciaActual = {};

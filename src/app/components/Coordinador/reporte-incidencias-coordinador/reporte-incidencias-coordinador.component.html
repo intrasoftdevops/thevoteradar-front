@@ -127,19 +127,20 @@
                 <p>
                     {{incidenciaAbiertaActual.descripcion}}
                 </p>
-                <p class="fw-bolder">Archivos adjuntos: </p>
+                <p class="fw-bolder mb-0">Archivos adjuntos: </p>
                 <div class="w-100">
                     <ng-container *ngIf="photosOpen.length>0">
-                        <p class="fst-italic">Imágenes: </p>
-                        <si-ng-lightbox [showPreviews]="true" class="row row-cols-2 d-flex justify-content-center">
+                        <p class="fst-italic">-Imágenes: </p>
+                        <si-ng-lightbox [showPreviews]="true"
+                            class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
                             <img *ngFor="let img of photosOpen" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
                                 [siLightboxItem]="img.url_archivo" class="imgItem py-1" />
                         </si-ng-lightbox>
                     </ng-container>
                     <ng-container *ngIf="videosOpen.length>0">
-                        <p class="fst-italic">Videos: </p>
-                        <div class="row row-cols-2 d-flex justify-content-center">
-                            <div class="col" *ngFor="let video of videosOpen">
+                        <p class="fst-italic">-Videos: </p>
+                        <div class="row gy-2 d-flex justify-content-center">
+                            <div class="col-md-6" *ngFor="let video of videosOpen">
                                 <div class="ratio ratio-16x9" controls>
                                     <video class="w-100" controls>
                                         <source src="{{video.url_archivo}}" type="video/mp4">
@@ -196,11 +197,11 @@
                 <p>
                     {{incidenciaCerradaActual.descripcion}}
                 </p>
-                <p class="fw-bolder">Archivos adjuntos: </p>
+                <p class="fw-bolder mb-0">Archivos adjuntos: </p>
                 <div class="w-100">
                     <ng-container *ngIf="photosClose.length>0">
                         <p class="fst-italic">Imágenes: </p>
-                        <si-ng-lightbox [showPreviews]="true" class="row row-cols-2 d-flex justify-content-center">
+                        <si-ng-lightbox [showPreviews]="true" class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
                             <img *ngFor="let img of photosClose" src="{{img.url_archivo}}"
                                 [previewSrc]="img.url_archivo" [siLightboxItem]="img.url_archivo"
                                 class="imgItem py-1" />
@@ -208,8 +209,8 @@
                     </ng-container>
                     <ng-container *ngIf="videosClose.length>0">
                         <p class="fst-italic">Videos: </p>
-                        <div class="row row-cols-2 d-flex justify-content-center">
-                            <div class="col" *ngFor="let video of videosClose">
+                        <div class="row gy-2 d-flex justify-content-center">
+                            <div class="col-md-6" *ngFor="let video of videosClose">
                                 <div class="ratio ratio-16x9" controls>
                                     <video class="w-100" controls>
                                         <source src="{{video.url_archivo}}" type="video/mp4">
