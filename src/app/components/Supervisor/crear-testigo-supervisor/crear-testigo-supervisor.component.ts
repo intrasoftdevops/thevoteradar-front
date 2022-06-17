@@ -7,10 +7,9 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 @Component({
   selector: 'app-crear-testigo-supervisor',
   templateUrl: './crear-testigo-supervisor.component.html',
-  styleUrls: ['./crear-testigo-supervisor.component.scss']
+  styleUrls: ['./crear-testigo-supervisor.component.scss'],
 })
 export class CrearTestigoSupervisorComponent implements OnInit {
-
   dataStations: any = [];
   dataTables: any = [];
   dataZones: any = [];
@@ -22,12 +21,24 @@ export class CrearTestigoSupervisorComponent implements OnInit {
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
     telefono: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        this.customValidator.patternValidator(),
+      ],
+    ],
     puesto: [[], Validators.required],
     mesas: [[]],
   });
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(
+    private apiService: ApiService,
+    private fb: FormBuilder,
+    private alertService: AlertService,
+    private customValidator: CustomValidationService
+  ) {}
 
   ngOnInit() {
     this.getZonas();
@@ -42,18 +53,19 @@ export class CrearTestigoSupervisorComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
-
+    if (
+      !this.createFormControl['email'].errors?.['email'] ||
+      !this.createFormControl['email'].errors?.['invalidEmail']
+    ) {
       if (this.createForm.valid) {
-        this.apiService.createTestigo(this.createForm.value).subscribe((resp: any) => {
-
-          this.alertService.successAlert(resp.message);
-
-        })
+        this.apiService
+          .createTestigo(this.createForm.value)
+          .subscribe((resp: any) => {
+            this.alertService.successAlert(resp.message);
+          });
       } else {
-        this.alertService.errorAlert("Llene los campos obligatorios.");
+        this.alertService.errorAlert('Llene los campos obligatorios.');
       }
-
     }
   }
 
@@ -63,6 +75,9 @@ export class CrearTestigoSupervisorComponent implements OnInit {
     if (item) {
       const codigo_unico = this.getCode(item);
       this.getPuestos(codigo_unico);
+    } else {
+      this.dataStations = [];
+      this.dataTables = [];
     }
   }
 
@@ -70,32 +85,35 @@ export class CrearTestigoSupervisorComponent implements OnInit {
     this.createFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { puesto: codigo_unico }
+      const data = { puesto: codigo_unico };
       this.getTablesTestigo(data);
+    } else {
+      this.dataTables = [];
     }
   }
 
   getZonas() {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
       this.dataZones = resp;
-    })
+    });
   }
 
   getPuestos(data: any) {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
-      this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
-    })
+      this.dataStations = resp.filter(
+        (dataStation: any) => dataStation.codigo_zona_votacion == data
+      );
+    });
   }
 
   getTablesTestigo(data: any) {
     this.apiService.getMesasSinAsignar(data).subscribe((resp: any) => {
       this.dataTables = resp;
-    })
+    });
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
   }
-
 }

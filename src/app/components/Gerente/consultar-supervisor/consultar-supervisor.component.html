@@ -1,139 +1,241 @@
 <div class="container py-5">
-    <div class="bg-primary py-3 px-5 text-white">
-        <h4>Consultar Supervisor</h4>
-    </div>
-    <ul class="nav nav-tabs mt-5" id="myTab">
-        <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-md-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#asignados"
-                type="button" role="tab">Asignados</button>
-        </li>
-        <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noasignados"
-                type="button" role="tab">No asignados</button>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="asignados" role="tabpanel">
-            <div class="card mt-3">
-                <div class="card-body">
-                    <div class="table-responsive my-4" *ngIf="listSupervisorAsignados.length>0;else zona_content">
-                        <table datatable [dtOptions]="dtOptionsSupervisorAsignados" [dtTrigger]="dtTrigger"
-                            class="table text-center align-middle w-100">
-                            <thead class="text-dark align-middle">
-                                <tr>
-                                    <th scope="col">NOMBRE COMPLETO</th>
-                                    <th scope="col">TELEFONO</th>
-                                    <th scope="col">CORREO ELECTRONICO</th>
-                                    <th scope="col">ZONAS</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bg-white" *ngFor="let supervisor of listSupervisorAsignados;let index=index">
-                                    <td>{{supervisor.nombres}} {{supervisor.apellidos}}</td>
-                                    <td>{{supervisor.telefono}}</td>
-                                    <td>{{supervisor.email}}</td>
-                                    <td>{{listZones[index]}}</td>
-                                    <td>
-                                        <div class="d-grid gap-1 d-md-flex justify-content-center align-items-center">
-                                            <button class="btn align-middle" data-bs-toggle="modal"
-                                                data-bs-target="#supervisor"
-                                                (click)="supervisorActualSeleccionado(supervisor,listZones[index])"
-                                                data-bs-placement="top" title="Ver más">
-                                                <i class="fa-solid fa-eye text-primary"></i>
-                                            </button>
-                                            <button class="btn align-middle"
-                                                (click)="redirectUpdateSupervisor(supervisor.id)"
-                                                data-bs-placement="top" title="Editar información">
-                                                <i class="fa-solid fa-pen text-primary"></i>
-                                            </button>
-                                            <button class="btn align-middle d-none" data-bs-placement="top"
-                                                title="Cambiar de rol">
-                                                <img src="../../../../assets/changeRol.svg" class="icon-change-rol">
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+  <div class="bg-primary py-3 px-5 text-white">
+    <h4>Consultar supervisor</h4>
+  </div>
+  <ul class="nav nav-tabs mt-5" id="myTab">
+    <li class="nav-item" id="tab">
+      <button
+        class="nav-link h4 px-md-5 active"
+        id="home-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#asignados"
+        type="button"
+        role="tab"
+      >
+        Asignados
+      </button>
+    </li>
+    <li class="nav-item" id="tab">
+      <button
+        class="nav-link h4 px-md-5"
+        id="profile-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#noasignados"
+        type="button"
+        role="tab"
+      >
+        No asignados
+      </button>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="asignados" role="tabpanel">
+      <div class="card mt-3">
+        <div class="card-body">
+          <div
+            class="table-responsive my-4"
+            *ngIf="listSupervisorAsignados.length > 0; else zona_content"
+          >
+            <table
+              datatable
+              [dtOptions]="dtOptionsSupervisorAsignados"
+              [dtTrigger]="dtTrigger"
+              class="table text-center align-middle w-100"
+            >
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col">TELÉFONO</th>
+                  <th scope="col">CORREO ELECTRÓNICO</th>
+                  <th scope="col">ZONAS</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="bg-white"
+                  *ngFor="
+                    let supervisor of listSupervisorAsignados;
+                    let index = index
+                  "
+                >
+                  <td>{{ supervisor.nombres }} {{ supervisor.apellidos }}</td>
+                  <td>{{ supervisor.telefono }}</td>
+                  <td>{{ supervisor.email }}</td>
+                  <td>{{ listZones[index] }}</td>
+                  <td>
+                    <div
+                      class="d-grid gap-1 d-md-flex justify-content-center align-items-center"
+                    >
+                      <button
+                        class="btn align-middle"
+                        data-bs-toggle="modal"
+                        data-bs-target="#supervisor"
+                        (click)="
+                          supervisorActualSeleccionado(
+                            supervisor,
+                            listZones[index]
+                          )
+                        "
+                        data-bs-placement="top"
+                        title="Ver más"
+                      >
+                        <i class="fa-solid fa-eye text-primary"></i>
+                      </button>
+                      <button
+                        class="btn align-middle"
+                        (click)="redirectUpdateSupervisor(supervisor.id)"
+                        data-bs-placement="top"
+                        title="Editar información"
+                      >
+                        <i class="fa-solid fa-pen text-primary"></i>
+                      </button>
+                      <button
+                        class="btn align-middle d-none"
+                        data-bs-placement="top"
+                        title="Cambiar de rol"
+                      >
+                        <img
+                          src="../../../../assets/changeRol.svg"
+                          class="icon-change-rol"
+                        />
+                      </button>
                     </div>
-                    <ng-template #zona_content>
-                        <p class="text-center mb-0">No hay Supervisores con asignacion de zona.</p>
-                    </ng-template>
-                </div>
-            </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #zona_content>
+            <p class="text-center mb-0">
+              No hay supervisores con asignación de zona.
+            </p>
+          </ng-template>
         </div>
-        <div class="tab-pane fade" id="noasignados" role="tabpanel">
-            <div class="card mt-3">
-                <div class="card-body">
-                    <div class="table-responsive my-4" *ngIf="listSupervisorNoAsignados.length>0;else no_zona_content">
-                        <table datatable [dtOptions]="dtOptionsSupervisorNoAsignados" [dtTrigger]="dtTrigger"
-                            class="table text-center align-middle w-100">
-                            <thead class="text-dark align-middle">
-                                <tr>
-                                    <th scope="col">NOMBRE COMPLETO</th>
-                                    <th scope="col">TELEFONO</th>
-                                    <th scope="col">CORREO ELECTRONICO</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bg-white" *ngFor="let supervisor of listSupervisorNoAsignados">
-                                    <td>{{supervisor.nombres}} {{supervisor.apellidos}}</td>
-                                    <td>{{supervisor.telefono}}</td>
-                                    <td>{{supervisor.email}}</td>
-                                    <td>
-                                        <div class="d-grid gap-1 d-md-flex justify-content-center align-items-center">
-                                            <button class="btn align-middle" data-bs-toggle="modal"
-                                                data-bs-target="#supervisor"
-                                                (click)="supervisorActualSeleccionado(supervisor)"
-                                                data-bs-placement="top" title="Ver más">
-                                                <i class="fa-solid fa-eye text-primary"></i>
-                                            </button>
-                                            <button class="btn align-middle"
-                                                (click)="redirectUpdateSupervisor(supervisor.id)"
-                                                data-bs-placement="top" title="Editar información">
-                                                <i class="fa-solid fa-pen text-primary"></i>
-                                            </button>
-                                            <button class="btn align-middle d-none" data-bs-placement="top"
-                                                title="Cambiar de rol">
-                                                <img src="../../../../assets/changeRol.svg" class="icon-change-rol">
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <ng-template #no_zona_content>
-                        <p class="text-center mb-0">No hay Supervisores sin asignacion de zona.</p>
-                    </ng-template>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="tab-pane fade" id="noasignados" role="tabpanel">
+      <div class="card mt-3">
+        <div class="card-body">
+          <div
+            class="table-responsive my-4"
+            *ngIf="listSupervisorNoAsignados.length > 0; else no_zona_content"
+          >
+            <table
+              datatable
+              [dtOptions]="dtOptionsSupervisorNoAsignados"
+              [dtTrigger]="dtTrigger"
+              class="table text-center align-middle w-100"
+            >
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col">TELÉFONO</th>
+                  <th scope="col">CORREO ELECTRÓNICO</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="bg-white"
+                  *ngFor="let supervisor of listSupervisorNoAsignados"
+                >
+                  <td>{{ supervisor.nombres }} {{ supervisor.apellidos }}</td>
+                  <td>{{ supervisor.telefono }}</td>
+                  <td>{{ supervisor.email }}</td>
+                  <td>
+                    <div
+                      class="d-grid gap-1 d-md-flex justify-content-center align-items-center"
+                    >
+                      <button
+                        class="btn align-middle"
+                        data-bs-toggle="modal"
+                        data-bs-target="#supervisor"
+                        (click)="supervisorActualSeleccionado(supervisor)"
+                        data-bs-placement="top"
+                        title="Ver más"
+                      >
+                        <i class="fa-solid fa-eye text-primary"></i>
+                      </button>
+                      <button
+                        class="btn align-middle"
+                        (click)="redirectUpdateSupervisor(supervisor.id)"
+                        data-bs-placement="top"
+                        title="Editar información"
+                      >
+                        <i class="fa-solid fa-pen text-primary"></i>
+                      </button>
+                      <button
+                        class="btn align-middle d-none"
+                        data-bs-placement="top"
+                        title="Cambiar de rol"
+                      >
+                        <img
+                          src="../../../../assets/changeRol.svg"
+                          class="icon-change-rol"
+                        />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #no_zona_content>
+            <p class="text-center mb-0">
+              No hay supervisores sin asignación de zona.
+            </p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="modal fade" id="supervisor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Información</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p><span class="fw-bolder">Nombre completo: </span><span> {{supervisorActual.nombres}}
-                        {{supervisorActual.apellidos}}</span></p>
-                <p><span class="fw-bolder">Telefono: </span><span> {{supervisorActual.telefono}}</span></p>
-                <p><span class="fw-bolder">Correo electronico: </span><span> {{supervisorActual.email}}</span></p>
-                <p><span class="fw-bolder">Numero de documento: </span><span>
-                        {{supervisorActual.numero_documento}}</span>
-                </p>
-                <p [ngClass]="{'d-none': !zonasActual}"><span class="fw-bolder">Zonas: </span><span>
-                        {{zonasActual}}</span></p>
-            </div>
-        </div>
+<div
+  class="modal fade"
+  id="supervisor"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+        <button
+          type="button"
+          class="btn"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark text-white"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          <span class="fw-bolder">Nombre completo: </span
+          ><span>
+            {{ supervisorActual.nombres }}
+            {{ supervisorActual.apellidos }}</span
+          >
+        </p>
+        <p>
+          <span class="fw-bolder">Teléfono: </span
+          ><span> {{ supervisorActual.telefono }}</span>
+        </p>
+        <p>
+          <span class="fw-bolder">Correo electrónico: </span
+          ><span> {{ supervisorActual.email }}</span>
+        </p>
+        <p>
+          <span class="fw-bolder">Número de documento: </span
+          ><span> {{ supervisorActual.numero_documento }}</span>
+        </p>
+        <p [ngClass]="{ 'd-none': !zonasActual }">
+          <span class="fw-bolder">Zonas: </span><span> {{ zonasActual }}</span>
+        </p>
+      </div>
     </div>
+  </div>
 </div>

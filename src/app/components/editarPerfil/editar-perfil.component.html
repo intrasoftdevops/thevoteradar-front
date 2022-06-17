@@ -1,170 +1,279 @@
 <form class="container py-5" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
-    <div class="bg-primary py-3 px-5 text-white">
-        <h4>Edita tus datos</h4>
+  <div class="bg-primary py-3 px-5 text-white">
+    <h4>Edita tus datos</h4>
+  </div>
+  <div class="d-flex justify-content-center">
+    <div class="position-relative my-4">
+      <i
+        class="fa-solid fa-circle-user fa-10x text-white bg-info rounded-circle border border-primary border-5"
+      ></i>
+      <button
+        type="button"
+        class="btn btn-primary position-absolute bottom-0 end-0 border border-light rounded-circle text-center border-2 d-none"
+        style="width: 51px; height: 51px"
+        data-bs-toggle="modal"
+        data-bs-target="#perfilModal"
+      >
+        <i class="fa-solid fa-camera text-white fa-xl"></i>
+      </button>
     </div>
-    <div class="d-flex justify-content-center">
-        <div class="position-relative my-4">
-            <i
-                class="fa-solid fa-circle-user fa-10x text-white bg-info rounded-circle border border-primary border-5"></i>
-            <button type="button"
-                class="btn btn-primary position-absolute bottom-0 end-0 border border-light rounded-circle text-center border-2 d-none"
-                style="width: 51px;height: 51px" data-bs-toggle="modal" data-bs-target="#perfilModal">
-                <i class="fa-solid fa-camera text-white fa-xl"></i>
-            </button>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row m-4 d-flex justify-content-center">
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="form-label">
+            <span class="fw-bold">Nombres</span>
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control border-2 border-dark rounded"
+            formControlName="nombres"
+            (keypress)="keypressValidator.keyPressLetters($event)"
+            placeholder="Ingrese nombres"
+          />
         </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="row m-4 d-flex justify-content-center">
-                <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Nombres</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="nombres"
-                        (keypress)="keypressValidator.keyPressLetters($event)" placeholder="Ingrese nombres" />
-                </div>
-                <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Apellidos</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <input type="text" class="form-control border-2 border-dark rounded" formControlName="apellidos"
-                        (keypress)="keypressValidator.keyPressLetters($event)" placeholder="Ingrese apellidos" />
-                </div>
-                <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Género</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="genero_id"
-                        placeholder="Seleccione género" [clearAllText]="'Borrar todo'">
-                        <ng-option [value]="1">Masculino</ng-option>
-                        <ng-option [value]="2">Femenino</ng-option>
-                        <ng-option [value]="3">Otro</ng-option>
-                    </ng-select>
-                </div>
-                <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Tipo de documento</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <ng-select [searchable]="false" class="custom-select rounded" formControlName="tipo_documento_id"
-                        placeholder="Seleccione tipo de documemto" [clearAllText]="'Borrar todo'">
-                        <ng-option [value]="1">Cédula de ciudadanía</ng-option>
-                    </ng-select>
-                </div>
-                <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Número de documento</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <input type="number" class="form-control border-2 border-dark rounded"
-                        placeholder="Ingrese número de documento" formControlName="numero_documento"
-                        (keypress)="keypressValidator.keyPressNumbers($event)">
-                </div>
-                <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="form-label fw-bold">Teléfono</label>
-                    <input type="number" class="form-control border-2 border-dark rounded" formControlName="telefono"
-                        (keypress)="keypressValidator.keyPressNumbers($event)" placeholder="Ingrese número de teléfono">
-                </div>
-                <div class="form-group col-md-6 col-lg-4 pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Correo electrónico</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <input type="email" class="form-control border-2 border-dark rounded" formControlName="email"
-                        placeholder="Ingrese correo electrónico">
-                    <small class="text-danger"
-                        *ngIf="updateFormControl['email'].errors?.['email'] || updateFormControl['email'].errors?.['invalidEmail']">
-                        Ingrese una direccion de correo electronico valido.
-                    </small>
-                </div>
-            </div>
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="form-label">
+            <span class="fw-bold">Apellidos</span>
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control border-2 border-dark rounded"
+            formControlName="apellidos"
+            (keypress)="keypressValidator.keyPressLetters($event)"
+            placeholder="Ingrese apellidos"
+          />
         </div>
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="form-label">
+            <span class="fw-bold">Género</span>
+            <span class="text-danger">*</span>
+          </label>
+          <ng-select
+            [searchable]="false"
+            class="custom-select rounded"
+            formControlName="genero_id"
+            placeholder="Seleccione género"
+            [clearAllText]="'Borrar todo'"
+          >
+            <ng-option [value]="1">Masculino</ng-option>
+            <ng-option [value]="2">Femenino</ng-option>
+            <ng-option [value]="3">Otro</ng-option>
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="form-label">
+            <span class="fw-bold">Tipo de documento</span>
+            <span class="text-danger">*</span>
+          </label>
+          <ng-select
+            [searchable]="false"
+            class="custom-select rounded"
+            formControlName="tipo_documento_id"
+            placeholder="Seleccione tipo de documemto"
+            [clearAllText]="'Borrar todo'"
+          >
+            <ng-option [value]="1">Cédula de ciudadanía</ng-option>
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="form-label">
+            <span class="fw-bold">Número de documento</span>
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="number"
+            class="form-control border-2 border-dark rounded"
+            placeholder="Ingrese número de documento"
+            formControlName="numero_documento"
+            (keypress)="keypressValidator.keyPressNumbers($event)"
+          />
+        </div>
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="form-label fw-bold">Teléfono</label>
+          <input
+            type="number"
+            class="form-control border-2 border-dark rounded"
+            formControlName="telefono"
+            (keypress)="keypressValidator.keyPressNumbers($event)"
+            placeholder="Ingrese número de teléfono"
+          />
+        </div>
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="form-label">
+            <span class="fw-bold">Correo electrónico</span>
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="email"
+            class="form-control border-2 border-dark rounded"
+            formControlName="email"
+            placeholder="Ingrese correo electrónico"
+          />
+          <small
+            class="text-danger"
+            *ngIf="updateFormControl['email'].errors?.['email'] || updateFormControl['email'].errors?.['invalidEmail']"
+          >
+            Ingrese una direccion de correo electronico valido.
+          </small>
+        </div>
+      </div>
     </div>
-    <div class="d-flex justify-content-end pt-4">
-        <button type="button" class="btn btn-lg btn-primary mx-2 rounded" data-bs-toggle="modal"
-            data-bs-target="#cambiarContraseña">
-            CAMBIAR CONTRASEÑA
-        </button>
-        <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">EDITAR</button>
-    </div>
+  </div>
+  <div class="d-flex justify-content-end pt-4">
+    <button
+      type="button"
+      class="btn btn-lg btn-primary mx-2 rounded"
+      data-bs-toggle="modal"
+      data-bs-target="#cambiarContraseña"
+    >
+      CAMBIAR CONTRASEÑA
+    </button>
+    <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">
+      EDITAR
+    </button>
+  </div>
 </form>
-<div class="modal fade" id="perfilModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Editar foto de perfil</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <ngx-dropzone (change)="onSelect($event)" [accept]="'image/png, image/jpeg'" [expandable]="true"
-                    [maxFileSize]="10000000" [multiple]="false">
-                    <ngx-dropzone-label>
-                        <i class="fas fa-paperclip text-primary fa-lg"></i> Adjunta tu foto de perfil (Maximo 10MB)
-                    </ngx-dropzone-label>
-                    <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
-                        [removable]="true" (removed)="onRemove(f)">
-                        <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
-                    </ngx-dropzone-image-preview>
-                </ngx-dropzone>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Editar foto</button>
-            </div>
-        </div>
+<div
+  class="modal fade"
+  id="perfilModal"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Editar foto de perfil
+        </h5>
+        <button
+          type="button"
+          class="btn"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark text-white"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ngx-dropzone
+          (change)="onSelect($event)"
+          [accept]="'image/png, image/jpeg'"
+          [expandable]="true"
+          [maxFileSize]="10000000"
+          [multiple]="false"
+        >
+          <ngx-dropzone-label>
+            <i class="fas fa-paperclip text-primary fa-lg"></i> Adjunta tu foto
+            de perfil (Maximo 10MB)
+          </ngx-dropzone-label>
+          <ngx-dropzone-image-preview
+            ngProjectAs="ngx-dropzone-preview"
+            *ngFor="let f of files"
+            [file]="f"
+            [removable]="true"
+            (removed)="onRemove(f)"
+          >
+            <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+          </ngx-dropzone-image-preview>
+        </ngx-dropzone>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary">Editar foto</button>
+      </div>
     </div>
+  </div>
 </div>
 
-<div class="modal fade" id="cambiarContraseña" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form class="modal-content" [formGroup]="updatePasswordForm" (ngSubmit)="onSubmitPassword()">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Cambiar contraseña</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Contraseña</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <input type="password" class="form-control border-2 border-dark rounded" formControlName="password"
-                        placeholder="Ingrese nueva contraseña" autocomplete="off"/>
-                    <small class="text-danger"
-                        *ngIf="updatePasswordFormControl['password'].errors?.['minlength']">
-                        La contraseña no debe ser menor a 8 caracteres.
-                    </small>
-                </div>
-                <div class="form-group pt-2">
-                    <label class="form-label">
-                        <span class="fw-bold">Repetir nueva contraseña</span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <input type="password" class="form-control border-2 border-dark rounded"
-                        formControlName="confirmedPassword" placeholder="Ingrese nueva contraseña" autocomplete="off" />
-                    <small class="text-danger"
-                        *ngIf="updatePasswordFormControl['confirmedPassword'].errors?.['minlength']">
-                        La contraseña no debe ser menor a 8 caracteres.
-                    </small>
-                    <small class="text-danger"
-                        *ngIf="updatePasswordFormControl['confirmedPassword'].errors?.['compare']">
-                        La contraseñas no coinciden.
-                    </small>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
-            </div>
-        </form>
-    </div>
+<div
+  class="modal fade"
+  id="cambiarContraseña"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <form
+      class="modal-content"
+      [formGroup]="updatePasswordForm"
+      (ngSubmit)="onSubmitPassword()"
+    >
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Cambiar contraseña</h5>
+        <button
+          type="button"
+          class="btn"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark text-white"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group pt-2">
+          <label class="form-label">
+            <span class="fw-bold">Contraseña</span>
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="password"
+            class="form-control border-2 border-dark rounded"
+            formControlName="password"
+            placeholder="Ingrese nueva contraseña"
+            autocomplete="off"
+          />
+          <small
+            class="text-danger"
+            *ngIf="updatePasswordFormControl['password'].errors?.['minlength']"
+          >
+            La contraseña no debe ser menor a 8 caracteres.
+          </small>
+        </div>
+        <div class="form-group pt-2">
+          <label class="form-label">
+            <span class="fw-bold">Repetir nueva contraseña</span>
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="password"
+            class="form-control border-2 border-dark rounded"
+            formControlName="confirmedPassword"
+            placeholder="Ingrese nueva contraseña"
+            autocomplete="off"
+          />
+          <small
+            class="text-danger"
+            *ngIf="updatePasswordFormControl['confirmedPassword'].errors?.['minlength']"
+          >
+            La contraseña no debe ser menor a 8 caracteres.
+          </small>
+          <small
+            class="text-danger"
+            *ngIf="updatePasswordFormControl['confirmedPassword'].errors?.['compare']"
+          >
+            La contraseñas no coinciden.
+          </small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">
+          Cambiar contraseña
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

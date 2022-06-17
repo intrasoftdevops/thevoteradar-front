@@ -3,14 +3,17 @@
     <div class="col-lg-6 d-flex align-items-stretch">
       <div class="card text-dark w-100">
         <div class="bg-primary py-3 px-5 text-white">
-          <h4 _ngcontent-utf-c133="" class="m-0">
-            Pacto Histórico
-          </h4>
+          <h4 _ngcontent-utf-c133="" class="m-0">Pacto Histórico</h4>
         </div>
         <div class="card-body">
           <div class="m-4">
-            <p><span class="fw-bolder">Departamento: </span><span> Cundinamarca</span></p>
-            <p><span class="fw-bolder">Municipio: </span><span> Soacha</span></p>
+            <p>
+              <span class="fw-bolder">Departamento: </span
+              ><span> Cundinamarca</span>
+            </p>
+            <p>
+              <span class="fw-bolder">Municipio: </span><span> Soacha</span>
+            </p>
             <p><span class="fw-bolder">Zona: </span><span> Soacha</span></p>
             <p><span class="fw-bolder">Puesto: </span><span> Soacha</span></p>
             <p><span class="fw-bolder">Mesas: </span><span> Soacha</span></p>
@@ -18,17 +21,23 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-6 d-flex align-items-stretch" *ngFor="let video of sanitizedVideos">
+    <div
+      class="col-lg-6 d-flex align-items-stretch"
+      *ngFor="let video of sanitizedVideos"
+    >
       <div class="ratio ratio-16x9">
-        <iframe [src]='video' frameborder="0" allowfullscreen></iframe>
+        <iframe [src]="video" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
   </div>
-  <div>
-  </div>
+  <div></div>
 </div>
 <div class="toast-container">
-  <ngb-toast class="welcomeBanner d-flex align-items-center bg-white" [delay]="2000" [animation]="true">
+  <ngb-toast
+    class="welcomeBanner d-flex align-items-center bg-white"
+    [delay]="2000"
+    [animation]="true"
+  >
     <h3 class="mb-0 fw-bolder text-dark">Bienvenido testigo</h3>
   </ngb-toast>
 </div>

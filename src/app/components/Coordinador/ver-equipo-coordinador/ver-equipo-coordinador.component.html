@@ -1,6 +1,6 @@
 <div class="container py-5">
   <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
-    <h4>Mi Equipo de trabajo</h4>
+    <h4>Mi equipo de trabajo</h4>
     <!--<button class="btn btn-sm btn-info position-relative" data-bs-toggle="tooltip" data-bs-placement="top"
       title="{{(showMap)?'Ver lista':'Ver mapa'}}" (click)="showIframe()">
       <i class="fa-solid fa-map fa-lg text-white" *ngIf="!showMap;else list_content"></i>
@@ -13,25 +13,44 @@
       </span>
     </button>-->
   </div>
-  <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe;else content_map">
+  <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe; else content_map">
     <iframe [src]="urlSafe" frameborder="0" allowFullScreen="true"></iframe>
   </div>
   <ng-template #content_map>
     <div class="card mt-5">
       <div class="card-body">
-        <form class="row m-4 d-flex justify-content-center" [formGroup]="searchForm">
+        <form
+          class="row m-4 d-flex justify-content-center"
+          [formGroup]="searchForm"
+        >
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Equipo por puesto</label>
-            <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-              (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
-              placeholder="Seleccione puesto" formControlName="puestos" [clearAllText]="'Borrar todo'">
+            <ng-select
+              [items]="dataStations"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              bindValue="codigo_unico"
+              (change)="getSelectedStation($event)"
+              notFoundText="No hay información disponible"
+              placeholder="Seleccione puesto"
+              formControlName="puestos"
+              [clearAllText]="'Borrar todo'"
+            >
             </ng-select>
           </div>
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Testigos por mesa</label>
-            <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa"
-              bindValue="codigo_unico" (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
-              placeholder="Seleccione mesa" formControlName="mesas" [clearAllText]="'Borrar todo'">
+            <ng-select
+              [items]="dataTables"
+              class="custom-select rounded"
+              bindLabel="numero_mesa"
+              bindValue="codigo_unico"
+              (change)="getSelectedTable($event)"
+              notFoundText="No hay información disponible"
+              placeholder="Seleccione mesa"
+              formControlName="mesas"
+              [clearAllText]="'Borrar todo'"
+            >
             </ng-select>
           </div>
         </form>
@@ -42,20 +61,27 @@
         <h4>Testigos</h4>
       </div>
       <div class="card-body">
-        <div class="table-responsive" *ngIf="listTestigos.length>0;else other_content">
+        <div
+          class="table-responsive"
+          *ngIf="listTestigos.length > 0; else other_content"
+        >
           <table class="table table-curved text-center">
             <thead class="text-dark">
               <tr>
                 <th scope="col">NOMBRE COMPLETO</th>
-                <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
+                <th scope="col" class="d-none d-md-table-cell">
+                  CORREO ELECTRÓNICO
+                </th>
                 <th scope="col">TELÉFONO</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let testigo of listTestigos" class="bg-white">
-                <td scope="row">{{testigo.nombres}} {{testigo.apellidos}}</td>
-                <td class="d-none d-md-table-cell">{{testigo.email}}</td>
-                <td>{{testigo.telefono}}</td>
+                <td scope="row">
+                  {{ testigo.nombres }} {{ testigo.apellidos }}
+                </td>
+                <td class="d-none d-md-table-cell">{{ testigo.email }}</td>
+                <td>{{ testigo.telefono }}</td>
               </tr>
             </tbody>
           </table>

@@ -7,10 +7,9 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 @Component({
   selector: 'app-crear-testigo',
   templateUrl: './crear-testigo.component.html',
-  styleUrls: ['./crear-testigo.component.scss']
+  styleUrls: ['./crear-testigo.component.scss'],
 })
 export class CrearTestigoComponent implements OnInit {
-
   dataStations: any = [];
   dataTables: any = [];
   createForm: FormGroup = this.fb.group({
@@ -20,12 +19,24 @@ export class CrearTestigoComponent implements OnInit {
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
     telefono: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        this.customValidator.patternValidator(),
+      ],
+    ],
     puesto: [[], Validators.required],
     mesas: [[]],
   });
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(
+    private apiService: ApiService,
+    private fb: FormBuilder,
+    private alertService: AlertService,
+    private customValidator: CustomValidationService
+  ) {}
 
   ngOnInit() {
     this.getStationsTestigo();
@@ -52,31 +63,31 @@ export class CrearTestigoComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
-
+    if (
+      !this.createFormControl['email'].errors?.['email'] ||
+      !this.createFormControl['email'].errors?.['invalidEmail']
+    ) {
       if (this.createForm.valid) {
-        this.apiService.createTestigo(this.createForm.value).subscribe((resp: any) => {
-
-          this.alertService.successAlert(resp.message);
-
-        })
+        this.apiService
+          .createTestigo(this.createForm.value)
+          .subscribe((resp: any) => {
+            this.alertService.successAlert(resp.message);
+          });
       } else {
-        this.alertService.errorAlert("Llene los campos obligatorios.");
+        this.alertService.errorAlert('Llene los campos obligatorios.');
       }
-
     }
   }
 
   getStationsTestigo() {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
-    })
+    });
   }
 
   getTablesTestigo(data: any) {
     this.apiService.getMesasSinAsignar(data).subscribe((resp: any) => {
       this.dataTables = resp;
-    })
+    });
   }
-
 }

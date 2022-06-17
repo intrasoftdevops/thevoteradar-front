@@ -8,11 +8,10 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 @Component({
   selector: 'app-ver-equipo-admin',
   templateUrl: './ver-equipo-admin.component.html',
-  styleUrls: ['./ver-equipo-admin.component.scss']
+  styleUrls: ['./ver-equipo-admin.component.scss'],
 })
 export class VerEquipoAdminComponent implements OnInit {
-
-  tabla: string = "ninguna";
+  tabla: string = 'ninguna';
   dataDepartments: any = [];
   dataMunicipals: any = [];
   dataZones: any = [];
@@ -30,11 +29,15 @@ export class VerEquipoAdminComponent implements OnInit {
     municipios: [null],
     zonas: [null],
     puestos: [null],
-    mesas: [null]
+    mesas: [null],
   });
   dataGraphics: any = {};
 
-  constructor(private apiService: ApiService, private sanitizer: DomSanitizer, private fb: FormBuilder) { }
+  constructor(
+    private apiService: ApiService,
+    private sanitizer: DomSanitizer,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit() {
     this.getDepartmentAdmin();
@@ -50,7 +53,7 @@ export class VerEquipoAdminComponent implements OnInit {
     this.apiService.getDataGraphics().subscribe((resp: any) => {
       this.dataGraphics = resp;
       this.getUrl();
-    })
+    });
   }
 
   getUrl() {
@@ -68,10 +71,13 @@ export class VerEquipoAdminComponent implements OnInit {
     this.searchFormControl['mesas'].reset();
     if (item) {
       this.getMunicipalAdmin(item.codigo_unico);
-      this.tabla = "ninguna"
+      this.tabla = 'ninguna';
     } else {
       this.dataMunicipals = [];
-      this.tabla = "ninguna"
+      this.dataZones = [];
+      this.dataStations = [];
+      this.dataTables = [];
+      this.tabla = 'ninguna';
     }
   }
 
@@ -81,12 +87,14 @@ export class VerEquipoAdminComponent implements OnInit {
     this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { municipio: codigo_unico }
+      const data = { municipio: codigo_unico };
       this.getZonasyGerentes(data);
-      this.tabla = "gerente";
+      this.tabla = 'gerente';
     } else {
       this.dataZones = [];
-      this.tabla = "ninguna"
+      this.dataStations = [];
+      this.dataTables = [];
+      this.tabla = 'ninguna';
     }
   }
 
@@ -95,12 +103,13 @@ export class VerEquipoAdminComponent implements OnInit {
     this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { zona: codigo_unico }
+      const data = { zona: codigo_unico };
       this.getPuestosySupervisores(data);
-      this.tabla = "supervisor";
+      this.tabla = 'supervisor';
     } else {
       this.dataStations = [];
-      this.tabla = "gerente";
+      this.dataTables = [];
+      this.tabla = 'gerente';
     }
   }
 
@@ -108,23 +117,23 @@ export class VerEquipoAdminComponent implements OnInit {
     this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { puesto: codigo_unico }
+      const data = { puesto: codigo_unico };
       this.getMesasyCoordinadores(data);
-      this.tabla = "coordinador";
+      this.tabla = 'coordinador';
     } else {
       this.dataTables = [];
-      this.tabla = "supervisor"
+      this.tabla = 'supervisor';
     }
   }
 
   getSelectedTable(item: any) {
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { mesa: codigo_unico }
+      const data = { mesa: codigo_unico };
       this.getTestigoMesa(data);
-      this.tabla = "testigo";
+      this.tabla = 'testigo';
     } else {
-      this.tabla = "coordinador"
+      this.tabla = 'coordinador';
     }
   }
 
@@ -132,20 +141,27 @@ export class VerEquipoAdminComponent implements OnInit {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
       if (this.dataDepartments.length > 0) {
-        this.searchForm.get('departamentos')?.setValue(this.dataDepartments[0].codigo_unico);
+        this.searchForm
+          .get('departamentos')
+          ?.setValue(this.dataDepartments[0].codigo_unico);
         this.getSelectedDepartment(this.dataDepartments[0]);
       }
-    })
+    });
   }
 
   getMunicipalAdmin(data: any) {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
+      this.dataMunicipals = resp.filter(
+        (dataMunicipal: any) =>
+          dataMunicipal.codigo_departamento_votacion == data
+      );
       if (this.dataMunicipals.length > 0) {
-        this.searchForm.get('municipios')?.setValue(this.dataMunicipals[0].codigo_unico);
+        this.searchForm
+          .get('municipios')
+          ?.setValue(this.dataMunicipals[0].codigo_unico);
         this.getSelectedMunicipal(this.dataMunicipals[0]);
       }
-    })
+    });
   }
 
   getZonasyGerentes(data: any) {
@@ -153,7 +169,7 @@ export class VerEquipoAdminComponent implements OnInit {
       const { zonas, gerentes } = resp;
       this.dataZones = zonas;
       this.listGerentes = gerentes;
-    })
+    });
   }
 
   getPuestosySupervisores(data: any) {
@@ -161,7 +177,7 @@ export class VerEquipoAdminComponent implements OnInit {
       const { puestos, supervisores } = resp;
       this.dataStations = puestos;
       this.listSupervisores = supervisores;
-    })
+    });
   }
 
   getMesasyCoordinadores(data: any) {
@@ -169,14 +185,14 @@ export class VerEquipoAdminComponent implements OnInit {
       const { mesas, coordinadores } = resp;
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
-    })
+    });
   }
 
   getTestigoMesa(data: any) {
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
       const { testigos } = resp;
       this.listTestigos = testigos;
-    })
+    });
   }
 
   getCode(item: any) {
@@ -187,5 +203,4 @@ export class VerEquipoAdminComponent implements OnInit {
   showIframe() {
     this.showMap = !this.showMap;
   }
-
 }

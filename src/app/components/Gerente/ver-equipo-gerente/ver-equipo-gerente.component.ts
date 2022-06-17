@@ -8,11 +8,10 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-ver-equipo-gerente',
   templateUrl: './ver-equipo-gerente.component.html',
-  styleUrls: ['./ver-equipo-gerente.component.scss']
+  styleUrls: ['./ver-equipo-gerente.component.scss'],
 })
 export class VerEquipoGerenteComponent implements OnInit {
-
-  tabla: string = "ninguna";
+  tabla: string = 'ninguna';
   dataMunicipals: any = [];
   dataZones: any = [];
   dataStations: any = [];
@@ -27,11 +26,15 @@ export class VerEquipoGerenteComponent implements OnInit {
     municipios: [null],
     zonas: [null],
     puestos: [null],
-    mesas: [null]
+    mesas: [null],
   });
   dataGraphics: any = {};
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private sanitizer: DomSanitizer) { }
+  constructor(
+    private apiService: ApiService,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
     this.getMunicipalAdmin();
@@ -47,7 +50,7 @@ export class VerEquipoGerenteComponent implements OnInit {
     this.apiService.getDataGraphics().subscribe((resp: any) => {
       this.dataGraphics = resp;
       this.getUrl();
-    })
+    });
   }
 
   getUrl() {
@@ -65,10 +68,12 @@ export class VerEquipoGerenteComponent implements OnInit {
     if (item) {
       const codigo_unico = this.getCode(item);
       this.getZonas(codigo_unico);
-      this.tabla = "ninguna";
+      this.tabla = 'ninguna';
     } else {
       this.dataZones = [];
-      this.tabla = "ninguna"
+      this.dataStations = [];
+      this.dataTables = [];
+      this.tabla = 'ninguna';
     }
   }
 
@@ -77,12 +82,13 @@ export class VerEquipoGerenteComponent implements OnInit {
     this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { zona: codigo_unico }
+      const data = { zona: codigo_unico };
       this.getPuestosySupervisores(data);
-      this.tabla = "supervisor";
+      this.tabla = 'supervisor';
     } else {
       this.dataStations = [];
-      this.tabla = "ninguna"
+      this.dataTables = [];
+      this.tabla = 'ninguna';
     }
   }
 
@@ -90,31 +96,33 @@ export class VerEquipoGerenteComponent implements OnInit {
     this.searchFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { puesto: codigo_unico }
+      const data = { puesto: codigo_unico };
       this.getMesasyCoordinadores(data);
-      this.tabla = "coordinador";
+      this.tabla = 'coordinador';
     } else {
       this.dataTables = [];
-      this.tabla = "supervisor"
+      this.tabla = 'supervisor';
     }
   }
 
   getSelectedTable(item: any) {
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { mesa: codigo_unico }
+      const data = { mesa: codigo_unico };
       this.getTestigoMesa(data);
-      this.tabla = "testigo";
+      this.tabla = 'testigo';
     } else {
-      this.tabla = "coordinador"
+      this.tabla = 'coordinador';
     }
   }
 
   getMunicipalAdmin() {
-    this.apiService.getMunicipalGerente().subscribe(resp => {
+    this.apiService.getMunicipalGerente().subscribe((resp) => {
       this.dataMunicipals = resp;
       if (this.dataMunicipals.length > 0) {
-        this.searchForm.get('municipios')?.setValue(this.dataMunicipals[0].codigo_unico);
+        this.searchForm
+          .get('municipios')
+          ?.setValue(this.dataMunicipals[0].codigo_unico);
         this.getSelectedMunicipal(this.dataMunicipals[0]);
       }
     });
@@ -122,7 +130,9 @@ export class VerEquipoGerenteComponent implements OnInit {
 
   getZonas(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
-      this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == data);
+      this.dataZones = resp.filter(
+        (dataZone: any) => dataZone.codigo_municipio_votacion == data
+      );
       if (this.dataZones.length > 0) {
         this.searchForm.get('zonas')?.setValue(this.dataZones[0].codigo_unico);
         this.getSelectedZone(this.dataZones[0]);
@@ -135,7 +145,7 @@ export class VerEquipoGerenteComponent implements OnInit {
       const { puestos, supervisores } = resp;
       this.dataStations = puestos;
       this.listSupervisores = supervisores;
-    })
+    });
   }
 
   getMesasyCoordinadores(data: any) {
@@ -143,14 +153,14 @@ export class VerEquipoGerenteComponent implements OnInit {
       const { mesas, coordinadores } = resp;
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
-    })
+    });
   }
 
   getTestigoMesa(data: any) {
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
       const { testigos } = resp;
       this.listTestigos = testigos;
-    })
+    });
   }
 
   getCode(item: any) {
@@ -161,5 +171,4 @@ export class VerEquipoGerenteComponent implements OnInit {
   showIframe() {
     this.showMap = !this.showMap;
   }
-
 }

@@ -9,10 +9,9 @@ import { LocalDataService } from '../../../services/localData/local-data.service
 @Component({
   selector: 'app-editar-gerente',
   templateUrl: './editar-gerente.component.html',
-  styleUrls: ['./editar-gerente.component.scss']
+  styleUrls: ['./editar-gerente.component.scss'],
 })
 export class EditarGerenteComponent implements OnInit {
-
   dataDepartments: any = [];
   dataMunicipals: any = [];
 
@@ -26,26 +25,38 @@ export class EditarGerenteComponent implements OnInit {
     tipo_documento_id: ['', Validators.required],
     numero_documento: ['', Validators.required],
     telefono: [''],
-    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        this.customValidator.patternValidator(),
+      ],
+    ],
     password: [''],
     departamento: [[], Validators.required],
     municipios: [[]],
   });
   submitted = false;
 
-  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
-    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService, private localData: LocalDataService) { }
+  constructor(
+    private apiService: ApiService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private fb: FormBuilder,
+    private customValidator: CustomValidationService,
+    private alertService: AlertService,
+    private localData: LocalDataService
+  ) {}
 
   ngOnInit() {
-
     this.getGerente();
     this.getDepartmentAdmin();
-    this.subscriber = this.router.events.pipe(
-      filter((event: any) => event instanceof NavigationEnd)
-    ).subscribe((event) => {
-      window.location.reload();
-    });
-
+    this.subscriber = this.router.events
+      .pipe(filter((event: any) => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        window.location.reload();
+      });
   }
 
   getSelectedValue(item: any) {
@@ -53,7 +64,7 @@ export class EditarGerenteComponent implements OnInit {
       municipios: [],
     });
     if (item) {
-      this.getMunicipalAdmin()
+      this.getMunicipalAdmin();
     } else {
       this.dataMunicipals = [];
     }
@@ -68,16 +79,18 @@ export class EditarGerenteComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
+    if (
+      !this.updateFormControl['email'].errors?.['email'] ||
+      !this.updateFormControl['email'].errors?.['invalidEmail']
+    ) {
       if (this.updateForm.valid) {
-        this.apiService.updateGerente(this.idGerente, this.updateForm.value).subscribe((resp: any) => {
-
-          this.alertService.successAlert(resp.res);
-
-        })
+        this.apiService
+          .updateGerente(this.idGerente, this.updateForm.value)
+          .subscribe((resp: any) => {
+            this.alertService.successAlert(resp.res);
+          });
       } else {
-
-        this.alertService.errorAlert("Llene los campos obligatorios.");
+        this.alertService.errorAlert('Llene los campos obligatorios.');
       }
     }
   }
@@ -86,15 +99,18 @@ export class EditarGerenteComponent implements OnInit {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
       this.getMunicipalAdmin();
-    })
+    });
   }
 
   getMunicipalAdmin() {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
       if (this.updateFormControl['departamento'].value) {
-        this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.updateFormControl['departamento'].value);
+        this.dataMunicipals = resp.filter(
+          (dataMunicipal: any) =>
+            dataMunicipal.codigo_departamento_votacion ==
+            this.updateFormControl['departamento'].value
+        );
       }
-
     });
   }
 
@@ -103,9 +119,10 @@ export class EditarGerenteComponent implements OnInit {
   }
 
   getGerente() {
-    this.idGerente = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
+    this.idGerente = this.localData.decryptIdUser(
+      this.activatedRoute.snapshot.params['id']
+    );
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
-
       const { gerente, municipios_asignados, departamentos_asignados } = resp;
 
       this.updateForm.get('nombres')?.setValue(gerente.nombres);
@@ -113,13 +130,20 @@ export class EditarGerenteComponent implements OnInit {
       this.updateForm.get('genero_id')?.setValue(gerente.genero_id);
       this.updateForm.get('email')?.setValue(gerente.email);
       this.updateForm.get('password')?.setValue(gerente.password);
-      this.updateForm.get('tipo_documento_id')?.setValue(gerente.tipo_documento_id);
-      this.updateForm.get('numero_documento')?.setValue(gerente.numero_documento);
+      this.updateForm
+        .get('tipo_documento_id')
+        ?.setValue(gerente.tipo_documento_id);
+      this.updateForm
+        .get('numero_documento')
+        ?.setValue(gerente.numero_documento);
       this.updateForm.get('telefono')?.setValue(gerente.telefono);
-      this.updateForm.get('municipios')?.setValue(this.getCodeMunicipals(municipios_asignados));
-      this.updateForm.get('departamento')?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
-
-    })
+      this.updateForm
+        .get('municipios')
+        ?.setValue(this.getCodeMunicipals(municipios_asignados));
+      this.updateForm
+        .get('departamento')
+        ?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
+    });
   }
 
   getCodeMunicipals(data: any) {
@@ -128,5 +152,4 @@ export class EditarGerenteComponent implements OnInit {
       return codigo_unico;
     });
   }
-
 }

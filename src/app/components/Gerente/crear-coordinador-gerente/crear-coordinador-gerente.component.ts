@@ -7,10 +7,9 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 @Component({
   selector: 'app-crear-coordinador-gerente',
   templateUrl: './crear-coordinador-gerente.component.html',
-  styleUrls: ['./crear-coordinador-gerente.component.scss']
+  styleUrls: ['./crear-coordinador-gerente.component.scss'],
 })
 export class CrearCoordinadorGerenteComponent implements OnInit {
-
   dataZones: any = [];
   dataStations: any = [];
   dataFiltered: any = [];
@@ -22,13 +21,25 @@ export class CrearCoordinadorGerenteComponent implements OnInit {
     genero_id: [null, Validators.required],
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
-    telefono: ['',Validators.required],
-    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    telefono: ['', Validators.required],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        this.customValidator.patternValidator(),
+      ],
+    ],
     zona: [[], Validators.required],
     puestos: [[]],
   });
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(
+    private apiService: ApiService,
+    private fb: FormBuilder,
+    private alertService: AlertService,
+    private customValidator: CustomValidationService
+  ) {}
 
   ngOnInit() {
     this.getMunicipalAdmin();
@@ -43,18 +54,19 @@ export class CrearCoordinadorGerenteComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
-
+    if (
+      !this.createFormControl['email'].errors?.['email'] ||
+      !this.createFormControl['email'].errors?.['invalidEmail']
+    ) {
       if (this.createForm.valid) {
-        this.apiService.createCoordinador(this.createForm.value).subscribe((resp: any) => {
-
-          this.alertService.successAlert(resp.message);
-
-        })
+        this.apiService
+          .createCoordinador(this.createForm.value)
+          .subscribe((resp: any) => {
+            this.alertService.successAlert(resp.message);
+          });
       } else {
-        this.alertService.errorAlert("Llene los campos obligatorios.");
+        this.alertService.errorAlert('Llene los campos obligatorios.');
       }
-
     }
   }
 
@@ -64,6 +76,9 @@ export class CrearCoordinadorGerenteComponent implements OnInit {
     if (item) {
       const codigo_unico = this.getCode(item);
       this.getZonas(codigo_unico);
+    } else {
+      this.dataZones = [];
+      this.dataStations = [];
     }
   }
 
@@ -71,20 +86,24 @@ export class CrearCoordinadorGerenteComponent implements OnInit {
     this.createFormControl['puestos'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { zona: codigo_unico }
+      const data = { zona: codigo_unico };
       this.getPuestosySupervisores(data);
+    } else {
+      this.dataStations = [];
     }
   }
 
   getMunicipalAdmin() {
-    this.apiService.getMunicipalGerente().subscribe(resp => {
+    this.apiService.getMunicipalGerente().subscribe((resp) => {
       this.dataMunicipals = resp;
     });
   }
 
   getZonas(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
-      this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == data);
+      this.dataZones = resp.filter(
+        (dataZone: any) => dataZone.codigo_municipio_votacion == data
+      );
     });
   }
 
@@ -92,12 +111,11 @@ export class CrearCoordinadorGerenteComponent implements OnInit {
     this.apiService.getPuestosySupervisores(data).subscribe((resp: any) => {
       const { puestos } = resp;
       this.dataStations = puestos;
-    })
+    });
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
   }
-
 }

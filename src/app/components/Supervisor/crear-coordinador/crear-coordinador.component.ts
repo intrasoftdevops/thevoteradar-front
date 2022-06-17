@@ -7,10 +7,9 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 @Component({
   selector: 'app-crear-coordinador',
   templateUrl: './crear-coordinador.component.html',
-  styleUrls: ['./crear-coordinador.component.scss']
+  styleUrls: ['./crear-coordinador.component.scss'],
 })
 export class CrearCoordinadorComponent implements OnInit {
-
   dataZones: any = [];
   dataStations: any = [];
   dataFiltered: any = [];
@@ -22,12 +21,24 @@ export class CrearCoordinadorComponent implements OnInit {
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
     telefono: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        this.customValidator.patternValidator(),
+      ],
+    ],
     zona: [[], Validators.required],
     puestos: [[]],
   });
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(
+    private apiService: ApiService,
+    private fb: FormBuilder,
+    private alertService: AlertService,
+    private customValidator: CustomValidationService
+  ) {}
 
   ngOnInit() {
     this.getZonesSupervisor();
@@ -38,9 +49,9 @@ export class CrearCoordinadorComponent implements OnInit {
       puestos: [],
     });
     if (item) {
-      this.getStationCoordinador(item.codigo_unico)
+      this.getStationCoordinador(item.codigo_unico);
     } else {
-      this.dataZones = [];
+      this.dataStations = [];
     }
   }
 
@@ -53,32 +64,33 @@ export class CrearCoordinadorComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
-
+    if (
+      !this.createFormControl['email'].errors?.['email'] ||
+      !this.createFormControl['email'].errors?.['invalidEmail']
+    ) {
       if (this.createForm.valid) {
-        this.apiService.createCoordinador(this.createForm.value).subscribe((resp: any) => {
-
-          this.alertService.successAlert(resp.message);
-
-        })
+        this.apiService
+          .createCoordinador(this.createForm.value)
+          .subscribe((resp: any) => {
+            this.alertService.successAlert(resp.message);
+          });
       } else {
-        this.alertService.errorAlert("Llene los campos obligatorios.");
+        this.alertService.errorAlert('Llene los campos obligatorios.');
       }
-
     }
   }
-
 
   getZonesSupervisor() {
     this.apiService.getZonesSupervisor().subscribe((resp: any) => {
       this.dataZones = resp;
-    })
+    });
   }
 
   getStationCoordinador(data: any) {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
-      this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
-    })
+      this.dataStations = resp.filter(
+        (dataStation: any) => dataStation.codigo_zona_votacion == data
+      );
+    });
   }
-
 }

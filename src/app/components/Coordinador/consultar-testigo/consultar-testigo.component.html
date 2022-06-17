@@ -1,135 +1,237 @@
 <div class="container py-5">
-    <div class="bg-primary py-3 px-5 text-white">
-        <h4>Consultar testigo</h4>
-    </div>
-    <ul class="nav nav-tabs mt-5" id="myTab">
-        <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-md-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#asignados"
-                type="button" role="tab">Asignados</button>
-        </li>
-        <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#noasignados"
-                type="button" role="tab">No asignados</button>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="asignados" role="tabpanel">
-            <div class="card mt-3">
-                <div class="card-body">
-                    <div class="table-responsive my-4" *ngIf="listTestigoAsignados.length>0;else mesa_content">
-                        <table datatable [dtOptions]="dtOptionsTestigoAsignados" [dtTrigger]="dtTrigger"
-                            class="table text-center align-middle w-100">
-                            <thead class="text-dark align-middle">
-                                <tr>
-                                    <th scope="col">NOMBRE COMPLETO</th>
-                                    <th scope="col">TELÉFONO</th>
-                                    <th scope="col">CORREO ELECTRÓNICO</th>
-                                    <th scope="col">MESAS</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bg-white" *ngFor="let testigo of listTestigoAsignados;let index=index">
-                                    <td>{{testigo.nombres}} {{testigo.apellidos}}</td>
-                                    <td>{{testigo.telefono}}</td>
-                                    <td>{{testigo.email}}</td>
-                                    <td>{{listTables[index]}}</td>
-                                    <td>
-                                        <div class="d-grid gap-1 d-md-flex justify-content-center align-items-center">
-                                            <button class="btn align-middle" data-bs-toggle="modal"
-                                                data-bs-target="#testigo"
-                                                (click)="testigoActualSeleccionado(testigo,listTables[index])"
-                                                data-bs-placement="top" title="Ver más">
-                                                <i class="fa-solid fa-eye text-primary"></i>
-                                            </button>
-                                            <button class="btn align-middle" (click)="redirectUpdateTestigo(testigo.id)"
-                                                data-bs-placement="top" title="Editar información">
-                                                <i class="fa-solid fa-pen text-primary"></i>
-                                            </button>
-                                            <button class="btn align-middle d-none" data-bs-placement="top"
-                                                title="Cambiar de rol">
-                                                <img src="../../../../assets/changeRol.svg" class="icon-change-rol">
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+  <div class="bg-primary py-3 px-5 text-white">
+    <h4>Consultar testigo</h4>
+  </div>
+  <ul class="nav nav-tabs mt-5" id="myTab">
+    <li class="nav-item" id="tab">
+      <button
+        class="nav-link h4 px-md-5 active"
+        id="home-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#asignados"
+        type="button"
+        role="tab"
+      >
+        Asignados
+      </button>
+    </li>
+    <li class="nav-item" id="tab">
+      <button
+        class="nav-link h4 px-md-5"
+        id="profile-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#noasignados"
+        type="button"
+        role="tab"
+      >
+        No asignados
+      </button>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="asignados" role="tabpanel">
+      <div class="card mt-3">
+        <div class="card-body">
+          <div
+            class="table-responsive my-4"
+            *ngIf="listTestigoAsignados.length > 0; else mesa_content"
+          >
+            <table
+              datatable
+              [dtOptions]="dtOptionsTestigoAsignados"
+              [dtTrigger]="dtTrigger"
+              class="table text-center align-middle w-100"
+            >
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col">TELÉFONO</th>
+                  <th scope="col">CORREO ELECTRÓNICO</th>
+                  <th scope="col">MESAS</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="bg-white"
+                  *ngFor="
+                    let testigo of listTestigoAsignados;
+                    let index = index
+                  "
+                >
+                  <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
+                  <td>{{ testigo.telefono }}</td>
+                  <td>{{ testigo.email }}</td>
+                  <td>{{ listTables[index] }}</td>
+                  <td>
+                    <div
+                      class="d-grid gap-1 d-md-flex justify-content-center align-items-center"
+                    >
+                      <button
+                        class="btn align-middle"
+                        data-bs-toggle="modal"
+                        data-bs-target="#testigo"
+                        (click)="
+                          testigoActualSeleccionado(testigo, listTables[index])
+                        "
+                        data-bs-placement="top"
+                        title="Ver más"
+                      >
+                        <i class="fa-solid fa-eye text-primary"></i>
+                      </button>
+                      <button
+                        class="btn align-middle"
+                        (click)="redirectUpdateTestigo(testigo.id)"
+                        data-bs-placement="top"
+                        title="Editar información"
+                      >
+                        <i class="fa-solid fa-pen text-primary"></i>
+                      </button>
+                      <button
+                        class="btn align-middle d-none"
+                        data-bs-placement="top"
+                        title="Cambiar de rol"
+                      >
+                        <img
+                          src="../../../../assets/changeRol.svg"
+                          class="icon-change-rol"
+                        />
+                      </button>
                     </div>
-                    <ng-template #mesa_content>
-                        <p class="text-center mb-0">No hay testigos con asignacion de mesa.</p>
-                    </ng-template>
-                </div>
-            </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #mesa_content>
+            <p class="text-center mb-0">
+              No hay testigos con asignación de mesa.
+            </p>
+          </ng-template>
         </div>
-        <div class="tab-pane fade" id="noasignados" role="tabpanel">
-            <div class="card mt-3">
-                <div class="card-body">
-                    <div class="table-responsive my-4" *ngIf="listTestigoNoAsignados.length>0;else no_mesa_content">
-                        <table datatable [dtOptions]="dtOptionsTestigoNoAsignados" [dtTrigger]="dtTrigger"
-                            class="table text-center align-middle w-100">
-                            <thead class="text-dark align-middle">
-                                <tr>
-                                    <th scope="col">NOMBRE COMPLETO</th>
-                                    <th scope="col">TELÉFONO</th>
-                                    <th scope="col">CORREO ELECTRÓNICO</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bg-white" *ngFor="let testigo of listTestigoNoAsignados">
-                                    <td>{{testigo.nombres}} {{testigo.apellidos}}</td>
-                                    <td>{{testigo.telefono}}</td>
-                                    <td>{{testigo.email}}</td>
-                                    <td>
-                                        <div class="d-grid gap-1 d-md-flex justify-content-center align-items-center">
-                                            <button class="btn align-middle" data-bs-toggle="modal"
-                                                data-bs-target="#testigo" (click)="testigoActualSeleccionado(testigo)"
-                                                data-bs-placement="top" title="Ver más">
-                                                <i class="fa-solid fa-eye text-primary"></i>
-                                            </button>
-                                            <button class="btn align-middle" (click)="redirectUpdateTestigo(testigo.id)"
-                                                data-bs-placement="top" title="Editar información">
-                                                <i class="fa-solid fa-pen text-primary"></i>
-                                            </button>
-                                            <button class="btn align-middle d-none" data-bs-placement="top"
-                                                title="Cambiar de rol">
-                                                <img src="../../../../assets/changeRol.svg" class="icon-change-rol">
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <ng-template #no_mesa_content>
-                        <p class="text-center mb-0">No hay testigos sin asignacion de mesa.</p>
-                    </ng-template>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="tab-pane fade" id="noasignados" role="tabpanel">
+      <div class="card mt-3">
+        <div class="card-body">
+          <div
+            class="table-responsive my-4"
+            *ngIf="listTestigoNoAsignados.length > 0; else no_mesa_content"
+          >
+            <table
+              datatable
+              [dtOptions]="dtOptionsTestigoNoAsignados"
+              [dtTrigger]="dtTrigger"
+              class="table text-center align-middle w-100"
+            >
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col">TELÉFONO</th>
+                  <th scope="col">CORREO ELECTRÓNICO</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="bg-white"
+                  *ngFor="let testigo of listTestigoNoAsignados"
+                >
+                  <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
+                  <td>{{ testigo.telefono }}</td>
+                  <td>{{ testigo.email }}</td>
+                  <td>
+                    <div
+                      class="d-grid gap-1 d-md-flex justify-content-center align-items-center"
+                    >
+                      <button
+                        class="btn align-middle"
+                        data-bs-toggle="modal"
+                        data-bs-target="#testigo"
+                        (click)="testigoActualSeleccionado(testigo)"
+                        data-bs-placement="top"
+                        title="Ver más"
+                      >
+                        <i class="fa-solid fa-eye text-primary"></i>
+                      </button>
+                      <button
+                        class="btn align-middle"
+                        (click)="redirectUpdateTestigo(testigo.id)"
+                        data-bs-placement="top"
+                        title="Editar información"
+                      >
+                        <i class="fa-solid fa-pen text-primary"></i>
+                      </button>
+                      <button
+                        class="btn align-middle d-none"
+                        data-bs-placement="top"
+                        title="Cambiar de rol"
+                      >
+                        <img
+                          src="../../../../assets/changeRol.svg"
+                          class="icon-change-rol"
+                        />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #no_mesa_content>
+            <p class="text-center mb-0">
+              No hay testigos sin asignación de mesa.
+            </p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="modal fade" id="testigo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Información</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p><span class="fw-bolder">Nombre completo: </span><span> {{testigoActual.nombres}}
-                        {{testigoActual.apellidos}}</span></p>
-                <p><span class="fw-bolder">Teléfono: </span><span> {{testigoActual.telefono}}</span></p>
-                <p><span class="fw-bolder">Correo electrónico: </span><span> {{testigoActual.email}}</span></p>
-                <p><span class="fw-bolder">Número de documento: </span><span>
-                        {{testigoActual.numero_documento}}</span></p>
-                <p [ngClass]="{'d-none': !mesasActual}"><span class="fw-bolder">Mesas: </span><span>
-                        {{mesasActual}}</span></p>
-            </div>
-        </div>
+<div
+  class="modal fade"
+  id="testigo"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+        <button
+          type="button"
+          class="btn"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark text-white"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          <span class="fw-bolder">Nombre completo: </span
+          ><span>
+            {{ testigoActual.nombres }} {{ testigoActual.apellidos }}</span
+          >
+        </p>
+        <p>
+          <span class="fw-bolder">Teléfono: </span
+          ><span> {{ testigoActual.telefono }}</span>
+        </p>
+        <p>
+          <span class="fw-bolder">Correo electrónico: </span
+          ><span> {{ testigoActual.email }}</span>
+        </p>
+        <p>
+          <span class="fw-bolder">Número de documento: </span
+          ><span> {{ testigoActual.numero_documento }}</span>
+        </p>
+        <p [ngClass]="{ 'd-none': !mesasActual }">
+          <span class="fw-bolder">Mesas: </span><span> {{ mesasActual }}</span>
+        </p>
+      </div>
     </div>
+  </div>
 </div>

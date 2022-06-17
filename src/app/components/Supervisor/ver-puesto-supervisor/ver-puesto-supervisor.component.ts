@@ -5,11 +5,10 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 @Component({
   selector: 'app-ver-puesto-supervisor',
   templateUrl: './ver-puesto-supervisor.component.html',
-  styleUrls: ['./ver-puesto-supervisor.component.scss']
+  styleUrls: ['./ver-puesto-supervisor.component.scss'],
 })
 export class VerPuestoSupervisorComponent implements OnInit {
-
-  tabla: string = "ninguna";
+  tabla: string = 'ninguna';
   percent: number = 0;
   dataZones: any = [];
   dataStations: any = [];
@@ -18,11 +17,11 @@ export class VerPuestoSupervisorComponent implements OnInit {
     zonas: [null],
     puestos: [null],
   });
-  dataStateZone:any = [];
-  dataStateStation:any = [];
+  dataStateZone: any = [];
+  dataStateStation: any = [];
   stateActual: any = {};
 
-  constructor(private apiService: ApiService, private fb: FormBuilder) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.getZonas();
@@ -39,39 +38,42 @@ export class VerPuestoSupervisorComponent implements OnInit {
       const data = { zona: codigo_unico };
       this.getNecesitadosZona(data);
       this.getPuestos(codigo_unico);
-      this.tabla = "coordinador"
+      this.tabla = 'coordinador';
     } else {
-      this.tabla = "ninguna"
+      this.dataStations = [];
+      this.tabla = 'ninguna';
     }
   }
 
   getSelectedStation(item: any) {
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { puesto: codigo_unico }
+      const data = { puesto: codigo_unico };
       this.getNecesitadosPuesto(data);
-      this.tabla = "testigo";
+      this.tabla = 'testigo';
     } else {
-      this.tabla = "coordinador"
+      this.tabla = 'coordinador';
     }
   }
 
   getPuestos(data: any) {
     this.apiService.getStationsCoordinador().subscribe((resp: any) => {
-      this.dataStations = resp.filter((dataStation: any) => dataStation.codigo_zona_votacion == data);
-    })
+      this.dataStations = resp.filter(
+        (dataStation: any) => dataStation.codigo_zona_votacion == data
+      );
+    });
   }
 
   getNecesitadosZona(data: any) {
     this.apiService.getNecesitadosZona(data).subscribe((resp: any) => {
-     this.dataStateZone=[resp];
-    })
+      this.dataStateZone = [resp];
+    });
   }
 
   getNecesitadosPuesto(data: any) {
     this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
       this.dataStateStation = [resp];
-    })
+    });
   }
 
   createPercent(existentes: any, necesitados: any) {
@@ -85,15 +87,15 @@ export class VerPuestoSupervisorComponent implements OnInit {
   textColor(existentes: any, necesitados: any) {
     let percent = Math.round((existentes / necesitados) * 100) / 100;
     if (percent == 100) {
-      return "text-success";
-    } else if ((percent >= 0 && percent <= 50) && (existentes < necesitados)) {
-      return "text-danger";
+      return 'text-success';
+    } else if (percent >= 0 && percent <= 50 && existentes < necesitados) {
+      return 'text-danger';
     } else if (percent > 50 && percent < 100) {
-      return "text-warning";
+      return 'text-warning';
     } else if (percent > 100) {
-      return "text-primary";
+      return 'text-primary';
     } else {
-      return "text-success";
+      return 'text-success';
     }
   }
 
@@ -104,7 +106,7 @@ export class VerPuestoSupervisorComponent implements OnInit {
         this.searchForm.get('zonas')?.setValue(this.dataZones[0].codigo_unico);
         this.getSelectedZone(this.dataZones[0]);
       }
-    })
+    });
   }
 
   getCode(item: any) {
@@ -113,7 +115,6 @@ export class VerPuestoSupervisorComponent implements OnInit {
   }
 
   stateSeleccionado(state: any) {
-    this.stateActual=state;
+    this.stateActual = state;
   }
-
 }

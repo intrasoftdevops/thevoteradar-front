@@ -7,10 +7,9 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 @Component({
   selector: 'app-crear-supervisor-admin',
   templateUrl: './crear-supervisor-admin.component.html',
-  styleUrls: ['./crear-supervisor-admin.component.scss']
+  styleUrls: ['./crear-supervisor-admin.component.scss'],
 })
 export class CrearSupervisorAdminComponent implements OnInit {
-
   dataZones: any = [];
   dataMunicipals: any = [];
   dataDepartments: any = [];
@@ -21,13 +20,25 @@ export class CrearSupervisorAdminComponent implements OnInit {
     genero_id: [null, Validators.required],
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
-    telefono: ['',Validators.required],
-    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    telefono: ['', Validators.required],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        this.customValidator.patternValidator(),
+      ],
+    ],
     municipio: [[], Validators.required],
     zonas: [[]],
   });
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(
+    private apiService: ApiService,
+    private fb: FormBuilder,
+    private alertService: AlertService,
+    private customValidator: CustomValidationService
+  ) {}
 
   ngOnInit() {
     this.getDepartmentAdmin();
@@ -38,6 +49,9 @@ export class CrearSupervisorAdminComponent implements OnInit {
     this.createFormControl['zonas'].reset();
     if (item) {
       this.getMunicipalAdmin(item.codigo_unico);
+    } else {
+      this.dataMunicipals = [];
+      this.dataZones = [];
     }
   }
 
@@ -45,28 +59,33 @@ export class CrearSupervisorAdminComponent implements OnInit {
     this.createFormControl['zonas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { municipio: codigo_unico }
+      const data = { municipio: codigo_unico };
       this.getZonasyGerentes(data);
+    } else {
+      this.dataZones = [];
     }
   }
 
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
-    })
+    });
   }
 
   getMunicipalAdmin(data: any) {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
-    })
+      this.dataMunicipals = resp.filter(
+        (dataMunicipal: any) =>
+          dataMunicipal.codigo_departamento_votacion == data
+      );
+    });
   }
 
   getZonasyGerentes(data: any) {
     this.apiService.getZonasyGerentes(data).subscribe((resp: any) => {
       const { zonas } = resp;
       this.dataZones = zonas;
-    })
+    });
   }
 
   get createFormControl() {
@@ -78,18 +97,19 @@ export class CrearSupervisorAdminComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
-
+    if (
+      !this.createFormControl['email'].errors?.['email'] ||
+      !this.createFormControl['email'].errors?.['invalidEmail']
+    ) {
       if (this.createForm.valid) {
-        this.apiService.createSupervisor(this.createForm.value).subscribe((resp: any) => {
-
-          this.alertService.successAlert(resp.message);
-
-        })
+        this.apiService
+          .createSupervisor(this.createForm.value)
+          .subscribe((resp: any) => {
+            this.alertService.successAlert(resp.message);
+          });
       } else {
-        this.alertService.errorAlert("Llene los campos obligatorios.");
+        this.alertService.errorAlert('Llene los campos obligatorios.');
       }
-
     }
   }
 
@@ -97,5 +117,4 @@ export class CrearSupervisorAdminComponent implements OnInit {
     const { codigo_unico } = item;
     return codigo_unico;
   }
-
 }

@@ -7,10 +7,9 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 @Component({
   selector: 'app-crear-testigo-gerente',
   templateUrl: './crear-testigo-gerente.component.html',
-  styleUrls: ['./crear-testigo-gerente.component.scss']
+  styleUrls: ['./crear-testigo-gerente.component.scss'],
 })
 export class CrearTestigoGerenteComponent implements OnInit {
-
   dataStations: any = [];
   dataTables: any = [];
   dataMunicipals: any = [];
@@ -24,12 +23,24 @@ export class CrearTestigoGerenteComponent implements OnInit {
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
     telefono: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        this.customValidator.patternValidator(),
+      ],
+    ],
     puesto: [[], Validators.required],
     mesas: [[]],
   });
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(
+    private apiService: ApiService,
+    private fb: FormBuilder,
+    private alertService: AlertService,
+    private customValidator: CustomValidationService
+  ) {}
 
   ngOnInit() {
     this.getMunicipalAdmin();
@@ -44,18 +55,19 @@ export class CrearTestigoGerenteComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
-
+    if (
+      !this.createFormControl['email'].errors?.['email'] ||
+      !this.createFormControl['email'].errors?.['invalidEmail']
+    ) {
       if (this.createForm.valid) {
-        this.apiService.createTestigo(this.createForm.value).subscribe((resp: any) => {
-
-          this.alertService.successAlert(resp.message);
-
-        })
+        this.apiService
+          .createTestigo(this.createForm.value)
+          .subscribe((resp: any) => {
+            this.alertService.successAlert(resp.message);
+          });
       } else {
-        this.alertService.errorAlert("Llene los campos obligatorios.");
+        this.alertService.errorAlert('Llene los campos obligatorios.');
       }
-
     }
   }
 
@@ -66,6 +78,10 @@ export class CrearTestigoGerenteComponent implements OnInit {
     if (item) {
       const codigo_unico = this.getCode(item);
       this.getZonas(codigo_unico);
+    } else {
+      this.dataZones = [];
+      this.dataStations = [];
+      this.dataTables = [];
     }
   }
 
@@ -74,8 +90,11 @@ export class CrearTestigoGerenteComponent implements OnInit {
     this.createFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { zona: codigo_unico }
+      const data = { zona: codigo_unico };
       this.getPuestosySupervisores(data);
+    } else {
+      this.dataStations = [];
+      this.dataTables = [];
     }
   }
 
@@ -83,20 +102,24 @@ export class CrearTestigoGerenteComponent implements OnInit {
     this.createFormControl['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { puesto: codigo_unico }
+      const data = { puesto: codigo_unico };
       this.getTablesTestigo(data);
+    } else {
+      this.dataTables = [];
     }
   }
 
   getMunicipalAdmin() {
-    this.apiService.getMunicipalGerente().subscribe(resp => {
+    this.apiService.getMunicipalGerente().subscribe((resp) => {
       this.dataMunicipals = resp;
     });
   }
 
   getZonas(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
-      this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == data);
+      this.dataZones = resp.filter(
+        (dataZone: any) => dataZone.codigo_municipio_votacion == data
+      );
     });
   }
 
@@ -104,19 +127,17 @@ export class CrearTestigoGerenteComponent implements OnInit {
     this.apiService.getPuestosySupervisores(data).subscribe((resp: any) => {
       const { puestos } = resp;
       this.dataStations = puestos;
-
-    })
+    });
   }
 
   getTablesTestigo(data: any) {
     this.apiService.getMesasSinAsignar(data).subscribe((resp: any) => {
       this.dataTables = resp;
-    })
+    });
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
   }
-
 }

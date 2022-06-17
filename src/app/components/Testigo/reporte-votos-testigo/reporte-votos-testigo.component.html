@@ -1,66 +1,88 @@
 <div class="container">
-    <div class="py-5">
-        <div class="bg-primary py-3 px-5 text-white">
-            <h4 class="m-0">
-                Reportes de mesa
-            </h4>
-        </div>
-        <form class="row pt-5" [formGroup]="createForm" (ngSubmit)="onSubmit()"
-            *ngIf="mesas_asignadas.length>0;else mesas_content">
-            <div class="col-lg-7">
-                <div class="card">
-                    <div class="bg-primary py-3 px-4 text-white">
-                        <div class="row py-1">
-                            <div class="col-5 col-sm-6">
-                                <p class="m-0 h4">
-                                    Puesto de votación:
-                                </p>
-                            </div>
-                            <div class="col-7 col-sm-6 d-flex justify-content-center align-items-center">
-                                {{puestos_asignado}}
-                            </div>
-                        </div>
-                        <div class="row py-1">
-                            <div class="col-5 col-sm-6 d-flex align-items-center">
-                                <p class="m-0 h4">
-                                    Número de mesa:<span class="text-danger h4">*</span>
-                                </p>
-                            </div>
-                            <div class="col-7 col-sm-6">
-                                <ng-select [items]="mesas_asignadas" [searchable]="false" class="custom-select rounded"
-                                    formControlName="codigo_mesa" bindLabel="numero_mesa" bindValue="codigo_unico"
-                                    placeholder="Seleccione mesa" (change)="getSelectedValue($event)"
-                                    notFoundText="No hay informacion disponible" [clearAllText]="'Borrar todo'">
-                                </ng-select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body pt-0">
-                        <div class="table-responsive" *ngIf="listCandidatos.length>0;else candidato_content">
-                            <table class="table text-center align-middle">
-                                <thead class="table-dark align-middle">
-                                    <tr>
-                                        <th scope="col">PARTIDO</th>
-                                        <th scope="col">CANDIDATO</th>
-                                        <th scope="col">
-                                            N° VOTOS
-                                            <span class="text-danger">*</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="bg-white" *ngFor="let candidato of listCandidatos;index as index">
-                                        <td class="col-5">{{candidato.partido}}</td>
-                                        <td class="col-4">{{candidato.nombres}} {{candidato.apellidos}}</td>
-                                        <td class="col-3">
-                                            <div formGroupName="votos">
-                                                <input type="text" class="form-control form-control-sm border-primary"
-                                                    [formControlName]="index" placeholder="Ingrese n° votos" />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <!--<tfoot>
+  <div class="py-5">
+    <div class="bg-primary py-3 px-5 text-white">
+      <h4 class="m-0">Reportes de mesa</h4>
+    </div>
+    <form
+      class="row pt-5"
+      [formGroup]="createForm"
+      (ngSubmit)="onSubmit()"
+      *ngIf="mesas_asignadas.length > 0; else mesas_content"
+    >
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="bg-primary py-3 px-4 text-white">
+            <div class="row py-1">
+              <div class="col-5 col-sm-6">
+                <p class="m-0 h4">Puesto de votación:</p>
+              </div>
+              <div
+                class="col-7 col-sm-6 d-flex justify-content-center align-items-center"
+              >
+                {{ puestos_asignado }}
+              </div>
+            </div>
+            <div class="row py-1">
+              <div class="col-5 col-sm-6 d-flex align-items-center">
+                <p class="m-0 h4">
+                  Número de mesa:<span class="text-danger h4">*</span>
+                </p>
+              </div>
+              <div class="col-7 col-sm-6">
+                <ng-select
+                  [items]="mesas_asignadas"
+                  [searchable]="false"
+                  class="custom-select rounded"
+                  formControlName="codigo_mesa"
+                  bindLabel="numero_mesa"
+                  bindValue="codigo_unico"
+                  placeholder="Seleccione mesa"
+                  (change)="getSelectedValue($event)"
+                  notFoundText="No hay información disponible"
+                  [clearAllText]="'Borrar todo'"
+                >
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="card-body pt-0">
+            <div
+              class="table-responsive"
+              *ngIf="listCandidatos.length > 0; else candidato_content"
+            >
+              <table class="table text-center align-middle">
+                <thead class="table-dark align-middle">
+                  <tr>
+                    <th scope="col">PARTIDO</th>
+                    <th scope="col">CANDIDATO</th>
+                    <th scope="col">
+                      N° VOTOS
+                      <span class="text-danger">*</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    class="bg-white"
+                    *ngFor="let candidato of listCandidatos; index as index"
+                  >
+                    <td class="col-5">{{ candidato.partido }}</td>
+                    <td class="col-4">
+                      {{ candidato.nombres }} {{ candidato.apellidos }}
+                    </td>
+                    <td class="col-3">
+                      <div formGroupName="votos">
+                        <input
+                          type="text"
+                          class="form-control form-control-sm border-primary"
+                          [formControlName]="index"
+                          placeholder="Ingrese n° votos"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <!--<tfoot>
                                     <tr class="bg-white">
                                         <td colspan="3" class="fw-bolder">Votos en blanco</td>
                                         <td>0</td>
@@ -74,47 +96,62 @@
                                         <td>0</td>
                                     </tr>
                                 </tfoot>-->
-                            </table>
-                        </div>
-                        <ng-template #candidato_content>
-                            <p class="text-center mb-0">No existen candidatos para este reporte.</p>
-                        </ng-template>
-                    </div>
-                </div>
+              </table>
             </div>
-            <div class="col-lg-5 d-flex flex-column justify-content-around" *ngIf="showUpload">
-                <span class="fw-bolder my-5 text-center h4">Adjuntar E-14<span class="text-danger h4">*</span></span>
-                <ngx-dropzone (change)="onSelect($event)"
-                    [accept]="'image/bmp, image/gif ,image/png, image/jpeg, image/jpg,image/tif'" [expandable]="true"
-                    [maxFileSize]="10000000">
-                    <ngx-dropzone-label>
-                        <p class="mb-0 px-4">
-                            <i class="fas fa-paperclip text-primary fa-lg"></i>
-                            Adjuntar E-14
-                        </p>
-                        <hr class="mx-3 border border-primary rounded border-2">
-                        <p class="mb-0 px-4 fst-italic">
-                            (Imágenes máximo 10MB)
-                        </p>
-                    </ngx-dropzone-label>
-                    <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
-                        [removable]="true" (removed)="onRemove(f)">
-                        <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
-                    </ngx-dropzone-image-preview>
-                </ngx-dropzone>
-                <div class="text-end mt-5">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        Enviar Reporte
-                    </button>
-                </div>
-            </div>
-        </form>
-        <ng-template #mesas_content>
-            <div class="card mt-5">
-                <div class="card-body">
-                    <p class="text-center mb-0">No hay mesas para reportar.</p>
-                </div>
-            </div>
-        </ng-template>
-    </div>
+            <ng-template #candidato_content>
+              <p class="text-center mb-0">
+                No existen candidatos para este reporte.
+              </p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div
+        class="col-lg-5 d-flex flex-column justify-content-around"
+        *ngIf="showUpload"
+      >
+        <span class="fw-bolder my-5 text-center h4"
+          >Adjuntar E-14<span class="text-danger h4">*</span></span
+        >
+        <ngx-dropzone
+          (change)="onSelect($event)"
+          [accept]="
+            'image/bmp, image/gif ,image/png, image/jpeg, image/jpg,image/tif'
+          "
+          [expandable]="true"
+          [maxFileSize]="10000000"
+        >
+          <ngx-dropzone-label>
+            <p class="mb-0 px-4">
+              <i class="fas fa-paperclip text-primary fa-lg"></i>
+              Adjuntar E-14
+            </p>
+            <hr class="mx-3 border border-primary rounded border-2" />
+            <p class="mb-0 px-4 fst-italic">(Imágenes máximo 10MB)</p>
+          </ngx-dropzone-label>
+          <ngx-dropzone-image-preview
+            ngProjectAs="ngx-dropzone-preview"
+            *ngFor="let f of files"
+            [file]="f"
+            [removable]="true"
+            (removed)="onRemove(f)"
+          >
+            <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+          </ngx-dropzone-image-preview>
+        </ngx-dropzone>
+        <div class="text-end mt-5">
+          <button type="submit" class="btn btn-primary btn-lg">
+            Enviar Reporte
+          </button>
+        </div>
+      </div>
+    </form>
+    <ng-template #mesas_content>
+      <div class="card mt-5">
+        <div class="card-body">
+          <p class="text-center mb-0">No hay mesas para reportar.</p>
+        </div>
+      </div>
+    </ng-template>
+  </div>
 </div>

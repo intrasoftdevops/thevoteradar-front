@@ -1,15 +1,27 @@
 <div class="container">
   <div class="py-5">
-    <button class="btn btn-primary btn-lg" data-bs-toggle="offcanvas" data-bs-target="#offcanvasReporte"
-      data-bs-placement="top" title="Agregar reporte de novedades">
+    <button
+      class="btn btn-primary btn-lg"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasReporte"
+      data-bs-placement="top"
+      title="Agregar reporte de novedades"
+    >
       <i class="fas fa-plus-circle fa-2x align-middle"></i>
       <span class="mx-3 fw-bold align-middle">Agregar novedades</span>
     </button>
     <div class="card mt-3">
       <div class="card-body">
-        <div class="table-responsive my-4" *ngIf="dataIncidencias.length>0;else incidencias_content">
-          <table datatable [dtOptions]="dtOptionsIncidencias" [dtTrigger]="dtTrigger"
-            class="table text-center align-middle w-100">
+        <div
+          class="table-responsive my-4"
+          *ngIf="dataIncidencias.length > 0; else incidencias_content"
+        >
+          <table
+            datatable
+            [dtOptions]="dtOptionsIncidencias"
+            [dtTrigger]="dtTrigger"
+            class="table text-center align-middle w-100"
+          >
             <thead class="text-dark align-middle">
               <tr>
                 <th scope="col">CATEGORIA</th>
@@ -19,11 +31,18 @@
             </thead>
             <tbody>
               <tr class="bg-white" *ngFor="let incidencia of dataIncidencias">
-                <td>{{incidencia.categoria}}</td>
-                <td>{{(incidencia.estado==0)?"Abierto":"Cerrado"}}</td>
+                <td>{{ incidencia.categoria }}</td>
+                <td>{{ incidencia.estado == 0 ? "Abierto" : "Cerrado" }}</td>
                 <td>
-                  <button type="button" class="btn align-middle mx-1" data-bs-toggle="modal" data-bs-placement="top"
-                    title="Ver reporte" data-bs-target="#incidenciaAbierta" (click)="ModalIncidenciaActual(incidencia)">
+                  <button
+                    type="button"
+                    class="btn align-middle mx-1"
+                    data-bs-toggle="modal"
+                    data-bs-placement="top"
+                    title="Ver reporte"
+                    data-bs-target="#incidenciaAbierta"
+                    (click)="ModalIncidenciaActual(incidencia)"
+                  >
                     <i class="fa-solid fa-eye text-primary"></i>
                   </button>
                 </td>
@@ -39,29 +58,48 @@
   </div>
 </div>
 <!-- REPORTAR INCIDENCIA -->
-<div class="offcanvas offcanvas-start w-35 " tabindex="-1" id="offcanvasReporte" data-bs-keyboard="false">
+<div
+  class="offcanvas offcanvas-start w-35"
+  tabindex="-1"
+  id="offcanvasReporte"
+  data-bs-keyboard="false"
+>
   <div class="c-contactos bg-primary py-4">
-    <div class="offcanvas-header ">
-      <h4 class="offcanvas-title text-white" id="offcanvas">Reportar novedad</h4>
+    <div class="offcanvas-header">
+      <h4 class="offcanvas-title text-white" id="offcanvas">
+        Reportar novedad
+      </h4>
       <div class="d-flex align-items-end">
-        <button type="button" class="btn p-0" data-bs-dismiss="offcanvas" aria-label="Close">
+        <button
+          type="button"
+          class="btn p-0"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        >
           <i class="fa-solid fa-xmark text-white fa-2xl"></i>
         </button>
       </div>
     </div>
-
   </div>
   <div
-    class="offcanvas-body px-0 bg-secondary border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
+    class="offcanvas-body px-0 bg-secondary border border-primary border-5 border-top-0 border-bottom-0 border-start-0"
+  >
     <form class="mx-4" [formGroup]="createForm" (ngSubmit)="onSubmit()">
       <div class="form-group pt-3">
         <label class="form-label">
           <span class="fw-bold">Asunto</span>
           <span class="text-danger">*</span>
         </label>
-        <ng-select [items]="categoryIncidencias" [searchable]="false" class="custom-select rounded"
-          formControlName="categoria_id" bindLabel="nombre" bindValue="id" notFoundText="No hay informacion disponible"
-          placeholder="Seleccione asunto">
+        <ng-select
+          [items]="categoryIncidencias"
+          [searchable]="false"
+          class="custom-select rounded"
+          formControlName="categoria_id"
+          bindLabel="nombre"
+          bindValue="id"
+          notFoundText="No hay informacion disponible"
+          placeholder="Seleccione asunto"
+        >
         </ng-select>
       </div>
       <div class="form-group pt-3">
@@ -69,9 +107,16 @@
           <span class="fw-bold">Mesa</span>
           <span class="text-danger">*</span>
         </label>
-        <ng-select [items]="mesas_asignadas" [searchable]="false" class="custom-select rounded"
-          formControlName="codigo_mesa" bindLabel="numero_mesa" bindValue="codigo_unico"
-          notFoundText="No hay informacion disponible" placeholder="Seleccione mesa">
+        <ng-select
+          [items]="mesas_asignadas"
+          [searchable]="false"
+          class="custom-select rounded"
+          formControlName="codigo_mesa"
+          bindLabel="numero_mesa"
+          bindValue="codigo_unico"
+          notFoundText="No hay informacion disponible"
+          placeholder="Seleccione mesa"
+        >
         </ng-select>
       </div>
       <div class="form-group pt-3">
@@ -79,37 +124,52 @@
           <span class="fw-bold">Descripción</span>
           <span class="text-danger">*</span>
         </label>
-        <textarea class="form-control border-2 border-dark rounded" rows="5" formControlName="descripcion"
-          placeholder="Escriba una descripción de la novedad"></textarea>
+        <textarea
+          class="form-control border-2 border-dark rounded"
+          rows="5"
+          formControlName="descripcion"
+          placeholder="Escriba una descripción de la novedad"
+        ></textarea>
       </div>
       <div class="form-group pt-3">
-        <label class="form-label fw-bold">
-          Adjuntar evidencia
-        </label>
+        <label class="form-label fw-bold"> Adjuntar evidencia </label>
         <div>
-          <ngx-dropzone (change)="onSelect($event)"
-            [accept]="'image/bmp, image/gif ,image/png, image/jpeg, image/jpg,image/tif, video/mp4, video/avi, video/mkv, video/flv, video/mov, video/wmv, video/divx'"
-            [expandable]="true" [maxFileSize]="1000000000">
+          <ngx-dropzone
+            (change)="onSelect($event)"
+            [accept]="
+              'image/bmp, image/gif ,image/png, image/jpeg, image/jpg,image/tif, video/mp4, video/avi, video/mkv, video/flv, video/mov, video/wmv, video/divx'
+            "
+            [expandable]="true"
+            [maxFileSize]="1000000000"
+          >
             <ngx-dropzone-label>
               <p class="mb-0 px-4">
                 <i class="fas fa-paperclip text-primary fa-lg"></i>
                 Adjuntar archivo
               </p>
-              <hr class="mx-3 border border-primary rounded border-2">
+              <hr class="mx-3 border border-primary rounded border-2" />
               <p class="mb-0 px-4 fst-italic">
                 (Imágenes máximo 10MB y videos máximo 100MB)
               </p>
             </ngx-dropzone-label>
             <ng-container *ngFor="let f of files">
               <ng-container *ngIf="f.type.includes('image')">
-                <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" [file]="f" [removable]="true"
-                  (removed)="onRemove(f)">
+                <ngx-dropzone-image-preview
+                  ngProjectAs="ngx-dropzone-preview"
+                  [file]="f"
+                  [removable]="true"
+                  (removed)="onRemove(f)"
+                >
                   <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
                 </ngx-dropzone-image-preview>
               </ng-container>
               <ng-container *ngIf="f.type.includes('video')">
-                <ngx-dropzone-video-preview ngProjectAs="ngx-dropzone-preview" [file]="f" [removable]="true"
-                  (removed)="onRemove(f)">
+                <ngx-dropzone-video-preview
+                  ngProjectAs="ngx-dropzone-preview"
+                  [file]="f"
+                  [removable]="true"
+                  (removed)="onRemove(f)"
+                >
                   <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
                 </ngx-dropzone-video-preview>
               </ng-container>
@@ -118,46 +178,73 @@
         </div>
       </div>
       <div class="d-flex justify-content-end pt-5">
-        <button type="submit" class="btn btn-primary ">
-          Enviar novedad
-        </button>
+        <button type="submit" class="btn btn-primary">Enviar novedad</button>
       </div>
     </form>
   </div>
 </div>
 
-<div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="incidenciaAbierta"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">REPORTE #{{incidenciaActual.id}}</h5>
-        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="exampleModalLabel">
+          REPORTE #{{ incidenciaActual.id }}
+        </h5>
+        <button
+          type="button"
+          class="btn"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
           <i class="fa-solid fa-xmark text-white"></i>
         </button>
       </div>
       <div class="modal-body">
-        <p><span class="fw-bolder">Estado: </span><span> {{(incidenciaActual.estado==0)?"Abierto":"Cerrado"}}</span></p>
-        <p><span class="fw-bolder">Categoria: </span><span> {{incidenciaActual.categoria}}</span></p>
-        <p class="fw-bolder">Descripcion: </p>
         <p>
-          {{incidenciaActual.descripcion}}
+          <span class="fw-bolder">Estado: </span
+          ><span>
+            {{ incidenciaActual.estado == 0 ? "Abierto" : "Cerrado" }}</span
+          >
         </p>
-        <p class="fw-bolder mb-0">Archivos adjuntos: </p>
+        <p>
+          <span class="fw-bolder">Categoria: </span
+          ><span> {{ incidenciaActual.categoria }}</span>
+        </p>
+        <p class="fw-bolder">Descripción:</p>
+        <p>
+          {{ incidenciaActual.descripcion }}
+        </p>
+        <p class="fw-bolder mb-0">Archivos adjuntos:</p>
         <div class="w-100">
-          <ng-container *ngIf="photos.length>0">
-            <p class="fst-italic">-Imágenes: </p>
-            <si-ng-lightbox [showPreviews]="true" class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
-              <img *ngFor="let img of photos" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
-                [siLightboxItem]="img.url_archivo" class="imgItem py-1" />
+          <ng-container *ngIf="photos.length > 0">
+            <p class="fst-italic">-Imágenes:</p>
+            <si-ng-lightbox
+              [showPreviews]="true"
+              class="row row-cols-sm-2 gy-2 d-flex justify-content-center"
+            >
+              <img
+                *ngFor="let img of photos"
+                src="{{ img.url_archivo }}"
+                [previewSrc]="img.url_archivo"
+                [siLightboxItem]="img.url_archivo"
+                class="imgItem py-1"
+              />
             </si-ng-lightbox>
           </ng-container>
-          <ng-container *ngIf="videos.length>0">
-            <p class="fst-italic">-Videos: </p>
+          <ng-container *ngIf="videos.length > 0">
+            <p class="fst-italic">-Videos:</p>
             <div class="row gy-2 d-flex justify-content-center">
               <div class="col-md-6" *ngFor="let video of videos">
                 <div class="ratio ratio-16x9">
                   <video class="w-100" controls>
-                    <source src="{{video.url_archivo}}" type="video/mp4">
+                    <source src="{{ video.url_archivo }}" type="video/mp4" />
                     Su navegador no soporta la etiqueta de video.
                   </video>
                 </div>
@@ -165,8 +252,10 @@
             </div>
           </ng-container>
         </div>
-        <p class="mt-3"><span class="fw-bolder" *ngIf="incidenciaActual.respuesta">Respuesta:
-          </span><span>{{incidenciaActual.respuesta}}</span>
+        <p class="mt-3">
+          <span class="fw-bolder" *ngIf="incidenciaActual.respuesta"
+            >Respuesta: </span
+          ><span>{{ incidenciaActual.respuesta }}</span>
         </p>
       </div>
     </div>

@@ -1,10 +1,14 @@
 <div class="container py-4">
-    <div class="ratio mt-4" style="--bs-aspect-ratio: 50%;">
-        <iframe [src]='safeURL' frameborder="0" allowfullscreen></iframe>
-    </div>
+  <div class="ratio mt-4" style="--bs-aspect-ratio: 50%">
+    <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
+  </div>
 </div>
 <div class="toast-container">
-    <ngb-toast class="welcomeBanner d-flex align-items-center bg-white" [delay]="2000" [animation]="true">
-        <h3 class="mb-0 fw-bolder text-dark">Bienvenido supervisor</h3>
-    </ngb-toast>
+  <ngb-toast
+    class="welcomeBanner d-flex align-items-center bg-white"
+    [delay]="2000"
+    [animation]="true"
+  >
+    <h3 class="mb-0 fw-bolder text-dark">Bienvenido supervisor</h3>
+  </ngb-toast>
 </div>

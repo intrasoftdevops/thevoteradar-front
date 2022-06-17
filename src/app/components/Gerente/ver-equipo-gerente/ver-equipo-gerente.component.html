@@ -1,52 +1,96 @@
 <div class="container py-5">
   <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
-    <h4>Mi Equipo de trabajo</h4>
-    <button class="btn btn-sm btn-info position-relative" data-bs-toggle="tooltip" data-bs-placement="top"
-      title="{{(showMap)?'Ver lista':'Ver mapa'}}" (click)="showIframe()">
-      <i class="fa-solid fa-map fa-lg text-white" *ngIf="!showMap;else list_content"></i>
+    <h4>Mi equipo de trabajo</h4>
+    <button
+      class="btn btn-sm btn-info position-relative"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      title="{{ showMap ? 'Ver lista' : 'Ver mapa' }}"
+      (click)="showIframe()"
+    >
+      <i
+        class="fa-solid fa-map fa-lg text-white"
+        *ngIf="!showMap; else list_content"
+      ></i>
       <ng-template #list_content>
         <i class="fa-solid fa-list fa-lg text-white"></i>
       </ng-template>
       <span
-        class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1">
+        class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1"
+      >
         <i class="fa-solid fa-repeat fa-sm"></i>
       </span>
     </button>
   </div>
-  <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe;else content_map">
+  <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe; else content_map">
     <iframe [src]="urlSafe" frameborder="0" allowFullScreen="true"></iframe>
   </div>
   <ng-template #content_map>
     <div class="card mt-5">
       <div class="card-body">
-        <form class="row m-4 d-flex justify-content-center" [formGroup]="searchForm">
+        <form
+          class="row m-4 d-flex justify-content-center"
+          [formGroup]="searchForm"
+        >
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Equipo por municipio</label>
-            <ng-select [items]="dataMunicipals" [searchable]="false" class="custom-select rounded" bindLabel="nombre"
-              bindValue="codigo_unico" (change)="getSelectedMunicipal($event)" [clearAllText]="'Borrar todo'"
-              notFoundText="No hay informacion disponible" placeholder="Seleccione municipio"
-              formControlName="municipios">
+            <ng-select
+              [items]="dataMunicipals"
+              [searchable]="false"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              bindValue="codigo_unico"
+              (change)="getSelectedMunicipal($event)"
+              [clearAllText]="'Borrar todo'"
+              notFoundText="No hay información disponible"
+              placeholder="Seleccione municipio"
+              formControlName="municipios"
+            >
             </ng-select>
           </div>
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Supervisores por zona</label>
-            <ng-select [items]="dataZones" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-              placeholder="Seleccione zona" (change)="getSelectedZone($event)" [clearAllText]="'Borrar todo'"
-              notFoundText="No hay informacion disponible" formControlName="zonas">
+            <ng-select
+              [items]="dataZones"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              bindValue="codigo_unico"
+              placeholder="Seleccione zona"
+              (change)="getSelectedZone($event)"
+              [clearAllText]="'Borrar todo'"
+              notFoundText="No hay información disponible"
+              formControlName="zonas"
+            >
             </ng-select>
           </div>
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Coordinadores por puesto</label>
-            <ng-select [items]="dataStations" class="custom-select rounded" bindLabel="nombre" bindValue="codigo_unico"
-              (change)="getSelectedStation($event)" notFoundText="No hay informacion disponible"
-              placeholder="Seleccione puesto" formControlName="puestos" [clearAllText]="'Borrar todo'">
+            <ng-select
+              [items]="dataStations"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              bindValue="codigo_unico"
+              (change)="getSelectedStation($event)"
+              notFoundText="No hay información disponible"
+              placeholder="Seleccione puesto"
+              formControlName="puestos"
+              [clearAllText]="'Borrar todo'"
+            >
             </ng-select>
           </div>
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">Testigos por mesa</label>
-            <ng-select [items]="dataTables" class="custom-select rounded" bindLabel="numero_mesa"
-              bindValue="codigo_unico" (change)="getSelectedTable($event)" notFoundText="No hay informacion disponible"
-              placeholder="Seleccione mesa" formControlName="mesas" [clearAllText]="'Borrar todo'">
+            <ng-select
+              [items]="dataTables"
+              class="custom-select rounded"
+              bindLabel="numero_mesa"
+              bindValue="codigo_unico"
+              (change)="getSelectedTable($event)"
+              notFoundText="No hay información disponible"
+              placeholder="Seleccione mesa"
+              formControlName="mesas"
+              [clearAllText]="'Borrar todo'"
+            >
             </ng-select>
           </div>
         </form>
@@ -58,26 +102,38 @@
           <h4>Supervisores</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive" *ngIf="listSupervisores.length>0;else other_content">
+          <div
+            class="table-responsive"
+            *ngIf="listSupervisores.length > 0; else other_content"
+          >
             <table class="table table-curved text-center">
               <thead class="text-dark">
                 <tr>
                   <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
-                  <th scope="col">TELEFONO</th>
+                  <th scope="col" class="d-none d-md-table-cell">
+                    CORREO ELECTRÓNICO
+                  </th>
+                  <th scope="col">TELÉFONO</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let supervisor of listSupervisores" class="bg-white">
-                  <td scope="row">{{supervisor.nombres}} {{supervisor.apellidos}}</td>
-                  <td class="d-none d-md-table-cell">{{supervisor.email}}</td>
-                  <td>{{supervisor.telefono}}</td>
+                <tr
+                  *ngFor="let supervisor of listSupervisores"
+                  class="bg-white"
+                >
+                  <td scope="row">
+                    {{ supervisor.nombres }} {{ supervisor.apellidos }}
+                  </td>
+                  <td class="d-none d-md-table-cell">{{ supervisor.email }}</td>
+                  <td>{{ supervisor.telefono }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <ng-template #other_content>
-            <p class="text-center">No hay supervisor asignado para esta zona.</p>
+            <p class="text-center">
+              No hay supervisor asignado para esta zona.
+            </p>
           </ng-template>
         </div>
       </div>
@@ -86,26 +142,40 @@
           <h4>Coordinadores</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive" *ngIf="listCoordinadores.length>0;else other_content">
+          <div
+            class="table-responsive"
+            *ngIf="listCoordinadores.length > 0; else other_content"
+          >
             <table class="table table-curved text-center">
               <thead class="text-dark">
                 <tr>
                   <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
-                  <th scope="col">TELEFONO</th>
+                  <th scope="col" class="d-none d-md-table-cell">
+                    CORREO ELECTRÓNICO
+                  </th>
+                  <th scope="col">TELÉFONO</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let coordinador of listCoordinadores" class="bg-white">
-                  <td scope="row">{{coordinador.nombres}} {{coordinador.apellidos}}</td>
-                  <td class="d-none d-md-table-cell">{{coordinador.email}}</td>
-                  <td>{{coordinador.telefono}}</td>
+                <tr
+                  *ngFor="let coordinador of listCoordinadores"
+                  class="bg-white"
+                >
+                  <td scope="row">
+                    {{ coordinador.nombres }} {{ coordinador.apellidos }}
+                  </td>
+                  <td class="d-none d-md-table-cell">
+                    {{ coordinador.email }}
+                  </td>
+                  <td>{{ coordinador.telefono }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <ng-template #other_content>
-            <p class="text-center">No hay coordinador asignado para este puesto.</p>
+            <p class="text-center">
+              No hay coordinador asignado para este puesto.
+            </p>
           </ng-template>
         </div>
       </div>
@@ -114,20 +184,27 @@
           <h4>Testigos</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive" *ngIf="listTestigos.length>0;else other_content">
+          <div
+            class="table-responsive"
+            *ngIf="listTestigos.length > 0; else other_content"
+          >
             <table class="table table-curved text-center">
               <thead class="text-dark">
                 <tr>
                   <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col" class="d-none d-md-table-cell">CORREO ELECTRONICO</th>
-                  <th scope="col">TELEFONO</th>
+                  <th scope="col" class="d-none d-md-table-cell">
+                    CORREO ELECTRÓNICO
+                  </th>
+                  <th scope="col">TELÉFONO</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let testigo of listTestigos" class="bg-white">
-                  <td scope="row">{{testigo.nombres}} {{testigo.apellidos}}</td>
-                  <td class="d-none d-md-table-cell">{{testigo.email}}</td>
-                  <td>{{testigo.telefono}}</td>
+                  <td scope="row">
+                    {{ testigo.nombres }} {{ testigo.apellidos }}
+                  </td>
+                  <td class="d-none d-md-table-cell">{{ testigo.email }}</td>
+                  <td>{{ testigo.telefono }}</td>
                 </tr>
               </tbody>
             </table>

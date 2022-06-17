@@ -7,10 +7,9 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 @Component({
   selector: 'app-crear-coordinador-admin',
   templateUrl: './crear-coordinador-admin.component.html',
-  styleUrls: ['./crear-coordinador-admin.component.scss']
+  styleUrls: ['./crear-coordinador-admin.component.scss'],
 })
 export class CrearCoordinadorAdminComponent implements OnInit {
-
   dataZones: any = [];
   dataStations: any = [];
   dataFiltered: any = [];
@@ -24,13 +23,25 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     genero_id: [null, Validators.required],
     tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
-    telefono: ['',Validators.required],
-    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    telefono: ['', Validators.required],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        this.customValidator.patternValidator(),
+      ],
+    ],
     zona: [[], Validators.required],
     puestos: [[]],
   });
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(
+    private apiService: ApiService,
+    private fb: FormBuilder,
+    private alertService: AlertService,
+    private customValidator: CustomValidationService
+  ) {}
 
   ngOnInit() {
     this.getDepartmentAdmin();
@@ -39,7 +50,7 @@ export class CrearCoordinadorAdminComponent implements OnInit {
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
-    })
+    });
   }
 
   getSelectedDepartment(item: any) {
@@ -48,6 +59,10 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     this.createFormControl['puestos'].reset();
     if (item) {
       this.getMunicipalAdmin(item.codigo_unico);
+    } else {
+      this.dataMunicipals = [];
+      this.dataZones = [];
+      this.dataStations = [];
     }
   }
 
@@ -56,8 +71,11 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     this.createFormControl['puestos'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { municipio: codigo_unico }
+      const data = { municipio: codigo_unico };
       this.getZonasyGerentes(data);
+    } else {
+      this.dataZones = [];
+      this.dataStations = [];
     }
   }
 
@@ -65,8 +83,10 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     this.createFormControl['puestos'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { zona: codigo_unico }
+      const data = { zona: codigo_unico };
       this.getPuestosySupervisores(data);
+    } else {
+      this.dataStations = [];
     }
   }
 
@@ -79,44 +99,47 @@ export class CrearCoordinadorAdminComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
-
+    if (
+      !this.createFormControl['email'].errors?.['email'] ||
+      !this.createFormControl['email'].errors?.['invalidEmail']
+    ) {
       if (this.createForm.valid) {
-        this.apiService.createCoordinador(this.createForm.value).subscribe((resp: any) => {
-
-          this.alertService.successAlert(resp.message);
-
-        })
+        this.apiService
+          .createCoordinador(this.createForm.value)
+          .subscribe((resp: any) => {
+            this.alertService.successAlert(resp.message);
+          });
       } else {
-        this.alertService.errorAlert("Llene los campos obligatorios.");
+        this.alertService.errorAlert('Llene los campos obligatorios.');
       }
-
     }
   }
 
   getMunicipalAdmin(data: any) {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
-    })
+      this.dataMunicipals = resp.filter(
+        (dataMunicipal: any) =>
+          dataMunicipal.codigo_departamento_votacion == data
+      );
+    });
   }
 
   getZonasyGerentes(data: any) {
     this.apiService.getZonasyGerentes(data).subscribe((resp: any) => {
       const { zonas } = resp;
       this.dataZones = zonas;
-    })
+    });
   }
 
   getPuestosySupervisores(data: any) {
     this.apiService.getPuestosySupervisores(data).subscribe((resp: any) => {
       const { puestos } = resp;
       this.dataStations = puestos;
-    })
+    });
   }
 
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
   }
-
 }
