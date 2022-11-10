@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-testigo-home',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TestigoHomeComponent implements OnInit {
 
-  constructor() { }
+  videos: string[] = ["https://www.youtube.com/embed/g40iqIY243s", "https://www.youtube.com/embed/FZVAxoBYWyg"];
+  sanitizedVideos!: SafeResourceUrl[];
 
-  ngOnInit(): void {
+  constructor(private _sanitizer: DomSanitizer) {
+    this.sanitizedVideos = this.videos.map(video => this._sanitizer.bypassSecurityTrustResourceUrl(video));
+  }
+  ngOnInit() {
   }
 
 }

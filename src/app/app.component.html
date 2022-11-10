@@ -1,1 +1,14 @@
-<router-outlet></router-outlet>
+<section id="fondo" *ngIf="rol && rol != 0; else other_content">
+  <app-menu-admin *ngIf="rol == 1"></app-menu-admin>
+  <app-menu-gerente *ngIf="rol == 2"></app-menu-gerente>
+  <app-menu-supervisor *ngIf="rol == 3"></app-menu-supervisor>
+  <app-menu-coordinador *ngIf="rol == 4"></app-menu-coordinador>
+  <app-menu-testigo *ngIf="rol == 5"></app-menu-testigo>
+  <app-menu-impugnador *ngIf="rol == 8"></app-menu-impugnador>
+  <router-outlet></router-outlet>
+  <app-footer></app-footer>
+</section>
+<ng-template #other_content>
+  <router-outlet></router-outlet>
+</ng-template>
+<app-loading></app-loading>

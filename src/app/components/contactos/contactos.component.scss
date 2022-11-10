@@ -1,0 +1,7 @@
+hr:not([size]) {
+    height: 2px;
+}
+
+.offcanvas-body {
+    overflow-y: clip !important;
+}

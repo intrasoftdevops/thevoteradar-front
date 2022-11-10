@@ -20,6 +20,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "lodash"
+            ],
             "outputPath": "dist/voteradar-front",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -31,17 +34,32 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css",
+              "node_modules/datatables.net-colreorder-dt/css/colReorder.dataTables.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/datatables.net/js/jquery.dataTables.min.js",
+              "node_modules/datatables.net-bs5/js/dataTables.bootstrap5.min.js",
+              "node_modules/datatables.net-colreorder/js/dataTables.colReorder.js"
+            ]
           },
           "configurations": {
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.stage.ts"
+                }
+              ]
+            },
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -71,6 +89,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
+            "staging": {
+              "browserTarget": "voteradar-front:build:staging"
+            },
             "production": {
               "browserTarget": "voteradar-front:build:production"
             },

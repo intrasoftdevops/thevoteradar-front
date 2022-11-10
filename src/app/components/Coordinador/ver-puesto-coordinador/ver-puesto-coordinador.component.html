@@ -1,35 +1,147 @@
-<app-menu-supervisor></app-menu-supervisor>
-
-<div class="container-fluid">
-
-
-  <div class="py-5 px-md-5 ">
-    <div class="bg-info py-2 px-5 text-white mb-5 me-5">
-      <h4>Puestos</h4>
+<div class="container py-5">
+  <div class="d-grid d-flex justify-content-end">
+    <button class="btn btn-sm btn-danger disabled">- 50% Requerido</button>
+    <button class="btn btn-sm btn-warning disabled">+ 50% Requerido</button>
+    <button class="btn btn-sm btn-success disabled">100% Requerido</button>
+    <button class="btn btn-sm btn-primary disabled">+ 100% Requerido</button>
+  </div>
+  <div class="card">
+    <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
+      <h4>Estadísticas de equipo</h4>
     </div>
-
-    <div class="shadow-lg mt-5 mb-3 ">
-      <div class="bg-black py-3 px-5 text-white">
-        <h4>Consulta puestos</h4>
+    <div class="card-body">
+      <form
+        class="row m-4 d-flex justify-content-center align-items-center align-items-center"
+        [formGroup]="searchForm"
+      >
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="fw-bold form-label">Estado por puesto</label>
+          <ng-select
+            [items]="dataStations"
+            [searchable]="false"
+            class="custom-select rounded"
+            bindLabel="nombre"
+            (change)="getSelectedStation($event)"
+            bindValue="codigo_unico"
+            notFoundText="No hay información disponible"
+            placeholder="Seleccione puesto"
+            formControlName="puestos"
+            [clearAllText]="'Borrar todo'"
+          >
+          </ng-select>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card mt-5" *ngIf="tabla">
+    <div class="card-body">
+      <div
+        class="table-responsive"
+        *ngIf="dataStateStation.length > 0; else content_equipo"
+      >
+        <table class="table text-center align-middle">
+          <thead class="text-dark align-middle">
+            <tr>
+              <th scope="col">TESTIGOS</th>
+              <th scope="col">POR ASIGNAR</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-white" *ngFor="let state of dataStateStation">
+              <td
+                [ngClass]="
+                  textColor(
+                    state.testigos.testigos_con_mesa,
+                    state.testigos.cantidad_testigos_necesitados
+                  )
+                "
+              >
+                {{ state.testigos.testigos_con_mesa }}/{{
+                  state.testigos.cantidad_testigos_necesitados
+                }}
+                {{
+                  createPercent(
+                    state.testigos.testigos_con_mesa,
+                    state.testigos.cantidad_testigos_necesitados
+                  )
+                }}
+              </td>
+              <td>
+                {{ state.testigos.testigos_sin_mesa }}
+              </td>
+              <td>
+                <button
+                  class="btn align-middle mx-1"
+                  data-bs-toggle="modal"
+                  data-bs-target="#state"
+                  (click)="stateSeleccionado(state)"
+                  data-bs-placement="top"
+                  title="Ver más"
+                >
+                  <i class="fa-solid fa-eye text-primary"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-
-      <div class="table-responsive">
-      <table class="table text-center ">
-        <thead class="encatablecolor bg-info text-white">
-          <tr>
-            <th scope="col">MESAS</th>
-            <th scope="col">TESTIGOS HAY/SE NECESITAN</th>
-          </tr>
-        </thead>
-        <tbody >
-          <tr  >
-            <td>Mesa 1</td>
-            <td>0/16</td>
-          </tr>
-        </tbody>
-      </table>
+      <ng-template #content_equipo>
+        <p class="text-center mb-0">
+          No hay estadísticas de equipo actualmente.
+        </p>
+      </ng-template>
     </div>
-    </div>
+  </div>
+</div>
 
+<div
+  class="modal fade"
+  id="state"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Estadísticas de equipo
+        </h5>
+        <button
+          type="button"
+          class="btn"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark text-white"></i>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="stateActual.testigos">
+        <h4 class="fw-bolder">Información de testigos</h4>
+        <div class="row mt-3">
+          <div class="col-6">
+            <p>
+              <span class="fw-bolder">Con mesa: </span
+              ><span> {{ stateActual.testigos.testigos_con_mesa }}</span>
+            </p>
+          </div>
+          <div class="col-6">
+            <p>
+              <span class="fw-bolder">Sin mesa: </span
+              ><span> {{ stateActual.testigos.testigos_sin_mesa }}</span>
+            </p>
+          </div>
+          <div class="col-6">
+            <p>
+              <span class="fw-bolder">Necesarios: </span
+              ><span>
+                {{ stateActual.testigos.cantidad_testigos_necesitados }}</span
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

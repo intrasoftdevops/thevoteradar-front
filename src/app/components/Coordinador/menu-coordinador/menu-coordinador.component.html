@@ -1,140 +1,186 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid ">
-        <a class="navbar-brand mx-4" href="#"><img src="../../../assets/logoTheVoteRadar.png" class="img-logo"></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav  ">
-                <li class="nav-item  d-flex align-items-center">
-                    <a class="nav-link px-3" aria-current="page" routerLink="/coordinadorHome">Inicio</a>
-                </li>
-                <li class="nav-item dropdown d-flex align-items-center">
-                    <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Crear Usuario
-                    </a>
-                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item text-white" routerLink="/crearTestigo">Crear Testigo</a>
-                        </li>
-                    </ul>
-                  </li>
-                  <li class="nav-item dropdown  d-flex align-items-center">
-                    <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      Consultas
-                    </a>
-                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item text-white" href="#" routerLink="/verEquipoCoordinador">Ver Equipo</a></li>
-                      <li><a class="dropdown-item text-white" href="#" routerLink="/verPuestoCoordinador">Ver Puestos</a></li>
-                    </ul>
-                  </li>
-                <li class="nav-item dropdown  d-flex align-items-center">
-                    <a class="nav-link px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Personas
-                    </a>
-                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                        <li>
-                            <a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasAgregar">Testigos</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="navbar-nav ms-auto ">
-                <li class="nav-item dropdown my-auto ">
-                    <a class="nav-link px-3 mx-4 d-flex flex-column align-items-center" href="#" id="navbarDropdown"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user-circle fa-3x icono "></i>
-                        <p class="my-0 ">coordinador</p>
-                    </a>
-                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item text-white" href="#" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasDatos">Actualizar Datos</a></li>
-                        <li><a class="dropdown-item text-white" (click)="logout()">Cerrar sesion</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+<nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/coordinadorHome">
+      <img src="../../../../assets/logo.png" class="img-logo" alt="logo" />
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto text-center">
+        <li class="nav-item align-middle">
+          <a
+            class="nav-link px-xl-2 text-white"
+            aria-current="page"
+            [routerLink]="['/coordinadorHome']"
+            [routerLinkActive]="['link-active']"
+          >
+            <i class="fa-solid fa-house fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Inicio</span>
+          </a>
+        </li>
+        <li
+          class="nav-item dropdown align-middle"
+          [routerLinkActive]="['link-active']"
+        >
+          <a
+            class="nav-link px-xl-2 text-white"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-user-plus fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Crear usuarios</span>
+          </a>
+          <ul
+            class="dropdown-menu bg-dark border border-secondary"
+            aria-labelledby="navbarDropdown"
+          >
+            <li>
+              <a
+                class="dropdown-item text-white fs-6"
+                [routerLink]="['/crearTestigo']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                Crear testigo
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li
+          class="nav-item dropdown align-middle"
+          [routerLinkActive]="['link-active']"
+        >
+          <a
+            class="nav-link px-xl-2 text-white"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-magnifying-glass fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Consultar</span>
+          </a>
+          <ul
+            class="dropdown-menu bg-dark border border-secondary"
+            aria-labelledby="navbarDropdown"
+          >
+            <li>
+              <a
+                class="dropdown-item text-white"
+                [routerLink]="['/consultarEquipoCoordinador']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                Consultar equipo
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item text-white"
+                [routerLink]="['/estadisticasEquipoCoordinador']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                Consultar estadisticas de equipo
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li
+          class="nav-item dropdown align-middle"
+          [routerLinkActive]="['link-active']"
+        >
+          <a
+            class="nav-link px-xl-2 text-white"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-users fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Usuarios</span>
+          </a>
+          <ul
+            class="dropdown-menu bg-dark border border-secondary"
+            aria-labelledby="navbarDropdown"
+          >
+            <li>
+              <a
+                class="dropdown-item text-white"
+                [routerLink]="['/consultarTestigo']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                Consultar testigos
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li
+          class="nav-item dropdown align-middle"
+          [routerLinkActive]="['link-active']"
+        >
+          <a
+            class="nav-link px-xl-2 text-white"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-file-signature fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Reportes</span>
+          </a>
+          <ul
+            class="dropdown-menu bg-dark border border-secondary"
+            aria-labelledby="navbarDropdown"
+          >
+            <li>
+              <a
+                class="dropdown-item text-white"
+                [routerLink]="['/reporteIncidenciasCoordinador']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                Novedades
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item text-white"
+                [routerLink]="['/reporteVotosCoordinador']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                Votos
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item align-middle">
+          <a
+            class="nav-link px-xl-2 text-white"
+            data-bs-toggle="offcanvas"
+            href="#offcanvasExample"
+            [routerLinkActive]="['link-active']"
+            role="button"
+            aria-controls="offcanvasExample"
+          >
+            <i class="fa-solid fa-address-book fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Contactos</span>
+          </a>
+        </li>
+        <app-dropdown-menu-users class="my-auto"></app-dropdown-menu-users>
+      </ul>
     </div>
+  </div>
 </nav>
-
-<div class="offcanvas offcanvas-start w-35 " tabindex="-1" id="offcanvasAgregar" data-bs-keyboard="false">
-    <div class="d-flex align-items-end flex-column c-contactos ">
-        <div class="offcanvas-header">
-            <h4 class="offcanvas-title ps-auto text-white" id="offcanvas">Testigos</h4>
-            <div class="d-flex align-items-end">
-                <button type="button" class="btn  p-0" data-bs-dismiss="offcanvas" aria-label="Close"> <i
-                        class="fa-solid fa-circle-xmark fa-2xl text-white "></i></button>
-            </div>
-        </div>
-
-        <div class="btn-group dropend ms-auto pe-2">
-            <button type="button" id="dropdown" class="btn btn-primary btn-lg rounded-circle mb-2"
-                data-bs-toggle="dropdown" aria-expanded="false" routerLink="/agregarTestigo">
-                <i class="fas fa-plus "></i>
-            </button>
-            <ul class="dropdown-menu">
-                <form class="col-12 p-2">
-
-                </form>
-            </ul>
-        </div>
-    </div>
-    <div class="offcanvas-body px-0 bg-dark border border-primary border-5 border-top-0 border-bottom-0 border-start-0">
-        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-start" id="menu">
-            <h2 class="text-white">Testigos con mesa asignada</h2>
-            <div class="d-flex align-items-end flex-column px-3 w-100 text-white border border-white border-top-0 border-end-0 border-start-0"
-                *ngFor="let testigo of listTestigoAsignados">
-                <div class="row w-100">
-                    <div class="col-10">
-                        <h4>{{ testigo.nombres}} {{testigo.apellidos}}</h4>
-                    </div>
-                    <div class="col-2">
-                        <button class="btn btn-dark rounded-circle" s><i class="fas fa-pen text-primary"
-                                routerLink="/editarTestigo/{{testigo.id}}"></i></button>
-                    </div>
-                </div>
-                <div class="row w-100">
-                    <div class="col-3">
-                        <p>{{testigo.numero_documento}}</p>
-                    </div>
-                    <div class="col-7">
-                        <p>{{testigo.email}}</p>
-                    </div>
-                    <div class="col-2 ">
-                        <!-- <button class="btn btn-dark rounded-circle" (click)="eliminarUsuario(gerente.id)"><i
-                      class="fas fa-trash text-primary"></i></button> -->
-                    </div>
-                </div>
-            </div>
-            <h2 class="text-white">Testigos sin mesa asignada</h2>
-            <div class="d-flex align-items-end flex-column px-3 w-100 text-white border border-white border-top-0 border-end-0 border-start-0"
-                *ngFor="let testigo of listTestigoNoAsignados">
-                <div class="row w-100">
-                    <div class="col-10">
-                        <h4>{{ testigo.nombres}} {{testigo.apellidos}}</h4>
-                    </div>
-                    <div class="col-2">
-                        <button class="btn btn-dark rounded-circle" s><i class="fas fa-pen text-primary"
-                                routerLink="/editarTestigo/{{testigo.id}}"></i></button>
-                    </div>
-                </div>
-                <div class="row w-100">
-                    <div class="col-3">
-                        <p>{{testigo.numero_documento}}</p>
-                    </div>
-                    <div class="col-7">
-                        <p>{{testigo.email}}</p>
-                    </div>
-                    <div class="col-2 ">
-                        <!-- <button class="btn btn-dark rounded-circle" (click)="eliminarUsuario(gerente.id)"><i
-                      class="fas fa-trash text-primary"></i></button> -->
-                    </div>
-                </div>
-            </div>
-        </ul>
-    </div>
-</div>
+<app-contactos></app-contactos>

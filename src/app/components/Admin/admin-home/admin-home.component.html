@@ -1,13 +1,14 @@
-<app-menu-admin></app-menu-admin>
-
-<div class="container pt-5">
-  <div class="bg-info py-2 px-5  text-white mb-5 mx-md-5 text-center">
-    <h4>CAMPAÑA: &nbsp; CIRCUNSCRIPCION: </h4>
-  </div>
-  <div class="ratio ratio-21x9 mt-5">
-    <iframe src="https://www.youtube.com/embed/SQNtGoM3FVU" title="YouTube video" allowfullscreen></iframe>
+<div class="container py-4">
+  <div class="ratio mt-4" style="--bs-aspect-ratio: 50%">
+    <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
   </div>
 </div>
-<div class="ms-auto col-md-3 my-5 py-2 px-3 panelidentificador">
-  <h4> Bienvenido Administrador</h4>
+<div class="toast-container">
+  <ngb-toast
+    class="welcomeBanner d-flex align-items-center bg-white"
+    [delay]="2000"
+    [animation]="true"
+  >
+    <h3 class="mb-0 fw-bolder text-dark">Bienvenido administrador</h3>
+  </ngb-toast>
 </div>

@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api/api.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import Swal from 'sweetalert2';
 import { filter } from 'rxjs';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { AlertService } from '../../../services/alert/alert.service';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 
 @Component({
   selector: 'app-editar-supervisor',
@@ -12,34 +14,29 @@ import { filter } from 'rxjs';
 })
 export class EditarSupervisorComponent implements OnInit {
 
-  dropdownSettingsMunicipal: IDropdownSettings = {};
-  dropdownSettingsZone: IDropdownSettings = {};
-  municipioAssign: any = [];
-  zoneAssign: any = [];
   dataMunicipals: any = [];
   dataZones: any = [];
-  dataFiltered: any = [];
-
-  supervisor: any = {
-    tipo_documento_id: '',
-    numero_documento: '',
-    genero_id: '',
-    nombres: '',
-    apellidos: '',
-    email: '',
-    password: '',
-    zonas: [],
-  }
-
   idSupervisor: any;
   subscriber: any;
+  updateForm: FormGroup = this.fb.group({
+    nombres: ['', Validators.required],
+    apellidos: ['', Validators.required],
+    genero_id: ['', Validators.required],
+    tipo_documento_id: ['', Validators.required],
+    numero_documento: ['', Validators.required],
+    telefono: [''],
+    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    password: [''],
+    municipio: [[], Validators.required],
+    zonas: [[]],
+  });
 
-  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute, private router: Router) { }
+  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
+    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService,private localData: LocalDataService) { }
 
   ngOnInit(): void {
     this.getSupervisor();
     this.getMunicipalSupervisor();
-    this.getZoneSupervisor();
 
     this.subscriber = this.router.events.pipe(
       filter((event: any) => event instanceof NavigationEnd)
@@ -47,134 +44,79 @@ export class EditarSupervisorComponent implements OnInit {
       window.location.reload();
     });
 
-    this.dropdownSettingsMunicipal = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsZone = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      enableCheckAll: false,
-      singleSelection: false,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-
   }
 
-  onItemSelect(item: any) {
-    this.zoneAssign = [];
-    this.dataFiltered = this.dataZones.filter((dataZones: any) => dataZones.codigo_municipio_votacion == item.codigo_unico);
+  getSelectedValue(item: any) {
+    this.updateForm.patchValue({
+      zonas: [],
+    });
+    if (item) {
+      this.getZoneSupervisor()
+    } else {
+      this.dataZones = [];
+    }
   }
 
-  onItemDeSelect(item: any) {
-    this.dataFiltered = [];
-    this.zoneAssign = [];
+  onSubmit() {
+    if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
+      if (this.updateForm.valid) {
+        this.apiService.updateSupervisor(this.idSupervisor, this.updateForm.value).subscribe((resp: any) => {
+
+          this.alertService.successAlert(resp.res);
+
+        })
+      } else {
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+    }
   }
+
+  get updateFormControl() {
+    return this.updateForm.controls;
+  }
+
+  get keypressValidator() {
+    return this.customValidator;
+  }
+
 
   getMunicipalSupervisor() {
     this.apiService.getMunicipalGerente().subscribe((resp: any) => {
-      console.log(resp)
       this.dataMunicipals = resp;
-    }, (err: any) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      })
+      this.getZoneSupervisor();
     })
   }
 
   getZoneSupervisor() {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
-      this.dataZones = resp;
-      console.log(resp)
-      console.log(this.municipioAssign)
-      console.log(this.dataZones)
-      if (this.municipioAssign.length > 0) {
-        this.dataFiltered = this.dataZones.filter((dataZones: any) => dataZones.codigo_municipio_votacion == this.municipioAssign[0].codigo_unico);
+      if (this.updateFormControl['municipio'].value) {
+        this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == this.updateFormControl['municipio'].value);
       }
-      console.log(this.dataFiltered)
-    }, (err: any) => Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.message,
-    }));
+    });
   }
 
   getSupervisor() {
-    this.idSupervisor = this.activatedRoute.snapshot.params['id'];
+    this.idSupervisor = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getSupervisor(this.idSupervisor).subscribe((resp: any) => {
       const { municipios_asignados, supervisor, zonas_asignadas } = resp;
-      this.supervisor.nombres = supervisor.nombres;
-      this.supervisor.apellidos = supervisor.apellidos;
-      this.supervisor.genero_id = supervisor.genero_id;
-      this.supervisor.tipo_documento_id = supervisor.tipo_documento_id;
-      this.supervisor.numero_documento = supervisor.numero_documento;
-      this.supervisor.email = supervisor.email;
-      this.supervisor.password = supervisor.password;
-      this.zoneAssign = zonas_asignadas;
-      this.municipioAssign = municipios_asignados;
-      console.log(resp);
-    }, (err: any) => {
-      console.log(err)
+
+      this.updateForm.get('nombres')?.setValue(supervisor.nombres);
+      this.updateForm.get('apellidos')?.setValue(supervisor.apellidos);
+      this.updateForm.get('genero_id')?.setValue(supervisor.genero_id);
+      this.updateForm.get('email')?.setValue(supervisor.email);
+      this.updateForm.get('password')?.setValue(supervisor.password);
+      this.updateForm.get('tipo_documento_id')?.setValue(supervisor.tipo_documento_id);
+      this.updateForm.get('numero_documento')?.setValue(supervisor.numero_documento);
+      this.updateForm.get('telefono')?.setValue(supervisor.telefono);
+      this.updateForm.get('zonas')?.setValue(this.getCodeMunicipals(zonas_asignadas));
+      this.updateForm.get('municipio')?.setValue(this.getCodeMunicipals(municipios_asignados)[0]);
+
     })
   }
 
-  updateSupervisor() {
-    console.log(this.supervisor);
-    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.supervisor;
-
-    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
-      const codigo_unico = this.getCodeZones();
-      this.supervisor.zonas = codigo_unico;
-
-      this.apiService.updateSupervisor(this.idSupervisor, this.supervisor).subscribe((resp: any) => {
-        Swal.fire({
-          icon: 'success',
-          title: resp.res,
-          confirmButtonText: 'Ok',
-          allowEnterKey: false,
-          allowEscapeKey: false,
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        })
-      }, (err: any) => {
-        console.log(err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: err.message,
-        });
-      })
-
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "Los campos no pueden estar vacios a excepción de municipio y zona.",
-      });
-    }
-
-  }
-
-  getCodeZones() {
-    return this.zoneAssign.map((zoneAssign: any) => {
-      const { codigo_unico } = zoneAssign;
+  getCodeMunicipals(data: any) {
+    return data.map((seletedData: any) => {
+      const { codigo_unico } = seletedData;
       return codigo_unico;
     });
   }

@@ -1,147 +1,265 @@
-<app-menu-admin></app-menu-admin>
-
-<div class="container-fluid">
-  
-    <div class=" py-5 px-md-5 ">
-      <div class="bg-info py-2 px-5 text-white mb-5 me-5">
-        <h4>Mi Equipo</h4>
+<div class="container py-5">
+  <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
+    <h4>Mi equipo de trabajo</h4>
+    <button
+      class="btn btn-sm btn-info position-relative"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      title="{{ showMap ? 'Ver lista' : 'Ver mapa' }}"
+      (click)="showIframe()"
+    >
+      <i
+        class="fa-solid fa-map fa-lg text-white"
+        *ngIf="!showMap; else list_content"
+      ></i>
+      <ng-template #list_content>
+        <i class="fa-solid fa-list fa-lg text-white"></i>
+      </ng-template>
+      <span
+        class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1"
+      >
+        <i class="fa-solid fa-repeat fa-sm"></i>
+      </span>
+    </button>
+  </div>
+  <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe; else content_map">
+    <iframe [src]="urlSafe" frameborder="0" allowFullScreen="true"></iframe>
+  </div>
+  <ng-template #content_map>
+    <div class="card mt-5">
+      <div class="card-body">
+        <form
+          class="row m-4 d-flex justify-content-center"
+          [formGroup]="searchForm"
+        >
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Equipo por departamento</label>
+            <ng-select
+              [items]="dataDepartments"
+              [searchable]="false"
+              class="custom-select rounded"
+              bindLabel="nombre_departamento_votacion"
+              bindValue="codigo_unico"
+              placeholder="Seleccione departamento"
+              (change)="getSelectedDepartment($event)"
+              notFoundText="No hay informacion disponible"
+              formControlName="departamentos"
+              [clearAllText]="'Borrar todo'"
+            >
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Gerentes por municipio</label>
+            <ng-select
+              [items]="dataMunicipals"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              bindValue="codigo_unico"
+              (change)="getSelectedMunicipal($event)"
+              notFoundText="No hay informacion disponible"
+              placeholder="Seleccione municipio"
+              formControlName="municipios"
+              [clearAllText]="'Borrar todo'"
+            >
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Supervisores por zona</label>
+            <ng-select
+              [items]="dataZones"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              bindValue="codigo_unico"
+              placeholder="Seleccione zona"
+              (change)="getSelectedZone($event)"
+              [clearAllText]="'Borrar todo'"
+              notFoundText="No hay informacion disponible"
+              formControlName="zonas"
+            >
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Coordinadores por puesto</label>
+            <ng-select
+              [items]="dataStations"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              bindValue="codigo_unico"
+              (change)="getSelectedStation($event)"
+              notFoundText="No hay informacion disponible"
+              placeholder="Seleccione puesto"
+              formControlName="puestos"
+              [clearAllText]="'Borrar todo'"
+            >
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Testigos por mesa</label>
+            <ng-select
+              [items]="dataTables"
+              class="custom-select rounded"
+              bindLabel="numero_mesa"
+              bindValue="codigo_unico"
+              (change)="getSelectedTable($event)"
+              notFoundText="No hay informacion disponible"
+              placeholder="Seleccione mesa"
+              formControlName="mesas"
+              [clearAllText]="'Borrar todo'"
+            >
+            </ng-select>
+          </div>
+        </form>
       </div>
-  
-      <div class="shadow-lg mt-5 mb-3 " *ngIf="tablaGerentes">
-        <div class="bg-black py-3 px-5 text-white">
+    </div>
+    <ng-container [ngSwitch]="tabla">
+      <div class="card mt-5" *ngSwitchCase="'gerente'">
+        <div class="bg-primary py-3 px-5 text-white">
           <h4>Gerentes</h4>
         </div>
-        <div class="table-responsive">
-        <table class="table text-center ">
-          <thead class="encatablecolor bg-info text-white">
-            <tr>
-              <th scope="col">NOMBRES</th>
-              <th scope="col">APELLIDOS</th>
-              <th scope="col">TELEFONO</th>
-              <th scope="col">CORREO ELECTRONICO</th>
-              <th scope="col">DEPARTAMENTO</th>
-              <th scope="col">MUNICIPIO</th>
-  
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Pepito</th>
-              <td>Perez</td>
-              <td>8794561</td>
-              <td>pepitoperez@gmail.com</td>
-              <td>Bogota D C</td>
-              <td>Bogota</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      </div>
-      <div class="shadow-lg mt-5 mb-3" *ngIf="tablaSupervisores">
-        <div class="bg-black py-3 px-5 text-white">
-          <h5>Gerente:&nbsp;Pepito Perez</h5>
-          <h3>Supervisores</h3>
+        <div class="card-body">
+          <div
+            class="table-responsive"
+            *ngIf="listGerentes.length > 0; else content_gerente"
+          >
+            <table class="table text-center align-middle w-100">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell">
+                    CORREO ELECTRÓNICO
+                  </th>
+                  <th scope="col">TELÉFONO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white" *ngFor="let gerente of listGerentes">
+                  <td>{{ gerente.nombres }} {{ gerente.apellidos }}</td>
+                  <td class="d-none d-md-table-cell">{{ gerente.email }}</td>
+                  <td>{{ gerente.telefono }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #content_gerente>
+            <p class="text-center mb-0">
+              No hay gerente asignado para esta municipio.
+            </p>
+          </ng-template>
         </div>
-        <div class="table-responsive">
-        <table class="table text-center " visible="false">
-          <thead class="encatablecolor bg-info text-white">
-            <tr>
-              <th scope="col">NOMBRE</th>
-              <th scope="col">APELLIDOS</th>
-              <th scope="col">TELEFONO</th>
-              <th scope="col">CORREO ELECTRONICO</th>
-              <th scope="col">DEPARTAMENTO</th>
-              <th scope="col">MUNICIPIO</th>
-              <th scope="col">ZONA</th>
-            </tr>
-          </thead>
-          <tbody >
-            <tr>
-              <th scope="row">Marco</th>
-              <td>Pisco</td>
-              <td>1456841</td>
-              <td>maquispis@gmail.com</td>
-              <td>Bogota D C</td>
-              <td>Bogota</td>
-              <td>Zona 45</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
-      </div>
-      <div class="shadow-lg mt-5 mb-3" *ngIf="tablaCoordinadores">
-        <div class="bg-black py-3 px-5 text-white">
-          <h5>Gerente:&nbsp; Pepito Perez &nbsp; Supervisor:&nbsp; Marco Sisco </h5>
-          <h3>Coordinadores</h3>
+      <div class="card mt-5" *ngSwitchCase="'supervisor'">
+        <div class="bg-primary py-3 px-5 text-white">
+          <h4>Supervisores</h4>
         </div>
-        <div class="table-responsive">
-        <table class="table text-center " visible="false">
-          <thead class="encatablecolor bg-info text-white">
-            <tr>
-                <th scope="col">NOMBRE</th>
-                <th scope="col">APELLIDOS</th>
-                <th scope="col">TELEFONO</th>
-                <th scope="col">CORREO ELECTRONICO</th>
-                <th scope="col">DEPARTAMENTO</th>
-                <th scope="col">MUNICIPIO</th>
-                <th scope="col">ZONA</th>
-                <th scope="col">PUESTO DE VOTACION</th>
-            </tr>
-          </thead>
-          <tbody >
-            <tr>
-              <th scope="row">Placo</th>
-              <td>Lopa</td>
-              <td>45621638</td>
-              <td>plaquis@hotmail.com</td>
-              <td>Bogota D C</td>
-              <td>Bogota</td>
-              <td>Zona 01</td>
-              <td>Marco Fidel Suarez</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      </div>
-      <div class="shadow-lg mt-5 mb-3" *ngIf="tablaTestigos">
-        <div class="bg-black py-3 px-5 text-white">
-          <h5>Gerente:&nbsp; Pepi Perez &nbsp; Supervisor:&nbsp; Marco Sisco &nbsp; Coordinador:&nbsp; Placo Lopa</h5>
-          <h3>Testigos</h3>
+        <div class="card-body">
+          <div
+            class="table-responsive"
+            *ngIf="listGerentes.length > 0; else content_supervisor"
+          >
+            <table class="table text-center align-middle w-100">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell">
+                    CORREO ELECTRÓNICO
+                  </th>
+                  <th scope="col">TELÉFONO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="bg-white"
+                  *ngFor="let supervisor of listSupervisores"
+                >
+                  <td>{{ supervisor.nombres }} {{ supervisor.apellidos }}</td>
+                  <td class="d-none d-md-table-cell">{{ supervisor.email }}</td>
+                  <td>{{ supervisor.telefono }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #content_supervisor>
+            <p class="text-center mb-0">
+              No hay supervisor asignado para esta zona.
+            </p>
+          </ng-template>
         </div>
-        <div class="table-responsive">
-        <table class="table text-center " visible="false">
-          <thead class="encatablecolor bg-info text-white">
-            <tr>
-              <th scope="col">NOMBRE</th>
-              <th scope="col">APELLIDOS</th>
-              <th scope="col">TELEFONO</th>
-              <th scope="col">CORREO ELECTRONICO</th>
-              <th scope="col">DEPARTAMENTO</th>
-              <th scope="col">MUNICIPIO</th>
-              <th scope="col">ZONA</th>
-              <th scope="col">PUESTO DE VOTACION</th>
-              <th scope="col">MESAS</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr >
-              <th scope="row">Luisa</th>
-              <td>Rincon</td>
-              <td>78213</td>
-              <td>luisarin@gmail.com</td>
-              <td>Bogota D C</td>
-              <td>Bogota</td>
-              <td>ZONA 01</td>
-              <td>Marco Fidel Suarez</td>
-              <td>Mesa 5</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
+      <div class="card mt-5" *ngSwitchCase="'coordinador'">
+        <div class="bg-primary py-3 px-5 text-white">
+          <h4>Coordinadores</h4>
+        </div>
+        <div class="card-body">
+          <div
+            class="table-responsive"
+            *ngIf="listCoordinadores.length > 0; else content_coordinador"
+          >
+            <table class="table text-center align-middle w-100">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell">
+                    CORREO ELECTRÓNICO
+                  </th>
+                  <th scope="col">TELÉFONO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="bg-white"
+                  *ngFor="let coordinador of listCoordinadores"
+                >
+                  <td>{{ coordinador.nombres }} {{ coordinador.apellidos }}</td>
+                  <td class="d-none d-md-table-cell">
+                    {{ coordinador.email }}
+                  </td>
+                  <td>{{ coordinador.telefono }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #content_coordinador>
+            <p class="text-center mb-0">
+              No hay coordinador asignado para este puesto.
+            </p>
+          </ng-template>
+        </div>
       </div>
-  
-    </div>
-  
-  
-   
-  </div>
+      <div class="card mt-5" *ngSwitchCase="'testigo'">
+        <div class="bg-primary py-3 px-5 text-white">
+          <h4>Testigos</h4>
+        </div>
+        <div class="card-body">
+          <div
+            class="table-responsive"
+            *ngIf="listCoordinadores.length > 0; else content_testigo"
+          >
+            <table class="table text-center align-middle w-100">
+              <thead class="text-dark align-middle">
+                <tr>
+                  <th scope="col">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell">
+                    CORREO ELECTRÓNICO
+                  </th>
+                  <th scope="col">TELÉFONO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-white" *ngFor="let testigo of listTestigos">
+                  <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
+                  <td class="d-none d-md-table-cell">{{ testigo.email }}</td>
+                  <td>{{ testigo.telefono }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #content_testigo>
+            <p class="text-center mb-0">
+              No hay testigo asignado para esta mesa.
+            </p>
+          </ng-template>
+        </div>
+      </div>
+    </ng-container>
+  </ng-template>
+</div>

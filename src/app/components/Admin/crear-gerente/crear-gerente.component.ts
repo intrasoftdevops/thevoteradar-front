@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
-import Swal from 'sweetalert2';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { ApiService } from '../../../services/api/api.service';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { AlertService } from 'src/app/services/alert/alert.service';
 
 @Component({
   selector: 'app-crear-gerente',
@@ -10,140 +11,69 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 })
 export class CrearGerenteComponent implements OnInit {
 
-  selectedMunicipals: any = [];
-  dropdownSettingsDepartment: IDropdownSettings = {};
-  dropdownSettingsMunicipal: IDropdownSettings = {};
   dataMunicipals: any = [];
   dataDepartments: any = [];
-  dataFiltered: any = [];
 
-  gerente: any = {
-    nombres: '',
-    apellidos: '',
-    genero_id: '',
-    tipo_documento_id: '',
-    numero_documento: '',
-    email: '',
-    password: '',
-    municipios: [],
-  }
+  createForm: FormGroup = this.fb.group({
+    nombres: ['', Validators.required],
+    apellidos: ['', Validators.required],
+    genero_id: [null, Validators.required],
+    tipo_documento_id: [null, Validators.required],
+    numero_documento: ['', Validators.required],
+    telefono: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
+    departamento: [[], Validators.required],
+    municipios: [[]],
+  });
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
   ngOnInit() {
     this.getDepartmentAdmin();
-    this.getMunicipalAdmin();
-    this.dropdownSettingsDepartment = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre_departamento_votacion',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-    this.dropdownSettingsMunicipal = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: false,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
   }
 
-  onItemSelectDepartment(item: any) {
-    this.dataFiltered = [];
-    this.selectedMunicipals = [];
-    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
+  getSelectedValue(item: any) {
+    this.createForm.patchValue({
+      municipios: [],
+    });
+    if (item) {
+      this.getMunicipalAdmin(item.codigo_unico)
+    } else {
+      this.dataMunicipals = [];
+    }
   }
 
-  onItemDeSelectDepartment() {
-    this.dataFiltered = [];
-    this.selectedMunicipals = [];
+  get createFormControl() {
+    return this.createForm.controls;
+  }
+
+  get keypressValidator() {
+    return this.customValidator;
+  }
+
+  onSubmit() {
+    if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
+
+      if (this.createForm.valid) {
+        this.apiService.createGerente(this.createForm.value).subscribe((resp: any) => {
+          this.alertService.successAlert(resp.message);
+        })
+      } else {
+        this.alertService.errorAlert("Llene los campos obligatorios.");
+      }
+
+    }
   }
 
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
       this.dataDepartments = resp;
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     })
   }
 
-  getMunicipalAdmin() {
+  getMunicipalAdmin(data: any) {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.dataMunicipals = resp;
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
-    });
-  }
-
-  createGerente() {
-
-    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email, password } = this.gerente;
-
-    if (nombres.trim() && apellidos.trim() && genero_id.trim() && tipo_documento_id.trim() && numero_documento && email.trim() && password.trim()) {
-
-      const codigo_unico = this.getCodeMunicipals();
-
-      this.gerente.municipios = codigo_unico;
-
-      this.apiService.createGerente(this.gerente).subscribe((resp: any) => {
-
-        console.log(resp);
-
-        Swal.fire({
-          icon: 'success',
-          title: resp.message,
-          confirmButtonText: 'Ok',
-          allowEnterKey: false,
-          allowEscapeKey: false,
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        })
-
-      }, (err: any) => {
-        console.log(err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: err.message,
-        });
-      })
-
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
-      });
-    }
-
-  }
-
-  getCodeMunicipals() {
-    return this.selectedMunicipals.map((selectedMunicipal: any) => {
-      const { codigo_unico } = selectedMunicipal;
-      return codigo_unico;
+      this.dataMunicipals = resp.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == data);
     });
   }
 

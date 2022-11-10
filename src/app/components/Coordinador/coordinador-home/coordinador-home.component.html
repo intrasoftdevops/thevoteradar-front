@@ -1,35 +1,14 @@
-<app-menu-coordinador></app-menu-coordinador>
-<div class="container">
-    <div class=" pt-5  ">
-
-        <div class="row d-flex justify-content-center align-items-center align-items-stretch">
-            <div
-                class="col-md-3 border border-info rounded border-3 bg-light rounded d-flex justify-content-center align-items-center">
-                <div class="mx-3">
-                    <span class="fw-bold">SUPERVISOR A CARGO:</span>
-                    <p class=""></p>
-                    <span class="fw-bold">CAMPAÑA:</span>
-                    <p class=""></p>
-                    <span class="fw-bold">CIRCUNSCRIPCION:</span>
-                    <p class=""></p>
-                    <span class="fw-bold">LOCALIDAD:</span>
-                    <p class=""></p>
-                    <span class="fw-bold">PUESTO DE VOTACION:</span>
-                    <p class=""></p>
-                </div>
-            </div>
-
-            <div class="col-md-9 mt-3 d-flex justify-content-center align-items-center">
-                <div class="ratio ratio-16x9">
-                    <iframe src="https://www.youtube.com/embed/SQNtGoM3FVU" title="YouTube video"
-                        allowfullscreen></iframe>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="ms-auto col-md-3 mt-5 py-2 px-3 panelidentificador">
-        <h4> Bienvenido Coordinador</h4>
-    </div>
+<div class="container py-4">
+  <div class="ratio mt-4" style="--bs-aspect-ratio: 50%">
+    <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
+<div class="toast-container">
+  <ngb-toast
+    class="welcomeBanner d-flex align-items-center bg-white"
+    [delay]="2000"
+    [animation]="true"
+  >
+    <h3 class="mb-0 fw-bolder text-dark">Bienvenido coordinador</h3>
+  </ngb-toast>
 </div>

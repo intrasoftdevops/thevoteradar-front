@@ -1,22 +1,442 @@
-/* You can add global styles to this file, and also import other style files */
-$primary: #177ab8;
-$info: #64248b;
+$primary: #64248b;
 $dark: #000;
+$secondary: #cecece;
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap");
 @import "../node_modules/bootswatch/dist/cosmo/variables";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "../node_modules/bootswatch/dist/cosmo/bootswatch";
-body {
-    font-family: 'Outfit', sans-serif !important;
-    margin: 0;
-    background-color: #e0e0e0 !important;
-    position: relative; 
-    padding-bottom:  25px;
-    min-height: 100vh;
-}
-.img-logo{
-    width: 150px !important;
-}
-hr{
-    opacity: 1;
+@import "../node_modules/@ng-select/ng-select/scss/default.theme.scss";
+@import "../node_modules/sweetalert2/src/variables.scss";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/brands.scss";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/variables";
+$swal2-confirm-button-background-color: $primary !important;
+$swal2-cancel-button-background-color: $danger !important;
+$swal2-error: $danger !important;
+$swal2-deny-button-background-color: $danger !important;
+
+.swal2-icon.swal2-warning {
+  border-color: lighten($color: $warning, $amount: 20) !important;
+  color: $warning !important;
 }
 
+@import "../node_modules/sweetalert2/src/sweetalert2.scss";
+
+*:not(i) {
+  font-family: "Outfit", sans-serif !important;
+}
+
+table.dataTable > thead .sorting:before,
+table.dataTable > thead .sorting_asc:before,
+table.dataTable > thead .sorting_desc:before,
+table.dataTable > thead .sorting_asc_disabled:before,
+table.dataTable > thead .sorting_desc_disabled:before {
+  @extend %fa-icon;
+  @extend .fa-solid;
+  right: 1em !important;
+  content: fa-content($fa-var-arrow-up-long) !important;
+}
+
+table.dataTable > thead .sorting:after,
+table.dataTable > thead .sorting_asc:after,
+table.dataTable > thead .sorting_desc:after,
+table.dataTable > thead .sorting_asc_disabled:after,
+table.dataTable > thead .sorting_desc_disabled:after {
+  @extend %fa-icon;
+  @extend .fa-solid;
+  right: 0em !important;
+  content: fa-content($fa-var-arrow-down-long) !important;
+}
+
+body {
+  background-color: #cecece;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
+#fondo {
+  min-height: 100vh;
+  background-image: url("./assets/mapa.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  position: relative;
+  padding-bottom: 3rem;
+}
+
+footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0 !important;
+}
+
+.img-logo {
+  width: 170px !important;
+}
+
+hr {
+  opacity: 1;
+}
+
+#loginForm input {
+  border-radius: 25px !important;
+  border: 2px solid $dark !important;
+  background-color: transparent !important;
+}
+
+input,
+select {
+  border-color: #000 !important;
+  border-width: 2px !important;
+  border-radius: 0.25rem !important;
+}
+
+.btn {
+  border-radius: 25px !important;
+}
+
+.card {
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.6) 35%,
+    rgba(255, 255, 255, 0.5) 50%
+  ) !important;
+  border-radius: 25px !important;
+}
+
+.form-control,
+.form-select {
+  background-color: white !important;
+}
+
+.welcomeBanner {
+  width: 35%;
+  top: 80vh;
+  right: 0px;
+  height: 65px;
+  display: block;
+  position: absolute;
+  padding-left: 1.5rem !important;
+  z-index: 1;
+  border-left: 2px solid $primary !important;
+  border-top: 2px solid $primary !important;
+  border-bottom: 2px solid $primary !important;
+}
+
+.welcomeBanner::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -27px;
+  width: 45px;
+  height: 65px;
+  background: $white;
+  transform: skew(30deg);
+  border-left: 2px solid $primary !important;
+  border-top: 2px solid $primary !important;
+  border-bottom: 2px solid $primary !important;
+}
+
+@media (max-width: 992px) {
+  .welcomeBanner {
+    top: 75vh;
+    width: 45%;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcomeBanner {
+    top: 75vh;
+    width: 75%;
+    padding-left: 2rem !important;
+  }
+}
+
+.table > :not(caption, thead) > * > * {
+  border-bottom-width: 0px;
+}
+
+table > thead > * > * {
+  padding: 0 !important;
+  border-bottom-width: 0px !important;
+}
+
+table.dataTable > thead > tr > th:not(.sorting_disabled),
+table.dataTable > thead > tr > td:not(.sorting_disabled) {
+  padding-right: 30px !important;
+}
+
+// Set border-radius on the top-left and bottom-left of the first table data on the table row
+td:first-child {
+  border-radius: 10px 0 0 10px !important;
+  border-top: 2px solid $primary !important;
+  border-bottom: 2px solid $primary !important;
+  border-left: 2px solid $primary !important;
+}
+
+td,
+th :not(:first-child, :last-child) {
+  border-top: 2px solid $primary !important;
+  border-bottom: 2px solid $primary !important;
+}
+
+// Set border-radius on the top-right and bottom-right of the last table data on the table row
+td:last-child {
+  border-radius: 0 10px 10px 0 !important;
+  border-top: 2px solid $primary !important;
+  border-bottom: 2px solid $primary !important;
+  border-right: 2px solid $primary !important;
+}
+
+td:only-child {
+  border-radius: 10px !important;
+}
+
+tbody td {
+  background-color: white !important;
+}
+
+tbody td:not(:last-child) {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+table {
+  border-collapse: separate !important;
+  border-spacing: 0 1em !important;
+}
+
+table.dataTable:not(:first-child) {
+  border-spacing: 0 1em !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.ng-select.custom-select .ng-select-container {
+  border: 2px solid $dark;
+  padding-top: 1.12rem;
+  padding-bottom: 1.12rem;
+}
+
+.ng-select.custom-multiple-select .ng-select-container {
+  border: 2px solid $dark;
+  padding-top: 0.15rem;
+  padding-bottom: 0.15rem;
+}
+
+.ng-select.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
+  border: 2px solid $dark;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+  background-color: lighten($color: $primary, $amount: 60);
+}
+
+.ng-select.ng-select-multiple
+  .ng-select-container
+  .ng-value-container
+  .ng-value {
+  background-color: $primary;
+  color: white;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected,
+.ng-dropdown-panel
+  .ng-dropdown-panel-items
+  .ng-option.ng-option-selected.ng-option-marked {
+  background-color: lighten($color: $primary, $amount: 60);
+}
+
+.ng-select.ng-select-multiple
+  .ng-select-container
+  .ng-value-container
+  .ng-value
+  .ng-value-icon.left {
+  border-right: none;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: white;
+  background-color: $primary !important;
+  border-color: $primary;
+}
+
+.nav-tabs {
+  border-bottom: 5px solid lighten($color: $primary, $amount: 10);
+}
+
+.nav-tabs .nav-link {
+  margin-bottom: -1px;
+  background: white;
+  border: 1px solid white;
+}
+
+.link-active {
+  border-bottom: 5px solid $primary !important;
+}
+
+.sublink-active {
+  border-left: 7px solid lighten($color: $primary, $amount: 20) !important;
+}
+
+#file {
+  display: none;
+}
+
+.interlineado {
+  border: #64248b 2px dashed !important;
+}
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputfile + label {
+  background-color: white !important;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+  background-color: #64248b !important;
+  color: #fff !important;
+  border: white 2px dashed !important;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover > i {
+  color: #fff !important;
+}
+
+.light-wrap {
+  z-index: 1100 !important;
+}
+
+ngx-dropzone {
+  width: 100% !important;
+  height: 200px !important;
+  border: 2px dashed $primary !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+ngx-dropzone-remove-badge {
+  background: $primary !important;
+  opacity: 1 !important;
+}
+
+ngx-dropzone-image-preview > ngx-dropzone-label,
+ngx-dropzone-video-preview > ngx-dropzone-label {
+  color: white !important;
+  text-shadow: 1px 1px 2px black, 0 0 1em $primary, 0 0 0.2em $primary;
+  width: 200px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+nav li .dropdown-menu li a:hover {
+  background-color: $primary !important;
+}
+
+.iframe {
+  width: 100%;
+  height: calc(23vw + 23rem);
+}
+
+@media (max-width: 960px) {
+  .iframe {
+    height: calc(18vw + 18rem);
+  }
+}
+
+@media (max-width: 720px) {
+  .iframe {
+    height: calc(13vw + 13rem);
+  }
+}
+
+.imgItem {
+  max-height: 150px;
+  object-fit: cover;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid $dark;
+  -webkit-text-fill-color: $dark;
+  box-shadow: 0 0 0px 1000px transparent inset;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.popover {
+  border-radius: 15px !important;
+  max-width: 100% !important;
+  border: 2px solid $primary !important;
+  //left: 15px !important;
+}
+
+@media (max-width: 1281px) {
+  .popover {
+    width: 37vw !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .popover {
+    width: 47vw !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .popover {
+    width: 72vw !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .popover {
+    width: 92vw !important;
+  }
+}
+
+.icon-change-rol {
+  content: "";
+  height: 1.5em;
+  width: 1.5em;
+}
+
+.toast-body {
+  padding: 0 !important;
+}

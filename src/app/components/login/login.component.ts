@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
-import { LoginClass } from 'src/app/models/login-class';
+import packageJson from '../../../../package.json';
+import { AlertService } from '../../services/alert/alert.service';
+import { LocalDataService } from '../../services/localData/local-data.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-login',
@@ -10,66 +14,75 @@ import { LoginClass } from 'src/app/models/login-class';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  user: any = {
-    numero_documento: '',
-    password: ''
+
+  loginForm: FormGroup = this.fb.group({
+    numero_documento: ['', Validators.required],
+    password: ['', Validators.required],
+  });
+
+  public version: string = packageJson.version;
+
+  safeURL: any;
+
+  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService, private _sanitizer: DomSanitizer) {
+    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/bNU_d8rei4k");
   }
 
-  constructor(private apiService: ApiService, private router: Router) { }
-
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
-  login() {
-    this.apiService.login(this.user).subscribe(
-      (resp: any) => {
-        const loginClass: LoginClass = resp;
-        console.log(loginClass);
-        const { res, rol, token, id } = loginClass;
+  get createFormControl() {
+    return this.loginForm.controls;
+  }
+
+  onSubmit() {
+    if (this.loginForm.valid) {
+      this.apiService.login(this.loginForm.value).subscribe((resp: any) => {
+        const { res, rol, token, id } = resp;
         if (res == true) {
+          this.localData.deleteCookies();
+          this.localData.setToken(token);
+          this.localData.setRol(rol);
+          this.localData.setId(id);
+          this.permissionsService.addPermission([this.localData.getRol()]);
 
-          this.apiService.setToken(token);
-          this.apiService.setRol(rol);
-          this.apiService.setId(id);
           if (res == true && rol == 1) {
-            this.router.navigate(['adminHome']);
+            this.router.navigate(['estadisticasEquipoAdmin']);
           }
           else if (res == true && rol == 2) {
-            this.router.navigate(['gerenteHome']);
+            this.router.navigate(['estadisticasEquipoGerente']);
           }
           else if (res == true && rol == 3) {
-            this.router.navigate(['supervisorHome']);
+            this.router.navigate(['estadisticasEquipoSupervisor']);
           }
           else if (res == true && rol == 4) {
-            this.router.navigate(['coordinadorHome']);
+            this.router.navigate(['estadisticasEquipoCoordinador']);
           }
           else if (res == true && rol == 5) {
-            this.router.navigate(['testigoHome']);
+            this.router.navigate(['reporteIncidencias']);
           }
           else if (res == true && rol == 6) {
+            // TODO
             this.router.navigate(['adminHome']);
           }
           else if (res == true && rol == 7) {
+            // TODO
             this.router.navigate(['adminHome']);
           }
           else if (res == true && rol == 8) {
-            this.router.navigate(['adminHome']);
+            this.router.navigate(['impugnar']);
           }
           else if (res == true && rol == 9) {
+            // TODO
             this.router.navigate(['adminHome']);
           }
         } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: resp.message,
-          })
+          this.alertService.errorAlert(resp.message);
         }
-      }, (err:any) => Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      }))
+      })
+    } else {
+      this.alertService.errorAlert("No pueden existir campos vacios.");
+    }
   }
 
 }

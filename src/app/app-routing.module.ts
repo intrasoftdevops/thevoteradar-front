@@ -22,97 +22,354 @@ import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-pues
 import { EditarSupervisorComponent } from './components/Gerente/editar-supervisor/editar-supervisor.component';
 import { EditarCoordinadorComponent } from './components/Supervisor/editar-coordinador/editar-coordinador.component';
 import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/editar-testigo.component';
+import { ConsultarGerenteComponent } from './components/Admin/consultar-gerente/consultar-gerente.component';
+import { ConsultarSupervisorComponent } from './components/Gerente/consultar-supervisor/consultar-supervisor.component';
+import { ReporteIncidenciasComponent } from './components/Testigo/reporte-incidencias/reporte-incidencias.component';
+import { ConsultarCoordinadorComponent } from './components/Supervisor/consultar-coordinador/consultar-coordinador.component';
+import { ConsultarTestigoComponent } from './components/Coordinador/consultar-testigo/consultar-testigo.component';
+import { EditarPerfilComponent } from './components/editarPerfil/editar-perfil.component';
+import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
+import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
+import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos-testigo/reporte-votos-testigo.component';
+import { ImpugnarComponent } from './components/Impugnador/impugnar/impugnar.component';
+import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home/impugnador-home.component';
+import { CrearSupervisorAdminComponent } from './components/Admin/crear-supervisor-admin/crear-supervisor-admin.component';
+import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordinador-admin/crear-coordinador-admin.component';
+import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
+import { CrearCoordinadorGerenteComponent } from './components/Gerente/crear-coordinador-gerente/crear-coordinador-gerente.component';
+import { CrearTestigoGerenteComponent } from './components/Gerente/crear-testigo-gerente/crear-testigo-gerente.component';
+import { CrearTestigoSupervisorComponent } from './components/Supervisor/crear-testigo-supervisor/crear-testigo-supervisor.component';
+import { ForbiddenComponent } from './components/forbidden/forbidden.component';
+import { CambiarRolGerenteComponent } from './components/Admin/cambiar-rol-gerente/cambiar-rol-gerente.component';
+import { AuthGuard } from './guards/AuthGuard/auth.guard';
+import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [LogoutGuard]
   },
   {
-    path: 'gerenteHome',
-    component: GerenteHomeComponent
+    path: 'forbidden',
+    component: ForbiddenComponent,
   },
   {
     path: 'adminHome',
-    component: AdminHomeComponent
+    component: AdminHomeComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'gerenteHome',
+    component: GerenteHomeComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [2]
+    }
   },
   {
     path: 'supervisorHome',
-    component: SupervisorHomeComponent
+    component: SupervisorHomeComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [3]
+    }
   },
   {
     path: 'coordinadorHome',
-    component: CoordinadorHomeComponent
+    component: CoordinadorHomeComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [4]
+    }
   },
   {
     path: 'testigoHome',
-    component: TestigoHomeComponent
+    component: TestigoHomeComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [5]
+    }
   },
   {
     path: 'crearGerente',
-    component: CrearGerenteComponent
+    component: CrearGerenteComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
   },
   {
     path: 'crearSupervisor',
-    component: CrearSupervisorComponent
+    component: CrearSupervisorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [2]
+    }
   },
   {
     path: 'crearCoordinador',
-    component: CrearCoordinadorComponent
+    component: CrearCoordinadorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [3]
+    }
   },
   {
     path: 'crearTestigo',
-    component: CrearTestigoComponent
+    component: CrearTestigoComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [4]
+    }
   },
   {
     path: 'editarGerente/:id',
-    component: EditarGerenteComponent
+    component: EditarGerenteComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
   },
   {
-    path: 'verEquipoAdmin',
-    component: VerEquipoAdminComponent
+    path: 'consultarEquipoAdmin',
+    component: VerEquipoAdminComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
   },
   {
-    path: 'verEquipoGerente',
-    component: VerEquipoGerenteComponent
+    path: 'consultarEquipoGerente',
+    component: VerEquipoGerenteComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [2]
+    }
   },
   {
-    path: 'verEquipoSupervisor',
-    component: VerEquipoSupervisorComponent
+    path: 'consultarEquipoSupervisor',
+    component: VerEquipoSupervisorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [3]
+    }
   },
   {
-    path: 'verEquipoCoordinador',
-    component: VerEquipoCoordinadorComponent
+    path: 'consultarEquipoCoordinador',
+    component: VerEquipoCoordinadorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [4]
+    }
   },
   {
-    path: 'verPuestoAdmin',
-    component: VerPuestoAdminComponent
-  },
-  
-  {
-    path: 'verPuestoGerente',
-    component: VerPuestoGerenteComponent
-  },
-  
-  {
-    path: 'verPuestoSupervisor',
-    component: VerPuestoSupervisorComponent
+    path: 'estadisticasEquipoAdmin',
+    component: VerPuestoAdminComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
   },
   {
-    path: 'verPuestoCoordinador',
-    component: VerPuestoCoordinadorComponent
+    path: 'estadisticasEquipoGerente',
+    component: VerPuestoGerenteComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [2]
+    }
+  },
+  {
+    path: 'estadisticasEquipoSupervisor',
+    component: VerPuestoSupervisorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [3]
+    }
+  },
+  {
+    path: 'estadisticasEquipoCoordinador',
+    component: VerPuestoCoordinadorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [4]
+    }
   },
   {
     path: 'editarSupervisor/:id',
-    component: EditarSupervisorComponent
+    component: EditarSupervisorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [2]
+    }
   },
   {
     path: 'editarCoordinador/:id',
-    component: EditarCoordinadorComponent
+    component: EditarCoordinadorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [3]
+    }
   },
   {
     path: 'editarTestigo/:id',
-    component: EditarTestigoComponent
+    component: EditarTestigoComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [4]
+    }
+  },
+  {
+    path: 'consultarGerente',
+    component: ConsultarGerenteComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'consultarSupervisor',
+    component: ConsultarSupervisorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1, 2]
+    }
+  },
+  {
+    path: 'consultarCoordinador',
+    component: ConsultarCoordinadorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1, 2, 3]
+    }
+  },
+  {
+    path: 'consultarTestigo',
+    component: ConsultarTestigoComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1, 2, 3, 4]
+    }
+  },
+  {
+    path: 'reporteIncidencias',
+    component: ReporteIncidenciasComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [5]
+    }
+  },
+  {
+    path: 'editarPerfil',
+    component: EditarPerfilComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1, 2, 3, 4, 5, 8]
+    }
+  },
+  {
+    path: 'reporteIncidenciasCoordinador',
+    component: ReporteIncidenciasCoordinadorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [4]
+    }
+  },
+  {
+    path: 'reporteVotosCoordinador',
+    component: ReporteVotosCoordinadorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [4]
+    }
+  },
+  {
+    path: 'reporteVotosTestigo',
+    component: ReporteVotosTestigoComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [5]
+    }
+  },
+  //No olvidar cambiar id para poder utilizar el forbidden.
+  {
+    path: 'impugnar',
+    component: ImpugnarComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [8]
+    }
+  },
+  {
+    path: 'impugnadorHome',
+    component: ImpugnadorHomeComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [8]
+    }
+  },
+  {
+    path: 'crearSupervisorAdmin',
+    component: CrearSupervisorAdminComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'crearCoordinadorAdmin',
+    component: CrearCoordinadorAdminComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'crearTestigoAdmin',
+    component: CrearTestigoAdminComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'crearCoordinadorGerente',
+    component: CrearCoordinadorGerenteComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [2]
+    }
+  },
+  {
+    path: 'crearTestigoGerente',
+    component: CrearTestigoGerenteComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [2]
+    }
+  },
+  {
+    path: 'crearTestigoSupervisor',
+    component: CrearTestigoSupervisorComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [3]
+    }
+  },
+  {
+    path: 'cambiarRolGerente/:id',
+    component: CambiarRolGerenteComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: '**',
+    redirectTo: localStorage.getItem('previousUrl') ?? '/'
   },
 ];
 

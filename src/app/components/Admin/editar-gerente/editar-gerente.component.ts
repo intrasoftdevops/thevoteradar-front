@@ -1,118 +1,116 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { filter } from 'rxjs';
-import { ApiService } from '../../../services/api.service';
-import Swal from 'sweetalert2';
-
+import { ApiService } from '../../../services/api/api.service';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { CustomValidationService } from '../../../services/validations/custom-validation.service';
+import { AlertService } from '../../../services/alert/alert.service';
+import { LocalDataService } from '../../../services/localData/local-data.service';
 @Component({
   selector: 'app-editar-gerente',
   templateUrl: './editar-gerente.component.html',
-  styleUrls: ['./editar-gerente.component.scss']
+  styleUrls: ['./editar-gerente.component.scss'],
 })
 export class EditarGerenteComponent implements OnInit {
-
-  dropdownSettingsMunicipal: IDropdownSettings = {};
-  dropdownSettingsDepartment: IDropdownSettings = {};
   dataDepartments: any = [];
   dataMunicipals: any = [];
-  municipioAssign: any = [];
-  departmentAssign: any = [];
-  assignedItems: any = [];
-  dataFiltered: any = [];
 
-  gerente: any = {
-    tipo_documento_id: '',
-    numero_documento: '',
-    genero_id: '',
-    nombres: '',
-    apellidos: '',
-    email: '',
-    password: '',
-    municipios: [],
-  }
   idGerente: any;
   subscriber: any;
 
-  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute, private router: Router) { }
+  updateForm: FormGroup = this.fb.group({
+    nombres: ['', Validators.required],
+    apellidos: ['', Validators.required],
+    genero_id: ['', Validators.required],
+    tipo_documento_id: ['', Validators.required],
+    numero_documento: ['', Validators.required],
+    telefono: [''],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        this.customValidator.patternValidator(),
+      ],
+    ],
+    password: [''],
+    departamento: [[], Validators.required],
+    municipios: [[]],
+  });
+  submitted = false;
+
+  constructor(
+    private apiService: ApiService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private fb: FormBuilder,
+    private customValidator: CustomValidationService,
+    private alertService: AlertService,
+    private localData: LocalDataService
+  ) {}
 
   ngOnInit() {
     this.getGerente();
     this.getDepartmentAdmin();
-    this.getMunicipalAdmin();
+    this.subscriber = this.router.events
+      .pipe(filter((event: any) => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        window.location.reload();
+      });
+  }
 
-    this.subscriber = this.router.events.pipe(
-      filter((event: any) => event instanceof NavigationEnd)
-    ).subscribe((event) => {
-      window.location.reload();
+  getSelectedValue(item: any) {
+    this.updateForm.patchValue({
+      municipios: [],
     });
-
-    this.dropdownSettingsDepartment = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      clearSearchFilter: false,
-      enableCheckAll: false,
-      singleSelection: true,
-      idField: 'codigo_unico',
-      textField: 'nombre_departamento_votacion',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
-
-    this.dropdownSettingsMunicipal = {
-      noDataAvailablePlaceholderText: "No hay informacion disponible",
-      enableCheckAll: false,
-      singleSelection: false,
-      idField: 'codigo_unico',
-      textField: 'nombre',
-      itemsShowLimit: 2,
-      searchPlaceholderText: "Buscar",
-      allowSearchFilter: true
-    };
+    if (item) {
+      this.getMunicipalAdmin();
+    } else {
+      this.dataMunicipals = [];
+    }
   }
 
-  onItemSelect(item: any) {
-    this.municipioAssign = [];
-    this.dataFiltered = [];
-    this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == item.codigo_unico);
-    console.log(this.dataFiltered);
+  get updateFormControl() {
+    return this.updateForm.controls;
   }
 
-  onItemDeSelect(item: any) {
-    this.municipioAssign = [];
-    this.dataFiltered = [];
+  get keypressValidator() {
+    return this.customValidator;
+  }
+
+  onSubmit() {
+    if (
+      !this.updateFormControl['email'].errors?.['email'] ||
+      !this.updateFormControl['email'].errors?.['invalidEmail']
+    ) {
+      if (this.updateForm.valid) {
+        this.apiService
+          .updateGerente(this.idGerente, this.updateForm.value)
+          .subscribe((resp: any) => {
+            this.alertService.successAlert(resp.res);
+          });
+      } else {
+        this.alertService.errorAlert('Llene los campos obligatorios.');
+      }
+    }
   }
 
   getDepartmentAdmin() {
     this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      console.log(resp)
       this.dataDepartments = resp;
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
-    })
+      this.getMunicipalAdmin();
+    });
   }
 
   getMunicipalAdmin() {
     this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      console.log(resp);
-      this.dataMunicipals = resp;
-      console.log(this.departmentAssign)
-      if (this.departmentAssign.length > 0) {
-        this.dataFiltered = this.dataMunicipals.filter((dataMunicipal: any) => dataMunicipal.codigo_departamento_votacion == this.departmentAssign[0].codigo_unico);
+      if (this.updateFormControl['departamento'].value) {
+        this.dataMunicipals = resp.filter(
+          (dataMunicipal: any) =>
+            dataMunicipal.codigo_departamento_votacion ==
+            this.updateFormControl['departamento'].value
+        );
       }
-
-    }, (err: any) => {
-      console.log(err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
     });
   }
 
@@ -121,75 +119,37 @@ export class EditarGerenteComponent implements OnInit {
   }
 
   getGerente() {
-    this.idGerente = this.activatedRoute.snapshot.params['id'];
+    this.idGerente = this.localData.decryptIdUser(
+      this.activatedRoute.snapshot.params['id']
+    );
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
       const { gerente, municipios_asignados, departamentos_asignados } = resp;
-      this.gerente.nombres = gerente.nombres;
-      this.gerente.apellidos = gerente.apellidos;
-      this.gerente.genero_id = gerente.genero_id;
-      this.gerente.email = gerente.email;
-      this.gerente.password = gerente.password;
-      this.gerente.tipo_documento_id = gerente.tipo_documento_id;
-      this.gerente.numero_documento = gerente.numero_documento;
-      this.municipioAssign = municipios_asignados;
-      this.departmentAssign = departamentos_asignados;
-      console.log(resp);
-    }, (err: any) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: err.message,
-      });
-    })
-  }
 
-  updateGerente() {
-    console.log(this.gerente);
-
-    let { nombres, apellidos, genero_id, tipo_documento_id, numero_documento, email } = this.gerente;
-
-    if (nombres && apellidos && genero_id && tipo_documento_id && numero_documento && email) {
-      const codigo_unico = this.getCodeMunicipals();
-      this.gerente.municipios = codigo_unico;
-
-      this.apiService.updateGerente(this.idGerente, this.gerente).subscribe((resp: any) => {
-        Swal.fire({
-          icon: 'success',
-          title: resp.res,
-          confirmButtonText: 'Ok',
-          allowEnterKey: false,
-          allowEscapeKey: false,
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        })
-      }, (err: any) => {
-        console.log(err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: err.message,
-        });
-      })
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "Los campos no pueden estar vacios a excepción de departamento y municipio.",
-      });
-    }
-
-  }
-
-  getCodeMunicipals() {
-    return this.municipioAssign.map((selectedMunicipal: any) => {
-      const { codigo_unico } = selectedMunicipal;
-      return codigo_unico;
+      this.updateForm.get('nombres')?.setValue(gerente.nombres);
+      this.updateForm.get('apellidos')?.setValue(gerente.apellidos);
+      this.updateForm.get('genero_id')?.setValue(gerente.genero_id);
+      this.updateForm.get('email')?.setValue(gerente.email);
+      this.updateForm.get('password')?.setValue(gerente.password);
+      this.updateForm
+        .get('tipo_documento_id')
+        ?.setValue(gerente.tipo_documento_id);
+      this.updateForm
+        .get('numero_documento')
+        ?.setValue(gerente.numero_documento);
+      this.updateForm.get('telefono')?.setValue(gerente.telefono);
+      this.updateForm
+        .get('municipios')
+        ?.setValue(this.getCodeMunicipals(municipios_asignados));
+      this.updateForm
+        .get('departamento')
+        ?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
     });
   }
 
-
-
+  getCodeMunicipals(data: any) {
+    return data.map((seletedData: any) => {
+      const { codigo_unico } = seletedData;
+      return codigo_unico;
+    });
+  }
 }

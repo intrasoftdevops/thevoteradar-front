@@ -1,0 +1,233 @@
+<div class="container py-5">
+    <div class="bg-primary py-3 px-5 text-white">
+        <h4>Reporte de novedades</h4>
+    </div>
+    <ul class="nav nav-tabs mt-5" id="myTab">
+        <li class="nav-item" id="tab">
+            <button class="nav-link h4 px-md-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#abiertos"
+                type="button" role="tab">Abiertas</button>
+        </li>
+        <li class="nav-item" id="tab">
+            <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cerrados"
+                type="button" role="tab">Cerradas</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="abiertos" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="table-responsive my-4" *ngIf="dataIncidenciasAbiertas.length>0;else open_content">
+                        <table datatable [dtOptions]="dtOptionsIncidenciasAbiertas" [dtTrigger]="dtTrigger"
+                            class="table text-center align-middle w-100">
+                            <thead class="text-dark align-middle">
+                                <tr>
+                                    <th scope="col">PUESTO</th>
+                                    <th scope="col">MESA</th>
+                                    <th scope="col">TESTIGO</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white" *ngFor="let incidencia of dataIncidenciasAbiertas">
+                                    <td>{{incidencia.puesto}}</td>
+                                    <td>{{incidencia.mesa}}</td>
+                                    <td>{{incidencia.nombre_testigo}}</td>
+                                    <td>
+                                        <button class="btn align-middle mx-1" data-bs-toggle="modal"
+                                            data-bs-target="#incidenciaAbierta"
+                                            (click)="ModalIncidenciaAbiertaActual(incidencia)">
+                                            <i class="fa-solid fa-eye text-primary"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ng-template #open_content>
+                        <p class="text-center mb-0">No hay novedades abiertas por el momento.</p>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="cerrados" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="table-responsive my-4" *ngIf="dataIncidenciasCerradas.length>0;else close_content">
+                        <table datatable [dtOptions]="dtOptionsIncidenciasCerradas" [dtTrigger]="dtTrigger"
+                            class="table text-center align-middle w-100">
+                            <thead class="text-dark align-middle">
+                                <tr>
+                                    <th scope="col">PUESTO</th>
+                                    <th scope="col">MESA</th>
+                                    <th scope="col">TESTIGO</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white" *ngFor="let incidencia of dataIncidenciasCerradas">
+                                    <td>{{incidencia.puesto}}</td>
+                                    <td>{{incidencia.mesa}}</td>
+                                    <td>{{incidencia.nombre_testigo}}</td>
+                                    <td>
+                                        <button class="btn align-middle mx-1" data-bs-toggle="modal"
+                                            data-bs-target="#incidenciaCerrada"
+                                            (click)="ModalIncidenciaCerradaActual(incidencia)">
+                                            <i class="fa-solid fa-eye text-primary"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ng-template #close_content>
+                        <p class="text-center mb-0">No hay novedades cerradas por el momento.</p>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" [formGroup]="replyForm" (ngSubmit)="onSubmit()">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">REPORTE #{{incidenciaAbiertaActual.id}}</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4 class="fw-bolder">Información de testigo</h4>
+                <div class="row mt-3">
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Puesto: </span><span> {{incidenciaAbiertaActual.puesto}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Mesa: </span><span> {{incidenciaAbiertaActual.puesto}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Testigo:
+                            </span><span>{{incidenciaAbiertaActual.nombre_testigo}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p>
+                            <span class="fw-bolder">Teléfono: </span>
+                            <span>
+                                {{incidenciaAbiertaActual.telefono_testigo}}
+                            </span>
+                        </p>
+                    </div>
+                    <hr class="border border-primary rounded border-2">
+                    <h4 class="fw-bolder">Información de reporte</h4>
+                    <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaAbiertaActual.categoria}}</span>
+                    </p>
+                </div>
+                <p class="fw-bolder">Descripción: </p>
+                <p>
+                    {{incidenciaAbiertaActual.descripcion}}
+                </p>
+                <p class="fw-bolder mb-0">Archivos adjuntos: </p>
+                <div class="w-100">
+                    <ng-container *ngIf="photosOpen.length>0">
+                        <p class="fst-italic">-Imágenes: </p>
+                        <si-ng-lightbox [showPreviews]="true"
+                            class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
+                            <img *ngFor="let img of photosOpen" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
+                                [siLightboxItem]="img.url_archivo" class="imgItem py-1" />
+                        </si-ng-lightbox>
+                    </ng-container>
+                    <ng-container *ngIf="videosOpen.length>0">
+                        <p class="fst-italic">-Videos: </p>
+                        <div class="row gy-2 d-flex justify-content-center">
+                            <div class="col-md-6" *ngFor="let video of videosOpen">
+                                <div class="ratio ratio-16x9" controls>
+                                    <video class="w-100" controls>
+                                        <source src="{{video.url_archivo}}" type="video/mp4">
+                                        Su navegador no soporta la etiqueta video.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <textarea class="form-control border-2 border-dark rounded mt-3" rows="2"
+                    placeholder="Escribir una respuesta" formControlName="respuesta"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger">Cerrar novedad</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="incidenciaCerrada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">REPORTE {{incidenciaCerradaActual.id}}</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4 class="fw-bolder">Información de testigo</h4>
+                <div class="row mt-3">
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Puesto: </span><span> {{incidenciaCerradaActual.puesto}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Mesa: </span><span> {{incidenciaCerradaActual.puesto}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Testigo: </span><span>
+                                {{incidenciaCerradaActual.nombre_testigo}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Telefono: </span>
+                            <span>{{incidenciaCerradaActual.telefono_testigo}}</span>
+                        </p>
+                    </div>
+                    <hr class="border border-primary rounded border-2">
+                </div>
+                <h4 class="fw-bolder">Información de reporte</h4>
+                <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaCerradaActual.categoria}}</span>
+                </p>
+                <p class="fw-bolder">Descripción: </p>
+                <p>
+                    {{incidenciaCerradaActual.descripcion}}
+                </p>
+                <p class="fw-bolder mb-0">Archivos adjuntos: </p>
+                <div class="w-100">
+                    <ng-container *ngIf="photosClose.length>0">
+                        <p class="fst-italic">Imágenes: </p>
+                        <si-ng-lightbox [showPreviews]="true" class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
+                            <img *ngFor="let img of photosClose" src="{{img.url_archivo}}"
+                                [previewSrc]="img.url_archivo" [siLightboxItem]="img.url_archivo"
+                                class="imgItem py-1" />
+                        </si-ng-lightbox>
+                    </ng-container>
+                    <ng-container *ngIf="videosClose.length>0">
+                        <p class="fst-italic">Videos: </p>
+                        <div class="row gy-2 d-flex justify-content-center">
+                            <div class="col-md-6" *ngFor="let video of videosClose">
+                                <div class="ratio ratio-16x9" controls>
+                                    <video class="w-100" controls>
+                                        <source src="{{video.url_archivo}}" type="video/mp4">
+                                        Su navegador no soporta la etiqueta video.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <p class="mt-3"><span class="fw-bolder">Respuesta:
+                    </span><span>{{incidenciaCerradaActual.respuesta}}</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" (click)="openIncidencia()">Reabrir novedad</button>
+            </div>
+        </div>
+    </div>
+</div>

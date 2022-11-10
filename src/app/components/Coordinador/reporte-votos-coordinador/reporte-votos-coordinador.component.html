@@ -1,0 +1,113 @@
+<div class="container py-5">
+    <div class="card">
+        <div class="bg-primary py-3 px-5 text-white">
+            <h4>Reporte de votos</h4>
+        </div>
+        <div class="card-body pt-0">
+            <form class="d-flex justify-content-center" [formGroup]="searchForm">
+                <div class="form-group col-md-6 col-lg-4 pt-2 m-4">
+                    <label class="fw-bold form-label">
+                        Reportes por puestos
+                    </label>
+                    <ng-select [items]="dataStations" [searchable]="false" class="custom-select rounded"
+                        bindLabel="nombre" bindValue="codigo_unico" (change)="getSelectedValue($event)"
+                        notFoundText="No hay informacion disponible" placeholder="Seleccione puestos"
+                        formControlName="puestos" [clearAllText]="'Borrar todo'">
+                    </ng-select>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card mt-5" [hidden]="!tabla">
+        <div class="card-body">
+            <div class="table-responsive my-4" [hidden]="listMesas.length<=0">
+                <table datatable [dtOptions]="dtOptionsVotosReportados" [dtTrigger]="dtTrigger"
+                class="table text-center align-middle w-100">
+                    <thead class="text-dark align-middle">
+                        <tr>
+                            <th scope="col">N° MESA</th>
+                            <th scope="col">TESTIGO</th>
+                            <th scope="col">TELÉFONO</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white" *ngFor="let mesa of listMesas">
+                            <td>{{mesa.numero_mesa}}</td>
+                            <td>{{mesa.reporte.testigo.nombres}} {{mesa.reporte.testigo.apellidos}}</td>
+                            <td>{{(mesa.reporte.testigo.telefono)?mesa.reporte.testigo.telefono:'No registrado'}}</td>
+                            <td>
+                                <button class="btn align-middle mx-1" data-bs-toggle="modal"
+                                    data-bs-target="#incidenciaAbierta" (click)="ModalReporteActual(mesa)">
+                                    <i class="fa-solid fa-eye text-primary"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div [hidden]="listMesas.length>0">
+                <p class="text-center mb-0">No hay reporte de votos para este puesto.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Mesa #{{reporte.numero_mesa}}</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4 class="fw-bolder">Información de testigo</h4>
+                <div class="row mt-3" *ngIf="reporte.reporte">
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Testigo: </span><span> {{reporte.reporte.testigo.nombres}} {{reporte.reporte.testigo.apellidos}}</span></p>
+                    </div>
+                    <div class="col-lg-6 pb-2">
+                        <p><span class="fw-bolder">Teléfono: </span>
+                            <span>{{reporte.reporte.testigo.telefono}}</span>
+                        </p>
+                    </div>
+                    <hr class="border border-primary rounded border-2">
+                </div>
+                <h4 class="fw-bolder">Información de reporte</h4>
+                <div class="table-responsive">
+                    <table class="table text-center align-middle">
+                        <thead class="text-dark align-middle">
+                            <tr>
+                                <th scope="col">PARTIDO</th>
+                                <th scope="col">CANDIDATO</th>
+                                <th scope="col">N° VOTOS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white" *ngFor="let reporte of listReportes">
+                                <td>{{reporte.partido}}</td>
+                                <td>{{reporte.candidato.nombres}} {{reporte.candidato.apellidos}}</td>
+                                <td>{{reporte.numero_votos}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-primary text-white">
+                                <td></td>
+                                <td class="fw-bolder">Total de votos: </td>
+                                <td>{{totalVotosMesas}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <p class="fw-bolder">Archivos adjuntos: </p>
+                <si-ng-lightbox [showPreviews]="true" *ngIf="photos.length>0"
+                    class="d-grid d-flex justify-content-center">
+                    <img *ngFor="let img of photos" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
+                        [siLightboxItem]="img.url_archivo" class="imgItem col-4" />
+                </si-ng-lightbox>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,37 @@
-.img-logo{
+.img-logo {
     width: 150px !important;
 }
+
 .redes li a {
     width: 50px;
     height: 50px;
+}
+
+#login {
+    object-fit: cover !important;
+    min-height: 100vh;
+    background-image: url("../../../assets/Gradient.gif");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.Icon-inside {
+    position: relative;
+}
+
+.Icon-inside i {
+    position: absolute;
+    left: 7px;
+    top: 35%;
+    padding: 10px 10px;
+}
+
+.card {
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.4) 35%, rgba(255, 255, 255, 0.2) 50%) !important;
+    border-radius: 25px !important;
+}
+
+input::placeholder,input {
+    color: black !important;
 }

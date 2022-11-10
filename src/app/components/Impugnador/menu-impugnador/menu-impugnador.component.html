@@ -1,0 +1,62 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/adminHome">
+      <img src="../../../../assets/logo.png" class="img-logo" alt="logo" />
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto text-center">
+        <li class="nav-item align-middle">
+          <a
+            class="nav-link px-3 text-white"
+            aria-current="page"
+            routerLink="/impugnadorHome"
+            [routerLinkActive]="['link-active']"
+          >
+            <i class="fa-solid fa-house fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Inicio</span>
+          </a>
+        </li>
+        <li
+          class="nav-item dropdown align-middle"
+          [routerLinkActive]="['link-active']"
+        >
+          <a
+            class="nav-link px-3 text-white"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i
+              class="fa-solid fa-file-circle-exclamation fa-lg align-middl me-2"
+            ></i>
+            <span class="fs-5 align-middle">Impugnaciones</span>
+          </a>
+          <ul
+            class="dropdown-menu bg-dark border border-secondary"
+            aria-labelledby="navbarDropdown"
+          >
+            <li>
+              <a class="dropdown-item text-white fs-6" routerLink="/impugnar">
+                Impugnar
+              </a>
+            </li>
+          </ul>
+        </li>
+        <app-dropdown-menu-users class="my-auto"></app-dropdown-menu-users>
+      </ul>
+    </div>
+  </div>
+</nav>
