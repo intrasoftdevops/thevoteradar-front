@@ -4,7 +4,9 @@ import { ApiService } from '../../../services/api/api.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment.prod';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-ver-equipo-coordinador',
@@ -12,30 +14,37 @@ import { FormGroup, FormBuilder } from '@angular/forms';
   styleUrls: ['./ver-equipo-coordinador.component.scss'],
 })
 export class VerEquipoCoordinadorComponent implements OnInit {
-  tabla: boolean = false;
+  tabla: boolean = true;
   dataZones: any = [];
   dataStations: any = [];
   dataTables: any = [];
   listTestigos: any = [];
+  listMesas:any = [];
   filtro: any;
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
-  searchForm: FormGroup = this.fb.group({
+  searchForm: UntypedFormGroup = this.fb.group({
     puestos: [null],
     mesas: [null],
   });
   dataGraphics: any = {};
+  listTestigoAsignados:any = []
+  dtElement: DataTableDirective | undefined;
+  dtTrigger: Subject<any> = new Subject<any>();
+  testigosMesas: { [key: number]: string[] } = {};
+  puestoSeleccionado = '';
 
   constructor(
     private apiService: ApiService,
     private sanitizer: DomSanitizer,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {}
 
   ngOnInit(): void {
     this.getPuestos();
     this.getDataGraphics();
   }
+
 
   get searchFormControl() {
     return this.searchForm.controls;
@@ -67,13 +76,17 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   }
 
   getSelectedStation(item: any) {
-    this.searchFormControl['mesas'].reset();
+   
+    
     if (item) {
       const codigo_unico = this.getCode(item);
-      this.getMesas(codigo_unico);
-      this.tabla = false;
+      const data = { puesto: codigo_unico };
+      this.puestoSeleccionado = data.puesto
+      console.log(this.puestoSeleccionado)
+      this.getTestigos();
+      console.log(this.listTestigoAsignados)
+      this.tabla = true;
     } else {
-      this.dataTables = [];
       this.tabla = false;
     }
   }
@@ -89,17 +102,7 @@ export class VerEquipoCoordinadorComponent implements OnInit {
     }
   }
 
-  getPuestos() {
-    this.apiService.getStationsTestigo().subscribe((resp: any) => {
-      this.dataStations = resp;
-      if (this.dataStations.length > 0) {
-        this.searchForm
-          .get('puestos')
-          ?.setValue(this.dataStations[0].codigo_unico);
-        this.getSelectedStation(this.dataStations[0]);
-      }
-    });
-  }
+ 
 
   getMesas(data: any) {
     this.apiService.getTablesTestigo().subscribe((resp: any) => {
@@ -114,12 +117,36 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   }
 
   getTestigoMesa(data: any) {
-    this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
+
+    
+    
+    /*this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
+      console.log(resp)
       const { testigos } = resp;
       this.listTestigos = testigos;
-    });
+    });*/
   }
 
+ 
+
+  getTestigos() {
+    this.apiService.getTestigos().subscribe((resp: any) => {
+      const { testigos_asignados, testigos_no_asignados } = resp;
+      this.listTestigoAsignados = testigos_asignados;
+      console.log(this.listTestigoAsignados)
+      for (let testigo of this.listTestigoAsignados) {
+        this.getTables(testigo);
+      }
+      setTimeout(() => {
+        if (this.dtElement) {
+          this.dtElement.dtInstance?.then((dtInstance: DataTables.Api) => {
+            dtInstance.destroy();
+            this.dtTrigger.next(void 0); // Proporciona un valor (puede ser void 0 o cualquier otro valor)
+          });
+        }
+      });
+    });
+  }
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
@@ -128,4 +155,49 @@ export class VerEquipoCoordinadorComponent implements OnInit {
   showIframe() {
     this.showMap = !this.showMap;
   }
+
+  getTablesForTestigo(testigo: any) {
+    const testigoId = testigo.id;
+    this.apiService.getTestigo(testigoId).subscribe((resp: any) => {
+      const mesas_asignadas = resp.mesas_asignadas.map(
+        (mesa: any) => mesa.numero_mesa
+      );
+      testigo.mesas_asignadas = mesas_asignadas; // Almacena las mesas asignadas en el objeto del testigo
+    });
+  }
+
+  
+
+  getTables(testigo: any) {
+    const testigoId = testigo.id
+    this.apiService.getTestigo(testigoId).subscribe((resp: any) => {
+      if (resp.puestos_asignados.codigo_unico == this.puestoSeleccionado) {
+        const mesas_asignadas = resp.mesas_asignadas.map(
+          (mesa: any) => mesa.numero_mesa
+        );
+       
+        this.testigosMesas[testigoId] = mesas_asignadas;
+      }
+      else{
+        const newTestigos = this.listTestigoAsignados.filter((item: any) => item !== testigo);
+        this.listTestigoAsignados = newTestigos
+      }
+    });
+  }
+
+  
+
+  getPuestos() {
+    this.apiService.getStationsTestigo().subscribe((resp: any) => {
+      this.dataStations = resp;
+      if (this.dataStations.length > 0) {
+        this.searchForm
+          .get('puestos')
+          ?.setValue(this.dataStations[0].codigo_unico);
+        this.getSelectedStation(this.dataStations[0]);
+      }
+    });
+  }
+
+  
 }

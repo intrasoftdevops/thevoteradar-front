@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { Subject } from 'rxjs';
@@ -21,7 +21,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit, OnDestroy
   videosOpen: any = [];
   photosClose: any = [];
   videosClose: any = [];
-  replyForm: FormGroup = this.fb.group({
+  replyForm: UntypedFormGroup = this.fb.group({
     respuesta: ['', Validators.required],
   });
   dtOptionsIncidenciasAbiertas: DataTables.Settings = {};
@@ -31,7 +31,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit, OnDestroy
   dtElement!: any;
   notFirstTime = false;
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(private apiService: ApiService, private fb: UntypedFormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
   ngOnInit() {
     this.dataTableOptions();

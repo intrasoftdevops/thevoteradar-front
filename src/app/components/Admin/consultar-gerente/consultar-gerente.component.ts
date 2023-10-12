@@ -3,7 +3,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, UntypedFormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-consultar-gerente',
@@ -21,7 +21,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   dtOptionsGerenteNoAsignados: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
-  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService,private fb: FormBuilder) { }
+  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService,private fb: UntypedFormBuilder) { }
 
   ngOnInit() {
     this.dataTableOptions();

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-ver-puesto-supervisor',
@@ -13,7 +13,7 @@ export class VerPuestoSupervisorComponent implements OnInit {
   dataZones: any = [];
   dataStations: any = [];
   selectedStation: any = [];
-  searchForm: FormGroup = this.fb.group({
+  searchForm: UntypedFormGroup = this.fb.group({
     zonas: [null],
     puestos: [null],
   });
@@ -21,7 +21,7 @@ export class VerPuestoSupervisorComponent implements OnInit {
   dataStateStation: any = [];
   stateActual: any = {};
 
-  constructor(private apiService: ApiService, private fb: FormBuilder) {}
+  constructor(private apiService: ApiService, private fb: UntypedFormBuilder) {}
 
   ngOnInit(): void {
     this.getZonas();

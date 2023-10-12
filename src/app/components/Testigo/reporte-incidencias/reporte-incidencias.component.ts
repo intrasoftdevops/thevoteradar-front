@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
@@ -18,7 +18,7 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   categoryIncidencias: any = [];
   mesas_asignadas: any = [];
   dataIncidencias: any = [];
-  createForm: FormGroup = this.fb.group({
+  createForm: UntypedFormGroup = this.fb.group({
     categoria_id: [null, Validators.required],
     descripcion: ['', Validators.required],
     codigo_mesa: [null, Validators.required],
@@ -27,7 +27,7 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   dtOptionsIncidencias: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private fb: UntypedFormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit(): void {
     this.dataTableOptions();

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 
@@ -18,7 +18,7 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
   listReportes: any = [];
   photos: any = [];
   totalVotosMesas: number = 0;
-  searchForm: FormGroup = this.fb.group({
+  searchForm: UntypedFormGroup = this.fb.group({
     puestos: [null],
   });
   dtOptionsVotosReportados: DataTables.Settings = {};
@@ -27,7 +27,7 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
   @ViewChild(DataTableDirective) dtElement!: DataTableDirective;
   notFirstTime = false;
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private chRef: ChangeDetectorRef) { }
+  constructor(private apiService: ApiService, private fb: UntypedFormBuilder, private chRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.dataTableOptions();

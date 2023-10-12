@@ -1,6 +1,31 @@
 <div class="container py-5">
-  <div class="bg-primary py-3 px-5 text-white">
-    <h4>Consultar testigo</h4>
+  <div class="card">
+    <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
+      <h4>Consultar testigos</h4>
+    </div>
+    <div class="card-body">
+      <form
+        class="row m-4 d-flex justify-content-center align-items-center align-items-center"
+        [formGroup]="searchForm"
+      >
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="fw-bold form-label">Testigos por puesto</label>
+          <ng-select
+            [items]="dataStations"
+            [searchable]="false"
+            class="custom-select rounded"
+            bindLabel="nombre"
+            (change)="getSelectedStation($event)"
+            bindValue="codigo_unico"
+            notFoundText="No hay información disponible"
+            placeholder="Seleccione puesto"
+            formControlName="puestos"
+            [clearAllText]="'Borrar todo'"
+          >
+          </ng-select>
+        </div>
+      </form>
+    </div>
   </div>
   <ul class="nav nav-tabs mt-5" id="myTab">
     <li class="nav-item" id="tab">
@@ -45,9 +70,9 @@
               <thead class="text-dark align-middle">
                 <tr>
                   <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col">TELÉFONO</th>
+                  <th scope="col">TELEFONO</th>
                   <th scope="col">CORREO ELECTRÓNICO</th>
-                  <th scope="col">MESAS</th>
+                  <th scope="col">MESA</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -62,7 +87,11 @@
                   <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
                   <td>{{ testigo.telefono }}</td>
                   <td>{{ testigo.email }}</td>
-                  <td>{{ listTables[index] }}</td>
+                  <td>
+                    <span *ngFor="let mesa of testigosMesas[testigo.id]; let i = index; let last = last">
+                      {{ mesa }}{{ i < testigosMesas[testigo.id].length - 1 ? ', ' : '' }}
+                    </span>
+                  </td>
                   <td>
                     <div
                       class="d-grid gap-1 d-md-flex justify-content-center align-items-center"
@@ -72,7 +101,7 @@
                         data-bs-toggle="modal"
                         data-bs-target="#testigo"
                         (click)="
-                          testigoActualSeleccionado(testigo, listTables[index])
+                          testigoActualSeleccionado(testigo,testigosMesas[testigo.id])
                         "
                         data-bs-placement="top"
                         title="Ver más"

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 
@@ -14,7 +14,7 @@ export class CrearSupervisorComponent implements OnInit {
   dataZones: any = [];
   dataMunicipals: any = [];
 
-  createForm: FormGroup = this.fb.group({
+  createForm: UntypedFormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     genero_id: [null, Validators.required],
@@ -26,7 +26,7 @@ export class CrearSupervisorComponent implements OnInit {
     zonas: [[]],
   });
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(private apiService: ApiService, private fb: UntypedFormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
   ngOnInit() {
     this.getMunicipalGerente();

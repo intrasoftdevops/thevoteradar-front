@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
 import { ApiService } from '../../../services/api/api.service';
@@ -21,23 +21,23 @@ export class CambiarRolGerenteComponent implements OnInit {
   dataGerente: any = {};
   dataDepartmentGerente: any = [];
   dataMunicipalsGerente: any;
-  updateForm: FormGroup = this.fb.group({
+  updateForm: UntypedFormGroup = this.fb.group({
     nuevo_rol: [null],
   });
-  updateFormSupervisor: FormGroup = this.fb.group({
+  updateFormSupervisor: UntypedFormGroup = this.fb.group({
     nuevo_rol: [null, Validators.required],
     departamento: [null, Validators.required],
     municipio: [null, Validators.required],
     zonas: [null],
   });
-  updateFormCoordinador: FormGroup = this.fb.group({
+  updateFormCoordinador: UntypedFormGroup = this.fb.group({
     nuevo_rol: [null, Validators.required],
     departamento: [null, Validators.required],
     municipio: [null, Validators.required],
     zona: [null, Validators.required],
     puestos: [null],
   });
-  updateFormTestigo: FormGroup = this.fb.group({
+  updateFormTestigo: UntypedFormGroup = this.fb.group({
     nuevo_rol: [null, Validators.required],
     departamento: [null, Validators.required],
     municipio: [null, Validators.required],
@@ -49,7 +49,7 @@ export class CambiarRolGerenteComponent implements OnInit {
   idGerente: any;
   rolActual: any;
 
-  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService, private localData: LocalDataService, private activatedRoute: ActivatedRoute, private alertService: AlertService) { }
+  constructor(private fb: UntypedFormBuilder, private router: Router, private apiService: ApiService, private localData: LocalDataService, private activatedRoute: ActivatedRoute, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getGerente();

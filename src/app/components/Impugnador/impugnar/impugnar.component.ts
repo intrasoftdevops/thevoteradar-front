@@ -7,7 +7,7 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import Swal from 'sweetalert2';
@@ -33,14 +33,14 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   dataImpugnarActual: any = {};
   dataNoImpugnarActual: any = {};
   dataCategoriaImpugnacion: any = [];
-  createForm: FormGroup = this.fb.group({
+  createForm: UntypedFormGroup = this.fb.group({
     categoria_impugnacion: [null, Validators.required],
     codigo_puesto: [''],
     mesa: [''],
     candidato: [''],
     numero_votos: [''],
   });
-  searchForm: FormGroup = this.fb.group({
+  searchForm: UntypedFormGroup = this.fb.group({
     candidato: [null],
   });
   indexRevisar: any;
@@ -55,7 +55,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   constructor(
     private apiService: ApiService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private alertService: AlertService,
     private customValidator: CustomValidationService,
     private sanitizer: DomSanitizer,

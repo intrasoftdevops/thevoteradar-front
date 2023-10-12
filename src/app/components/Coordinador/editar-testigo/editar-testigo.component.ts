@@ -3,7 +3,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import Swal from 'sweetalert2';
 import { filter } from 'rxjs';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
@@ -19,7 +19,7 @@ export class EditarTestigoComponent implements OnInit {
   dataTables: any = [];
   idTestigo: any;
   subscriber: any;
-  updateForm: FormGroup = this.fb.group({
+  updateForm: UntypedFormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     genero_id: ['', Validators.required],
@@ -33,7 +33,7 @@ export class EditarTestigoComponent implements OnInit {
   });
 
   constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
-    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService, private localData: LocalDataService) { }
+    private router: Router, private fb: UntypedFormBuilder, private customValidator: CustomValidationService, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getTestigo();
@@ -85,6 +85,7 @@ export class EditarTestigoComponent implements OnInit {
     this.idTestigo = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getTestigo(this.idTestigo).subscribe((resp: any) => {
       const { testigo, puestos_asignados, mesas_asignadas } = resp;
+      console.log(puestos_asignados)
 
       this.updateForm.get('nombres')?.setValue(testigo.nombres);
       this.updateForm.get('apellidos')?.setValue(testigo.apellidos);
@@ -95,7 +96,7 @@ export class EditarTestigoComponent implements OnInit {
       this.updateForm.get('numero_documento')?.setValue(testigo.numero_documento);
       this.updateForm.get('telefono')?.setValue(testigo.telefono);
       this.updateForm.get('mesas')?.setValue(this.getCodeMunicipals(mesas_asignadas));
-      this.updateForm.get('puesto')?.setValue(this.getCodeMunicipals(puestos_asignados)[0]);
+      this.updateForm.get('puesto')?.setValue(puestos_asignados.codigo_unico);
 
     })
   }
@@ -118,6 +119,7 @@ export class EditarTestigoComponent implements OnInit {
   getCodeMunicipals(data: any) {
     return data.map((seletedData: any) => {
       const { codigo_unico } = seletedData;
+      console.log(codigo_unico)
       return codigo_unico;
     });
   }

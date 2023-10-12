@@ -23,36 +23,22 @@
           class="row m-4 d-flex justify-content-center"
           [formGroup]="searchForm"
         >
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Equipo por puesto</label>
-            <ng-select
-              [items]="dataStations"
-              class="custom-select rounded"
-              bindLabel="nombre"
-              bindValue="codigo_unico"
-              (change)="getSelectedStation($event)"
-              notFoundText="No hay información disponible"
-              placeholder="Seleccione puesto"
-              formControlName="puestos"
-              [clearAllText]="'Borrar todo'"
-            >
-            </ng-select>
-          </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Testigos por mesa</label>
-            <ng-select
-              [items]="dataTables"
-              class="custom-select rounded"
-              bindLabel="numero_mesa"
-              bindValue="codigo_unico"
-              (change)="getSelectedTable($event)"
-              notFoundText="No hay información disponible"
-              placeholder="Seleccione mesa"
-              formControlName="mesas"
-              [clearAllText]="'Borrar todo'"
-            >
-            </ng-select>
-          </div>
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="fw-bold form-label">Testigos por puesto</label>
+          <ng-select
+            [items]="dataStations"
+            [searchable]="false"
+            class="custom-select rounded"
+            bindLabel="nombre"
+            (change)="getSelectedStation($event)"
+            bindValue="codigo_unico"
+            notFoundText="No hay información disponible"
+            placeholder="Seleccione puesto"
+            formControlName="puestos"
+            [clearAllText]="'Borrar todo'"
+          >
+          </ng-select>
+        </div>
         </form>
       </div>
     </div>
@@ -63,7 +49,7 @@
       <div class="card-body">
         <div
           class="table-responsive"
-          *ngIf="listTestigos.length > 0; else other_content"
+          
         >
           <table class="table table-curved text-center">
             <thead class="text-dark">
@@ -72,16 +58,29 @@
                 <th scope="col" class="d-none d-md-table-cell">
                   CORREO ELECTRÓNICO
                 </th>
-                <th scope="col">TELÉFONO</th>
+                <th scope="col">IDENTIFICACION</th>
+
+                <th scope="col">MESA</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let testigo of listTestigos" class="bg-white">
-                <td scope="row">
-                  {{ testigo.nombres }} {{ testigo.apellidos }}
+              <tr
+                class="bg-white"
+                *ngFor="
+                  let testigo of listTestigoAsignados;
+                  let index = index
+                "
+              >
+                <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
+                <td>{{ testigo.email }}</td>
+                <td>{{ testigo.numero_documento }}</td>
+                <td>
+                  <span *ngFor="let mesa of testigosMesas[testigo.id]; let i = index; let last = last">
+                    {{ mesa }}{{ i < testigosMesas[testigo.id].length - 1 ? ', ' : '' }}
+                  </span>
                 </td>
-                <td class="d-none d-md-table-cell">{{ testigo.email }}</td>
-                <td>{{ testigo.telefono }}</td>
+                
+                
               </tr>
             </tbody>
           </table>
