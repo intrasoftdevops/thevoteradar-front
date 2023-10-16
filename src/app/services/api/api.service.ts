@@ -21,7 +21,7 @@ export class ApiService {
   }
 
   createGerente(data: any) {
-    return this.http.post(this._URL + "/crear-gerente", data, { headers: this.getHeaders() });
+    return this.http.post(this._URL + "/crear-gerente6", data, { headers: this.getHeaders() });
   }
 
   getGerente(id: any) {

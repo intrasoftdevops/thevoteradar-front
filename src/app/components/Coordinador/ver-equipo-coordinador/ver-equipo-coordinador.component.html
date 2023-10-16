@@ -23,22 +23,22 @@
           class="row m-4 d-flex justify-content-center"
           [formGroup]="searchForm"
         >
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Testigos por puesto</label>
-          <ng-select
-            [items]="dataStations"
-            [searchable]="false"
-            class="custom-select rounded"
-            bindLabel="nombre"
-            (change)="getSelectedStation($event)"
-            bindValue="codigo_unico"
-            notFoundText="No hay información disponible"
-            placeholder="Seleccione puesto"
-            formControlName="puestos"
-            [clearAllText]="'Borrar todo'"
-          >
-          </ng-select>
-        </div>
+          <div class="form-group col-md-6 col-lg-4 pt-2">
+            <label class="fw-bold form-label">Testigos por puesto</label>
+            <ng-select
+              [items]="dataStations"
+              [searchable]="false"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              (change)="getSelectedStation($event)"
+              bindValue="codigo_unico"
+              notFoundText="No hay información disponible"
+              placeholder="Seleccione puesto"
+              formControlName="puestos"
+              [clearAllText]="'Borrar todo'"
+            >
+            </ng-select>
+          </div>
         </form>
       </div>
     </div>
@@ -47,10 +47,7 @@
         <h4>Testigos</h4>
       </div>
       <div class="card-body">
-        <div
-          class="table-responsive"
-          
-        >
+        <div class="table-responsive">
           <table class="table table-curved text-center">
             <thead class="text-dark">
               <tr>
@@ -66,21 +63,23 @@
             <tbody>
               <tr
                 class="bg-white"
-                *ngFor="
-                  let testigo of listTestigoAsignados;
-                  let index = index
-                "
+                *ngFor="let testigo of listTestigoAsignados; let index = index"
               >
                 <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
                 <td>{{ testigo.email }}</td>
                 <td>{{ testigo.numero_documento }}</td>
                 <td>
-                  <span *ngFor="let mesa of testigosMesas[testigo.id]; let i = index; let last = last">
-                    {{ mesa }}{{ i < testigosMesas[testigo.id].length - 1 ? ', ' : '' }}
+                  <span
+                    *ngFor="
+                      let mesa of testigo.mesas;
+                      let i = index;
+                      let last = last
+                    "
+                  >
+                    {{ mesa.numero_mesa
+                    }}{{ i < testigo.mesas.length - 1 ? ", " : "" }}
                   </span>
                 </td>
-                
-                
               </tr>
             </tbody>
           </table>

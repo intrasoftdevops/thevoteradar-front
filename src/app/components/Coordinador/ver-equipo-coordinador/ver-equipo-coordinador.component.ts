@@ -133,10 +133,9 @@ export class VerEquipoCoordinadorComponent implements OnInit {
     this.apiService.getTestigos().subscribe((resp: any) => {
       const { testigos_asignados, testigos_no_asignados } = resp;
       this.listTestigoAsignados = testigos_asignados;
-      console.log(this.listTestigoAsignados)
-      for (let testigo of this.listTestigoAsignados) {
-        this.getTables(testigo);
-      }
+      // for (let testigo of this.listTestigoAsignados) {
+      //   this.getTables(testigo);
+      // }
       setTimeout(() => {
         if (this.dtElement) {
           this.dtElement.dtInstance?.then((dtInstance: DataTables.Api) => {
