@@ -50,39 +50,12 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
 
   getTestigos() {
     this.apiService.getTestigos().subscribe((resp: any) => {
-      console.log(resp)
       const { testigos_asignados, testigos_no_asignados } = resp;
       this.listTestigoAsignados = testigos_asignados;
       this.listTestigoNoAsignados = testigos_no_asignados;
-      for (let testigo of this.listTestigoAsignados) {
-        this.getTables(testigo);
-      }
       setTimeout(() => {
-        if (this.dtElement) {
-          this.dtElement.dtInstance?.then((dtInstance: DataTables.Api) => {
-            dtInstance.destroy();
-            this.dtTrigger.next(void 0); // Proporciona un valor (puede ser void 0 o cualquier otro valor)
-          });
-        }
+        this.dtTrigger.next(void 0);
       });
-    });
-  }
-
-  getTables(testigo: any) {
-    const testigoId = testigo.id
-    this.apiService.getTestigo(testigoId).subscribe((resp: any) => {
-      console.log(resp )
-      if (resp.puestos_asignados.codigo_unico == this.puestoSeleccionado) {
-        const mesas_asignadas = resp.mesas_asignadas.map(
-          (mesa: any) => mesa.numero_mesa
-        );
-       
-        this.testigosMesas[testigoId] = mesas_asignadas;
-      }
-      else{
-        const newTestigos = this.listTestigoAsignados.filter((item: any) => item !== testigo);
-        this.listTestigoAsignados = newTestigos
-      }
     });
   }
 
@@ -99,26 +72,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   dataTableOptions() {
     this.dtOptionsTestigoAsignados = {
       processing: true,
-      pageLength: 10,
-      columns: [
-        {
-          orderable: true,
-        },
-        {
-          orderable: true,
-          className: 'd-none d-lg-table-cell',
-        },
-        {
-          orderable: true,
-          className: 'd-none d-lg-table-cell',
-        },
-        {
-          orderable: true,
-        },
-        {
-          orderable: false,
-        },
-      ],
+      pageLength: 20,
       responsive: true,
       language: {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
@@ -126,23 +80,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
     };
     this.dtOptionsTestigoNoAsignados = {
       processing: true,
-      pageLength: 10,
-      columns: [
-        {
-          orderable: true,
-        },
-        {
-          orderable: true,
-          className: 'd-none d-lg-table-cell',
-        },
-        {
-          orderable: true,
-          className: 'd-none d-lg-table-cell',
-        },
-        {
-          orderable: false,
-        },
-      ],
+      pageLength: 20,
       responsive: true,
       language: {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
@@ -163,7 +101,6 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   }
 
   getSelectedStation(item: any) {
-   
     
     if (item) {
       const codigo_unico = this.getCode(item);

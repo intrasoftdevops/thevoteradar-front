@@ -48,14 +48,19 @@
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-curved text-center">
-            <thead class="text-dark">
+          <table
+            datatable
+            [dtOptions]="dtOptions"
+            [dtTrigger]="dtTrigger"
+            class="table text-center align-middle w-100"
+          >
+            <thead class="text-dark align-middle">
               <tr>
                 <th scope="col">NOMBRE COMPLETO</th>
                 <th scope="col" class="d-none d-md-table-cell">
                   CORREO ELECTRÓNICO
                 </th>
-                <th scope="col">IDENTIFICACION</th>
+                <th scope="col">IDENTIFICACIÓN</th>
 
                 <th scope="col">MESA</th>
               </tr>

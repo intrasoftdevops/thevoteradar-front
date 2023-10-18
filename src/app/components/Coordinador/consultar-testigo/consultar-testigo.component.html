@@ -85,11 +85,20 @@
                   "
                 >
                   <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
-                  <td>{{ testigo.telefono }}</td>
+                  <td>
+                    {{ testigo.telefono ? testigo.telefono : "Sin registro" }}
+                  </td>
                   <td>{{ testigo.email }}</td>
                   <td>
-                    <span *ngFor="let mesa of testigosMesas[testigo.id]; let i = index; let last = last">
-                      {{ mesa }}{{ i < testigosMesas[testigo.id].length - 1 ? ', ' : '' }}
+                    <span
+                      *ngFor="
+                        let mesa of testigo.mesas;
+                        let i = index;
+                        let last = last
+                      "
+                    >
+                      {{ mesa.numero_mesa
+                      }}{{ i < testigo.mesas.length - 1 ? ", " : "" }}
                     </span>
                   </td>
                   <td>
@@ -101,7 +110,10 @@
                         data-bs-toggle="modal"
                         data-bs-target="#testigo"
                         (click)="
-                          testigoActualSeleccionado(testigo,testigosMesas[testigo.id])
+                          testigoActualSeleccionado(
+                            testigo,
+                            testigosMesas[testigo.id]
+                          )
                         "
                         data-bs-placement="top"
                         title="Ver más"
