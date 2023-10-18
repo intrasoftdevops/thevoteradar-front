@@ -1,6 +1,29 @@
 <div class="container py-4">
-  <div class="ratio mt-4" style="--bs-aspect-ratio: 50%">
-    <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
+  <div class="row gy-4">
+    <div class="col-lg-6 d-flex align-items-stretch">
+      <div class="card text-dark w-100">
+        <div class="bg-primary py-3 px-5 text-white">
+          <h4 _ngcontent-utf-c133="" class="m-0">Bienvenido supervisor</h4>
+        </div>
+        <div class="card-body">
+          <div class="m-4">
+            <p>
+              <span class="fw-bolder">Departamento: </span
+              ><span> {{departamento_asignado}}</span>
+            </p>
+            <p>
+              <span class="fw-bolder">Municipio: </span><span> {{municipio_asignado}}</span>
+            </p>
+            <p><span class="fw-bolder">Zona: </span><span> {{zona_asignada}}</span></p>\
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 d-flex align-items-stretch">
+      <div class="ratio ratio-16x9">
+        <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
   </div>
 </div>
 <div class="toast-container">
