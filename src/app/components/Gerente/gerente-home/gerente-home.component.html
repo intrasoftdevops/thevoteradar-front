@@ -12,13 +12,14 @@
               ><span> {{ departamento_asignado }}</span>
             </p>
             <p>
-              <span class="fw-bolder">Municipio: </span><span> {{ municipio_asignado }}</span>
+              <span class="fw-bolder">Municipio: </span><span> {{ municipio_asignado.length }}</span>
             </p>
+            <ul *ngFor="let municipio of municipio_asignado"><li>{{ municipio }}</li></ul>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-lg-6 d-flex align-items-stretch">
+    <div class="col-lg-6 align-items-stretch">
       <div class="ratio ratio-16x9">
         <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
       </div>
