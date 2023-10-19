@@ -8,18 +8,15 @@
         <div class="card-body">
           <div class="m-4">
             <p>
-              <span class="fw-bolder">Departamento: </span
-              ><span> {{departamento_asignado}}</span>
+              <span class="fw-bolder">Municipio: </span><span> {{ municipio_asignado }}</span>
             </p>
-            <p>
-              <span class="fw-bolder">Municipio: </span><span> {{municipio_asignado}}</span>
-            </p>
-            <p><span class="fw-bolder">Zona: </span><span> {{zona_asignada}}</span></p>\
+            <p><span class="fw-bolder">Zona: </span><span> {{ zona_asignada.length }}</span></p>
+            <ul *ngFor="let zona of zona_asignada"><li>{{ zona }}</li></ul>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-lg-6 d-flex align-items-stretch">
+    <div class="col-lg-6 align-items-stretch">
       <div class="ratio ratio-16x9">
         <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
       </div>

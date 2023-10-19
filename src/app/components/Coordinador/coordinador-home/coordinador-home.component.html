@@ -15,13 +15,14 @@
               <span class="fw-bolder">Municipio: </span><span> {{municipio_asignado}}</span>
             </p>
             <p><span class="fw-bolder">Zona: </span><span> {{zona_asignada}}</span></p>
-            <p><span class="fw-bolder">Puestos: </span><span> {{ puestos_asignados }}</span></p>
+            <p><span class="fw-bolder">Puestos: </span><span>{{ puestos_asignados.length }}</span></p>
+            <ul *ngFor="let puesto of puestos_asignados"><li>{{ puesto }}</li></ul>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="col-lg-6 d-flex align-items-stretch"
+      class="col-lg-6 align-items-stretch"
       *ngFor="let video of sanitizedVideos"
     >
       <div class="ratio ratio-16x9">
