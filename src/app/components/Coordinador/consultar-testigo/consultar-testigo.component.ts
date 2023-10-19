@@ -24,9 +24,9 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   dataStations: any = [];
   tabla: boolean = false;
   puestoSeleccionado = '';
-
-  @ViewChild(DataTableDirective, { static: false })
-  dtElement: DataTableDirective | undefined;
+  @ViewChild(DataTableDirective)
+  dtElement!: any;
+  notFirstTime = false;
 
   constructor(
     private apiService: ApiService,
@@ -51,11 +51,29 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   getTestigos() {
     this.apiService.getTestigos().subscribe((resp: any) => {
       const { testigos_asignados, testigos_no_asignados } = resp;
-      this.listTestigoAsignados = testigos_asignados;
-      this.listTestigoNoAsignados = testigos_no_asignados;
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
+      this.listTestigoAsignados = testigos_asignados.filter((testigo: any) => {
+        // Filtrar el array mesas del testigo para que solo incluya las mesas con el código de puesto de votación deseado
+        testigo.mesas = testigo.mesas.filter(
+          (mesa: any) => mesa.codigo_puesto_votacion === this.puestoSeleccionado
+        );
+        // Solo incluir el testigo si tiene al menos una mesa con el código de puesto de votación deseado
+        return testigo.mesas.length > 0;
       });
+      this.listTestigoNoAsignados = testigos_no_asignados;
+      this.renderer();
+      this.notFirstTime = true;
+    });
+  }
+
+  renderer() {
+    if (this.notFirstTime) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.draw();
+        dtInstance.destroy();
+      });
+    }
+    setTimeout(() => {
+      this.dtTrigger.next(void 0);
     });
   }
 
@@ -71,6 +89,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
 
   dataTableOptions() {
     this.dtOptionsTestigoAsignados = {
+      destroy: true,
       processing: true,
       pageLength: 20,
       responsive: true,
@@ -79,6 +98,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
       },
     };
     this.dtOptionsTestigoNoAsignados = {
+      destroy: true,
       processing: true,
       pageLength: 20,
       responsive: true,
@@ -101,11 +121,10 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   }
 
   getSelectedStation(item: any) {
-    
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { puesto: codigo_unico };
-      this.puestoSeleccionado = data.puesto
+      this.puestoSeleccionado = data.puesto;
       this.getTestigos();
       this.tabla = true;
     } else {

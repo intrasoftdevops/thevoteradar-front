@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
 import { FormGroup, UntypedFormBuilder } from '@angular/forms';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-consultar-gerente',
@@ -20,6 +21,9 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   dtOptionsGerenteAsignados: DataTables.Settings = {};
   dtOptionsGerenteNoAsignados: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChild(DataTableDirective)
+  dtElement!: any;
+  notFirstTime = false;
 
   constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService,private fb: UntypedFormBuilder) { }
 
@@ -47,9 +51,20 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
           this.listMunicipals.push(municipios['0']);
         }
       }
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
+      this.renderer();
+      this.notFirstTime = true;
+    });
+  }
+
+  renderer() {
+    if (this.notFirstTime) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.draw();
+        dtInstance.destroy();
       });
+    }
+    setTimeout(() => {
+      this.dtTrigger.next(void 0);
     });
   }
 
@@ -77,6 +92,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
 
   dataTableOptions() {
     this.dtOptionsGerenteAsignados = {
+      destroy:true,
       processing: true,
       pageLength: 10,
       columns: [{
@@ -101,6 +117,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
       }
     };
     this.dtOptionsGerenteNoAsignados = {
+      destroy:true,
       processing: true,
       pageLength: 10,
       columns: [{

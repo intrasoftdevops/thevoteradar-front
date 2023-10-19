@@ -1,8 +1,9 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-ver-equipo-coordinador',
@@ -26,6 +27,9 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
   puestoSeleccionado = '';
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {};
+  @ViewChild(DataTableDirective)
+  dtElement!: any;
+  notFirstTime = false;
 
   constructor(private apiService: ApiService, private fb: UntypedFormBuilder) {
     this.searchForm = this.fb.group({
@@ -37,6 +41,7 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.getPuestos();
     this.dtOptions = {
+      destroy:true,
       processing: true,
       pageLength: 20,
       language: { url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json' },
@@ -56,8 +61,8 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
       const codigo_unico = this.getCode(item);
       const data = { puesto: codigo_unico };
       this.puestoSeleccionado = data.puesto;
+      console.log(this.puestoSeleccionado)
       this.getTestigos();
-      console.log(this.listTestigoAsignados);
       this.tabla = true;
     } else {
       this.tabla = false;
@@ -87,10 +92,26 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
   getTestigos() {
     this.apiService.getTestigos().subscribe((resp: any) => {
       const { testigos_asignados, testigos_no_asignados } = resp;
-      this.listTestigoAsignados = testigos_asignados;
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
+      this.listTestigoAsignados = testigos_asignados.filter((testigo: any) => {
+        // Filtrar el array mesas del testigo para que solo incluya las mesas con el código de puesto de votación deseado
+        testigo.mesas = testigo.mesas.filter((mesa: any) => mesa.codigo_puesto_votacion === this.puestoSeleccionado);
+        // Solo incluir el testigo si tiene al menos una mesa con el código de puesto de votación deseado
+        return testigo.mesas.length > 0;
+    });
+      this.renderer();
+      this.notFirstTime = true;
+    });
+  }
+
+  renderer() {
+    if (this.notFirstTime) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.draw();
+        dtInstance.destroy();
       });
+    }
+    setTimeout(() => {
+      this.dtTrigger.next(void 0);
     });
   }
 
