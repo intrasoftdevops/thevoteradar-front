@@ -255,7 +255,7 @@
           title="YouTube video"
           allowfullscreen
         ></iframe>
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-md-6 col-lg-4 pb-2 my-auto">
             <span class="fw-bold">Departamento: </span
             ><span> {{ dataRevisarActual.departamento }}</span>
@@ -280,7 +280,7 @@
             <span class="fw-bold">N° Votos: </span
             ><span> {{ dataRevisarActual.numero_votos }}</span>
           </div>
-        </div>
+        </div> -->
         <form
           class="form-group col-md-6 col-lg-4 pt-2"
           [formGroup]="createForm"
@@ -289,7 +289,25 @@
             <span class="fw-bold">Categoría de impugnación</span>
             <span class="text-danger">*</span>
           </label>
-          <ng-select
+          <div class="form-check" *ngFor="let categoria of dataCategoriaImpugnacion">
+            <input 
+              class="form-check-input" 
+              type="radio"
+              [name]="'categoria_impugnacion'" 
+              [value]="categoria.id"
+              formControlName="categoria_impugnacion"
+            >
+            <label class="form-check-label">
+              {{ categoria.nombre }}
+              <span
+                class="text-warning"
+                *ngIf="categoria.id === createForm.value.categoria_impugnacion"
+                (click)="createForm.get('categoria_impugnacion')?.setValue(null)"
+              >(Limpiar)
+              </span>
+            </label>
+          </div>
+          <!-- <ng-select
             [items]="dataCategoriaImpugnacion"
             [searchable]="false"
             class="custom-select rounded"
@@ -299,15 +317,15 @@
             formControlName="categoria_impugnacion"
             placeholder="Seleccione categoría"
           >
-          </ng-select>
+          </ng-select> -->
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="noImpugnar()">
+        <!-- <button type="button" class="btn btn-secondary" (click)="noImpugnar()">
           No impugnar
-        </button>
+        </button> -->
         <button type="button" class="btn btn-primary" (click)="impugnar()">
-          Impugnar
+          Siguiente
         </button>
       </div>
     </div>
