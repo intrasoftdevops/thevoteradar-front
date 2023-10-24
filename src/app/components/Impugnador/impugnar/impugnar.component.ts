@@ -39,6 +39,9 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     mesa: [''],
     candidato: [''],
     numero_votos: [''],
+    pagina: [''],
+    observaciones: ['']
+
   });
   searchForm: UntypedFormGroup = this.fb.group({
     candidato: [null],

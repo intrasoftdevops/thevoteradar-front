@@ -288,15 +288,32 @@
                     </span>
                   </label>
                 </div>
+                <div class="form-group py-1">
+                  <label>
+                    <strong>Página</strong>
+                  </label>
+                  <input 
+                    class="form-control" 
+                    type="number" 
+                    placeholder="Número de página" 
+                    formControlName="pagina"
+                  >
+                </div>
+                <div class="form-group">
+                  <label>
+                    <strong>Observaciones</strong>
+                  </label>
+                  <textarea formControlName="observaciones" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group py-3">
+                  <button type="button" class="btn btn-primary" (click)="impugnar()">
+                    Siguiente
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="impugnar()">
-          Siguiente
-        </button>
       </div>
     </div>
   </div>
