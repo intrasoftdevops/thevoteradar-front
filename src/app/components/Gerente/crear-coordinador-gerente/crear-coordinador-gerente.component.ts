@@ -102,7 +102,7 @@ export class CrearCoordinadorGerenteComponent implements OnInit {
   getZonas(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
       this.dataZones = resp.filter(
-        (dataZone: any) => dataZone.codigo_municipio_votacion == data
+        (dataZone: any) => dataZone.codigo_municipio_votacion == data.trim()
       );
     });
   }
