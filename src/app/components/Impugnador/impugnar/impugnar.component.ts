@@ -55,6 +55,11 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   dtTrigger2: Subject<any> = new Subject<any>();
   dtTrigger3: Subject<any> = new Subject<any>();
   notFirstTime = false;
+  nombreCoordinador: any
+  nombreCliente: any
+  actual: any = 0
+  categoriaImpugnacion:any = ''
+  pagePDF:any = 0
 
   constructor(
     private apiService: ApiService,
@@ -66,9 +71,29 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.dataTableOptions();
+
+    
+
+
+    //this.dataTableOptions();
     this.getInteresesCandidato();
-    this.getCategoriaImpugnacion();
+    this.getNameUser()
+    this.getCliente()
+    const data = 0
+    this.getImpugnaciones(data)
+    this.getCategoriaImpugnacion()
+  }
+
+  getNameUser() {
+    this.apiService.getUser().subscribe((resp: any) => {
+      this.nombreCoordinador = resp.nombres + ' ' + resp.apellidos
+    })
+  }
+
+  getCliente() {
+    this.apiService.getCliente().subscribe((resp:any)=>{
+      this.nombreCliente = resp.nombres + ' ' + resp.apellidos
+    })
   }
 
   ngOnDestroy() {
@@ -96,6 +121,8 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     }
   }
 
+
+
   getInteresesCandidato() {
     this.apiService.getInteresesCandidato().subscribe((resp: any) => {
       this.dataCandidatos = resp;
@@ -115,71 +142,92 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
       this.dataRevisar = resp.reportes_no_revisados;
-      this.dataImpugnar = resp.reportes_revisados;
-      this.dataNoImpugnados = resp.reportes_no_impugnados;
       this.renderer();
       this.notFirstTime = true;
+      this.ModalRevisarActual(this.dataRevisar[this.actual])
+      console.log(resp)
     });
   }
 
   getCategoriaImpugnacion() {
-    this.apiService.getCategoriaImpugnacion().subscribe((resp: any) => {
-      this.dataCategoriaImpugnacion = resp;
-    });
+   this.apiService.getCategoriaImpugnacion().subscribe((resp:any)=>{
+    this.categoriaImpugnacion = resp
+    var inicio = localStorage.getItem('login');
+
+    if(inicio == 'true'){
+      this.successAlert('Tu objetivo es buscar: ' + this.categoriaImpugnacion.nombre)
+      localStorage.setItem('login', 'false');
+
+    }
+
+    if(this.categoriaImpugnacion.id == 9) {
+      this.pagePDF = 1000
+    }
+   })
   }
 
-  ModalRevisarActual(revisar: any) {
-    this.urlRevisar = this.sanitizer.bypassSecurityTrustResourceUrl(
-      revisar.e_14
-    );
-    this.dataRevisarActual = revisar;
-    this.createForm
-      .get('categoria_impugnacion')
-      ?.setValue(revisar.categoria_impugnacion);
-    this.createForm.get('codigo_puesto')?.setValue(revisar.codigo_puesto);
-    this.createForm.get('mesa')?.setValue(revisar.mesa);
-    this.createForm.get('candidato')?.setValue(revisar.candidato);
-    this.createForm.get('numero_votos')?.setValue(revisar.numero_votos);
+  ModalRevisarActual(porrevisar: any) {
+    this.apiService.getReporteTransmision(porrevisar.id).subscribe((resp:any)=>{
+        const revisar = resp
+        console.log(resp)
+       
+        this.dataRevisarActual = revisar;
+        this.createForm
+          .get('categoria_impugnacion')
+          ?.setValue(revisar.categoria_impugnacion);
+        this.createForm.get('codigo_puesto')?.setValue(revisar.codigo_puesto);
+        this.createForm.get('mesa')?.setValue(revisar.mesa);
+        this.createForm.get('candidato')?.setValue(revisar.candidato);
+        this.createForm.get('numero_votos')?.setValue(revisar.numero_votos);
+        this.createForm.get('pagina')?.setValue(revisar.pagina);
+        this.createForm.get('observaciones')?.setValue(revisar.observaciones);
+       
+        this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
+          resp.e_14 + '#page=' + this.pagePDF
+        )
+        
+       /*  
+       ;
+        */
+        
+
+    })
+    
   }
 
-  ModalImpugnarActual(impugnar: any) {
-    this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
-      impugnar.e_14
-    );
-    this.dataImpugnarActual = impugnar;
-  }
 
-  ModalNoImpugnarActual(noImpugnar: any) {
-    this.urlNoImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
-      noImpugnar.e_14
-    );
-    this.dataNoImpugnarActual = noImpugnar;
-  }
+
 
   impugnar() {
-    if (this.createForm.valid) {
+    this.actual++
+    const pagina: any = this.createForm.get('pagina')
+    const observaciones:any = this.createForm.get('observaciones')
+   
+    if(pagina.value === '' && observaciones.value === ''){
+      this.createForm.value['categoria_impugnacion'] = null
+    }
+    else{
+      this.createForm.value['categoria_impugnacion'] = 9
+    }
+      console.log(this.createForm.value)
       this.apiService
         .impugnar(this.dataRevisarActual.id, this.createForm.value)
         .subscribe((resp: any) => {
-          this.indexRevisar = this.dataRevisar.findIndex(
-            (i: any) => i.id === this.dataRevisarActual.id
-          );
-          this.indexRevisar !== -1 &&
-            this.dataRevisar.splice(this.indexRevisar, 1);
-          this.dataRevisar = this.dataRevisar;
-          this.dataImpugnar.push(this.dataRevisarActual);
-          if (this.dataRevisar.length > 0) {
-            var rand = Math.floor(Math.random() * this.dataRevisar.length);
-            this.ModalRevisarActual(this.dataRevisar[rand]);
-            this.successAlert(resp.message);
+          console.log(resp)
+          
+          
+          if (this.actual <= 9) {
+           
+            this.ModalRevisarActual(this.dataRevisar[this.actual]);
+     
           } else {
-            this.successAlert(resp.message);
+            window.location.reload()
+         
           }
+          this.createForm.get('pagina')?.reset();
+          this.createForm.get('observaciones')?.reset(); 
           this.renderer();
         });
-    } else {
-      this.alertService.errorAlert('Llene los campos obligatorios.');
-    }
   }
 
   noImpugnar() {
@@ -317,4 +365,23 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       this.dtTrigger3.next(void 0);
     });
   }
+
+  atras(){
+    this.actual--
+    if (this.actual <= 9) {
+      //var rand = Math.floor(Math.random() * this.dataRevisar.length);
+      this.ModalRevisarActual(this.dataRevisar[this.actual]);
+      
+    } else {
+      window.location.reload()
+    }
+    this.createForm.get('pagina')?.reset(); // Limpiar el campo de página
+    this.createForm.get('observaciones')?.reset(); // Limpiar el campo de observaciones
+    this.renderer();
+
+
+  }
+
+  
+  
 }

@@ -70,6 +70,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['adminHome']);
           }
           else if (res == true && rol == 8) {
+            localStorage.setItem('login', 'true');
             this.router.navigate(['impugnar']);
           }
           else if (res == true && rol == 9) {
