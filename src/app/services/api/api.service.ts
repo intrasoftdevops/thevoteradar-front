@@ -232,9 +232,7 @@ export class ApiService {
     return this.http.put(this._URL + "/no-impugnar/" + id, data, { headers: this.getHeaders() });
   }
 
-  getCategoriaImpugnacion() {
-    return this.http.get(this._URL + "/categorias-impugnacion", { headers: this.getHeaders() });
-  }
+
 
   changeRole(id: any, data: any) {
     return this.http.post(this._URL + "/cambiar-usuario/" + id, data, { headers: this.getHeaders() });
@@ -255,6 +253,18 @@ export class ApiService {
   logout() {
     var data: any;
     return this.http.post(this._URL + "/logout", data, { headers: this.getHeaders() });
+  }
+
+  getCliente(){
+    return this.http.get(this._URL + "/get-cliente", { headers: this.getHeaders() });
+  }
+
+  getCategoriaImpugnacion(){
+    return this.http.get(this._URL + "/get-categoria-impugnacion", { headers: this.getHeaders() });
+  }
+
+  getReporteTransmision(id:any){
+    return this.http.get(this._URL + "/get-reporte/" + id, { headers: this.getHeaders() });
   }
 
 }
