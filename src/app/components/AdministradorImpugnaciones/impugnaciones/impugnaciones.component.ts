@@ -16,11 +16,12 @@ import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 
 @Component({
-  selector: 'app-impugnar',
-  templateUrl: './impugnar.component.html',
-  styleUrls: ['./impugnar.component.scss'],
+  selector: 'app-impugnaciones',
+  templateUrl: './impugnaciones.component.html',
+  styleUrls: ['./impugnaciones.component.scss']
 })
-export class ImpugnarComponent implements OnInit, OnDestroy {
+export class ImpugnacionesComponent implements OnInit, OnDestroy {
+
   @ViewChildren(DataTableDirective)
   dtElements!: QueryList<any>;
 
@@ -125,6 +126,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   getInteresesCandidato() {
     this.apiService.getInteresesCandidato().subscribe((resp: any) => {
+     
       this.dataCandidatos = resp;
       if (this.dataCandidatos.length > 0) {
         this.dataCandidatos.map((i: any) => {
@@ -385,5 +387,6 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   }
 
   
-  
+
+
 }

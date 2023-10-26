@@ -65,6 +65,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CambiarRolGerenteComponent } from './components/Admin/cambiar-rol-gerente/cambiar-rol-gerente.component';
 import { AuthGuard } from './guards/AuthGuard/auth.guard';
 import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
+import { ImpugnacionesComponent } from './components/AdministradorImpugnaciones/impugnaciones/impugnaciones.component';
+import { HomeComponent } from './components/AdministradorImpugnaciones/home/home.component';
+import { MenuAdministradorImpugnacionesComponent } from './components/AdministradorImpugnaciones/menu-administrador-impugnaciones/menu-administrador-impugnaciones.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +84,7 @@ import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
     MenuCoordinadorComponent,
     MenuTestigoComponent,
     MenuTestigoComponent,
+    MenuAdministradorImpugnacionesComponent,
     CrearGerenteComponent,
     CrearSupervisorComponent,
     CrearCoordinadorComponent,
@@ -120,7 +124,10 @@ import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
     CrearTestigoSupervisorComponent,
     DropdownMenuUsersComponent,
     ForbiddenComponent,
-    CambiarRolGerenteComponent
+    CambiarRolGerenteComponent,
+    ImpugnacionesComponent,
+    HomeComponent,
+    MenuAdministradorImpugnacionesComponent
   ],
   imports: [
     BrowserModule,
