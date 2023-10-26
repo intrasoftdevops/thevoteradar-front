@@ -1,11 +1,12 @@
 <div class="container py-5">
   <div class="card">
     <div class="bg-primary py-3 px-5 text-white">
-      <h4>Hola {{nombreCoordinador}} ¡Vamos a proteger los votos de {{nombreCliente}}!</h4>
+      <h4>
+        Hola {{ nombreCoordinador }} ¡Vamos a proteger los votos de
+        {{ nombreCliente }}!
+      </h4>
     </div>
-    <div class="card-body">
-   
-    </div>
+    <div class="card-body"></div>
     <div [hidden]="!tabla">
       <ul class="nav nav-tabs mt-5" id="myTab">
         <li class="nav-item" id="tab">
@@ -29,65 +30,74 @@
             type="button"
             role="tab"
           >
-          POR REVISAR (TRANSMISION)
+            POR REVISAR (TRANSMISION)
           </button>
         </li>
       </ul>
       <div class="tab-content" id="myTabContent">
-        <div id='porrevisar' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-              
-                <h5 class="modal-title" id="exampleModalLabel">
-                  Busca: <strong>Error artimético</strong>
-                </h5>
-                
-        
-              
-              <div class="modal-body">
-                <iframe [src]="urlImpugnados" *ngIf="urlImpugnados" class="e-14 py-1" title="YouTube video"  allowfullscreen></iframe>
-                
-              </div>
-              <div class="col-2 w-100">
-                <form class="form-group pt-2 w-100" [formGroup]="createForm">
-                  <div class="form-group py-1">
-                    <label>
-                      <strong>Página</strong>
-                    </label>
-                    <input 
-                      class="form-control" 
-                      type="number" 
-                      placeholder="Número de página" 
-                      formControlName="pagina"
-                      id="pagina"
-                    >
-                  </div>
-                  <div class="form-group">
-                    <label>
-                      <strong>Observaciones</strong>
-                    </label>
-                    <textarea formControlName="observaciones" class="form-control" rows="3" id="observaciones"></textarea>
-                  </div>
-                  <div class="form-group py-3">
-                    <button type="button" class="btn btn-dark" (click)="atras()">
-                      Atras
-                    </button>
-                    <button type="button" class="btn btn-primary" (click)="impugnar()">
-                      Siguiente
-                    </button>
-                  </div>
-                </form>
-              </div>
-              
+        <div
+          id="porrevisar"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="d-flex py-4 justify-content-center align-items-center">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Busca: <strong>Error artimético</strong>
+            </h5>
+          </div>
+          <div class="row">
+            <div class="col-9">
+              <iframe
+                [src]="urlImpugnados"
+                *ngIf="urlImpugnados"
+                class="e-14 py-1 px-4"
+                title="YouTube video"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="col-3">
+              <form class="form-group" [formGroup]="createForm">
+                <div class="py-1">
+                  <label>
+                    <strong>Página</strong>
+                  </label>
+                  <input
+                    class="form-control"
+                    type="number"
+                    placeholder="Número de página"
+                    formControlName="pagina"
+                    id="pagina"
+                  />
+                </div>
+                <div class="py-1">
+                  <label>
+                    <strong>Observaciones</strong>
+                  </label>
+                  <textarea
+                    formControlName="observaciones"
+                    class="form-control"
+                    rows="3"
+                    id="observaciones"
+                  ></textarea>
+                </div>
+                <div class=" py-2">
+                  <button type="button" class="btn btn-dark mx-2" (click)="atras()">
+                    Atrás
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary mx-2"
+                    (click)="impugnar()"
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
-        
-    
+      </div>
+    </div>
   </div>
 </div>
-
-
-
-
-

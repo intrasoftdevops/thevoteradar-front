@@ -1,6 +1,6 @@
 <div class="container py-4">
   <div class="row gy-4">
-    <div class="col-lg-6 d-flex align-items-stretch">
+    <div class="col-lg-6 align-items-stretch">
       <div class="card text-dark w-100">
         <div class="bg-primary py-3 px-5 text-white">
           <h4 _ngcontent-utf-c133="" class="m-0">Bienvenido testigo</h4>
@@ -21,16 +21,14 @@
         </div>
       </div>
     </div>
-    <div
-      class="col-lg-6 align-items-stretch"
-      *ngFor="let video of sanitizedVideos"
-    >
-      <div class="ratio ratio-16x9">
-        <iframe [src]="video" frameborder="0" allowfullscreen></iframe>
+    <div class="col-lg-6 align-items-stretch">
+      <div class="pb-2 flex-column" *ngFor="let video of sanitizedVideos">
+        <div class="ratio ratio-16x9">
+          <iframe [src]="video" frameborder="0" allowfullscreen></iframe>
+        </div>
       </div>
     </div>
   </div>
-  <div></div>
 </div>
 <div class="toast-container">
   <ngb-toast
