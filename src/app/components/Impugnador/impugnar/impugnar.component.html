@@ -6,47 +6,19 @@
         {{ nombreCliente }}!
       </h4>
     </div>
-    <div class="card-body"></div>
-    <div [hidden]="!tabla">
-      <ul class="nav nav-tabs mt-5" id="myTab">
-        <li class="nav-item" id="tab">
-          <button
-            class="nav-link h4 px-md-5 active"
-            id="home-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#porrevisar"
-            type="button"
-            role="tab"
-          >
-            POR REVISAR (E14)
-          </button>
-        </li>
-        <li class="nav-item" id="tab">
-          <button
-            class="nav-link h4 px-md-5"
-            id="profile-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#impugnados"
-            type="button"
-            role="tab"
-          >
-            POR REVISAR (TRANSMISION)
-          </button>
-        </li>
-      </ul>
+    <div [hidden]="!tabla" class="divInfo">
       <div class="tab-content" id="myTabContent">
         <div
-          id="porrevisar"
           tabindex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
           <div class="d-flex py-4 justify-content-center align-items-center">
             <h5 class="modal-title" id="exampleModalLabel">
-              Busca: <strong>Error artimético</strong>
+              Busca: <strong>{{categoriaImpugnacion.nombre}}</strong>
             </h5>
           </div>
-          <div class="row">
+          <div class="row" *ngIf="erroresImpugnacion==true">
             <div class="col-9">
               <iframe
                 [src]="urlImpugnados"

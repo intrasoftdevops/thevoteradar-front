@@ -60,6 +60,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   actual: any = 0
   categoriaImpugnacion:any = ''
   pagePDF:any = 0
+  erroresImpugnacion:any = true
 
   constructor(
     private apiService: ApiService,
@@ -151,20 +152,21 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   getCategoriaImpugnacion() {
     this.apiService.getCategoriaImpugnacion().subscribe((resp:any)=>{
-     // this.categoriaImpugnacion = resp;
-  
+      this.categoriaImpugnacion = resp;
+      console.log(resp)
       if(this.categoriaImpugnacion.id == 9) {
         this.pagePDF = 1000;
       }
       console.log(resp);
-      
-    })
-    var inicio = localStorage.getItem('login');
+      var inicio = localStorage.getItem('login');
       if(inicio == 'true'){
         this.successAlert('Tu objetivo es buscar: ' + this.categoriaImpugnacion.nombre);
         localStorage.setItem('login', 'false');
       }
-    ;
+      
+    })
+    
+    
   }
   
 
