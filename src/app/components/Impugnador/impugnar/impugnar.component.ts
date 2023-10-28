@@ -207,9 +207,10 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     this.actual++
     const pagina: any = this.createForm.get('pagina')
     const observaciones:any = this.createForm.get('observaciones')
-   
-    if(pagina.value === '' && observaciones.value === ''){
+   console.log(pagina.value)
+    if(pagina.value === null && observaciones.value === null){
       this.createForm.value['categoria_impugnacion'] = null
+      console.log("vacio")
     }
     else{
       this.createForm.value['categoria_impugnacion'] = 9
