@@ -42,7 +42,7 @@
               bindValue="codigo_unico"
               (change)="getSelectedMunicipal($event)"
               [clearAllText]="'Borrar todo'"
-              notFoundText="No hay información disponible"
+              información="No hay información disponible"
               placeholder="Seleccione municipio"
               formControlName="municipios"
             >
@@ -58,7 +58,7 @@
               placeholder="Seleccione zona"
               (change)="getSelectedZone($event)"
               [clearAllText]="'Borrar todo'"
-              notFoundText="No hay información disponible"
+              información="No hay información disponible"
               formControlName="zonas"
             >
             </ng-select>
@@ -71,7 +71,7 @@
               bindLabel="nombre"
               bindValue="codigo_unico"
               (change)="getSelectedStation($event)"
-              notFoundText="No hay información disponible"
+              información="No hay información disponible"
               placeholder="Seleccione puesto"
               formControlName="puestos"
               [clearAllText]="'Borrar todo'"
@@ -86,7 +86,7 @@
               bindLabel="numero_mesa"
               bindValue="codigo_unico"
               (change)="getSelectedTable($event)"
-              notFoundText="No hay información disponible"
+              información="No hay información disponible"
               placeholder="Seleccione mesa"
               formControlName="mesas"
               [clearAllText]="'Borrar todo'"

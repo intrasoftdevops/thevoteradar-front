@@ -26,29 +26,41 @@ export class VerPuestoCoordinadorComponent implements OnInit {
   getSelectedStation(item: any) {
     if (item) {
       const codigo_unico = this.getCode(item);
-      const data = { puesto: codigo_unico };
+      const data = { puesto: codigo_unico, ...item };
       this.getNecesitadosPuesto(data);
       this.tabla = true;
     } else {
-      this.tabla = false;
+      this.dataStateStation = [];
+      this.dataStations.map((item: any) => {
+        const codigo_unico = this.getCode(item);
+        const data = { puesto: codigo_unico,...item };
+        this.getNecesitadosPuesto(data, true);
+      });
+      this.tabla = true;
     }
   }
 
   getPuestos() {
     this.apiService.getStationsTestigo().subscribe((resp: any) => {
       this.dataStations = resp;
-      if (this.dataStations.length > 0) {
-        this.searchForm
-          .get('puestos')
-          ?.setValue(this.dataStations[0].codigo_unico);
-        this.getSelectedStation(this.dataStations[0]);
-      }
+      this.dataStations.map((item: any) => {
+        const codigo_unico = this.getCode(item);
+        const data = { puesto: codigo_unico,...item };
+        this.getNecesitadosPuesto(data, true);
+      });
+      this.tabla = true;
     });
   }
 
-  getNecesitadosPuesto(data: any) {
+  getNecesitadosPuesto(data: any, isMultiple?: boolean) {
     this.apiService.getNecesitadosPuesto(data).subscribe((resp: any) => {
-      this.dataStateStation = [resp];
+      if (!isMultiple) {
+        this.dataStateStation = [resp];
+      } else {
+        let aux = { ...resp, ...data };
+        this.dataStateStation = [...this.dataStateStation, aux];
+      }
+      console.log(this.dataStateStation);
     });
   }
 
