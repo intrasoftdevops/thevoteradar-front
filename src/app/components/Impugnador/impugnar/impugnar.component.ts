@@ -171,6 +171,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   
 
   ModalRevisarActual(porrevisar: any) {
+
     this.apiService.getReporteTransmision(porrevisar.id).subscribe((resp:any)=>{
         const revisar = resp
         console.log(resp)

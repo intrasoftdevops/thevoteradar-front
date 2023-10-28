@@ -142,6 +142,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
+      console.log(resp)
       this.dataRevisar = resp.reportes_no_revisados;
       this.dataImpugnar = resp.reportes_revisados;
       this.dataNoImpugnados = resp.reportes_no_impugnados;
