@@ -81,7 +81,6 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     this.getNameUser()
     this.getCliente()
     const data = 0
-    this.getImpugnaciones(data)
     this.getCategoriaImpugnacion()
   }
 
@@ -144,6 +143,8 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
       this.dataRevisar = resp.reportes_no_revisados;
+      this.dataImpugnar = resp.reportes_revisados;
+      this.dataNoImpugnados = resp.reportes_no_impugnados;
       this.renderer();
       this.notFirstTime = true;
       this.ModalRevisarActual(this.dataRevisar[this.actual])
@@ -199,7 +200,12 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     
   }
 
-
+  ModalImpugnarActual(impugnar: any) {
+    this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
+      impugnar.e_14
+    );
+    this.dataImpugnarActual = impugnar;
+  }
 
 
   impugnar() {
