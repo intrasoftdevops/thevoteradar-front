@@ -62,14 +62,14 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['reporteIncidencias']);
           }
           else if (res == true && rol == 6) {
-            // TODO
             this.router.navigate(['adminHome']);
           }
           else if (res == true && rol == 7) {
             // TODO
-            this.router.navigate(['adminHome']);
+            this.router.navigate(['administrar-impugnaciones']);
           }
           else if (res == true && rol == 8) {
+            localStorage.setItem('login', 'true');
             this.router.navigate(['impugnar']);
           }
           else if (res == true && rol == 9) {

@@ -131,7 +131,7 @@ export class VerEquipoGerenteComponent implements OnInit {
   getZonas(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
       this.dataZones = resp.filter(
-        (dataZone: any) => dataZone.codigo_municipio_votacion == data
+        (dataZone: any) => dataZone.codigo_municipio_votacion == data.trim()
       );
       if (this.dataZones.length > 0) {
         this.searchForm.get('zonas')?.setValue(this.dataZones[0].codigo_unico);

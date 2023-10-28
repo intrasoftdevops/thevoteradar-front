@@ -10,8 +10,8 @@ import { LocalDataService } from 'src/app/services/localData/local-data.service'
 })
 export class GerenteHomeComponent implements OnInit {
   safeURL: any;
-  municipio_asignado = "";
   departamento_asignado = "";
+  municipio_asignado = [];
 
   constructor(private _sanitizer: DomSanitizer, private apiService: ApiService, private localData: LocalDataService) {
     this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/bNU_d8rei4k");
@@ -23,11 +23,11 @@ export class GerenteHomeComponent implements OnInit {
 
   getGerente(){
     this.apiService.getGerente(this.localData.getId()).subscribe((resp: any) => {
-      console.log(resp);
+      
+      this.departamento_asignado = resp.departamentos_asignados[0].nombre_departamento_votacion;
 
-      this.municipio_asignado = resp.municipio.nombre;
-
-      this.departamento_asignado = resp.departamento.nombre_departamento_votacion;
+      this.municipio_asignado = resp.municipios_asignados.map((municipios: any) => " " + municipios.nombre);
+      console.log(this.municipio_asignado);
       
     });
   }

@@ -10,9 +10,8 @@ import { LocalDataService } from 'src/app/services/localData/local-data.service'
 })
 export class SupervisorHomeComponent implements OnInit {
   safeURL: any;
-  zona_asignada = "";
   municipio_asignado = "";
-  departamento_asignado = "";
+  zona_asignada = [];
 
   constructor(private _sanitizer: DomSanitizer, private apiService: ApiService, private localData: LocalDataService) {
     this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl(
@@ -25,15 +24,11 @@ export class SupervisorHomeComponent implements OnInit {
   }
 
   getSupervisor(){
-    this.apiService.getCoordinador(this.localData.getId()).subscribe((resp: any) => {
+    this.apiService.getSupervisor(this.localData.getId()).subscribe((resp: any) => {
+      
+      this.municipio_asignado = resp.municipios_asignados[0].nombre;
 
-      console.log(resp);
-
-      this.zona_asignada = resp.zonas_asignadas.nombre;
-
-      this.municipio_asignado = resp.municipio.nombre;
-
-      this.departamento_asignado = resp.departamento.nombre_departamento_votacion;
+      this.zona_asignada = resp.zonas_asignadas.map((zonas: any) => " " + zonas.nombre);
 
     })
   }

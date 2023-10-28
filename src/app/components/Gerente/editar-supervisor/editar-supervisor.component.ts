@@ -90,7 +90,9 @@ export class EditarSupervisorComponent implements OnInit {
   getZoneSupervisor() {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
       if (this.updateFormControl['municipio'].value) {
-        this.dataZones = resp.filter((dataZone: any) => dataZone.codigo_municipio_votacion == this.updateFormControl['municipio'].value);
+        this.dataZones = resp.filter((dataZone: any) => 
+          dataZone.codigo_municipio_votacion.trim() === this.updateFormControl['municipio'].value.trim()
+        );
       }
     });
   }
