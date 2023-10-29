@@ -263,6 +263,10 @@ export class ApiService {
     return this.http.get(this._URL + "/get-categoria-impugnacion", { headers: this.getHeaders() });
   }
 
+  getCategoriasImpugnacion(){
+    return this.http.get(this._URL + "/categorias-impugnacion", { headers: this.getHeaders() });
+  }
+
   getReporteTransmision(id:any){
     return this.http.get(this._URL + "/get-reporte/" + id, { headers: this.getHeaders() });
   }

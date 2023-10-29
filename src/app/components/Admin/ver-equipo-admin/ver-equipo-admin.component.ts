@@ -88,7 +88,7 @@ export class VerEquipoAdminComponent implements OnInit {
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { municipio: codigo_unico };
-      this.getZonasyGerentes(data);
+      this.getZonasGerentes(data);
       this.tabla = 'gerente';
     } else {
       this.dataZones = [];
@@ -104,7 +104,7 @@ export class VerEquipoAdminComponent implements OnInit {
     if (item) {
       const codigo_unico = this.getCode(item);
       const data = { zona: codigo_unico };
-      this.getPuestosySupervisores(data);
+      this.getPuestosSupervisores(data);
       this.tabla = 'supervisor';
     } else {
       this.dataStations = [];
@@ -164,7 +164,7 @@ export class VerEquipoAdminComponent implements OnInit {
     });
   }
 
-  getZonasyGerentes(data: any) {
+  getZonasGerentes(data: any) {
     this.apiService.getZonasyGerentes(data).subscribe((resp: any) => {
       const { zonas, gerentes } = resp;
       this.dataZones = zonas;
@@ -172,7 +172,7 @@ export class VerEquipoAdminComponent implements OnInit {
     });
   }
 
-  getPuestosySupervisores(data: any) {
+  getPuestosSupervisores(data: any) {
     this.apiService.getPuestosySupervisores(data).subscribe((resp: any) => {
       const { puestos, supervisores } = resp;
       this.dataStations = puestos;

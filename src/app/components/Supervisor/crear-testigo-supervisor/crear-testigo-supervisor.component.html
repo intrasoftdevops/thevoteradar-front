@@ -124,7 +124,7 @@
             bindValue="codigo_unico"
             (change)="getSelectedZone($event)"
             [clearAllText]="'Borrar todo'"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
             placeholder="Seleccione zona"
           >
           </ng-select>
@@ -144,7 +144,7 @@
             placeholder="Seleccione puesto"
             [clearAllText]="'Borrar todo'"
             (change)="getSelectedStation($event)"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
           >
           </ng-select>
         </div>
@@ -158,7 +158,7 @@
             bindValue="codigo_unico"
             [multiple]="true"
             [clearAllText]="'Borrar todo'"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
             placeholder="Seleccione mesa(s)"
           >
           </ng-select>

@@ -139,7 +139,7 @@ export class EditarCoordinadorComponent implements OnInit {
           ?.setValue(this.getCodeMunicipals(puestos_asignados));
         this.updateForm
           .get('zona')
-          ?.setValue(this.getCodeMunicipals(zonas_asignadas)[0]);
+          ?.setValue(zonas_asignadas.codigo_unico);
       });
   }
 

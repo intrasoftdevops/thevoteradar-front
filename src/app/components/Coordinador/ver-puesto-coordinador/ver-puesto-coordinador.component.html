@@ -23,7 +23,7 @@
             bindLabel="nombre"
             (change)="getSelectedStation($event)"
             bindValue="codigo_unico"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
             placeholder="Seleccione puesto"
             formControlName="puestos"
             [clearAllText]="'Borrar todo'"
@@ -49,6 +49,18 @@
           </thead>
           <tbody>
             <tr class="bg-white" *ngFor="let state of dataStateStation">
+              <td
+                *ngIf="state.nombre"
+                [ngClass]="
+                  textColor(
+                    state.testigos.testigos_con_mesa,
+                    state.testigos.cantidad_testigos_necesitados
+                  )
+                "
+              >
+                {{ state.nombre }}
+              </td>
+
               <td
                 [ngClass]="
                   textColor(

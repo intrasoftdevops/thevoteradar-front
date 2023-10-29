@@ -24,7 +24,7 @@
             (change)="getSelectedMunicipal($event)"
             bindValue="codigo_unico"
             placeholder="Seleccione municipio"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
             formControlName="municipios"
             [clearAllText]="'Borrar todo'"
           >
@@ -40,7 +40,7 @@
             placeholder="Seleccione zona"
             (change)="getSelectedZone($event)"
             [clearAllText]="'Borrar todo'"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
             formControlName="zonas"
           >
           </ng-select>
@@ -53,7 +53,7 @@
             bindLabel="nombre"
             bindValue="codigo_unico"
             (change)="getSelectedStation($event)"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
             placeholder="Seleccione puesto"
             formControlName="puestos"
             [clearAllText]="'Borrar todo'"
