@@ -58,6 +58,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   dtTrigger3: Subject<any> = new Subject<any>();
   notFirstTime = false;
   nombreCoordinador: any;
+  documentoCoordinador: any;
   nombreCliente: any;
   actual: any = 0;
   categoriaImpugnacion: any = '';
@@ -93,6 +94,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   getNameUser() {
     this.apiService.getUser().subscribe((resp: any) => {
       this.nombreCoordinador = resp.nombres + ' ' + resp.apellidos;
+      this.documentoCoordinador = resp.numero_documento;
     });
   }
 
@@ -143,7 +145,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
-      console.log(resp)
+      console.log(resp);
       this.dataRevisar = resp.reportes_no_revisados;
       // Crea un mapa de categorías para fácil acceso
       const categoriasMap = new Map(
@@ -291,6 +293,105 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     this.apiService.getCategoriasImpugnacion().subscribe((resp: any) => {
       this.categoryList = resp;
     });
+  }
+
+  print(impugnar: any) {
+    let printContents, popupWin;
+    printContents = '../../../../assets/target001.jpg';
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin?.document.open();
+    popupWin?.document.write(`
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+    <head>
+    <title></title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+     <br/>
+    <style type="text/css">
+      @media print {
+        @page {
+          margin-top: 0;
+        }
+      }
+      @page {
+        size: landscape;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      p {margin: 0; padding: 0;}	
+      .ft09{font-size:12px;font-family:Times;color:#010101;}
+      .ft10{font-size:8px;font-family:Times;color:#010101;}
+      .ft11{font-size:10px;font-family:Times;color:#010101;}
+      .ft12{font-size:31px;font-family:Times;color:#010101;}
+      .ft13{font-size:11px;font-family:Times;color:#010101;}
+      .ft14{font-size:10px;font-family:Times;color:#ffffff;}
+      .ft15{font-size:9px;font-family:Times;color:#010101;}
+      .ft16{font-size:17px;font-family:Times;color:#010101;}
+      .ft17{font-size:24px;font-family:Times;color:#293179;}
+      .ft18{font-size:17px;font-family:Times;color:#293179;}
+      .ft19{font-size:17px;font-family:Times;color:#000000;}
+      .ft110{font-size:36px;font-family:Times;color:#ffffff;}
+      .ft111{font-size:9px;font-family:Times;color:#000000;}
+      .ft112{font-size:13px;font-family:Times;color:#000000;}
+    </style>
+    </head>
+      <body bgcolor="#A0A0A0" vlink="blue" link="blue" onload="window.print();window.close()">
+        <div id="page1-div" style="position:relative;width:1188px;height:900px;">
+          <img width="1188" height="900" src="${printContents}" alt="background image"/>
+          <p style="position:absolute;top:128px;left:35px;white-space:nowrap" class="ft10">DEPARTAMENTO</p>
+          <p style="position:absolute;top:145px;left:180px;white-space:nowrap" class="ft09">${impugnar.departamento}</p>
+          <p style="position:absolute;top:200px;left:70px;white-space:nowrap" class="ft11">MARQUE “X” EN LA&#160;RESPECTIVA&#160;CAUSAL</p>
+          <p style="position:absolute;top:725px;left:27px;white-space:nowrap" class="ft12"><b>SOLICITA&#160;RECUENTO DE VOTOS</b></p>
+          <p style="position:absolute;top:128px;left:854px;white-space:nowrap" class="ft10">ZONA</p>
+          <p style="position:absolute;top:145px;left:854px;white-space:nowrap" class="ft09">${impugnar.zona}</p>
+          <p style="position:absolute;top:128px;left:959px;white-space:nowrap" class="ft10">PUESTO</p>
+          <p style="position:absolute;top:145px;left:959px;white-space:nowrap" class="ft09">${impugnar.puesto}</p>
+          <p style="position:absolute;top:128px;left:1084px;white-space:nowrap" class="ft10">MESA</p>
+          <p style="position:absolute;top:145px;left:1084px;white-space:nowrap" class="ft09">${impugnar.mesa}</p>
+          <p style="position:absolute;top:128px;left:420px;white-space:nowrap" class="ft10">MUNICIPIO O DISTRITO</p>
+          <p style="position:absolute;top:145px;left:580px;white-space:nowrap" class="ft09">${impugnar.municipio}</p>
+          <p style="position:absolute;top:261px;left:44px;white-space:nowrap" class="ft13"><b>X</b></p>
+          <p style="position:absolute;top:260px;left:71px;white-space:nowrap" class="ft13"><b>LAS&#160;ACTAS DE LOS JURADOS CONTIENEN MENOS DE DOS FIRMAS</b></p>
+          <p style="position:absolute;top:360px;left:69px;white-space:nowrap" class="ft13"><b>ACTAS DE ESCRUTINIO CON ERROR&#160;ARITMÉTICO&#160;AL&#160;SUMAR LOS VOTOS</b></p>
+          <p style="position:absolute;top:395px;left:72px;white-space:nowrap" class="ft14"><b>SOLICITO RECUENTO RAZONABLE POR:</b></p>
+          <p style="position:absolute;top:233px;left:72px;white-space:nowrap" class="ft14"><b>CAUSALES CONFORMES EL&#160;ART. 122 DEL&#160;CÓDIGO ELECTORAL</b></p>
+          <p style="position:absolute;top:425px;left:69px;white-space:nowrap" class="ft13"><b>TACHADURAS, ENMENDADURAS O BORRONES EN EL&#160;ACTA&#160;DE ESCRUTINIO DE JURADOS</b></p>
+          <p style="position:absolute;top:580px;left:35px;white-space:nowrap" class="ft13"><b>NOMBRE&#160;Y&#160;APELLIDOS DEL&#160;RECLAMANTE</b></p>
+          <p style="position:absolute;top:600px;left:35px;white-space:nowrap" class="ft16"><b>${this.nombreCoordinador}</b></p>
+          <p style="position:absolute;top:652px;left:35px;white-space:nowrap" class="ft13"><b>CEDULA&#160;DE CIUDADANIA&#160;No.</b></p>
+          <p style="position:absolute;top:675px;left:35px;white-space:nowrap" class="ft16"><b>${this.documentoCoordinador}</b></p>
+          <p style="position:absolute;top:652px;left:541px;white-space:nowrap" class="ft13"><b>RECIBIDO POR</b></p>
+          <p style="position:absolute;top:652px;left:784px;white-space:nowrap" class="ft13"><b>No. RADICACION</b></p>
+          <p style="position:absolute;top:230px;left:739px;white-space:nowrap" class="ft15"><b>CANDIDATO POR EL&#160;CUAL&#160;SE RECLAMA</b></p>
+          <p style="position:absolute;top:253px;left:744px;white-space:nowrap" class="ft16"><b>${this.nombreCliente}</b></p>
+          <p style="position:absolute;top:770px;left:30px;white-space:nowrap" class="ft13"><b>MOTIVO DE LA&#160;RECLAMACIÓN:</b></p>
+          <p style="position: absolute; top: 788px; left: 30px; line-height: 2.1;" class="ft13"><b>${impugnar.observaciones == null ? ' ' : impugnar.observaciones}</b></p>
+          <p style="position:absolute;top:580px;left:801px;white-space:nowrap" class="ft13"><b>FIRMA</b></p>
+          <p style="position:absolute;top:288px;left:69px;white-space:nowrap" class="ft13"><b>EL&#160;NÚMERO DE SUFRAGANTES DE UNA&#160;MESA&#160;ES MAYOR&#160;AL&#160;DE CIUDADANOS&#160;APTOS&#160;PARA&#160;VOTAR</b></p>
+          <p style="position:absolute;top:315px;left:69px;white-space:nowrap" class="ft13"><b>EL&#160;NÚMERO DE SUFRAGANTES DE UNA&#160;MESA&#160;ES MAYOR&#160;AL&#160;NÚMERO DE CIUDADANOS&#160;APTOS&#160;PARA&#160;</b></p>
+          <p style="position:absolute;top:327px;left:69px;white-space:nowrap" class="ft13"><b>VOTAR EN LA&#160;CABECERA&#160;MUNICIAL, CORREGIMIENTO O INSPECCIÓN DE POLICIA</b></p>
+          <p style="position:absolute;top:460px;left:69px;white-space:nowrap" class="ft13"><b>INDEBIDA&#160;CLASIFICACIÓN DE LOS VOTOS</b></p>
+          <p style="position:absolute;top:495px;left:69px;white-space:nowrap" class="ft13"><b>REGISTRO ERRÓNEO DE LOS VOTOS DE LOS CANDIDATOS</b></p>
+          <p style="position:absolute;top:530px;left:69px;white-space:nowrap" class="ft13"><b>UTILIZACIÓN DE LOS&#160;TARJETONES ELECTORALES NO MARCADOS</b></p>
+          <p style="position:absolute;top:652px;left:1015px;white-space:nowrap" class="ft13"><b>FECHA&#160;SOLICITUD</b></p>
+          <p style="position:absolute;top:670px;left:982px;white-space:nowrap" class="ft13"><b>DIA</b></p>
+          <p style="position:absolute;top:670px;left:1050px;white-space:nowrap" class="ft13"><b>MES</b></p>
+          <p style="position:absolute;top:670px;left:1116px;white-space:nowrap" class="ft13"><b>AÑO</b></p>
+          <p style="position:absolute;top:32px;left:197px;white-space:nowrap" class="ft17"><b>FORMATO DE RECLAMACIONES ANTE JURADOS DE MESA</b></p>
+          <p style="position:absolute;top:68px;left:308px;white-space:nowrap" class="ft18">ELECCIONES TERRITORIALES DEL 29 DE OCTUBRE 2023</p>
+          <p style="position:absolute;top:347px;left:898px;white-space:nowrap" class="ft19"><b>ALCALDÍA</b></p>
+          <p style="position:absolute;top:34px;left:1061px;white-space:nowrap" class="ft110"><b>E-25</b></p>
+          <p style="position:absolute;top:583px;left:678px;white-space:nowrap" class="ft111"><b>CANDIDATO</b></p>
+          <p style="position:absolute;top:602px;left:678px;white-space:nowrap" class="ft111"><b>TESTIGO</b></p>
+          <p style="position:absolute;top:603px;left:754px;white-space:nowrap" class="ft111"><b>X</b></p>
+          <p style="position:absolute;top:622px;left:678px;white-space:nowrap" class="ft111"><b>APODERADO</b></p>
+          <p style="position:absolute;top:310px;left:820px;white-space:nowrap" class="ft112"><b>CORPORACIÓN O CARGO DE ELECCIÓN</b></p>
+        </div>
+      </body>
+    </html>
+    
+    `);
+    popupWin?.document.close();
   }
 
   dataTableOptions() {
