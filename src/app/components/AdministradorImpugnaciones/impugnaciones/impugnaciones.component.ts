@@ -66,7 +66,6 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   selectedCategory: any = '';
   originalDataImpugnar: any = [];
 
-
   constructor(
     private apiService: ApiService,
     private fb: UntypedFormBuilder,
@@ -151,29 +150,15 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
         this.categoryList.map((cat: any) => [cat.id, cat.nombre])
       );
 
-      if (this.selectedCategory) {
-        // Si selectedCategory existe
-        // Filtrar y mapear si selectedCategory existe
-        this.originalDataImpugnar = resp.reportes_revisados
-          .filter(
-            (reporte: any) =>
-              reporte.categoria_impugnacion === this.selectedCategory
-          )
-          .map((reporte: any) => ({
-            ...reporte,
-            category:
-              categoriasMap.get(reporte.categoria_impugnacion) ||
-              'Categoría no encontrada',
-          }));
-      } else {
-        // Solo mapear si selectedCategory no existe
-        this.dataImpugnar = resp.reportes_revisados.map((reporte: any) => ({
+      this.originalDataImpugnar = resp.reportes_revisados.map(
+        (reporte: any) => ({
           ...reporte,
           category:
             categoriasMap.get(reporte.categoria_impugnacion) ||
             'Categoría no encontrada',
-        }));
-      }
+        })
+      );
+      this.dataImpugnar = this.originalDataImpugnar;
 
       this.dataNoImpugnados = resp.reportes_no_impugnados;
       this.renderer();
@@ -185,13 +170,14 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   getSelectedCategory(item: any) {
     if (item) {
       this.selectedCategory = item.nombre;
-      this.dataImpugnar = this.originalDataImpugnar.filter(
-        (reporte: any) =>
-          reporte.category === this.selectedCategory
-      );
+
+      this.dataImpugnar = this.originalDataImpugnar.filter((reporte: any) => {
+        return reporte.category === this.selectedCategory;
+      });
       this.renderer();
     } else {
-      this.dataImpugnar = [...this.originalDataImpugnar]
+      this.dataImpugnar = this.originalDataImpugnar;
+      this.renderer();
     }
   }
 
