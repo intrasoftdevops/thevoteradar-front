@@ -7,26 +7,29 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  Validators,
+  UntypedFormBuilder,
+} from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import Swal from 'sweetalert2';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
+import { FileDownloadService } from 'src/app/services/file-download/file-download.service';
 
 @Component({
   selector: 'app-impugnaciones',
   templateUrl: './impugnaciones.component.html',
-  styleUrls: ['./impugnaciones.component.scss']
+  styleUrls: ['./impugnaciones.component.scss'],
 })
 export class ImpugnacionesComponent implements OnInit, OnDestroy {
-
   @ViewChildren(DataTableDirective)
   dtElements!: QueryList<any>;
-
+  searchForm: UntypedFormGroup;
   dataCandidatos: any = [];
-  tabla: boolean = false;
   dataRevisar: any = [];
   dataImpugnar: any = [];
   dataNoImpugnados: any = [];
@@ -41,26 +44,28 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     candidato: [''],
     numero_votos: [''],
     pagina: [''],
-    observaciones: ['']
-
-  });
-  searchForm: UntypedFormGroup = this.fb.group({
-    candidato: [null],
+    observaciones: [''],
   });
   indexRevisar: any;
   urlRevisar: SafeResourceUrl = '';
   urlImpugnados: SafeResourceUrl = '';
   urlNoImpugnados: SafeResourceUrl = '';
-  dtOptions: DataTables.Settings[] = [];
+  dtOptions1: DataTables.Settings = {};
+  dtOptions2: DataTables.Settings = {};
+  dtOptions3: DataTables.Settings = {};
   dtTrigger1: Subject<any> = new Subject<any>();
   dtTrigger2: Subject<any> = new Subject<any>();
   dtTrigger3: Subject<any> = new Subject<any>();
   notFirstTime = false;
-  nombreCoordinador: any
-  nombreCliente: any
-  actual: any = 0
-  categoriaImpugnacion:any = ''
-  pagePDF:any = 0
+  nombreCoordinador: any;
+  nombreCliente: any;
+  actual: any = 0;
+  categoriaImpugnacion: any = '';
+  categoryList: any = [];
+  pagePDF: any = 0;
+  selectedCategory: any = '';
+  originalDataImpugnar: any = [];
+
 
   constructor(
     private apiService: ApiService,
@@ -68,32 +73,34 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private customValidator: CustomValidationService,
     private sanitizer: DomSanitizer,
-    private chRef: ChangeDetectorRef
-  ) {}
+    private chRef: ChangeDetectorRef,
+    private fileDownloadService: FileDownloadService
+  ) {
+    this.searchForm = this.fb.group({
+      category: [],
+    });
+  }
 
   ngOnInit() {
-
-    
-
-
     //this.dataTableOptions();
     this.getInteresesCandidato();
-    this.getNameUser()
-    this.getCliente()
-    const data = 0
-    this.getCategoriaImpugnacion()
+    this.getNameUser();
+    this.getCliente();
+    const data = 0;
+    this.getCategoríaImpugnación();
+    this.getCategorias();
   }
 
   getNameUser() {
     this.apiService.getUser().subscribe((resp: any) => {
-      this.nombreCoordinador = resp.nombres + ' ' + resp.apellidos
-    })
+      this.nombreCoordinador = resp.nombres + ' ' + resp.apellidos;
+    });
   }
 
   getCliente() {
-    this.apiService.getCliente().subscribe((resp:any)=>{
-      this.nombreCliente = resp.nombres + ' ' + resp.apellidos
-    })
+    this.apiService.getCliente().subscribe((resp: any) => {
+      this.nombreCliente = resp.nombres + ' ' + resp.apellidos;
+    });
   }
 
   ngOnDestroy() {
@@ -114,18 +121,13 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     if (item) {
       const data = { candidato_comparacion: item.codigo_unico };
       this.getImpugnaciones(data);
-      this.tabla = true;
     } else {
-      this.tabla = false;
       this.renderer();
     }
   }
 
-
-
   getInteresesCandidato() {
     this.apiService.getInteresesCandidato().subscribe((resp: any) => {
-     
       this.dataCandidatos = resp;
       if (this.dataCandidatos.length > 0) {
         this.dataCandidatos.map((i: any) => {
@@ -143,39 +145,79 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
       this.dataRevisar = resp.reportes_no_revisados;
-      this.dataImpugnar = resp.reportes_revisados;
+      // Crea un mapa de categorías para fácil acceso
+      const categoriasMap = new Map(
+        this.categoryList.map((cat: any) => [cat.id, cat.nombre])
+      );
+
+      if (this.selectedCategory) {
+        // Si selectedCategory existe
+        // Filtrar y mapear si selectedCategory existe
+        this.originalDataImpugnar = resp.reportes_revisados
+          .filter(
+            (reporte: any) =>
+              reporte.categoria_impugnacion === this.selectedCategory
+          )
+          .map((reporte: any) => ({
+            ...reporte,
+            category:
+              categoriasMap.get(reporte.categoria_impugnacion) ||
+              'Categoría no encontrada',
+          }));
+      } else {
+        // Solo mapear si selectedCategory no existe
+        this.dataImpugnar = resp.reportes_revisados.map((reporte: any) => ({
+          ...reporte,
+          category:
+            categoriasMap.get(reporte.categoria_impugnacion) ||
+            'Categoría no encontrada',
+        }));
+      }
+
       this.dataNoImpugnados = resp.reportes_no_impugnados;
       this.renderer();
       this.notFirstTime = true;
-      this.ModalRevisarActual(this.dataRevisar[this.actual])
-      console.log(resp)
+      this.ModalRevisarActual(this.dataRevisar[this.actual]);
     });
   }
 
-  getCategoriaImpugnacion() {
-    this.apiService.getCategoriaImpugnacion().subscribe((resp:any)=>{
-     // this.categoriaImpugnacion = resp;
-  
-      if(this.categoriaImpugnacion.id == 9) {
+  getSelectedCategory(item: any) {
+    if (item) {
+      this.selectedCategory = item.nombre;
+      this.dataImpugnar = this.originalDataImpugnar.filter(
+        (reporte: any) =>
+          reporte.category === this.selectedCategory
+      );
+      this.renderer();
+    } else {
+      this.dataImpugnar = [...this.originalDataImpugnar]
+    }
+  }
+
+  getCategoríaImpugnación() {
+    this.apiService.getCategoriaImpugnacion().subscribe((resp: any) => {
+      this.categoriaImpugnacion = resp;
+
+      if (this.categoriaImpugnacion.id == 9) {
         this.pagePDF = 1000;
       }
-      console.log(resp);
-      
-    })
+    });
     var inicio = localStorage.getItem('login');
-      if(inicio == 'true'){
-        this.successAlert('Tu objetivo es buscar: ' + this.categoriaImpugnacion.nombre);
-        localStorage.setItem('login', 'false');
-      }
-    ;
+    if (inicio == 'true') {
+      this.successAlert(
+        'Tu objetivo es buscar: ' + this.categoriaImpugnacion.nombre
+      );
+      localStorage.setItem('login', 'false');
+    }
   }
-  
 
   ModalRevisarActual(porrevisar: any) {
-    this.apiService.getReporteTransmision(porrevisar.id).subscribe((resp:any)=>{
-        const revisar = resp
-        console.log(resp)
-       
+    this.apiService
+      .getReporteTransmision(porrevisar.id)
+      .subscribe((resp: any) => {
+        const revisar = resp;
+        console.log(resp);
+
         this.dataRevisarActual = revisar;
         this.createForm
           .get('categoria_impugnacion')
@@ -186,58 +228,46 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
         this.createForm.get('numero_votos')?.setValue(revisar.numero_votos);
         this.createForm.get('pagina')?.setValue(revisar.pagina);
         this.createForm.get('observaciones')?.setValue(revisar.observaciones);
-       
+
         this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
           resp.e_14 + '#page=' + this.pagePDF
-        )
-        
-       /*  
-       ;
-        */
-        
-
-    })
-    
+        );
+      });
   }
 
   ModalImpugnarActual(impugnar: any) {
     this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
       impugnar.e_14
     );
+    console.log(this.urlImpugnados);
     this.dataImpugnarActual = impugnar;
   }
 
-
   impugnar() {
-    this.actual++
-    const pagina: any = this.createForm.get('pagina')
-    const observaciones:any = this.createForm.get('observaciones')
-   
-    if(pagina.value === '' && observaciones.value === ''){
-      this.createForm.value['categoria_impugnacion'] = null
+    this.actual++;
+    const pagina: any = this.createForm.get('pagina');
+    const observaciones: any = this.createForm.get('observaciones');
+
+    if (pagina.value === '' && observaciones.value === '') {
+      this.createForm.value['categoria_impugnacion'] = null;
+    } else {
+      this.createForm.value['categoria_impugnacion'] = 9;
     }
-    else{
-      this.createForm.value['categoria_impugnacion'] = 9
-    }
-      console.log(this.createForm.value)
-      this.apiService
-        .impugnar(this.dataRevisarActual.id, this.createForm.value)
-        .subscribe((resp: any) => {
-          console.log(resp)
-          
-          
-          if (this.actual <= 9) {
-           
-            this.ModalRevisarActual(this.dataRevisar[this.actual]);
-     
-          } else {
-            window.location.reload()
-         
-          }
-          this.createForm.get('pagina')?.reset();
-          this.createForm.get('observaciones')?.reset(); 
-          this.renderer();
-        });
+    console.log(this.createForm.value);
+    this.apiService
+      .impugnar(this.dataRevisarActual.id, this.createForm.value)
+      .subscribe((resp: any) => {
+        console.log(resp);
+
+        if (this.actual <= 9) {
+          this.ModalRevisarActual(this.dataRevisar[this.actual]);
+        } else {
+          window.location.reload();
+        }
+        this.createForm.get('pagina')?.reset();
+        this.createForm.get('observaciones')?.reset();
+        this.renderer();
+      });
   }
 
   noImpugnar() {
@@ -270,8 +300,14 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     });
   }
 
+  getCategorias() {
+    this.apiService.getCategoriasImpugnacion().subscribe((resp: any) => {
+      this.categoryList = resp;
+    });
+  }
+
   dataTableOptions() {
-    this.dtOptions[0] = {
+    this.dtOptions1 = {
       destroy: true,
       processing: true,
       pageLength: 10,
@@ -300,7 +336,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
       },
     };
-    this.dtOptions[1] = {
+    this.dtOptions2 = {
       destroy: true,
       processing: true,
       pageLength: 10,
@@ -329,7 +365,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
       },
     };
-    this.dtOptions[2] = {
+    this.dtOptions3 = {
       destroy: true,
       processing: true,
       pageLength: 10,
@@ -376,23 +412,27 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     });
   }
 
-  atras(){
-    this.actual--
+  download(url: string): void {
+    this.fileDownloadService.downloadFile(url).subscribe((blob) => {
+      const a = document.createElement('a');
+      const objectUrl = URL.createObjectURL(blob);
+      a.href = objectUrl;
+      a.download = 'archivo.pdf'; // Nombre del archivo descargado
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    });
+  }
+
+  atras() {
+    this.actual--;
     if (this.actual <= 9) {
       //var rand = Math.floor(Math.random() * this.dataRevisar.length);
       this.ModalRevisarActual(this.dataRevisar[this.actual]);
-      
     } else {
-      window.location.reload()
+      window.location.reload();
     }
     this.createForm.get('pagina')?.reset(); // Limpiar el campo de página
     this.createForm.get('observaciones')?.reset(); // Limpiar el campo de observaciones
     this.renderer();
-
-
   }
-
-  
-
-
 }
