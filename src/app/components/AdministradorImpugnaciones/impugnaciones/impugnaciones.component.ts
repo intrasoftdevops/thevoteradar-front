@@ -144,15 +144,15 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   }
 
   getImpugnaciones(data: any) {
-    this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
+    this.apiService.getImpugnacionesRevisadas(data).subscribe((resp: any) => {
       console.log(resp);
-      this.dataRevisar = resp.reportes_no_revisados;
+      this.dataRevisar = resp;
       // Crea un mapa de categorías para fácil acceso
       const categoriasMap = new Map(
         this.categoryList.map((cat: any) => [cat.id, cat.nombre])
       );
 
-      this.originalDataImpugnar = resp.reportes_revisados.map(
+      this.originalDataImpugnar = resp.map(
         (reporte: any) => ({
           ...reporte,
           category:
@@ -162,7 +162,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
       );
       this.dataImpugnar = this.originalDataImpugnar;
 
-      this.dataNoImpugnados = resp.reportes_no_impugnados;
+      this.dataNoImpugnados = resp;
       this.renderer();
       this.notFirstTime = true;
       this.ModalRevisarActual(this.dataRevisar[this.actual]);

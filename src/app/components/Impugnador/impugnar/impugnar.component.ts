@@ -142,7 +142,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
-      this.dataRevisar = resp.reportes_no_revisados;
+      this.dataRevisar = resp;
       this.renderer();
       this.notFirstTime = true;
       this.ModalRevisarActual(this.dataRevisar[this.actual])
