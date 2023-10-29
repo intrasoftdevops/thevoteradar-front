@@ -7,26 +7,29 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  Validators,
+  UntypedFormBuilder,
+} from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import Swal from 'sweetalert2';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
+import { FileDownloadService } from 'src/app/services/file-download/file-download.service';
 
 @Component({
   selector: 'app-impugnaciones',
   templateUrl: './impugnaciones.component.html',
-  styleUrls: ['./impugnaciones.component.scss']
+  styleUrls: ['./impugnaciones.component.scss'],
 })
 export class ImpugnacionesComponent implements OnInit, OnDestroy {
-
   @ViewChildren(DataTableDirective)
   dtElements!: QueryList<any>;
-
+  searchForm: UntypedFormGroup;
   dataCandidatos: any = [];
-  tabla: boolean = false;
   dataRevisar: any = [];
   dataImpugnar: any = [];
   dataNoImpugnados: any = [];
@@ -41,26 +44,28 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     candidato: [''],
     numero_votos: [''],
     pagina: [''],
-    observaciones: ['']
-
-  });
-  searchForm: UntypedFormGroup = this.fb.group({
-    candidato: [null],
+    observaciones: [''],
   });
   indexRevisar: any;
   urlRevisar: SafeResourceUrl = '';
   urlImpugnados: SafeResourceUrl = '';
   urlNoImpugnados: SafeResourceUrl = '';
-  dtOptions: DataTables.Settings[] = [];
+  dtOptions1: DataTables.Settings = {};
+  dtOptions2: DataTables.Settings = {};
+  dtOptions3: DataTables.Settings = {};
   dtTrigger1: Subject<any> = new Subject<any>();
   dtTrigger2: Subject<any> = new Subject<any>();
   dtTrigger3: Subject<any> = new Subject<any>();
   notFirstTime = false;
-  nombreCoordinador: any
-  nombreCliente: any
-  actual: any = 0
-  categoriaImpugnacion:any = ''
-  pagePDF:any = 0
+  nombreCoordinador: any;
+  documentoCoordinador: any;
+  nombreCliente: any;
+  actual: any = 0;
+  categoriaImpugnacion: any = '';
+  categoryList: any = [];
+  pagePDF: any = 0;
+  selectedCategory: any = '';
+  originalDataImpugnar: any = [];
 
   constructor(
     private apiService: ApiService,
@@ -68,32 +73,35 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private customValidator: CustomValidationService,
     private sanitizer: DomSanitizer,
-    private chRef: ChangeDetectorRef
-  ) {}
+    private chRef: ChangeDetectorRef,
+    private fileDownloadService: FileDownloadService
+  ) {
+    this.searchForm = this.fb.group({
+      category: [],
+    });
+  }
 
   ngOnInit() {
-
-    
-
-
     //this.dataTableOptions();
     this.getInteresesCandidato();
-    this.getNameUser()
-    this.getCliente()
-    const data = 0
-    this.getCategoriaImpugnacion()
+    this.getNameUser();
+    this.getCliente();
+    const data = 0;
+    this.getCategoríaImpugnación();
+    this.getCategorias();
   }
 
   getNameUser() {
     this.apiService.getUser().subscribe((resp: any) => {
-      this.nombreCoordinador = resp.nombres + ' ' + resp.apellidos
-    })
+      this.nombreCoordinador = resp.nombres + ' ' + resp.apellidos;
+      this.documentoCoordinador = resp.numero_documento;
+    });
   }
 
   getCliente() {
-    this.apiService.getCliente().subscribe((resp:any)=>{
-      this.nombreCliente = resp.nombres + ' ' + resp.apellidos
-    })
+    this.apiService.getCliente().subscribe((resp: any) => {
+      this.nombreCliente = resp.nombres + ' ' + resp.apellidos;
+    });
   }
 
   ngOnDestroy() {
@@ -114,18 +122,13 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     if (item) {
       const data = { candidato_comparacion: item.codigo_unico };
       this.getImpugnaciones(data);
-      this.tabla = true;
     } else {
-      this.tabla = false;
       this.renderer();
     }
   }
 
-
-
   getInteresesCandidato() {
     this.apiService.getInteresesCandidato().subscribe((resp: any) => {
-     
       this.dataCandidatos = resp;
       if (this.dataCandidatos.length > 0) {
         this.dataCandidatos.map((i: any) => {
@@ -142,41 +145,68 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
-      console.log(resp)
+      console.log(resp);
       this.dataRevisar = resp.reportes_no_revisados;
-      this.dataImpugnar = resp.reportes_revisados;
+      // Crea un mapa de categorías para fácil acceso
+      const categoriasMap = new Map(
+        this.categoryList.map((cat: any) => [cat.id, cat.nombre])
+      );
+
+      this.originalDataImpugnar = resp.reportes_revisados.map(
+        (reporte: any) => ({
+          ...reporte,
+          category:
+            categoriasMap.get(reporte.categoria_impugnacion) ||
+            'Categoría no encontrada',
+        })
+      );
+      this.dataImpugnar = this.originalDataImpugnar;
+
       this.dataNoImpugnados = resp.reportes_no_impugnados;
       this.renderer();
       this.notFirstTime = true;
-      this.ModalRevisarActual(this.dataRevisar[this.actual])
-      console.log(resp)
+      this.ModalRevisarActual(this.dataRevisar[this.actual]);
     });
   }
 
-  getCategoriaImpugnacion() {
-    this.apiService.getCategoriaImpugnacion().subscribe((resp:any)=>{
-     // this.categoriaImpugnacion = resp;
-  
-      if(this.categoriaImpugnacion.id == 9) {
+  getSelectedCategory(item: any) {
+    if (item) {
+      this.selectedCategory = item.nombre;
+
+      this.dataImpugnar = this.originalDataImpugnar.filter((reporte: any) => {
+        return reporte.category === this.selectedCategory;
+      });
+      this.renderer();
+    } else {
+      this.dataImpugnar = this.originalDataImpugnar;
+      this.renderer();
+    }
+  }
+
+  getCategoríaImpugnación() {
+    this.apiService.getCategoriaImpugnacion().subscribe((resp: any) => {
+      this.categoriaImpugnacion = resp;
+
+      if (this.categoriaImpugnacion.id == 9) {
         this.pagePDF = 1000;
       }
-      console.log(resp);
-      
-    })
+    });
     var inicio = localStorage.getItem('login');
-      if(inicio == 'true'){
-        this.successAlert('Tu objetivo es buscar: ' + this.categoriaImpugnacion.nombre);
-        localStorage.setItem('login', 'false');
-      }
-    ;
+    if (inicio == 'true') {
+      this.successAlert(
+        'Tu objetivo es buscar: ' + this.categoriaImpugnacion.nombre
+      );
+      localStorage.setItem('login', 'false');
+    }
   }
-  
 
   ModalRevisarActual(porrevisar: any) {
-    this.apiService.getReporteTransmision(porrevisar.id).subscribe((resp:any)=>{
-        const revisar = resp
-        console.log(resp)
-       
+    this.apiService
+      .getReporteTransmision(porrevisar.id)
+      .subscribe((resp: any) => {
+        const revisar = resp;
+        console.log(resp);
+
         this.dataRevisarActual = revisar;
         this.createForm
           .get('categoria_impugnacion')
@@ -187,58 +217,46 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
         this.createForm.get('numero_votos')?.setValue(revisar.numero_votos);
         this.createForm.get('pagina')?.setValue(revisar.pagina);
         this.createForm.get('observaciones')?.setValue(revisar.observaciones);
-       
+
         this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
           resp.e_14 + '#page=' + this.pagePDF
-        )
-        
-       /*  
-       ;
-        */
-        
-
-    })
-    
+        );
+      });
   }
 
   ModalImpugnarActual(impugnar: any) {
     this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
       impugnar.e_14
     );
+    console.log(this.urlImpugnados);
     this.dataImpugnarActual = impugnar;
   }
 
-
   impugnar() {
-    this.actual++
-    const pagina: any = this.createForm.get('pagina')
-    const observaciones:any = this.createForm.get('observaciones')
-   
-    if(pagina.value === '' && observaciones.value === ''){
-      this.createForm.value['categoria_impugnacion'] = null
+    this.actual++;
+    const pagina: any = this.createForm.get('pagina');
+    const observaciones: any = this.createForm.get('observaciones');
+
+    if (pagina.value === '' && observaciones.value === '') {
+      this.createForm.value['categoria_impugnacion'] = null;
+    } else {
+      this.createForm.value['categoria_impugnacion'] = 9;
     }
-    else{
-      this.createForm.value['categoria_impugnacion'] = 9
-    }
-      console.log(this.createForm.value)
-      this.apiService
-        .impugnar(this.dataRevisarActual.id, this.createForm.value)
-        .subscribe((resp: any) => {
-          console.log(resp)
-          
-          
-          if (this.actual <= 9) {
-           
-            this.ModalRevisarActual(this.dataRevisar[this.actual]);
-     
-          } else {
-            window.location.reload()
-         
-          }
-          this.createForm.get('pagina')?.reset();
-          this.createForm.get('observaciones')?.reset(); 
-          this.renderer();
-        });
+    console.log(this.createForm.value);
+    this.apiService
+      .impugnar(this.dataRevisarActual.id, this.createForm.value)
+      .subscribe((resp: any) => {
+        console.log(resp);
+
+        if (this.actual <= 9) {
+          this.ModalRevisarActual(this.dataRevisar[this.actual]);
+        } else {
+          window.location.reload();
+        }
+        this.createForm.get('pagina')?.reset();
+        this.createForm.get('observaciones')?.reset();
+        this.renderer();
+      });
   }
 
   noImpugnar() {
@@ -271,8 +289,214 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     });
   }
 
+  getCategorias() {
+    this.apiService.getCategoriasImpugnacion().subscribe((resp: any) => {
+      this.categoryList = resp;
+    });
+  }
+
+  print(impugnar: any) {
+    let printContents, popupWin;
+    printContents = '../../../../assets/target001.jpg';
+    popupWin = window.open('', '_blank', 'top=0, left=0, height=600, width=800');
+    popupWin?.document.open();
+    popupWin?.document.write(`
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+    <head>
+    <title></title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+     <br/>
+    <style type="text/css">
+      @media print {
+        @page {
+          margin-top: 0;
+        }
+      }
+      @page {
+        size: landscape;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      p {margin: 0; padding: 0;}	
+      .ft09{font-size:12px;font-family:Times;color:#010101;}
+      .ft10{font-size:8px;font-family:Times;color:#010101;}
+      .ft11{font-size:10px;font-family:Times;color:#010101;}
+      .ft12{font-size:31px;font-family:Times;color:#010101;}
+      .ft13{font-size:11px;font-family:Times;color:#010101;}
+      .ft14{font-size:10px;font-family:Times;color:#ffffff;}
+      .ft15{font-size:9px;font-family:Times;color:#010101;}
+      .ft16{font-size:17px;font-family:Times;color:#010101;}
+      .ft17{font-size:24px;font-family:Times;color:#293179;}
+      .ft18{font-size:17px;font-family:Times;color:#293179;}
+      .ft19{font-size:17px;font-family:Times;color:#000000;}
+      .ft110{font-size:36px;font-family:Times;color:#ffffff;}
+      .ft111{font-size:9px;font-family:Times;color:#000000;}
+      .ft112{font-size:13px;font-family:Times;color:#000000;}
+    </style>
+    </head>
+      <body bgcolor="#A0A0A0" vlink="blue" link="blue" onload="window.print();window.close()">
+        <div id="page1-div" style="position:relative;width:1188px;height:900px;">
+          <img width="1188" height="900" src="${printContents}" alt="background image"/>
+          <p style="position:absolute;top:128px;left:35px;white-space:nowrap" class="ft10">DEPARTAMENTO</p>
+          <p style="position:absolute;top:145px;left:180px;white-space:nowrap" class="ft09">${impugnar.departamento}</p>
+          <p style="position:absolute;top:200px;left:70px;white-space:nowrap" class="ft11">MARQUE “X” EN LA&#160;RESPECTIVA&#160;CAUSAL</p>
+          <p style="position:absolute;top:725px;left:27px;white-space:nowrap" class="ft12"><b>SOLICITA&#160;RECUENTO DE VOTOS</b></p>
+          <p style="position:absolute;top:128px;left:854px;white-space:nowrap" class="ft10">ZONA</p>
+          <p style="position:absolute;top:145px;left:854px;white-space:nowrap" class="ft09">${impugnar.zona}</p>
+          <p style="position:absolute;top:128px;left:959px;white-space:nowrap" class="ft10">PUESTO</p>
+          <p style="position:absolute;top:145px;left:959px;white-space:nowrap" class="ft09">${impugnar.puesto}</p>
+          <p style="position:absolute;top:128px;left:1084px;white-space:nowrap" class="ft10">MESA</p>
+          <p style="position:absolute;top:145px;left:1084px;white-space:nowrap" class="ft09">${impugnar.mesa}</p>
+          <p style="position:absolute;top:128px;left:420px;white-space:nowrap" class="ft10">MUNICIPIO O DISTRITO</p>
+          <p style="position:absolute;top:145px;left:580px;white-space:nowrap" class="ft09">${impugnar.municipio}</p>
+          <p style="position:absolute;top:261px;left:44px;white-space:nowrap" class="ft13"><b>X</b></p>
+          <p style="position:absolute;top:260px;left:71px;white-space:nowrap" class="ft13"><b>LAS&#160;ACTAS DE LOS JURADOS CONTIENEN MENOS DE DOS FIRMAS</b></p>
+          <p style="position:absolute;top:360px;left:69px;white-space:nowrap" class="ft13"><b>ACTAS DE ESCRUTINIO CON ERROR&#160;ARITMÉTICO&#160;AL&#160;SUMAR LOS VOTOS</b></p>
+          <p style="position:absolute;top:395px;left:72px;white-space:nowrap" class="ft14"><b>SOLICITO RECUENTO RAZONABLE POR:</b></p>
+          <p style="position:absolute;top:233px;left:72px;white-space:nowrap" class="ft14"><b>CAUSALES CONFORMES EL&#160;ART. 122 DEL&#160;CÓDIGO ELECTORAL</b></p>
+          <p style="position:absolute;top:425px;left:69px;white-space:nowrap" class="ft13"><b>TACHADURAS, ENMENDADURAS O BORRONES EN EL&#160;ACTA&#160;DE ESCRUTINIO DE JURADOS</b></p>
+          <p style="position:absolute;top:580px;left:35px;white-space:nowrap" class="ft13"><b>NOMBRE&#160;Y&#160;APELLIDOS DEL&#160;RECLAMANTE</b></p>
+          <p style="position:absolute;top:600px;left:35px;white-space:nowrap" class="ft16"><b>${this.nombreCoordinador}</b></p>
+          <p style="position:absolute;top:652px;left:35px;white-space:nowrap" class="ft13"><b>CEDULA&#160;DE CIUDADANIA&#160;No.</b></p>
+          <p style="position:absolute;top:675px;left:35px;white-space:nowrap" class="ft16"><b>${this.documentoCoordinador}</b></p>
+          <p style="position:absolute;top:652px;left:541px;white-space:nowrap" class="ft13"><b>RECIBIDO POR</b></p>
+          <p style="position:absolute;top:652px;left:784px;white-space:nowrap" class="ft13"><b>No. RADICACION</b></p>
+          <p style="position:absolute;top:230px;left:739px;white-space:nowrap" class="ft15"><b>CANDIDATO POR EL&#160;CUAL&#160;SE RECLAMA</b></p>
+          <p style="position:absolute;top:253px;left:744px;white-space:nowrap" class="ft16"><b>${this.nombreCliente}</b></p>
+          <p style="position:absolute;top:770px;left:30px;white-space:nowrap" class="ft13"><b>MOTIVO DE LA&#160;RECLAMACIÓN:</b></p>
+          <p style="position: absolute; top: 788px; left: 30px; line-height: 2.1;" class="ft13"><b>${impugnar.observaciones == null ? ' ' : impugnar.observaciones}</b></p>
+          <p style="position:absolute;top:580px;left:801px;white-space:nowrap" class="ft13"><b>FIRMA</b></p>
+          <p style="position:absolute;top:288px;left:69px;white-space:nowrap" class="ft13"><b>EL&#160;NÚMERO DE SUFRAGANTES DE UNA&#160;MESA&#160;ES MAYOR&#160;AL&#160;DE CIUDADANOS&#160;APTOS&#160;PARA&#160;VOTAR</b></p>
+          <p style="position:absolute;top:315px;left:69px;white-space:nowrap" class="ft13"><b>EL&#160;NÚMERO DE SUFRAGANTES DE UNA&#160;MESA&#160;ES MAYOR&#160;AL&#160;NÚMERO DE CIUDADANOS&#160;APTOS&#160;PARA&#160;</b></p>
+          <p style="position:absolute;top:327px;left:69px;white-space:nowrap" class="ft13"><b>VOTAR EN LA&#160;CABECERA&#160;MUNICIAL, CORREGIMIENTO O INSPECCIÓN DE POLICIA</b></p>
+          <p style="position:absolute;top:460px;left:69px;white-space:nowrap" class="ft13"><b>INDEBIDA&#160;CLASIFICACIÓN DE LOS VOTOS</b></p>
+          <p style="position:absolute;top:495px;left:69px;white-space:nowrap" class="ft13"><b>REGISTRO ERRÓNEO DE LOS VOTOS DE LOS CANDIDATOS</b></p>
+          <p style="position:absolute;top:530px;left:69px;white-space:nowrap" class="ft13"><b>UTILIZACIÓN DE LOS&#160;TARJETONES ELECTORALES NO MARCADOS</b></p>
+          <p style="position:absolute;top:652px;left:1015px;white-space:nowrap" class="ft13"><b>FECHA&#160;SOLICITUD</b></p>
+          <p style="position:absolute;top:670px;left:982px;white-space:nowrap" class="ft13"><b>DIA</b></p>
+          <p style="position:absolute;top:670px;left:1050px;white-space:nowrap" class="ft13"><b>MES</b></p>
+          <p style="position:absolute;top:670px;left:1116px;white-space:nowrap" class="ft13"><b>AÑO</b></p>
+          <p style="position:absolute;top:32px;left:197px;white-space:nowrap" class="ft17"><b>FORMATO DE RECLAMACIONES ANTE JURADOS DE MESA</b></p>
+          <p style="position:absolute;top:68px;left:308px;white-space:nowrap" class="ft18">ELECCIONES TERRITORIALES DEL 29 DE OCTUBRE 2023</p>
+          <p style="position:absolute;top:347px;left:898px;white-space:nowrap" class="ft19"><b>ALCALDÍA</b></p>
+          <p style="position:absolute;top:34px;left:1061px;white-space:nowrap" class="ft110"><b>E-25</b></p>
+          <p style="position:absolute;top:583px;left:678px;white-space:nowrap" class="ft111"><b>CANDIDATO</b></p>
+          <p style="position:absolute;top:602px;left:678px;white-space:nowrap" class="ft111"><b>TESTIGO</b></p>
+          <p style="position:absolute;top:603px;left:754px;white-space:nowrap" class="ft111"><b>X</b></p>
+          <p style="position:absolute;top:622px;left:678px;white-space:nowrap" class="ft111"><b>APODERADO</b></p>
+          <p style="position:absolute;top:310px;left:820px;white-space:nowrap" class="ft112"><b>CORPORACIÓN O CARGO DE ELECCIÓN</b></p>
+        </div>
+      </body>
+    </html>
+    
+    `);
+    popupWin?.document.close();
+  }
+
+  printAll() {
+    let printContents: any, popupWin: any;
+    printContents = '../../../../assets/target001.jpg';
+    popupWin = window.open('', '_blank', 'top=0, left=0, height=600, width=800');
+    popupWin?.document.open();
+    this.dataImpugnar.forEach((impugnar: any) => {
+      popupWin?.document.write(`
+      <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+      <head>
+      <title></title>
+      
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+       <br/>
+      <style type="text/css">
+        @media print {
+          @page {
+            margin-top: 0;
+          }
+        }
+        @page {
+          size: landscape;
+          margin-top: 0;
+          margin-bottom: 0;
+        }
+        p {margin: 0; padding: 0;}	
+        .ft09{font-size:12px;font-family:Times;color:#010101;}
+        .ft10{font-size:8px;font-family:Times;color:#010101;}
+        .ft11{font-size:10px;font-family:Times;color:#010101;}
+        .ft12{font-size:31px;font-family:Times;color:#010101;}
+        .ft13{font-size:11px;font-family:Times;color:#010101;}
+        .ft14{font-size:10px;font-family:Times;color:#ffffff;}
+        .ft15{font-size:9px;font-family:Times;color:#010101;}
+        .ft16{font-size:17px;font-family:Times;color:#010101;}
+        .ft17{font-size:24px;font-family:Times;color:#293179;}
+        .ft18{font-size:17px;font-family:Times;color:#293179;}
+        .ft19{font-size:17px;font-family:Times;color:#000000;}
+        .ft110{font-size:36px;font-family:Times;color:#ffffff;}
+        .ft111{font-size:9px;font-family:Times;color:#000000;}
+        .ft112{font-size:13px;font-family:Times;color:#000000;}
+      </style>
+      </head>
+        <body bgcolor="#A0A0A0" vlink="blue" link="blue" onload="window.print();window.close()">
+          <div id="page1-div" style="position:relative;width:1188px;height:900px;">
+            <img width="1188" height="900" src="${printContents}" alt="background image"/>
+            <p style="position:absolute;top:128px;left:35px;white-space:nowrap" class="ft10">DEPARTAMENTO</p>
+            <p style="position:absolute;top:145px;left:180px;white-space:nowrap" class="ft09">${impugnar.departamento}</p>
+            <p style="position:absolute;top:200px;left:70px;white-space:nowrap" class="ft11">MARQUE “X” EN LA&#160;RESPECTIVA&#160;CAUSAL</p>
+            <p style="position:absolute;top:725px;left:27px;white-space:nowrap" class="ft12"><b>SOLICITA&#160;RECUENTO DE VOTOS</b></p>
+            <p style="position:absolute;top:128px;left:854px;white-space:nowrap" class="ft10">ZONA</p>
+            <p style="position:absolute;top:145px;left:854px;white-space:nowrap" class="ft09">${impugnar.zona}</p>
+            <p style="position:absolute;top:128px;left:959px;white-space:nowrap" class="ft10">PUESTO</p>
+            <p style="position:absolute;top:145px;left:959px;white-space:nowrap" class="ft09">${impugnar.puesto}</p>
+            <p style="position:absolute;top:128px;left:1084px;white-space:nowrap" class="ft10">MESA</p>
+            <p style="position:absolute;top:145px;left:1084px;white-space:nowrap" class="ft09">${impugnar.mesa}</p>
+            <p style="position:absolute;top:128px;left:420px;white-space:nowrap" class="ft10">MUNICIPIO O DISTRITO</p>
+            <p style="position:absolute;top:145px;left:580px;white-space:nowrap" class="ft09">${impugnar.municipio}</p>
+            <p style="position:absolute;top:261px;left:44px;white-space:nowrap" class="ft13"><b>X</b></p>
+            <p style="position:absolute;top:260px;left:71px;white-space:nowrap" class="ft13"><b>LAS&#160;ACTAS DE LOS JURADOS CONTIENEN MENOS DE DOS FIRMAS</b></p>
+            <p style="position:absolute;top:360px;left:69px;white-space:nowrap" class="ft13"><b>ACTAS DE ESCRUTINIO CON ERROR&#160;ARITMÉTICO&#160;AL&#160;SUMAR LOS VOTOS</b></p>
+            <p style="position:absolute;top:395px;left:72px;white-space:nowrap" class="ft14"><b>SOLICITO RECUENTO RAZONABLE POR:</b></p>
+            <p style="position:absolute;top:233px;left:72px;white-space:nowrap" class="ft14"><b>CAUSALES CONFORMES EL&#160;ART. 122 DEL&#160;CÓDIGO ELECTORAL</b></p>
+            <p style="position:absolute;top:425px;left:69px;white-space:nowrap" class="ft13"><b>TACHADURAS, ENMENDADURAS O BORRONES EN EL&#160;ACTA&#160;DE ESCRUTINIO DE JURADOS</b></p>
+            <p style="position:absolute;top:580px;left:35px;white-space:nowrap" class="ft13"><b>NOMBRE&#160;Y&#160;APELLIDOS DEL&#160;RECLAMANTE</b></p>
+            <p style="position:absolute;top:600px;left:35px;white-space:nowrap" class="ft16"><b>${this.nombreCoordinador}</b></p>
+            <p style="position:absolute;top:652px;left:35px;white-space:nowrap" class="ft13"><b>CEDULA&#160;DE CIUDADANIA&#160;No.</b></p>
+            <p style="position:absolute;top:675px;left:35px;white-space:nowrap" class="ft16"><b>${this.documentoCoordinador}</b></p>
+            <p style="position:absolute;top:652px;left:541px;white-space:nowrap" class="ft13"><b>RECIBIDO POR</b></p>
+            <p style="position:absolute;top:652px;left:784px;white-space:nowrap" class="ft13"><b>No. RADICACION</b></p>
+            <p style="position:absolute;top:230px;left:739px;white-space:nowrap" class="ft15"><b>CANDIDATO POR EL&#160;CUAL&#160;SE RECLAMA</b></p>
+            <p style="position:absolute;top:253px;left:744px;white-space:nowrap" class="ft16"><b>${this.nombreCliente}</b></p>
+            <p style="position:absolute;top:770px;left:30px;white-space:nowrap" class="ft13"><b>MOTIVO DE LA&#160;RECLAMACIÓN:</b></p>
+            <p style="position: absolute; top: 788px; left: 30px; line-height: 2.1;" class="ft13"><b>${impugnar.observaciones == null ? ' ' : impugnar.observaciones}</b></p>
+            <p style="position:absolute;top:580px;left:801px;white-space:nowrap" class="ft13"><b>FIRMA</b></p>
+            <p style="position:absolute;top:288px;left:69px;white-space:nowrap" class="ft13"><b>EL&#160;NÚMERO DE SUFRAGANTES DE UNA&#160;MESA&#160;ES MAYOR&#160;AL&#160;DE CIUDADANOS&#160;APTOS&#160;PARA&#160;VOTAR</b></p>
+            <p style="position:absolute;top:315px;left:69px;white-space:nowrap" class="ft13"><b>EL&#160;NÚMERO DE SUFRAGANTES DE UNA&#160;MESA&#160;ES MAYOR&#160;AL&#160;NÚMERO DE CIUDADANOS&#160;APTOS&#160;PARA&#160;</b></p>
+            <p style="position:absolute;top:327px;left:69px;white-space:nowrap" class="ft13"><b>VOTAR EN LA&#160;CABECERA&#160;MUNICIAL, CORREGIMIENTO O INSPECCIÓN DE POLICIA</b></p>
+            <p style="position:absolute;top:460px;left:69px;white-space:nowrap" class="ft13"><b>INDEBIDA&#160;CLASIFICACIÓN DE LOS VOTOS</b></p>
+            <p style="position:absolute;top:495px;left:69px;white-space:nowrap" class="ft13"><b>REGISTRO ERRÓNEO DE LOS VOTOS DE LOS CANDIDATOS</b></p>
+            <p style="position:absolute;top:530px;left:69px;white-space:nowrap" class="ft13"><b>UTILIZACIÓN DE LOS&#160;TARJETONES ELECTORALES NO MARCADOS</b></p>
+            <p style="position:absolute;top:652px;left:1015px;white-space:nowrap" class="ft13"><b>FECHA&#160;SOLICITUD</b></p>
+            <p style="position:absolute;top:670px;left:982px;white-space:nowrap" class="ft13"><b>DIA</b></p>
+            <p style="position:absolute;top:670px;left:1050px;white-space:nowrap" class="ft13"><b>MES</b></p>
+            <p style="position:absolute;top:670px;left:1116px;white-space:nowrap" class="ft13"><b>AÑO</b></p>
+            <p style="position:absolute;top:32px;left:197px;white-space:nowrap" class="ft17"><b>FORMATO DE RECLAMACIONES ANTE JURADOS DE MESA</b></p>
+            <p style="position:absolute;top:68px;left:308px;white-space:nowrap" class="ft18">ELECCIONES TERRITORIALES DEL 29 DE OCTUBRE 2023</p>
+            <p style="position:absolute;top:347px;left:898px;white-space:nowrap" class="ft19"><b>ALCALDÍA</b></p>
+            <p style="position:absolute;top:34px;left:1061px;white-space:nowrap" class="ft110"><b>E-25</b></p>
+            <p style="position:absolute;top:583px;left:678px;white-space:nowrap" class="ft111"><b>CANDIDATO</b></p>
+            <p style="position:absolute;top:602px;left:678px;white-space:nowrap" class="ft111"><b>TESTIGO</b></p>
+            <p style="position:absolute;top:603px;left:754px;white-space:nowrap" class="ft111"><b>X</b></p>
+            <p style="position:absolute;top:622px;left:678px;white-space:nowrap" class="ft111"><b>APODERADO</b></p>
+            <p style="position:absolute;top:310px;left:820px;white-space:nowrap" class="ft112"><b>CORPORACIÓN O CARGO DE ELECCIÓN</b></p>
+          </div>
+        </body>
+      </html>
+      
+      `);
+    });
+    popupWin?.document.close();
+  }
+
   dataTableOptions() {
-    this.dtOptions[0] = {
+    this.dtOptions1 = {
       destroy: true,
       processing: true,
       pageLength: 10,
@@ -301,7 +525,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
       },
     };
-    this.dtOptions[1] = {
+    this.dtOptions2 = {
       destroy: true,
       processing: true,
       pageLength: 10,
@@ -330,7 +554,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
       },
     };
-    this.dtOptions[2] = {
+    this.dtOptions3 = {
       destroy: true,
       processing: true,
       pageLength: 10,
@@ -377,23 +601,27 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     });
   }
 
-  atras(){
-    this.actual--
+  download(url: string): void {
+    this.fileDownloadService.downloadFile(url).subscribe((blob) => {
+      const a = document.createElement('a');
+      const objectUrl = URL.createObjectURL(blob);
+      a.href = objectUrl;
+      a.download = 'archivo.pdf'; // Nombre del archivo descargado
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    });
+  }
+
+  atras() {
+    this.actual--;
     if (this.actual <= 9) {
       //var rand = Math.floor(Math.random() * this.dataRevisar.length);
       this.ModalRevisarActual(this.dataRevisar[this.actual]);
-      
     } else {
-      window.location.reload()
+      window.location.reload();
     }
     this.createForm.get('pagina')?.reset(); // Limpiar el campo de página
     this.createForm.get('observaciones')?.reset(); // Limpiar el campo de observaciones
     this.renderer();
-
-
   }
-
-  
-
-
 }

@@ -3,105 +3,168 @@
     <div class="bg-primary py-3 px-5 text-white">
       <h4>Hola {{ nombreCoordinador }}</h4>
     </div>
-    <div class="card-body"></div>
-    <div [hidden]="!tabla">
-      <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">
-        <li class="nav-item" id="tab1">
-          <button
-            class="nav-link h4 px-md-5 active"
-            id="home-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#porrevisar"
-            type="button"
-            role="tab"
+    <div class="card-body">
+      <form
+        class="row m-4 d-flex justify-content-center"
+        [formGroup]="searchForm"
+      >
+        <div class="form-group col-md-6 col-lg-4 pt-2">
+          <label class="fw-bold form-label">Categoría</label>
+          <ng-select
+            [items]="categoryList"
+            [searchable]="false"
+            class="custom-select rounded"
+            bindLabel="nombre"
+            bindValue="id"
+            (change)="getSelectedCategory($event)"
+            información="No hay información disponible"
+            placeholder="Seleccione la categoría"
+            formControlName="category"
+            [clearAllText]="'Borrar todo'"
           >
-            IMPUGNAR
-          </button>
-        </li>
-        <li class="nav-item" id="tab2">
-          <button
-            class="nav-link h4 px-md-5"
-            id="profile-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#revisados"
-            type="button"
-            role="tab"
-          >
-            POR REVISAR (TRANSMISION)
-          </button>
-        </li>
-      </ul>
-      <div class="tab-content" id="myTabContent">
-        <div
-          class="tab-pane fade show active"
-          id="porrevisar"
-          role="tabpanel"
-          aria-labelledby="home-tab"
+          </ng-select>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">
+      <li class="nav-item" id="tab1">
+        <button
+          class="nav-link h4 px-md-5 active"
+          id="home-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#porrevisar"
+          type="button"
+          role="tab"
         >
-          <div class="card mt-3">
-            <div class="card-body">
-              <div
-                class="table-responsive my-4"
-                [hidden]="dataImpugnar.length <= 0"
+          IMPUGNAR
+        </button>
+      </li>
+      <li class="nav-item" id="tab2">
+        <button
+          class="nav-link h4 px-md-5"
+          id="profile-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#revisados"
+          type="button"
+          role="tab"
+        >
+          POR REVISAR (TRANSMISIÓN)
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="porrevisar"
+        role="tabpanel"
+        aria-labelledby="home-tab"
+      >
+        <div class="card mt-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-primary" (click)="printAll()">
+                Imprimir todos
+              </button>
+            </div>
+            <div
+              class="table-responsive my-4"
+              [hidden]="dataImpugnar.length <= 0"
+            >
+              <table
+                id="second-table"
+                datatable
+                [dtOptions]="dtOptions1"
+                [dtTrigger]="dtTrigger2"
+                class="table text-center align-middle w-100"
               >
-                <table
-                  id="second-table"
-                  datatable
-                  [dtOptions]="dtOptions[1]"
-                  [dtTrigger]="dtTrigger2"
-                  class="table text-center align-middle w-100"
-                >
-                  <thead class="text-dark align-middle">
-                    <tr>
-                      <th scope="col">DEPARTAMENTO</th>
-                      <th scope="col">MUNICIPIO</th>
-                      <th scope="col">ZONA</th>
-                      <th scope="col">PUESTO</th>
-                      <th scope="col">MESA</th>
-                      <th scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="bg-white" *ngFor="let impugnar of dataImpugnar">
-                      <td>{{ impugnar.departamento }}</td>
-                      <td>{{ impugnar.municipio }}</td>
-                      <td>{{ impugnar.zona }}</td>
-                      <td>{{ impugnar.puesto }}</td>
-                      <td>{{ impugnar.mesa }}</td>
-                      <td>
-                        <button
-                          class="btn align-middle mx-1"
-                          data-bs-toggle="modal"
-                          data-bs-target="#impugnadosmodal"
-                          (click)="ModalImpugnarActual(impugnar)"
-                        >
-                          <i class="fa-solid fa-eye text-primary"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div *ngIf="dataImpugnar.length <= 0">
-                <p class="text-center mb-0">No hay reportes por impugnar.</p>
-              </div>
+                <thead class="text-dark align-middle">
+                  <tr>
+                    <th scope="col">CATEGORÍA</th>
+                    <th scope="col">DEPARTAMENTO</th>
+                    <th scope="col">MUNICIPIO</th>
+                    <th scope="col">ZONA</th>
+                    <th scope="col">PUESTO</th>
+                    <th scope="col">MESA</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bg-white" *ngFor="let impugnar of dataImpugnar">
+                    <td>{{ impugnar.category }}</td>
+                    <td>{{ impugnar.departamento }}</td>
+                    <td>{{ impugnar.municipio }}</td>
+                    <td>{{ impugnar.zona }}</td>
+                    <td>{{ impugnar.puesto }}</td>
+                    <td>{{ impugnar.mesa }}</td>
+                    <td>
+                      <button
+                        class="btn align-middle mx-1"
+                        data-bs-toggle="modal"
+                        data-bs-target="#impugnadosmodal"
+                        (click)="ModalImpugnarActual(impugnar)"
+                      >
+                        <i class="fa-solid fa-eye text-primary"></i>
+                      </button>
+                      <button
+                        class="btn align-middle mx-1"
+                        (click)="print(impugnar)"
+                      >
+                        <i class="fa-solid fa-print text-primary"></i>
+                      </button>
+                      <div id="print-section"></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-        <div
-          class="tab-pane fade"
-          id="revisados"
-          role="tabpanel"
-          aria-labelledby="profile-tab"
+      </div>
+      <div
+        class="tab-pane fade"
+        id="revisados"
+        role="tabpanel"
+        aria-labelledby="profile-tab"
+      >
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+          <div class="modal-content">
+            <h5 class="modal-title" id="exampleModalLabel">
+              <strong>Vista revisados</strong>
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="impugnadosmodal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+        <button
+          type="button"
+          class="btn"
+          data-bs-dismiss="modal"
+          aria-label="Close"
         >
-          <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-              <h5 class="modal-title" id="exampleModalLabel">
-                <strong>Vista revisados</strong>
-              </h5>
-            </div>
-          </div>
-        </div>
+          <i class="fa-solid fa-xmark text-white"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <iframe
+          [src]="urlImpugnados"
+          frameborder="0"
+          allowFullScreen="true"
+        ></iframe>
       </div>
     </div>
   </div>
