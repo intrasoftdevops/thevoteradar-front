@@ -224,6 +224,10 @@ export class ApiService {
     return this.http.post(this._URL + "/get-reportes-revisar", data, { headers: this.getHeaders() });
   }
 
+  getImpugnacionesRevisadas(data: any) {
+    return this.http.post(this._URL + "/get-reportes-revisados", data, { headers: this.getHeaders() });
+  }
+
   impugnar(id: any, data: any) {
     return this.http.put(this._URL + "/impugnar/" + id, data, { headers: this.getHeaders() });
   }

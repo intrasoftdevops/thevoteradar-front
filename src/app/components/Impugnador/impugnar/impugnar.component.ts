@@ -143,14 +143,14 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
-     
-      this.dataRevisar = resp;
-      this.renderer();
-      this.notFirstTime = true;
-      this.ModalRevisarActual(this.dataRevisar[this.actual])
-      console.log(resp)
+        this.dataRevisar = resp;
+        this.renderer();
+        this.notFirstTime = true;
+        this.ModalRevisarActual(this.dataRevisar[this.actual]);
+        console.log(resp);
     });
-  }
+}
+
 
   getCategoriaImpugnacion() {
     this.apiService.getCategoriaImpugnacion().subscribe((resp:any)=>{
@@ -163,7 +163,6 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
         this.successAlert('Tu objetivo es buscar: ' + this.categoriaImpugnacion.nombre);
         localStorage.setItem('login', 'false');
       }
-      
     })
     
     
