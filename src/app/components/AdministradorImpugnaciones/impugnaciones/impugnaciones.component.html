@@ -41,18 +41,6 @@
           IMPUGNAR
         </button>
       </li>
-      <li class="nav-item" id="tab2">
-        <button
-          class="nav-link h4 px-md-5"
-          id="profile-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#revisados"
-          type="button"
-          role="tab"
-        >
-          POR REVISAR (TRANSMISIÓN)
-        </button>
-      </li>
     </ul>
     <div class="tab-content" id="myTabContent">
       <div
@@ -63,15 +51,15 @@
       >
         <div class="card mt-3">
           <div class="card-body">
-            <div class="d-flex justify-content-end">
-              <button class="btn btn-primary" (click)="printAll()">
-                Imprimir todos
-              </button>
-            </div>
             <div
               class="table-responsive my-4"
               [hidden]="dataImpugnar.length <= 0"
             >
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" (click)="printAll()">
+                  Imprimir todos
+                </button>
+              </div>
               <table
                 id="second-table"
                 datatable
