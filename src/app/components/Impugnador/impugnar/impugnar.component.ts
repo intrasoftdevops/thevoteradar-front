@@ -126,6 +126,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   getInteresesCandidato() {
     this.apiService.getInteresesCandidato().subscribe((resp: any) => {
+     
       this.dataCandidatos = resp;
       if (this.dataCandidatos.length > 0) {
         this.dataCandidatos.map((i: any) => {
@@ -142,7 +143,8 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
-      this.dataRevisar = resp.reportes_no_revisados;
+     
+      this.dataRevisar = resp;
       this.renderer();
       this.notFirstTime = true;
       this.ModalRevisarActual(this.dataRevisar[this.actual])
@@ -153,11 +155,9 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   getCategoriaImpugnacion() {
     this.apiService.getCategoriaImpugnacion().subscribe((resp:any)=>{
       this.categoriaImpugnacion = resp;
-      console.log(resp)
       if(this.categoriaImpugnacion.id == 9) {
         this.pagePDF = 1000;
       }
-      console.log(resp);
       var inicio = localStorage.getItem('login');
       if(inicio == 'true'){
         this.successAlert('Tu objetivo es buscar: ' + this.categoriaImpugnacion.nombre);
@@ -171,7 +171,9 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   
 
   ModalRevisarActual(porrevisar: any) {
-
+    console.log("entro")
+    console.log(porrevisar)
+    
     this.apiService.getReporteTransmision(porrevisar.id).subscribe((resp:any)=>{
         const revisar = resp
         console.log(resp)
