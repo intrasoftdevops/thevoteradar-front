@@ -143,6 +143,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
+      console.log(resp)
         this.dataRevisar = resp;
         this.renderer();
         this.notFirstTime = true;
