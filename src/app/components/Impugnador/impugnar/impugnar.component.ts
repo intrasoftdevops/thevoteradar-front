@@ -142,13 +142,14 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   }
 
   getImpugnaciones(data: any) {
+    console.log("entro")
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
       console.log(resp)
         this.dataRevisar = resp;
         this.renderer();
         this.notFirstTime = true;
         this.ModalRevisarActual(this.dataRevisar[this.actual]);
-        console.log(resp);
+       
     });
 }
 
@@ -190,7 +191,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
         this.createForm.get('observaciones')?.setValue(revisar.observaciones);
        
         this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
-          resp.e_14 + '#page=' + this.pagePDF
+          resp.e_14
         )
         
        /*  
