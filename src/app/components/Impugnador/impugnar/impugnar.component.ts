@@ -146,6 +146,10 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
       console.log(resp)
         this.dataRevisar = resp;
+       // this.actual = this.dataRevisar.length
+       if(this.dataRevisar.length == 0) {
+        this.successAlert("No se encontraron reportes")
+       }
         this.renderer();
         this.notFirstTime = true;
         this.ModalRevisarActual(this.dataRevisar[this.actual]);
@@ -225,12 +229,24 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
           console.log(resp)
           
           
-          if (this.actual <= 9) {
-           
+          if (this.dataRevisar.length > 1) {
+            console.log(this.dataRevisar.length )
+            console.log(this.actual)
+            
             this.ModalRevisarActual(this.dataRevisar[this.actual]);
-     
-          } else {
+            if(this.actual == 9){
+              console.log("Son iguales")
+              window.location.reload()
+            }
+          }
+          else if (this.dataRevisar.length  == 1){
+            //this.ModalRevisarActual(this.dataRevisar[this.actual]);
             window.location.reload()
+
+          }
+          
+          else {
+            this.successAlert("No se encontraron reportes")
          
           }
           this.createForm.get('pagina')?.reset();
@@ -239,28 +255,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
         });
   }
 
-  noImpugnar() {
-    this.createForm.get('categoria_impugnacion')?.setValue(null);
-    this.apiService
-      .noImpugnar(this.dataRevisarActual.id, this.createForm.value)
-      .subscribe((resp: any) => {
-        this.indexRevisar = this.dataRevisar.findIndex(
-          (i: any) => i.id === this.dataRevisarActual.id
-        );
-        this.indexRevisar !== -1 &&
-          this.dataRevisar.splice(this.indexRevisar, 1);
-        this.dataRevisar = this.dataRevisar;
-        this.dataNoImpugnados.push(this.dataRevisarActual);
-        if (this.dataRevisar.length > 0) {
-          var rand = Math.floor(Math.random() * this.dataRevisar.length);
-          this.ModalRevisarActual(this.dataRevisar[rand]);
-          this.successAlert(resp.message);
-        } else {
-          this.alertService.successAlert(resp.message);
-        }
-        this.renderer();
-      });
-  }
+
 
   successAlert(message: any) {
     Swal.fire({
