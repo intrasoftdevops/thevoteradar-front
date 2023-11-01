@@ -66,6 +66,16 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   pagePDF: any = 0;
   selectedCategory: any = '';
   originalDataImpugnar: any = [];
+  impugnacionActual: any  ={
+    id: [''],
+    categoria_impugnacion:[''],
+    codigo_puesto: [''],
+    mesa: [''],
+    candidato: [''],
+    numero_votos: [''],
+    pagina: [''],
+    observaciones: [''],
+  }
 
   constructor(
     private apiService: ApiService,
@@ -82,7 +92,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    //this.dataTableOptions();
+    this.dataTableOptions();
     this.getInteresesCandidato();
     this.getNameUser();
     this.getCliente();
@@ -119,6 +129,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   }
 
   getSelectedValue(item: any) {
+    console.log("entro")
     if (item) {
       const data = { candidato_comparacion: item.codigo_unico };
       this.getImpugnaciones(data);
@@ -146,13 +157,13 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   getImpugnaciones(data: any) {
     this.apiService.getImpugnacionesRevisadas(data).subscribe((resp: any) => {
       console.log(resp);
-      this.dataRevisar = resp;
+      this.dataRevisar = resp.reportes_revisados;
       // Crea un mapa de categorías para fácil acceso
       const categoriasMap = new Map(
         this.categoryList.map((cat: any) => [cat.id, cat.nombre])
       );
 
-      this.originalDataImpugnar = resp.map(
+      this.originalDataImpugnar = resp.reportes_revisados.map(
         (reporte: any) => ({
           ...reporte,
           category:
@@ -173,9 +184,13 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     if (item) {
       this.selectedCategory = item.nombre;
 
+      console.log(this.originalDataImpugnar)
+
       this.dataImpugnar = this.originalDataImpugnar.filter((reporte: any) => {
+        
         return reporte.category === this.selectedCategory;
       });
+      console.log(this.dataImpugnar)
       this.renderer();
     } else {
       this.dataImpugnar = this.originalDataImpugnar;
@@ -204,10 +219,9 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     this.apiService
       .getReporteTransmision(porrevisar.id)
       .subscribe((resp: any) => {
-        const revisar = resp;
-        console.log(resp);
+        const revisar = resp.reportes_revisados;
 
-        this.dataRevisarActual = revisar;
+        this.dataRevisarActual = revisar.reportes_revisados;
         this.createForm
           .get('categoria_impugnacion')
           ?.setValue(revisar.categoria_impugnacion);
@@ -298,7 +312,12 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   print(impugnar: any) {
     let printContents, popupWin;
     printContents = '../../../../assets/target001.jpg';
-    popupWin = window.open('', '_blank', 'top=0, left=0, height=600, width=800');
+    const height = window.screen.height * 0.7; // Establecer el 70% de la altura de la pantalla
+    const width = window.screen.width * 0.7; // Establecer el 70% del ancho de la pantalla
+    const top = (window.screen.height - height) / 2; // Calcular la posición superior en función de la altura
+    const left = (window.screen.width - width) / 2; // Calcular la posición izquierda en función del ancho
+
+    popupWin = window.open('', '_blank', `top=${top}, left=${left}, height=${height}, width=${width}`);
     popupWin?.document.open();
     popupWin?.document.write(`
     <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
@@ -511,7 +530,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   dataTableOptions() {
     this.dtOptions1 = {
       destroy: true,
-      processing: true,
+      processing: false,
       pageLength: 10,
       columns: [
         {
@@ -636,5 +655,21 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     this.createForm.get('pagina')?.reset(); // Limpiar el campo de página
     this.createForm.get('observaciones')?.reset(); // Limpiar el campo de observaciones
     this.renderer();
+  }
+
+  seleccionarImpugnacion(impugnacion:any){
+    this.impugnacionActual = impugnacion
+    console.log(this.impugnacionActual)
+  }
+
+  
+
+  saveObservation(observaciones:any){
+     console.log(this.impugnacionActual)
+     this.apiService.impugnar(this.impugnacionActual.id, this.impugnacionActual).subscribe((resp)=>{
+      console.log(resp)
+     })
+
+
   }
 }
