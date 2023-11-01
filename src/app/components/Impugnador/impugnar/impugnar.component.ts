@@ -81,7 +81,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     this.getNameUser()
     this.getCliente()
     const data = 0
-    this.getImpugnaciones(data)
+    //this.getImpugnaciones(data)
     this.getCategoriaImpugnacion()
   }
 
