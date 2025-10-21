@@ -124,6 +124,41 @@ ng serve
 
 La aplicación estará disponible en `http://localhost:4200/`. Los cambios en el código se reflejarán automáticamente en el navegador.
 
+### 🔧 Modo Development
+
+El proyecto incluye un **modo development** que facilita las pruebas y el desarrollo:
+
+#### **Características:**
+- **Usuarios de prueba predefinidos** para todos los roles
+- **Login automático** sin necesidad de API
+- **Interfaz visual** para seleccionar usuarios de prueba
+- **Solo activo en desarrollo** (deshabilitado en producción)
+
+#### **Usuarios de Prueba Disponibles:**
+
+| Rol | Usuario | Contraseña | Descripción |
+|-----|---------|------------|-------------|
+| **Administrador** | `admin` | `admin123` | Acceso completo al sistema |
+| **Gerente** | `gerente` | `gerente123` | Gestión de departamentos |
+| **Supervisor** | `supervisor` | `super123` | Supervisión de equipos |
+| **Coordinador** | `coord` | `coord123` | Coordinación de testigos |
+| **Testigo** | `testigo` | `test123` | Reporte de incidencias |
+| **Admin Sistema** | `admin2` | `admin456` | Administrador del sistema |
+| **Impugnador Admin** | `impugn` | `impugn123` | Administrar impugnaciones |
+| **Impugnador** | `impugnador` | `imp123` | Crear impugnaciones |
+| **Super Admin** | `superadmin` | `super456` | Super administrador |
+
+#### **Cómo Usar:**
+1. **Ejecuta el proyecto** en modo desarrollo (`ng serve`)
+2. **Ve a la página de login**
+3. **Haz clic en "Mostrar Usuarios de Prueba"**
+4. **Selecciona un usuario** haciendo clic en él
+5. **Haz clic en "INICIAR"** para acceder
+
+#### **Configuración:**
+- **Habilitar:** `environment.development = true` en `environment.ts`
+- **Deshabilitar:** `environment.development = false` en `environment.prod.ts`
+
 ### Servidor en Puerto Personalizado
 
 ```bash

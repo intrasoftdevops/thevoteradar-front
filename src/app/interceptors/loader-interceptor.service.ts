@@ -12,6 +12,7 @@ import { LoaderService } from '../services/loader/loader.service';
 import { AlertService } from '../services/alert/alert.service';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../services/localData/local-data.service';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class LoaderInterceptor implements HttpInterceptor {
@@ -29,7 +30,10 @@ export class LoaderInterceptor implements HttpInterceptor {
     if (i >= 0) {
       this.requests.splice(i, 1);
     }
-    this.loaderService.isLoading.next(this.requests.length > 0);
+    // No mostrar loading en modo development
+    if (!environment.development) {
+      this.loaderService.isLoading.next(this.requests.length > 0);
+    }
   }
 
   intercept(
@@ -40,7 +44,10 @@ export class LoaderInterceptor implements HttpInterceptor {
 
     //console.log("No of requests--->" + this.requests.length);
 
-    this.loaderService.isLoading.next(true);
+    // No mostrar loading en modo development
+    if (!environment.development) {
+      this.loaderService.isLoading.next(true);
+    }
     return Observable.create((observer: any) => {
       const subscription = next.handle(req).subscribe(
         (event) => {

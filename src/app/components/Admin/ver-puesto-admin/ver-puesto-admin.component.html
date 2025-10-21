@@ -106,89 +106,89 @@
                 <td
                   [ngClass]="
                     textColor(
-                      state.gerentes.gerentes_con_municipio,
-                      state.gerentes.cantidad_gerentes_necesitados
+                      state.gerentes?.gerentes_con_municipio,
+                      state.gerentes?.cantidad_gerentes_necesitados
                     )
                   "
                 >
-                  {{ state.gerentes.gerentes_con_municipio }}/{{
-                    state.gerentes.cantidad_gerentes_necesitados
+                  {{ state.gerentes?.gerentes_con_municipio }}/{{
+                    state.gerentes?.cantidad_gerentes_necesitados
                   }}
                   {{
                     createPercent(
-                      state.gerentes.gerentes_con_municipio,
-                      state.gerentes.cantidad_gerentes_necesitados
+                      state.gerentes?.gerentes_con_municipio,
+                      state.gerentes?.cantidad_gerentes_necesitados
                     )
                   }}
                 </td>
                 <td>
-                  {{ state.gerentes.gerentes_sin_municipio }}
+                  {{ state.gerentes?.gerentes_sin_municipio }}
                 </td>
                 <td
                   [ngClass]="
                     textColor(
-                      state.supervisores.supervisores_con_zona,
-                      state.supervisores.cantidad_supervisores_necesitados
+                      state.supervisores?.supervisores_con_zona,
+                      state.supervisores?.cantidad_supervisores_necesitados
                     )
                   "
                   class="d-none d-md-table-cell"
                 >
-                  {{ state.supervisores.supervisores_con_zona }}/{{
-                    state.supervisores.cantidad_supervisores_necesitados
+                  {{ state.supervisores?.supervisores_con_zona }}/{{
+                    state.supervisores?.cantidad_supervisores_necesitados
                   }}
                   {{
                     createPercent(
-                      state.supervisores.supervisores_con_zona,
-                      state.supervisores.cantidad_supervisores_necesitados
+                      state.supervisores?.supervisores_con_zona,
+                      state.supervisores?.cantidad_supervisores_necesitados
                     )
                   }}
                 </td>
                 <td class="d-none d-md-table-cell">
-                  {{ state.supervisores.supervisores_sin_zona }}
+                  {{ state.supervisores?.supervisores_sin_zona }}
                 </td>
                 <td
                   [ngClass]="
                     textColor(
-                      state.coordinadores.coordinadores_con_puesto,
-                      state.coordinadores.cantidad_coordinadores_necesitados
+                      state.coordinadores?.coordinadores_con_puesto,
+                      state.coordinadores?.cantidad_coordinadores_necesitados
                     )
                   "
                   class="d-none d-lg-table-cell"
                 >
-                  {{ state.coordinadores.coordinadores_con_puesto }}/{{
-                    state.coordinadores.cantidad_coordinadores_necesitados
+                  {{ state.coordinadores?.coordinadores_con_puesto }}/{{
+                    state.coordinadores?.cantidad_coordinadores_necesitados
                   }}
                   {{
                     createPercent(
-                      state.coordinadores.coordinadores_con_puesto,
-                      state.coordinadores.cantidad_coordinadores_necesitados
+                      state.coordinadores?.coordinadores_con_puesto,
+                      state.coordinadores?.cantidad_coordinadores_necesitados
                     )
                   }}
                 </td>
                 <td class="d-none d-lg-table-cell">
-                  {{ state.coordinadores.coordinadores_sin_puesto }}
+                  {{ state.coordinadores?.coordinadores_sin_puesto }}
                 </td>
                 <td
                   [ngClass]="
                     textColor(
-                      state.testigos.testigos_con_mesa,
-                      state.testigos.cantidad_testigos_necesitados
+                      state.testigos?.testigos_con_mesa,
+                      state.testigos?.cantidad_testigos_necesitados
                     )
                   "
                   class="d-none d-lg-table-cell"
                 >
-                  {{ state.testigos.testigos_con_mesa }}/{{
-                    state.testigos.cantidad_testigos_necesitados
+                  {{ state.testigos?.testigos_con_mesa }}/{{
+                    state.testigos?.cantidad_testigos_necesitados
                   }}
                   {{
                     createPercent(
-                      state.testigos.testigos_con_mesa,
-                      state.testigos.cantidad_testigos_necesitados
+                      state.testigos?.testigos_con_mesa,
+                      state.testigos?.cantidad_testigos_necesitados
                     )
                   }}
                 </td>
                 <td class="d-none d-lg-table-cell">
-                  {{ state.testigos.testigos_sin_mesa }}
+                  {{ state.testigos?.testigos_sin_mesa }}
                 </td>
                 <td>
                   <button
@@ -281,24 +281,24 @@
                 <td
                   [ngClass]="
                     textColor(
-                      state.testigos.testigos_con_mesa,
-                      state.testigos.cantidad_testigos_necesitados
+                      state.testigos?.testigos_con_mesa,
+                      state.testigos?.cantidad_testigos_necesitados
                     )
                   "
                   class="d-none d-lg-table-cell"
                 >
-                  {{ state.testigos.testigos_con_mesa }}/{{
-                    state.testigos.cantidad_testigos_necesitados
+                  {{ state.testigos?.testigos_con_mesa }}/{{
+                    state.testigos?.cantidad_testigos_necesitados
                   }}
                   {{
                     createPercent(
-                      state.testigos.testigos_con_mesa,
-                      state.testigos.cantidad_testigos_necesitados
+                      state.testigos?.testigos_con_mesa,
+                      state.testigos?.cantidad_testigos_necesitados
                     )
                   }}
                 </td>
                 <td class="d-none d-lg-table-cell">
-                  {{ state.testigos.testigos_sin_mesa }}
+                  {{ state.testigos?.testigos_sin_mesa }}
                 </td>
                 <td>
                   <button
@@ -365,24 +365,24 @@
                 <td
                   [ngClass]="
                     textColor(
-                      state.testigos.testigos_con_mesa,
-                      state.testigos.cantidad_testigos_necesitados
+                      state.testigos?.testigos_con_mesa,
+                      state.testigos?.cantidad_testigos_necesitados
                     )
                   "
                   class="d-none d-lg-table-cell"
                 >
-                  {{ state.testigos.testigos_con_mesa }}/{{
-                    state.testigos.cantidad_testigos_necesitados
+                  {{ state.testigos?.testigos_con_mesa }}/{{
+                    state.testigos?.cantidad_testigos_necesitados
                   }}
                   {{
                     createPercent(
-                      state.testigos.testigos_con_mesa,
-                      state.testigos.cantidad_testigos_necesitados
+                      state.testigos?.testigos_con_mesa,
+                      state.testigos?.cantidad_testigos_necesitados
                     )
                   }}
                 </td>
                 <td class="d-none d-lg-table-cell">
-                  {{ state.testigos.testigos_sin_mesa }}
+                  {{ state.testigos?.testigos_sin_mesa }}
                 </td>
                 <td>
                   <button
@@ -426,23 +426,23 @@
                 <td
                   [ngClass]="
                     textColor(
-                      state.testigos.testigos_con_mesa,
-                      state.testigos.cantidad_testigos_necesitados
+                      state.testigos?.testigos_con_mesa,
+                      state.testigos?.cantidad_testigos_necesitados
                     )
                   "
                 >
-                  {{ state.testigos.testigos_con_mesa }}/{{
-                    state.testigos.cantidad_testigos_necesitados
+                  {{ state.testigos?.testigos_con_mesa }}/{{
+                    state.testigos?.cantidad_testigos_necesitados
                   }}
                   {{
                     createPercent(
-                      state.testigos.testigos_con_mesa,
-                      state.testigos.cantidad_testigos_necesitados
+                      state.testigos?.testigos_con_mesa,
+                      state.testigos?.cantidad_testigos_necesitados
                     )
                   }}
                 </td>
                 <td>
-                  {{ state.testigos.testigos_sin_mesa }}
+                  {{ state.testigos?.testigos_sin_mesa }}
                 </td>
                 <td>
                   <button

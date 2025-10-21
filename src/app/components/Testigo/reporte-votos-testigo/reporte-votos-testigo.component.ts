@@ -4,6 +4,7 @@ import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-reporte-votos-testigo',

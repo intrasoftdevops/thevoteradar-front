@@ -5,6 +5,7 @@ import { AlertService } from '../../../services/alert/alert.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
 import { Lightbox } from 'ngx-lightbox';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-reporte-incidencias',
@@ -27,14 +28,56 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   incidenciaActual: any = {};
   dtOptionsIncidencias: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  isDevelopmentMode: boolean = environment.development;
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private lightbox: Lightbox) { }
 
   ngOnInit(): void {
     this.dataTableOptions();
-    this.getIncidenciasDeTestigo();
-    this.getMesasTetigo();
-    this.getCategoriasIncidencias();
+    if (this.isDevelopmentMode) {
+      this.loadDevData();
+    } else {
+      this.getIncidenciasDeTestigo();
+      this.getMesasTetigo();
+      this.getCategoriasIncidencias();
+    }
+  }
+
+  loadDevData() {
+    // Datos de prueba para modo development
+    this.categoryIncidencias = [
+      { id: 1, nombre: 'Problemas de conectividad' },
+      { id: 2, nombre: 'Fallas en equipos' },
+      { id: 3, nombre: 'Problemas de acceso' },
+      { id: 4, nombre: 'Otros' }
+    ];
+
+    this.mesas_asignadas = [
+      { codigo_mesa: 'M001', nombre: 'Mesa 1 - Centro' },
+      { codigo_mesa: 'M002', nombre: 'Mesa 2 - Norte' },
+      { codigo_mesa: 'M003', nombre: 'Mesa 3 - Sur' }
+    ];
+
+    this.dataIncidencias = [
+      {
+        id: 1,
+        categoria: 'Problemas de conectividad',
+        descripcion: 'No hay internet en la mesa',
+        codigo_mesa: 'M001',
+        fecha: '2024-01-15',
+        estado: 'Pendiente'
+      },
+      {
+        id: 2,
+        categoria: 'Fallas en equipos',
+        descripcion: 'La computadora no enciende',
+        codigo_mesa: 'M002',
+        fecha: '2024-01-14',
+        estado: 'Resuelto'
+      }
+    ];
+
+    this.dtTrigger.next(null);
   }
 
   ngOnDestroy() {

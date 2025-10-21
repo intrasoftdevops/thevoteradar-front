@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  development: false, // Deshabilitar modo desarrollo en producción
   apiURL: 'http://3.130.141.211/api',
   //apiURL: 'http://localhost:8000/api',
   key1: 'F29^2Fk$S8UuP#7#TA4TksJVUL1HKb7qap1KoozVO7!%1l6^Ie',

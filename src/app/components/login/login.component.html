@@ -62,6 +62,48 @@
         <div class="card" id="loginForm">
           <div class="card-body py-5 mx-3">
             <h2 class="text-center fw-bolder py-4 text-dark">Iniciar sesión</h2>
+            
+            <!-- Modo Development -->
+            <div *ngIf="isDevelopmentMode" class="mb-4">
+              <div class="alert alert-info d-flex align-items-center" role="alert">
+                <i class="fas fa-code me-2"></i>
+                <div>
+                  <strong>Modo Desarrollo</strong> - Usa usuarios de prueba
+                </div>
+              </div>
+              
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary btn-sm w-100 mb-3"
+                (click)="toggleDevUsers()">
+                <i class="fas fa-users me-2"></i>
+                {{ showDevUsers ? 'Ocultar' : 'Mostrar' }} Usuarios de Prueba
+              </button>
+              
+              <!-- Lista de usuarios de desarrollo -->
+              <div *ngIf="showDevUsers" class="dev-users-list">
+                <div 
+                  *ngFor="let user of devUsers" 
+                  class="dev-user-item p-2 mb-2 border rounded cursor-pointer"
+                  (click)="selectDevUser(user)"
+                  style="cursor: pointer; transition: background-color 0.2s;"
+                  onmouseover="this.style.backgroundColor='#f8f9fa'"
+                  onmouseout="this.style.backgroundColor='white'">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong>{{ user.name }}</strong>
+                      <small class="text-muted d-block">{{ user.description }}</small>
+                    </div>
+                    <div class="text-end">
+                      <small class="text-muted">Usuario: {{ user.documento }}</small>
+                      <br>
+                      <small class="text-muted">Contraseña: {{ user.password }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="Icon-inside mb-3">
               <i class="fa-solid fa-user fa-xl text-dark"></i>
               <input
