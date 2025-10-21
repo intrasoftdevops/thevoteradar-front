@@ -24,31 +24,17 @@
           [formGroup]="searchForm"
         >
           <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Equipo por puesto</label>
+            <label class="fw-bold form-label">Testigos por puesto</label>
             <ng-select
               [items]="dataStations"
+              [searchable]="false"
               class="custom-select rounded"
               bindLabel="nombre"
-              bindValue="codigo_unico"
               (change)="getSelectedStation($event)"
-              notFoundText="No hay información disponible"
+              bindValue="codigo_unico"
+              información="No hay información disponible"
               placeholder="Seleccione puesto"
               formControlName="puestos"
-              [clearAllText]="'Borrar todo'"
-            >
-            </ng-select>
-          </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Testigos por mesa</label>
-            <ng-select
-              [items]="dataTables"
-              class="custom-select rounded"
-              bindLabel="numero_mesa"
-              bindValue="codigo_unico"
-              (change)="getSelectedTable($event)"
-              notFoundText="No hay información disponible"
-              placeholder="Seleccione mesa"
-              formControlName="mesas"
               [clearAllText]="'Borrar todo'"
             >
             </ng-select>
@@ -61,27 +47,44 @@
         <h4>Testigos</h4>
       </div>
       <div class="card-body">
-        <div
-          class="table-responsive"
-          *ngIf="listTestigos.length > 0; else other_content"
-        >
-          <table class="table table-curved text-center">
-            <thead class="text-dark">
+        <div class="table-responsive">
+          <table
+            datatable
+            [dtOptions]="dtOptions"
+            [dtTrigger]="dtTrigger"
+            class="table text-center align-middle w-100"
+          >
+            <thead class="text-dark align-middle">
               <tr>
                 <th scope="col">NOMBRE COMPLETO</th>
                 <th scope="col" class="d-none d-md-table-cell">
                   CORREO ELECTRÓNICO
                 </th>
-                <th scope="col">TELÉFONO</th>
+                <th scope="col">IDENTIFICACIÓN</th>
+
+                <th scope="col">MESA</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let testigo of listTestigos" class="bg-white">
-                <td scope="row">
-                  {{ testigo.nombres }} {{ testigo.apellidos }}
+              <tr
+                class="bg-white"
+                *ngFor="let testigo of listTestigoAsignados; let index = index"
+              >
+                <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
+                <td>{{ testigo.email }}</td>
+                <td>{{ testigo.numero_documento }}</td>
+                <td>
+                  <span
+                    *ngFor="
+                      let mesa of testigo.mesas;
+                      let i = index;
+                      let last = last
+                    "
+                  >
+                    {{ mesa.numero_mesa
+                    }}{{ i < testigo.mesas.length - 1 ? ", " : "" }}
+                  </span>
                 </td>
-                <td class="d-none d-md-table-cell">{{ testigo.email }}</td>
-                <td>{{ testigo.telefono }}</td>
               </tr>
             </tbody>
           </table>

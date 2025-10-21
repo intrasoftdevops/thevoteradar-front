@@ -37,6 +37,7 @@ export class AppComponent {
 
   getRol(): any {
     this.rol = this.localData.getRol() != '' ? this.localData.getRol() : ['0'];
+    
     return this.rol;
   }
 }

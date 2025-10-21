@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
@@ -17,7 +17,7 @@ export class EditarCoordinadorComponent implements OnInit {
   dataStations: any = [];
   idCoordinador: any;
   subscriber: any;
-  updateForm: FormGroup = this.fb.group({
+  updateForm: UntypedFormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     genero_id: ['', Validators.required],
@@ -41,7 +41,7 @@ export class EditarCoordinadorComponent implements OnInit {
     private apiService: ApiService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private customValidator: CustomValidationService,
     private alertService: AlertService,
     private localData: LocalDataService
@@ -139,7 +139,7 @@ export class EditarCoordinadorComponent implements OnInit {
           ?.setValue(this.getCodeMunicipals(puestos_asignados));
         this.updateForm
           .get('zona')
-          ?.setValue(this.getCodeMunicipals(zonas_asignadas)[0]);
+          ?.setValue(zonas_asignadas.codigo_unico);
       });
   }
 

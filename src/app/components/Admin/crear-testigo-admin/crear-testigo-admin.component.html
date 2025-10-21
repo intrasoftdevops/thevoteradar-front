@@ -126,7 +126,7 @@
             [clearAllText]="'Borrar todo'"
             bindValue="nombre_departamento_votacion"
             (change)="getSelectedDepartment($event)"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
           >
           </ng-select>
         </div>
@@ -143,7 +143,7 @@
             (change)="getSelectedMunicipal($event)"
             [clearAllText]="'Borrar todo'"
             placeholder="Seleccione municipio"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
             [(ngModel)]="selectedMunicipal"
             [ngModelOptions]="{ standalone: true }"
           >
@@ -161,7 +161,7 @@
             bindValue="codigo_unico"
             (change)="getSelectedZone($event)"
             placeholder="Seleccione zona"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
             [(ngModel)]="selectedZone"
             [ngModelOptions]="{ standalone: true }"
             [clearAllText]="'Borrar todo'"
@@ -182,7 +182,7 @@
             bindValue="codigo_unico"
             placeholder="Seleccione puesto"
             (change)="getSelectedStation($event)"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
             [clearAllText]="'Borrar todo'"
           >
           </ng-select>
@@ -198,7 +198,7 @@
             [multiple]="true"
             [clearAllText]="'Borrar todo'"
             placeholder="Seleccione mesa(s)"
-            notFoundText="No hay información disponible"
+            información="No hay información disponible"
           >
           </ng-select>
         </div>

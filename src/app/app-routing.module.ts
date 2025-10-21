@@ -43,6 +43,8 @@ import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { CambiarRolGerenteComponent } from './components/Admin/cambiar-rol-gerente/cambiar-rol-gerente.component';
 import { AuthGuard } from './guards/AuthGuard/auth.guard';
 import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
+import { ImpugnacionesComponent } from './components/AdministradorImpugnaciones/impugnaciones/impugnaciones.component';
+import { MenuAdministradorImpugnacionesComponent } from './components/AdministradorImpugnaciones/menu-administrador-impugnaciones/menu-administrador-impugnaciones.component';
 
 const routes: Routes = [
   {
@@ -365,6 +367,22 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
       rol: [1]
+    }
+  },
+  {
+    path: 'administrar-impugnaciones',
+    component: ImpugnacionesComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [7]
+    }
+  },
+  {
+    path: 'menu-admin-impugnaciones',
+    component: MenuAdministradorImpugnacionesComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [7]
     }
   },
   {

@@ -3,17 +3,34 @@ import { Router } from '@angular/router';
 import { LocalDataService } from '../../services/localData/local-data.service';
 import { ApiService } from '../../services/api/api.service';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { InactivityService } from '../../services/inactivity/inactivity.service';
 
 @Component({
   selector: 'app-dropdown-menu-users',
   templateUrl: './dropdown-menu-users.component.html',
-  styleUrls: ['./dropdown-menu-users.component.scss']
+  styleUrls: ['./dropdown-menu-users.component.scss'],
 })
 export class DropdownMenuUsersComponent implements OnInit {
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private localData: LocalDataService,
+    private permissionsService: NgxPermissionsService,
+    private inactivityService: InactivityService
+  ) {}
 
-  constructor(private apiService: ApiService, private router:Router,private localData: LocalDataService, private permissionsService: NgxPermissionsService) { }
+  ngOnInit() {
+    // Contador de inactividad
+    this.inactivityService.inactivityObservable.subscribe(() => {
+      // Realiza acciones cuando se detecta inactividad, como cerrar la sesión del usuario
+      this.logout();
+      console.log('Inactividad detectada');
+    });
 
-  ngOnInit(): void {
+    // Reinicia el temporizador de inactividad cuando ocurran eventos de actividad
+    window.addEventListener('mousemove', () => this.inactivityService.resetTimer());
+    window.addEventListener('click', () => this.inactivityService.resetTimer());
+    window.addEventListener('keypress', () => this.inactivityService.resetTimer());
   }
 
   logout() {
@@ -21,14 +38,13 @@ export class DropdownMenuUsersComponent implements OnInit {
       next: () => {
         this.localData.deleteCookies();
         this.router.navigate(['']);
-        this.permissionsService.addPermission(["0"]);
+        this.permissionsService.addPermission(['0']);
       },
       error: () => {
         this.localData.deleteCookies();
         this.router.navigate(['']);
-        this.permissionsService.addPermission(["0"]);
-      }
-    })
+        this.permissionsService.addPermission(['0']);
+      },
+    });
   }
-
 }

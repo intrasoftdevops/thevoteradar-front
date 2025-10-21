@@ -128,5 +128,7 @@
       }
     }
   },
-  "defaultProject": "voteradar-front"
+  "cli": {
+    "analytics": "307aa4c3-65ac-499e-b6d9-be1fe6aa15c3"
+  }
 }

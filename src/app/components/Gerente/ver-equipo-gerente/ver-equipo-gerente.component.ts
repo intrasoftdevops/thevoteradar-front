@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { Filtro } from 'src/app/models/filtro';
 import { environment } from 'src/environments/environment';
@@ -22,7 +22,7 @@ export class VerEquipoGerenteComponent implements OnInit {
   filtro: any;
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
-  searchForm: FormGroup = this.fb.group({
+  searchForm: UntypedFormGroup = this.fb.group({
     municipios: [null],
     zonas: [null],
     puestos: [null],
@@ -32,7 +32,7 @@ export class VerEquipoGerenteComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private sanitizer: DomSanitizer
   ) {}
 
@@ -131,7 +131,7 @@ export class VerEquipoGerenteComponent implements OnInit {
   getZonas(data: any) {
     this.apiService.getZoneGerente().subscribe((resp: any) => {
       this.dataZones = resp.filter(
-        (dataZone: any) => dataZone.codigo_municipio_votacion == data
+        (dataZone: any) => dataZone.codigo_municipio_votacion == data.trim()
       );
       if (this.dataZones.length > 0) {
         this.searchForm.get('zonas')?.setValue(this.dataZones[0].codigo_unico);

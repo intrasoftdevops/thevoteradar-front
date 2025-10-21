@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import packageJson from '../../../../package.json';
 import { AlertService } from '../../services/alert/alert.service';
 import { LocalDataService } from '../../services/localData/local-data.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -15,7 +15,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class LoginComponent implements OnInit {
 
-  loginForm: FormGroup = this.fb.group({
+  loginForm: UntypedFormGroup = this.fb.group({
     numero_documento: ['', Validators.required],
     password: ['', Validators.required],
   });
@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
 
   safeURL: any;
 
-  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService, private _sanitizer: DomSanitizer) {
+  constructor(private apiService: ApiService, private router: Router, private fb: UntypedFormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService, private _sanitizer: DomSanitizer) {
     this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/bNU_d8rei4k");
   }
 
@@ -62,14 +62,14 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['reporteIncidencias']);
           }
           else if (res == true && rol == 6) {
-            // TODO
             this.router.navigate(['adminHome']);
           }
           else if (res == true && rol == 7) {
             // TODO
-            this.router.navigate(['adminHome']);
+            this.router.navigate(['administrar-impugnaciones']);
           }
           else if (res == true && rol == 8) {
+            localStorage.setItem('login', 'true');
             this.router.navigate(['impugnar']);
           }
           else if (res == true && rol == 9) {
@@ -86,4 +86,3 @@ export class LoginComponent implements OnInit {
   }
 
 }
-

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { AlertService } from '../../../services/alert/alert.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class VerPuestoAdminComponent implements OnInit {
   dataMunicipals: any = [];
   dataZones: any = [];
   dataStations: any = [];
-  searchForm: FormGroup = this.fb.group({
+  searchForm: UntypedFormGroup = this.fb.group({
     departamentos: [null],
     municipios: [null],
     zonas: [null],
@@ -27,7 +27,7 @@ export class VerPuestoAdminComponent implements OnInit {
   dataStateStation: any = [];
   stateActual: any = {};
 
-  constructor(private apiService: ApiService, private fb: FormBuilder) {}
+  constructor(private apiService: ApiService, private fb: UntypedFormBuilder) {}
 
   ngOnInit() {
     this.getDepartmentAdmin();

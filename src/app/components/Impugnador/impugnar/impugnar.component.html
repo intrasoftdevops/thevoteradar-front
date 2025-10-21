@@ -1,434 +1,72 @@
 <div class="container py-5">
   <div class="card">
     <div class="bg-primary py-3 px-5 text-white">
-      <h4>Impugnaciones</h4>
+      <h4>
+        Hola {{ nombreCoordinador }} ¡Vamos a proteger los votos de
+        {{ nombreCliente }}!
+      </h4>
     </div>
-    <div class="card-body">
-      <form
-        class="row m-4 d-flex justify-content-center align-items-center align-items-center"
-        [formGroup]="searchForm"
-      >
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Reportes por candidato</label>
-          <ng-select
-            [items]="dataCandidatos"
-            bindLabel="fullName"
-            bindValue="codigo_unico"
-            (change)="getSelectedValue($event)"
-            class="custom-select rounded"
-            notFoundText="No hay información disponible"
-            placeholder="Seleccione candidato"
-            formControlName="candidato"
-            [clearAllText]="'Borrar todo'"
-          >
-          </ng-select>
-        </div>
-      </form>
-    </div>
-  </div>
-  <div [hidden]="!tabla">
-    <ul class="nav nav-tabs mt-5" id="myTab">
-      <li class="nav-item" id="tab">
-        <button
-          class="nav-link h4 px-md-5 active"
-          id="home-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#impugnar"
-          type="button"
-          role="tab"
+    <div [hidden]="!tabla" class="divInfo">
+      <div class="tab-content" id="myTabContent">
+        <div
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
         >
-          POR REVISAR
-        </button>
-      </li>
-      <li class="nav-item" id="tab">
-        <button
-          class="nav-link h4 px-md-5"
-          id="profile-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#impugnados"
-          type="button"
-          role="tab"
-        >
-          IMPUGNAR
-        </button>
-      </li>
-
-      <li class="nav-item" id="tab">
-        <button
-          class="nav-link h4 px-md-5"
-          id="profile-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#noimpugnados"
-          type="button"
-          role="tab"
-        >
-          NO IMPUGNADOS
-        </button>
-      </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-      <div class="tab-pane fade show active" id="impugnar" role="tabpanel">
-        <div class="card mt-3">
-          <div class="card-body">
-            <div
-              class="table-responsive my-4"
-              [hidden]="dataRevisar.length <= 0"
-            >
-              <table
-                id="first-table"
-                datatable
-                [dtOptions]="dtOptions[0]"
-                [dtTrigger]="dtTrigger1"
-                class="table text-center align-middle w-100"
-              >
-                <thead class="text-dark align-middle">
-                  <tr>
-                    <th scope="col">DEPARTAMENTO</th>
-                    <th scope="col">MUNICIPIO</th>
-                    <th scope="col">ZONA</th>
-                    <th scope="col">PUESTO</th>
-                    <th scope="col">MESA</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="bg-white" *ngFor="let revisar of dataRevisar">
-                    <td>{{ revisar.departamento }}</td>
-                    <td>{{ revisar.municipio }}</td>
-                    <td>{{ revisar.zona }}</td>
-                    <td>{{ revisar.puesto }}</td>
-                    <td>{{ revisar.mesa }}</td>
-                    <td>
-                      <button
-                        class="btn align-middle mx-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#impugnarmodal"
-                        (click)="ModalRevisarActual(revisar)"
-                      >
-                        <i class="fa-solid fa-eye text-primary"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div *ngIf="dataRevisar.length <= 0">
-              <p class="text-center mb-0">No hay reportes por revisar.</p>
-            </div>
+          <div class="d-flex py-4 justify-content-center align-items-center">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Busca: <strong>{{categoriaImpugnacion.nombre}}</strong>
+            </h5>
           </div>
-        </div>
-      </div>
-      <div class="tab-pane fade" id="impugnados" role="tabpanel">
-        <div class="card mt-3">
-          <div class="card-body">
-            <div
-              class="table-responsive my-4"
-              [hidden]="dataImpugnar.length <= 0"
-            >
-              <table
-                id="second-table"
-                datatable
-                [dtOptions]="dtOptions[1]"
-                [dtTrigger]="dtTrigger2"
-                class="table text-center align-middle w-100"
-              >
-                <thead class="text-dark align-middle">
-                  <tr>
-                    <th scope="col">DEPARTAMENTO</th>
-                    <th scope="col">MUNICIPIO</th>
-                    <th scope="col">ZONA</th>
-                    <th scope="col">PUESTO</th>
-                    <th scope="col">MESA</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="bg-white" *ngFor="let impugnar of dataImpugnar">
-                    <td>{{ impugnar.departamento }}</td>
-                    <td>{{ impugnar.municipio }}</td>
-                    <td>{{ impugnar.zona }}</td>
-                    <td>{{ impugnar.puesto }}</td>
-                    <td>{{ impugnar.mesa }}</td>
-                    <td>
-                      <button
-                        class="btn align-middle mx-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#impugnadosmodal"
-                        (click)="ModalImpugnarActual(impugnar)"
-                      >
-                        <i class="fa-solid fa-eye text-primary"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          <div class="row" *ngIf="erroresImpugnacion==true">
+            <div class="col-9">
+              <iframe
+                [src]="urlImpugnados"
+                *ngIf="urlImpugnados"
+                class="e-14 py-1 px-4"
+                title="YouTube video"
+                allowfullscreen
+              ></iframe>
             </div>
-            <div *ngIf="dataImpugnar.length <= 0">
-              <p class="text-center mb-0">No hay reportes por impugnar.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane fade" id="noimpugnados" role="tabpanel">
-        <div class="card mt-3">
-          <div class="card-body">
-            <div
-              class="table-responsive my-4"
-              [hidden]="dataNoImpugnados.length <= 0"
-            >
-              <table
-                id="third-table"
-                datatable
-                [dtOptions]="dtOptions[2]"
-                [dtTrigger]="dtTrigger3"
-                class="table text-center align-middle w-100"
-              >
-                <thead class="text-dark align-middle">
-                  <tr>
-                    <th scope="col">DEPARTAMENTO</th>
-                    <th scope="col">MUNICIPIO</th>
-                    <th scope="col">ZONA</th>
-                    <th scope="col">PUESTO</th>
-                    <th scope="col">MESA</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    class="bg-white"
-                    *ngFor="let noImpugnados of dataNoImpugnados"
+            <div class="col-3">
+              <form class="form-group" [formGroup]="createForm">
+                <div class="py-1">
+                  <label>
+                    <strong>Página</strong>
+                  </label>
+                  <input
+                    class="form-control"
+                    type="number"
+                    placeholder="Número de página"
+                    formControlName="pagina"
+                    id="pagina"
+                  />
+                </div>
+                <div class="py-1">
+                  <label>
+                    <strong>Observaciones</strong>
+                  </label>
+                  <textarea
+                    formControlName="observaciones"
+                    class="form-control"
+                    rows="3"
+                    id="observaciones"
+                  ></textarea>
+                </div>
+                <div class=" py-2">
+                  <button type="button" class="btn btn-dark mx-2" (click)="atras()">
+                    Atrás
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary mx-2"
+                    (click)="impugnar()"
                   >
-                    <td>{{ noImpugnados.departamento }}</td>
-                    <td>{{ noImpugnados.municipio }}</td>
-                    <td>{{ noImpugnados.zona }}</td>
-                    <td>{{ noImpugnados.puesto }}</td>
-                    <td>{{ noImpugnados.mesa }}</td>
-                    <td>
-                      <button
-                        class="btn align-middle mx-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#noimpugnadosmodal"
-                        (click)="ModalNoImpugnarActual(noImpugnados)"
-                      >
-                        <i class="fa-solid fa-eye text-primary"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    Siguiente
+                  </button>
+                </div>
+              </form>
             </div>
-            <div *ngIf="dataNoImpugnados.length <= 0">
-              <p class="text-center mb-0">No hay reportes no impugnados.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  id="impugnarmodal"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Impugnar</h5>
-        <button
-          type="button"
-          class="btn"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        >
-          <i class="fa-solid fa-xmark text-white"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <iframe
-          [src]="urlRevisar"
-          *ngIf="urlRevisar"
-          class="e-14 py-1"
-          title="YouTube video"
-          allowfullscreen
-        ></iframe>
-        <div class="row">
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Departamento: </span
-            ><span> {{ dataRevisarActual.departamento }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Municipio: </span
-            ><span> {{ dataRevisarActual.municipio }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Zona: </span
-            ><span> {{ dataRevisarActual.zona }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Puesto de votación: </span
-            ><span> {{ dataRevisarActual.puesto }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Mesa: </span
-            ><span> {{ dataRevisarActual.mesa }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">N° Votos: </span
-            ><span> {{ dataRevisarActual.numero_votos }}</span>
-          </div>
-        </div>
-        <form
-          class="form-group col-md-6 col-lg-4 pt-2"
-          [formGroup]="createForm"
-        >
-          <label class="fw-bold form-label">
-            <span class="fw-bold">Categoría de impugnación</span>
-            <span class="text-danger">*</span>
-          </label>
-          <ng-select
-            [items]="dataCategoriaImpugnacion"
-            [searchable]="false"
-            class="custom-select rounded"
-            bindLabel="nombre"
-            bindValue="id"
-            notFoundText="No hay información disponible"
-            formControlName="categoria_impugnacion"
-            placeholder="Seleccione categoría"
-          >
-          </ng-select>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="noImpugnar()">
-          No impugnar
-        </button>
-        <button type="button" class="btn btn-primary" (click)="impugnar()">
-          Impugnar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  id="impugnadosmodal"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Impugnados</h5>
-        <button
-          type="button"
-          class="btn"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        >
-          <i class="fa-solid fa-xmark text-white"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <iframe
-          [src]="urlImpugnados"
-          *ngIf="urlImpugnados"
-          class="e-14 py-1"
-          title="YouTube video"
-          allowfullscreen
-        ></iframe>
-        <div class="row align-middle">
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Departamento: </span
-            ><span> {{ dataImpugnarActual.departamento }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Municipio: </span
-            ><span> {{ dataImpugnarActual.municipio }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Zona: </span
-            ><span> {{ dataImpugnarActual.zona }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Puesto de votación: </span
-            ><span> {{ dataImpugnarActual.puesto }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Mesa: </span
-            ><span> {{ dataImpugnarActual.mesa }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Categoría de impugnación: </span
-            ><span> {{ dataImpugnarActual.categoria }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">N° Votos: </span
-            ><span> {{ dataImpugnarActual.numero_votos }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  id="noimpugnadosmodal"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">No Impugnados</h5>
-        <button
-          type="button"
-          class="btn"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        >
-          <i class="fa-solid fa-xmark text-white"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <iframe
-          [src]="urlNoImpugnados"
-          *ngIf="urlNoImpugnados"
-          class="e-14 py-1"
-          title="YouTube video"
-          allowfullscreen
-        ></iframe>
-        <div class="row">
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Departamento: </span
-            ><span> {{ dataNoImpugnarActual.departamento }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Municipio: </span
-            ><span> {{ dataNoImpugnarActual.municipio }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Zona: </span
-            ><span> {{ dataNoImpugnarActual.zona }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Puesto de votación: </span
-            ><span> {{ dataNoImpugnarActual.puesto }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">Mesa: </span
-            ><span> {{ dataNoImpugnarActual.mesa }}</span>
-          </div>
-          <div class="col-md-6 col-lg-4 pb-2 my-auto">
-            <span class="fw-bold">N° Votos: </span
-            ><span> {{ dataNoImpugnarActual.numero_votos }}</span>
           </div>
         </div>
       </div>
