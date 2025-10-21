@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
   });
 
   public version: string = packageJson.version;
-  public isDevelopmentMode: boolean = environment.development;
+  public isDevelopmentMode: boolean = this.checkDevelopmentMode();
   public showDevUsers: boolean = false;
 
   safeURL: any;
@@ -42,6 +42,16 @@ export class LoginComponent implements OnInit {
 
   constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService, private _sanitizer: DomSanitizer) {
     this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/bNU_d8rei4k");
+  }
+
+  private checkDevelopmentMode(): boolean {
+    // Verificación de seguridad múltiple
+    return environment.development && 
+           !environment.production && 
+           (window.location.hostname === 'localhost' || 
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname.includes('dev') ||
+            window.location.hostname.includes('test'));
   }
 
   ngOnInit() {

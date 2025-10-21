@@ -28,13 +28,23 @@ export class VerPuestoAdminComponent implements OnInit {
   dataStateZone: any = [];
   dataStateStation: any = [];
   stateActual: any = {};
-  isDevelopmentMode: boolean = environment.development;
+  isDevelopmentMode: boolean = this.checkDevelopmentMode();
 
   constructor(
     private apiService: ApiService, 
     private fb: FormBuilder,
     private devDataService: DevDataService
   ) {}
+
+  private checkDevelopmentMode(): boolean {
+    // Verificación de seguridad múltiple
+    return environment.development && 
+           !environment.production && 
+           (window.location.hostname === 'localhost' || 
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname.includes('dev') ||
+            window.location.hostname.includes('test'));
+  }
 
   ngOnInit() {
     if (this.isDevelopmentMode) {
