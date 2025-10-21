@@ -2,6 +2,77 @@
 
 Sistema de gestión electoral para monitoreo de votaciones en tiempo real.
 
+## 📖 ¿Qué es VoteRadar?
+
+**VoteRadar** es una plataforma web integral diseñada para la gestión, monitoreo y control de procesos electorales en tiempo real. El sistema permite coordinar equipos de trabajo distribuidos en diferentes zonas geográficas y puestos de votación, facilitando la recolección, supervisión y reporte de información electoral.
+
+### 🎯 Funcionalidades Principales
+
+#### 🗳️ **Monitoreo de Votaciones**
+- Reporte de votos por mesa y candidato en tiempo real
+- Captura fotográfica de actas de escrutinio
+- Validación y consolidación de resultados por zonas
+- Dashboard con estadísticas y métricas electorales
+
+#### 📋 **Gestión de Incidencias**
+- Reporte de novedades y problemas en puestos de votación
+- Categorización de incidencias (seguridad, logística, técnicas, etc.)
+- Sistema de seguimiento con estados (abierto/cerrado)
+- Adjuntar evidencia fotográfica y videos
+- Respuestas y resolución por parte de coordinadores
+
+#### 👥 **Gestión Jerárquica de Personal**
+El sistema maneja una estructura organizacional de varios niveles:
+- **Administradores**: Gestión completa del sistema y usuarios
+- **Gerentes**: Supervisión de departamentos y municipios
+- **Supervisores**: Coordinación de zonas de votación
+- **Coordinadores**: Gestión directa de puestos de votación
+- **Testigos**: Personal en campo reportando información
+
+#### ⚖️ **Sistema de Impugnaciones**
+- Registro y gestión de impugnaciones electorales
+- Categorización por tipo de impugnación
+- Seguimiento del estado de cada caso
+- Generación de reportes de impugnaciones
+
+#### 📊 **Reportes y Analítica**
+- Consolidación de datos por mesa, puesto, zona y municipio
+- Exportación de información en diferentes formatos
+- Visualización de resultados con tablas y gráficos
+- Seguimiento de cobertura y avance del reporte
+
+#### 🔐 **Control de Acceso**
+- Sistema de autenticación con JWT
+- Autorización basada en roles y permisos
+- Diferentes vistas y funcionalidades según el rol
+- Cierre de sesión automático por inactividad
+
+#### 📱 **Características Adicionales**
+- Galería de imágenes con lightbox para visualización de evidencias
+- Sistema de notificaciones y alertas
+- Gestión de contactos por campaña política
+- Interfaz responsive adaptada a diferentes dispositivos
+- Validación de formularios en tiempo real
+
+### 💼 Casos de Uso
+
+1. **Coordinador de Mesa**: Reporta resultados de votación desde el puesto electoral, adjunta fotos del acta y reporta cualquier incidencia.
+
+2. **Supervisor de Zona**: Revisa y valida reportes de múltiples mesas, responde a incidencias y monitorea el avance de la recolección de datos.
+
+3. **Gerente Regional**: Consolida información de toda una región, genera reportes estadísticos y toma decisiones basadas en datos en tiempo real.
+
+4. **Administrador**: Gestiona usuarios, asigna permisos, configura zonas de votación y supervisa la operación general del sistema.
+
+### 🌟 Beneficios
+
+- ✅ **Información en Tiempo Real**: Acceso inmediato a resultados y reportes
+- ✅ **Trazabilidad**: Registro completo de todas las acciones y cambios
+- ✅ **Eficiencia**: Reducción de tiempos en la recolección y consolidación de datos
+- ✅ **Confiabilidad**: Validación de datos con evidencia fotográfica
+- ✅ **Escalabilidad**: Soporta operaciones desde pequeñas hasta grandes escalas
+- ✅ **Seguridad**: Control estricto de acceso y autenticación robusta
+
 ## 📋 Requisitos Previos
 
 - **Node.js**: v14.x o v16.x
