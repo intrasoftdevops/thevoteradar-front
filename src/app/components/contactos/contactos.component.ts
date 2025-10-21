@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { fromEvent, Observable, Subscription } from 'rxjs';
-import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ApiService } from '../../services/api/api.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../../services/alert/alert.service';
@@ -19,14 +19,14 @@ export class ContactosComponent implements OnInit {
   innerWidth: any;
   resizeObservable$!: Observable<Event>;
   resizeSubscription$!: Subscription;
-  createForm: UntypedFormGroup = this.fb.group({
+  createForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     numero_contacto: ['', Validators.required],
     apodo: ['', Validators.required],
     como_te_dice: ['', Validators.required],
   });
-  updateForm: UntypedFormGroup = this.fb.group({
+  updateForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     numero_contacto: ['', Validators.required],
@@ -35,7 +35,7 @@ export class ContactosComponent implements OnInit {
   });
   listContactos: any = [];
 
-  constructor(private apiService: ApiService, private router: Router, private alertService: AlertService, private fb: UntypedFormBuilder, private customValidator: CustomValidationService) {
+  constructor(private apiService: ApiService, private router: Router, private alertService: AlertService, private fb: FormBuilder, private customValidator: CustomValidationService) {
   }
 
   ngOnInit() {

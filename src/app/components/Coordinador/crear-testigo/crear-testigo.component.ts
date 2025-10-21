@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 
@@ -12,7 +12,7 @@ import { CustomValidationService } from '../../../services/validations/custom-va
 export class CrearTestigoComponent implements OnInit {
   dataStations: any = [];
   dataTables: any = [];
-  createForm: UntypedFormGroup = this.fb.group({
+  createForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     genero_id: [null, Validators.required],
@@ -33,7 +33,7 @@ export class CrearTestigoComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private alertService: AlertService,
     private customValidator: CustomValidationService
   ) {}

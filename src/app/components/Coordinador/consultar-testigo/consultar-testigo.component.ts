@@ -3,7 +3,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { DataTableDirective } from 'angular-datatables';
 
 @Component({
@@ -20,7 +20,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   testigoActual: any = {};
   mesasActual: any = '';
-  searchForm: UntypedFormGroup;
+  searchForm: FormGroup;
   dataStations: any = [];
   tabla: boolean = false;
   puestoSeleccionado = '';
@@ -32,7 +32,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private router: Router,
     private localData: LocalDataService,
-    private fb: UntypedFormBuilder
+    private fb: FormBuilder
   ) {
     this.searchForm = this.fb.group({
       puestos: [null],

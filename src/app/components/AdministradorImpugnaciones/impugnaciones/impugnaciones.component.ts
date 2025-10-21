@@ -8,9 +8,9 @@ import {
 } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import {
-  UntypedFormGroup,
+  FormGroup,
   Validators,
-  UntypedFormBuilder,
+  FormBuilder,
 } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
@@ -28,7 +28,7 @@ import { FileDownloadService } from 'src/app/services/file-download/file-downloa
 export class ImpugnacionesComponent implements OnInit, OnDestroy {
   @ViewChildren(DataTableDirective)
   dtElements!: QueryList<any>;
-  searchForm: UntypedFormGroup;
+  searchForm: FormGroup;
   dataCandidatos: any = [];
   dataRevisar: any = [];
   dataImpugnar: any = [];
@@ -37,7 +37,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   dataImpugnarActual: any = {};
   dataNoImpugnarActual: any = {};
   dataCategoriaImpugnacion: any = [];
-  createForm: UntypedFormGroup = this.fb.group({
+  createForm: FormGroup = this.fb.group({
     categoria_impugnacion: [null, Validators.required],
     codigo_puesto: [''],
     mesa: [''],
@@ -79,7 +79,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
 
   constructor(
     private apiService: ApiService,
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private alertService: AlertService,
     private customValidator: CustomValidationService,
     private sanitizer: DomSanitizer,

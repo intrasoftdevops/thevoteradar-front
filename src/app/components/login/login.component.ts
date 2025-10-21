@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import packageJson from '../../../../package.json';
 import { AlertService } from '../../services/alert/alert.service';
 import { LocalDataService } from '../../services/localData/local-data.service';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -15,7 +15,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class LoginComponent implements OnInit {
 
-  loginForm: UntypedFormGroup = this.fb.group({
+  loginForm: FormGroup = this.fb.group({
     numero_documento: ['', Validators.required],
     password: ['', Validators.required],
   });
@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
 
   safeURL: any;
 
-  constructor(private apiService: ApiService, private router: Router, private fb: UntypedFormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService, private _sanitizer: DomSanitizer) {
+  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService, private _sanitizer: DomSanitizer) {
     this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/bNU_d8rei4k");
   }
 

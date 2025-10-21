@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 
@@ -20,7 +20,7 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
   filtro: any;
   urlSafe!: SafeResourceUrl;
   showMap = false;
-  searchForm: UntypedFormGroup;
+  searchForm: FormGroup;
   dataGraphics: any = {};
   listTestigoAsignados: any[] = [];
   testigosMesas: { [key: number]: string[] } = {};
@@ -31,7 +31,7 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
   dtElement!: any;
   notFirstTime = false;
 
-  constructor(private apiService: ApiService, private fb: UntypedFormBuilder) {
+  constructor(private apiService: ApiService, private fb: FormBuilder) {
     this.searchForm = this.fb.group({
       puestos: [null],
       mesas: [null],

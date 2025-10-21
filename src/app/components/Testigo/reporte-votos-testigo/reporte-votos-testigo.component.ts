@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { UntypedFormGroup, Validators, UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
@@ -15,14 +15,14 @@ export class ReporteVotosTestigoComponent implements OnInit {
   showUpload: boolean = false;
   mesas_asignadas: any = [];
   listCandidatos: any = [];
-  createForm: UntypedFormGroup = this.fb.group({
+  createForm: FormGroup = this.fb.group({
     codigo_mesa: [null, Validators.required],
     votos: this.fb.array([]),
   });
   puestos_asignado: any = "";
   files: File[] = [];
 
-  constructor(private apiService: ApiService, private fb: UntypedFormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getVotosTestigo();
@@ -35,7 +35,7 @@ export class ReporteVotosTestigoComponent implements OnInit {
   }
 
   get votos() {
-    return this.createForm.get('votos') as UntypedFormArray;
+    return this.createForm.get('votos') as FormArray;
   }
 
   onSubmit() {
@@ -84,7 +84,7 @@ export class ReporteVotosTestigoComponent implements OnInit {
       const { candidatos } = resp;
       this.listCandidatos = candidatos;
       candidatos.forEach(() => {
-        const votos = this.createForm.get('votos') as UntypedFormArray;
+        const votos = this.createForm.get('votos') as FormArray;
         votos.push(
           this.fb.control('', Validators.required)
         );

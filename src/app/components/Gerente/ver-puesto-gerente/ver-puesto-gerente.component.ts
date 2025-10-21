@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-ver-puesto-gerente',
@@ -15,7 +15,7 @@ export class VerPuestoGerenteComponent implements OnInit {
   dataStations: any = [];
   selectedZone: any = [];
   selectedStation: any = [];
-  searchForm: UntypedFormGroup = this.fb.group({
+  searchForm: FormGroup = this.fb.group({
     municipios: [null],
     zonas: [null],
     puestos: [null],
@@ -25,7 +25,7 @@ export class VerPuestoGerenteComponent implements OnInit {
   dataStateStation: any = [];
   stateActual: any = {};
 
-  constructor(private apiService: ApiService, private fb: UntypedFormBuilder) {}
+  constructor(private apiService: ApiService, private fb: FormBuilder) {}
 
   ngOnInit() {
     this.getMunicipalAdmin();

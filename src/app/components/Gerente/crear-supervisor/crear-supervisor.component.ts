@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
+  FormGroup,
+  FormBuilder,
   Validators,
 } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
@@ -17,7 +17,7 @@ export class CrearSupervisorComponent implements OnInit {
   dataZones: any = [];
   dataMunicipals: any = [];
 
-  createForm: UntypedFormGroup = this.fb.group({
+  createForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     genero_id: [null, Validators.required],
@@ -38,7 +38,7 @@ export class CrearSupervisorComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private alertService: AlertService,
     private customValidator: CustomValidationService
   ) {}

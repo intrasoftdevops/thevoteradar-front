@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
 
@@ -14,7 +14,7 @@ export class CrearGerenteComponent implements OnInit {
   dataMunicipals: any = [];
   dataDepartments: any = [];
 
-  createForm: UntypedFormGroup = this.fb.group({
+  createForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     genero_id: [null, Validators.required],
@@ -26,7 +26,7 @@ export class CrearGerenteComponent implements OnInit {
     municipios: [[]],
   });
 
-  constructor(private apiService: ApiService, private fb: UntypedFormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
 
   ngOnInit() {
     this.getDepartmentAdmin();

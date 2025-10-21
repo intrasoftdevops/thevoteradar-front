@@ -3,7 +3,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import Swal from 'sweetalert2';
 import { filter } from 'rxjs';
-import { UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
@@ -19,7 +19,7 @@ export class EditarTestigoComponent implements OnInit {
   dataTables: any = [];
   idTestigo: any;
   subscriber: any;
-  updateForm: UntypedFormGroup = this.fb.group({
+  updateForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     genero_id: ['', Validators.required],
@@ -33,7 +33,7 @@ export class EditarTestigoComponent implements OnInit {
   });
 
   constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
-    private router: Router, private fb: UntypedFormBuilder, private customValidator: CustomValidationService, private alertService: AlertService, private localData: LocalDataService) { }
+    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService, private localData: LocalDataService) { }
 
   ngOnInit() {
     this.getTestigo();

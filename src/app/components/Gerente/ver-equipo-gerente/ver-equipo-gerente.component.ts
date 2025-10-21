@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { Filtro } from 'src/app/models/filtro';
 import { environment } from 'src/environments/environment';
@@ -22,7 +22,7 @@ export class VerEquipoGerenteComponent implements OnInit {
   filtro: any;
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
-  searchForm: UntypedFormGroup = this.fb.group({
+  searchForm: FormGroup = this.fb.group({
     municipios: [null],
     zonas: [null],
     puestos: [null],
@@ -32,7 +32,7 @@ export class VerEquipoGerenteComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private sanitizer: DomSanitizer
   ) {}
 

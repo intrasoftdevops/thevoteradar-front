@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { ApiService } from '../../../services/api/api.service';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
@@ -18,7 +18,7 @@ export class EditarGerenteComponent implements OnInit {
   idGerente: any;
   subscriber: any;
 
-  updateForm: UntypedFormGroup = this.fb.group({
+  updateForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
     genero_id: ['', Validators.required],
@@ -43,7 +43,7 @@ export class EditarGerenteComponent implements OnInit {
     private apiService: ApiService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private customValidator: CustomValidationService,
     private alertService: AlertService,
     private localData: LocalDataService

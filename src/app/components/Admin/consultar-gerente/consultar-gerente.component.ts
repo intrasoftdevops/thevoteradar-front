@@ -3,7 +3,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
-import { FormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { DataTableDirective } from 'angular-datatables';
 
 @Component({
@@ -25,7 +25,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   dtElement!: any;
   notFirstTime = false;
 
-  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService,private fb: UntypedFormBuilder) { }
+  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService,private fb: FormBuilder) { }
 
   ngOnInit() {
     this.dataTableOptions();

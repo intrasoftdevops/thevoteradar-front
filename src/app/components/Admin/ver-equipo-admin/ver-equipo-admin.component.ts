@@ -3,7 +3,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { Filtro } from '../../../models/filtro';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-ver-equipo-admin',
@@ -24,7 +24,7 @@ export class VerEquipoAdminComponent implements OnInit {
   filtro: any;
   urlSafe!: SafeResourceUrl;
   showMap: boolean = false;
-  searchForm: UntypedFormGroup = this.fb.group({
+  searchForm: FormGroup = this.fb.group({
     departamentos: [null],
     municipios: [null],
     zonas: [null],
@@ -36,7 +36,7 @@ export class VerEquipoAdminComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private sanitizer: DomSanitizer,
-    private fb: UntypedFormBuilder
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {
