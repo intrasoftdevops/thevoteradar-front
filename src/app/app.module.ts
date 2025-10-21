@@ -41,7 +41,7 @@ import { ConsultarTestigoComponent } from './components/Coordinador/consultar-te
 import { EditarPerfilComponent } from './components/editarPerfil/editar-perfil.component';
 import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
 import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
-import { NgLightboxModule } from '@silmar/ng-lightbox';
+import { LightboxModule } from 'ngx-lightbox';
 import { ContactosComponent } from './components/contactos/contactos.component';
 import { ReporteVotosTestigoComponent } from './components/Testigo/reporte-votos-testigo/reporte-votos-testigo.component';
 import { NgxDropzoneModule } from 'ngx-dropzone';
@@ -130,7 +130,7 @@ import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
     ReactiveFormsModule,
     NgSelectModule,
     HammerModule, // <-- For Angular 9
-    NgLightboxModule,
+    LightboxModule,
     NgxDropzoneModule,
     DataTablesModule,
     NgxPermissionsModule.forRoot(),

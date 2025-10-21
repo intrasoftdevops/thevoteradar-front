@@ -4,6 +4,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../services/alert/alert.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
+import { Lightbox } from 'ngx-lightbox';
 
 @Component({
   selector: 'app-reporte-incidencias',
@@ -27,7 +28,7 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   dtOptionsIncidencias: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private lightbox: Lightbox) { }
 
   ngOnInit(): void {
     this.dataTableOptions();
@@ -108,6 +109,14 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   onRemove(event: any) {
     console.log(event);
     this.files.splice(this.files.indexOf(event), 1);
+  }
+
+  openLightbox(index: number): void {
+    const album = this.photos.map((photo: any) => ({
+      src: photo.url_archivo,
+      thumb: photo.url_archivo
+    }));
+    this.lightbox.open(album, index);
   }
 
   dataTableOptions() {

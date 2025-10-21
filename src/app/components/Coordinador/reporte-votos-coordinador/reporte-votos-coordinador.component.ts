@@ -3,6 +3,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
+import { Lightbox } from 'ngx-lightbox';
 
 @Component({
   selector: 'app-reporte-votos-coordinador',
@@ -27,7 +28,7 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
   @ViewChild(DataTableDirective) dtElement!: DataTableDirective;
   notFirstTime = false;
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private chRef: ChangeDetectorRef) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private chRef: ChangeDetectorRef, private lightbox: Lightbox) { }
 
   ngOnInit() {
     this.dataTableOptions();
@@ -100,6 +101,14 @@ export class ReporteVotosCoordinadorComponent implements OnInit, OnDestroy {
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
       }
     };
+  }
+
+  openLightbox(index: number): void {
+    const album = this.photos.map((photo: any) => ({
+      src: photo.url_archivo,
+      thumb: photo.url_archivo
+    }));
+    this.lightbox.open(album, index);
   }
 
   renderer() {

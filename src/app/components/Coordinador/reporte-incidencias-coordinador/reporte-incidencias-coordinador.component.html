@@ -131,11 +131,10 @@
                 <div class="w-100">
                     <ng-container *ngIf="photosOpen.length>0">
                         <p class="fst-italic">-Imágenes: </p>
-                        <si-ng-lightbox [showPreviews]="true"
-                            class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
-                            <img *ngFor="let img of photosOpen" src="{{img.url_archivo}}" [previewSrc]="img.url_archivo"
-                                [siLightboxItem]="img.url_archivo" class="imgItem py-1" />
-                        </si-ng-lightbox>
+                        <div class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
+                            <img *ngFor="let img of photosOpen; let i = index" src="{{img.url_archivo}}"
+                                (click)="openLightboxOpen(i)" class="imgItem py-1" style="cursor: pointer;" />
+                        </div>
                     </ng-container>
                     <ng-container *ngIf="videosOpen.length>0">
                         <p class="fst-italic">-Videos: </p>
@@ -201,11 +200,10 @@
                 <div class="w-100">
                     <ng-container *ngIf="photosClose.length>0">
                         <p class="fst-italic">Imágenes: </p>
-                        <si-ng-lightbox [showPreviews]="true" class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
-                            <img *ngFor="let img of photosClose" src="{{img.url_archivo}}"
-                                [previewSrc]="img.url_archivo" [siLightboxItem]="img.url_archivo"
-                                class="imgItem py-1" />
-                        </si-ng-lightbox>
+                        <div class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
+                            <img *ngFor="let img of photosClose; let i = index" src="{{img.url_archivo}}"
+                                (click)="openLightboxClose(i)" class="imgItem py-1" style="cursor: pointer;" />
+                        </div>
                     </ng-container>
                     <ng-container *ngIf="videosClose.length>0">
                         <p class="fst-italic">Videos: </p>

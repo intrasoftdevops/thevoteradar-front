@@ -225,18 +225,15 @@
         <div class="w-100">
           <ng-container *ngIf="photos.length > 0">
             <p class="fst-italic">-Imágenes:</p>
-            <si-ng-lightbox
-              [showPreviews]="true"
-              class="row row-cols-sm-2 gy-2 d-flex justify-content-center"
-            >
+            <div class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
               <img
-                *ngFor="let img of photos"
+                *ngFor="let img of photos; let i = index"
                 src="{{ img.url_archivo }}"
-                [previewSrc]="img.url_archivo"
-                [siLightboxItem]="img.url_archivo"
+                (click)="openLightbox(i)"
                 class="imgItem py-1"
+                style="cursor: pointer;"
               />
-            </si-ng-lightbox>
+            </div>
           </ng-container>
           <ng-container *ngIf="videos.length > 0">
             <p class="fst-italic">-Videos:</p>

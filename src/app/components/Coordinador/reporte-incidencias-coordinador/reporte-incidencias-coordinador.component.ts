@@ -5,6 +5,7 @@ import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
+import { Lightbox } from 'ngx-lightbox';
 
 @Component({
   selector: 'app-reporte-incidencias-coordinador',
@@ -31,7 +32,7 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit, OnDestroy
   dtElement!: any;
   notFirstTime = false;
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService) { }
+  constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private customValidator: CustomValidationService, private lightbox: Lightbox) { }
 
   ngOnInit() {
     this.dataTableOptions();
@@ -155,6 +156,22 @@ export class ReporteIncidenciasCoordinadorComponent implements OnInit, OnDestroy
         url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
       }
     };
+  }
+
+  openLightboxOpen(index: number): void {
+    const album = this.photosOpen.map((photo: any) => ({
+      src: photo.url_archivo,
+      thumb: photo.url_archivo
+    }));
+    this.lightbox.open(album, index);
+  }
+
+  openLightboxClose(index: number): void {
+    const album = this.photosClose.map((photo: any) => ({
+      src: photo.url_archivo,
+      thumb: photo.url_archivo
+    }));
+    this.lightbox.open(album, index);
   }
 
 }
