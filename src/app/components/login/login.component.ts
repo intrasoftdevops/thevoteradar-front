@@ -6,7 +6,6 @@ import { AlertService } from '../../services/alert/alert.service';
 import { LocalDataService } from '../../services/localData/local-data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -24,8 +23,7 @@ export class LoginComponent implements OnInit {
   public version: string = packageJson.version;
   public isDevelopmentMode: boolean = this.checkDevelopmentMode();
   public showDevUsers: boolean = false;
-
-  safeURL: any;
+  public showPassword: boolean = false;
 
   // Usuarios de desarrollo
   devUsers = [
@@ -40,8 +38,7 @@ export class LoginComponent implements OnInit {
     { id: 9, name: 'Super Admin', documento: 'superadmin', password: 'super456', rol: 9, description: 'Super administrador' }
   ];
 
-  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService, private _sanitizer: DomSanitizer) {
-    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/bNU_d8rei4k");
+  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService) {
   }
 
   private checkDevelopmentMode(): boolean {
