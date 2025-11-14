@@ -7,6 +7,8 @@ import { LocalDataService } from '../../services/localData/local-data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { environment } from '../../../environments/environment';
+import { ThemeService } from '../../services/theme/theme.service';
+import { Theme } from '../../models/theme.model';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +26,13 @@ export class LoginComponent implements OnInit {
   public isDevelopmentMode: boolean = this.checkDevelopmentMode();
   public showDevUsers: boolean = false;
   public showPassword: boolean = false;
+  
+  // Branding dinámico del tema actual
+  public currentTheme: Theme | null = null;
+  public logo: string = '../../../assets/logo.png';
+  public logoSize: string = 'medium'; // small, medium, large
+  public title: string = 'VoteRadar';
+  public description: string = 'Sistema de gestión electoral';
 
   // Usuarios de desarrollo
   devUsers = [
@@ -38,7 +47,25 @@ export class LoginComponent implements OnInit {
     { id: 9, name: 'Super Admin', documento: 'superadmin', password: 'super456', rol: 9, description: 'Super administrador' }
   ];
 
-  constructor(private apiService: ApiService, private router: Router, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService, private permissionsService: NgxPermissionsService) {
+  constructor(
+    private apiService: ApiService, 
+    private router: Router, 
+    private fb: FormBuilder, 
+    private alertService: AlertService, 
+    private localData: LocalDataService, 
+    private permissionsService: NgxPermissionsService,
+    private themeService: ThemeService
+  ) {
+    // Suscribirse a cambios de tema para actualizar branding
+    this.themeService.getCurrentTheme().subscribe(theme => {
+      this.currentTheme = theme;
+      if (theme.branding) {
+        this.logo = theme.branding.logo;
+        this.logoSize = theme.branding.logoSize || 'medium';
+        this.title = theme.branding.title;
+        this.description = theme.branding.description;
+      }
+    });
   }
 
   private checkDevelopmentMode(): boolean {
@@ -49,6 +76,16 @@ export class LoginComponent implements OnInit {
             window.location.hostname === '127.0.0.1' ||
             window.location.hostname.includes('dev') ||
             window.location.hostname.includes('test'));
+  }
+
+  // Obtener clases CSS según el tamaño del logo
+  getLogoClasses(): string {
+    const sizeClasses = {
+      small: 'w-24 md:w-32',      // 96px / 128px
+      medium: 'w-32 md:w-40',     // 128px / 160px
+      large: 'w-40 md:w-48'       // 160px / 192px
+    };
+    return `${sizeClasses[this.logoSize as keyof typeof sizeClasses] || sizeClasses.medium} mx-auto mb-4`;
   }
 
   ngOnInit() {

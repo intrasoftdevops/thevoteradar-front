@@ -68,6 +68,7 @@ import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
 import { ImpugnacionesComponent } from './components/AdministradorImpugnaciones/impugnaciones/impugnaciones.component';
 import { HomeComponent } from './components/AdministradorImpugnaciones/home/home.component';
 import { MenuAdministradorImpugnacionesComponent } from './components/AdministradorImpugnaciones/menu-administrador-impugnaciones/menu-administrador-impugnaciones.component';
+import { ThemeSelectorComponent } from './components/shared/theme-selector/theme-selector.component';
 
 @NgModule({
   declarations: [
@@ -127,7 +128,8 @@ import { MenuAdministradorImpugnacionesComponent } from './components/Administra
     CambiarRolGerenteComponent,
     ImpugnacionesComponent,
     HomeComponent,
-    MenuAdministradorImpugnacionesComponent
+    MenuAdministradorImpugnacionesComponent,
+    ThemeSelectorComponent
   ],
   imports: [
     BrowserModule,

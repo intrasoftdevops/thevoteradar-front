@@ -38,13 +38,17 @@
     
     <!-- Logo Section -->
     <div class="text-center mb-8">
-        <img
-          src="../../../assets/logo.png"
-          alt="logo"
-          class="w-40 md:w-48 mx-auto mb-4"
-        />
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Iniciar sesión</h2>
-      </div>
+      <!-- Logo dinámico -->
+      <img
+        [src]="logo"
+        [alt]="title"
+        [ngClass]="getLogoClasses()"
+      />
+      <!-- Título dinámico -->
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{{ title }}</h2>
+      <!-- Descripción dinámica -->
+      <p class="text-sm text-gray-600">{{ description }}</p>
+    </div>
 
       <!-- Development Mode Alert -->
       <div *ngIf="isDevelopmentMode" class="mb-6">
