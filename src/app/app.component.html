@@ -13,3 +13,6 @@
   <router-outlet></router-outlet>
 </ng-template>
 <app-loading></app-loading>
+
+<!-- 🎨 Selector de Temas Global - Solo en modo desarrollo -->
+<app-theme-selector *ngIf="isDevelopmentMode"></app-theme-selector>
