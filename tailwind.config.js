@@ -6,10 +6,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#64248b',    // Color principal del proyecto (morado)
-        accent: '#4a1a6b',     // Color de acento (morado más oscuro)
-        dark: '#000000',
-        secondary: '#cecece',
+        // CSS variables para colores dinámicos
+        primary: 'var(--color-primary)',
+        secondary: 'var(--color-secondary)',
+        accent: 'var(--color-accent)',
+        background: 'var(--color-background)',
+        surface: 'var(--color-surface)',
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
       },
     },
   },

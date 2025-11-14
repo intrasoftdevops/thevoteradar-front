@@ -1,6 +1,55 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ========================================
+   MULTITENANT: Variables CSS Dinámicas
+   ======================================== */
+:root {
+  /* Tema por defecto - VoteRadar (Morado) */
+  --color-primary: #64248b;
+  --color-secondary: #cecece;
+  --color-accent: #4a1a6b;
+  --color-background: #f9fafb;
+  --color-surface: #ffffff;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+}
+
+/* Tema Cliente 1 - Azul/Amarillo */
+[data-theme="client1"] {
+  --color-primary: #0032fd;
+  --color-secondary: #ffef03;
+  --color-accent: #1336bf;
+  --color-background: #f9fafb;
+  --color-surface: #ffffff;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+}
+
+/* Tema Cliente 2 - Verde */
+[data-theme="client2"] {
+  --color-primary: #10b981;
+  --color-secondary: #34d399;
+  --color-accent: #059669;
+  --color-background: #f0fdf4;
+  --color-surface: #ffffff;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+}
+
+/* Tema Cliente 3 - Rojo */
+[data-theme="client3"] {
+  --color-primary: #ef4444;
+  --color-secondary: #fca5a5;
+  --color-accent: #dc2626;
+  --color-background: #fef2f2;
+  --color-surface: #ffffff;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+}
+
+/* Variables SCSS para Bootstrap (mantener compatibilidad) */
 $primary: #64248b;
 $dark: #000;
 $secondary: #cecece;
