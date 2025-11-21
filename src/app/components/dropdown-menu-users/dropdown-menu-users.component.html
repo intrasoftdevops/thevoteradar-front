@@ -1,29 +1,36 @@
-<li class="nav-item dropdown" [routerLinkActive]="['link-active']">
+<li class="dropdown" [routerLinkActive]="['link-active']">
   <a
-    class="nav-link ps-lg-3 text-white"
+    class="block lg:pl-3 text-white no-underline hover:text-gray-200 transition-colors duration-200 cursor-pointer"
     href="#"
     id="navbarDropdown"
     role="button"
     data-bs-toggle="dropdown"
     aria-expanded="false"
   >
-    <i class="fas fa-user-circle fa-2xl icono"></i>
+    <i class="fas fa-user-circle text-3xl hover:scale-110 transition-transform duration-200"></i>
   </a>
   <ul
-    class="dropdown-menu bg-dark border border-secondary"
+    class="dropdown-menu bg-gray-900 border border-gray-600 rounded-lg shadow-xl min-w-[200px]"
     aria-labelledby="navbarDropdown"
   >
     <li>
       <a
-        class="dropdown-item text-white"
+        class="block px-4 py-3 text-white no-underline hover:bg-gray-800 transition-colors duration-200 rounded-t-lg cursor-pointer"
         [routerLink]="['/editarPerfil']"
         [routerLinkActive]="['sublink-active']"
       >
+        <i class="fas fa-user-edit mr-2 text-gray-400"></i>
         Actualizar datos
       </a>
     </li>
     <li>
-      <a class="dropdown-item text-white" (click)="logout()">Cerrar sesion</a>
+      <a 
+        class="block px-4 py-3 text-white no-underline hover:bg-red-600 transition-colors duration-200 rounded-b-lg cursor-pointer"
+        (click)="logout()"
+      >
+        <i class="fas fa-sign-out-alt mr-2 text-gray-400"></i>
+        Cerrar sesión
+      </a>
     </li>
   </ul>
 </li>
