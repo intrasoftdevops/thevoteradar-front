@@ -1,19 +1,19 @@
-<div class="container py-5">
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
-      <h4>Editar testigos</h4>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+      <h4 class="m-0 font-bold text-xl">Consultar testigos</h4>
     </div>
-    <div class="card-body">
+    <div class="p-6">
       <form
-        class="row m-4 d-flex justify-content-center align-items-center align-items-center"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-4 justify-center items-center"
         [formGroup]="searchForm"
       >
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Testigos por puesto</label>
+        <div class="space-y-2">
+          <label class="block text-sm font-bold text-gray-700">Testigos por puesto</label>
           <ng-select
             [items]="dataStations"
             [searchable]="false"
-            class="custom-select rounded"
+            class="custom-select rounded-lg"
             bindLabel="nombre"
             (change)="getSelectedStation($event)"
             bindValue="codigo_unico"
@@ -27,10 +27,10 @@
       </form>
     </div>
   </div>
-  <ul class="nav nav-tabs mt-5" id="myTab">
-    <li class="nav-item" id="tab">
+  <ul class="flex border-b border-gray-200 mt-5" id="myTab" role="tablist">
+    <li class="mr-2" role="presentation">
       <button
-        class="nav-link h4 px-md-5 active"
+        class="px-6 py-3 text-lg font-semibold border-b-2 border-primary text-primary bg-transparent active"
         id="home-tab"
         data-bs-toggle="tab"
         data-bs-target="#asignados"
@@ -40,9 +40,9 @@
         Asignados
       </button>
     </li>
-    <li class="nav-item" id="tab">
+    <li class="mr-2" role="presentation">
       <button
-        class="nav-link h4 px-md-5"
+        class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-gray-600 hover:text-primary hover:border-gray-300 bg-transparent"
         id="profile-tab"
         data-bs-toggle="tab"
         data-bs-target="#noasignados"
@@ -55,41 +55,41 @@
   </ul>
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="asignados" role="tabpanel">
-      <div class="card mt-3">
-        <div class="card-body">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+        <div class="p-6">
           <div
-            class="table-responsive my-4"
+            class="overflow-x-auto my-4"
             *ngIf="listTestigoAsignados.length > 0; else mesa_content"
           >
             <table
               datatable
               [dtOptions]="dtOptionsTestigoAsignados"
               [dtTrigger]="dtTrigger"
-              class="table text-center align-middle w-100"
+              class="min-w-full divide-y divide-gray-200 text-center align-middle w-full"
             >
-              <thead class="text-dark align-middle">
+              <thead class="bg-gray-50 text-gray-900 align-middle">
                 <tr>
-                  <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col">TELEFONO</th>
-                  <th scope="col">CORREO ELECTRÓNICO</th>
-                  <th scope="col">MESA</th>
-                  <th scope="col"></th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">NOMBRE COMPLETO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">TELÉFONO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">CORREO ELECTRÓNICO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">MESA</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">ACCIONES</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="bg-white divide-y divide-gray-200">
                 <tr
-                  class="bg-white"
+                  class="hover:bg-gray-50"
                   *ngFor="
                     let testigo of listTestigoAsignados;
                     let index = index
                   "
                 >
-                  <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
-                  <td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ testigo.nombres }} {{ testigo.apellidos }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
                     {{ testigo.telefono ? testigo.telefono : "Sin registro" }}
                   </td>
-                  <td>{{ testigo.email }}</td>
-                  <td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ testigo.email }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
                     <span
                       *ngFor="
                         let mesa of testigo.mesas;
@@ -101,12 +101,10 @@
                       }}{{ i < testigo.mesas.length - 1 ? ", " : "" }}
                     </span>
                   </td>
-                  <td>
-                    <div
-                      class="d-grid gap-1 d-md-flex justify-content-center align-items-center"
-                    >
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex gap-2 justify-center items-center">
                       <button
-                        class="btn align-middle"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                         data-bs-toggle="modal"
                         data-bs-target="#testigo"
                         (click)="
@@ -121,7 +119,7 @@
                         <i class="fa-solid fa-eye text-primary"></i>
                       </button>
                       <button
-                        class="btn align-middle"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                         (click)="redirectUpdateTestigo(testigo.id)"
                         data-bs-placement="top"
                         title="Editar información"
@@ -129,7 +127,7 @@
                         <i class="fa-solid fa-pen text-primary"></i>
                       </button>
                       <button
-                        class="btn align-middle d-none"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors hidden"
                         data-bs-placement="top"
                         title="Cambiar de rol"
                       >
@@ -145,7 +143,7 @@
             </table>
           </div>
           <ng-template #mesa_content>
-            <p class="text-center mb-0">
+            <p class="text-center py-8 text-gray-600">
               No hay testigos con asignación de mesa.
             </p>
           </ng-template>
@@ -153,40 +151,38 @@
       </div>
     </div>
     <div class="tab-pane fade" id="noasignados" role="tabpanel">
-      <div class="card mt-3">
-        <div class="card-body">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+        <div class="p-6">
           <div
-            class="table-responsive my-4"
+            class="overflow-x-auto my-4"
             *ngIf="listTestigoNoAsignados.length > 0; else no_mesa_content"
           >
             <table
               datatable
               [dtOptions]="dtOptionsTestigoNoAsignados"
               [dtTrigger]="dtTrigger"
-              class="table text-center align-middle w-100"
+              class="min-w-full divide-y divide-gray-200 text-center align-middle w-full"
             >
-              <thead class="text-dark align-middle">
+              <thead class="bg-gray-50 text-gray-900 align-middle">
                 <tr>
-                  <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col">TELÉFONO</th>
-                  <th scope="col">CORREO ELECTRÓNICO</th>
-                  <th scope="col"></th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">NOMBRE COMPLETO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">TELÉFONO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">CORREO ELECTRÓNICO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">ACCIONES</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="bg-white divide-y divide-gray-200">
                 <tr
-                  class="bg-white"
+                  class="hover:bg-gray-50"
                   *ngFor="let testigo of listTestigoNoAsignados"
                 >
-                  <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
-                  <td>{{ testigo.telefono }}</td>
-                  <td>{{ testigo.email }}</td>
-                  <td>
-                    <div
-                      class="d-grid gap-1 d-md-flex justify-content-center align-items-center"
-                    >
+                  <td class="px-6 py-4 whitespace-nowrap">{{ testigo.nombres }} {{ testigo.apellidos }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ testigo.telefono }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ testigo.email }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex gap-2 justify-center items-center">
                       <button
-                        class="btn align-middle"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                         data-bs-toggle="modal"
                         data-bs-target="#testigo"
                         (click)="testigoActualSeleccionado(testigo)"
@@ -196,7 +192,7 @@
                         <i class="fa-solid fa-eye text-primary"></i>
                       </button>
                       <button
-                        class="btn align-middle"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                         (click)="redirectUpdateTestigo(testigo.id)"
                         data-bs-placement="top"
                         title="Editar información"
@@ -204,7 +200,7 @@
                         <i class="fa-solid fa-pen text-primary"></i>
                       </button>
                       <button
-                        class="btn align-middle d-none"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors hidden"
                         data-bs-placement="top"
                         title="Cambiar de rol"
                       >
@@ -220,7 +216,7 @@
             </table>
           </div>
           <ng-template #no_mesa_content>
-            <p class="text-center mb-0">
+            <p class="text-center py-8 text-gray-600">
               No hay testigos sin asignación de mesa.
             </p>
           </ng-template>
@@ -230,6 +226,7 @@
   </div>
 </div>
 
+<!-- Modal de Bootstrap con estilos Tailwind -->
 <div
   class="modal fade"
   id="testigo"
@@ -238,39 +235,39 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+    <div class="modal-content bg-white rounded-xl shadow-2xl overflow-hidden">
+      <div class="modal-header bg-primary text-white py-4 px-6">
+        <h5 class="modal-title font-bold text-lg" id="exampleModalLabel">Información</h5>
         <button
           type="button"
-          class="btn"
+          class="bg-transparent border-0 text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
           data-bs-dismiss="modal"
           aria-label="Close"
         >
-          <i class="fa-solid fa-xmark text-white"></i>
+          <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <div class="modal-body">
-        <p>
-          <span class="fw-bolder">Nombre completo: </span
-          ><span>
+      <div class="modal-body p-6 space-y-3">
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Nombre completo: </span
+          ><span class="text-gray-700">
             {{ testigoActual.nombres }} {{ testigoActual.apellidos }}</span
           >
         </p>
-        <p>
-          <span class="fw-bolder">Teléfono: </span
-          ><span> {{ testigoActual.telefono }}</span>
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Teléfono: </span
+          ><span class="text-gray-700"> {{ testigoActual.telefono }}</span>
         </p>
-        <p>
-          <span class="fw-bolder">Correo electrónico: </span
-          ><span> {{ testigoActual.email }}</span>
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Correo electrónico: </span
+          ><span class="text-gray-700"> {{ testigoActual.email }}</span>
         </p>
-        <p>
-          <span class="fw-bolder">Número de documento: </span
-          ><span> {{ testigoActual.numero_documento }}</span>
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Número de documento: </span
+          ><span class="text-gray-700"> {{ testigoActual.numero_documento }}</span>
         </p>
-        <p [ngClass]="{ 'd-none': !mesasActual }">
-          <span class="fw-bolder">Mesas: </span><span> {{ mesasActual }}</span>
+        <p class="text-gray-800" [ngClass]="{ 'hidden': !mesasActual }">
+          <span class="font-bold text-gray-900">Mesas: </span><span class="text-gray-700"> {{ mesasActual }}</span>
         </p>
       </div>
     </div>
