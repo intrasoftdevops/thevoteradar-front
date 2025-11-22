@@ -1,7 +1,7 @@
-<div class="container py-5">
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white">
-      <h4>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+      <h4 class="m-0 font-bold text-xl">
         Hola {{ nombreCoordinador }} ¡Vamos a proteger los votos de
         {{ nombreCliente }}!
       </h4>
@@ -13,53 +13,53 @@
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div class="d-flex py-4 justify-content-center align-items-center">
-            <h5 class="modal-title" id="exampleModalLabel">
+          <div class="flex py-4 justify-center items-center">
+            <h5 class="text-lg font-bold text-gray-900" id="exampleModalLabel">
               Busca: <strong>{{categoriaImpugnacion.nombre}}</strong>
             </h5>
           </div>
-          <div class="row" *ngIf="erroresImpugnacion==true">
-            <div class="col-9">
+          <div class="grid grid-cols-12 gap-4" *ngIf="erroresImpugnacion==true">
+            <div class="col-span-9">
               <iframe
                 [src]="urlImpugnados"
                 *ngIf="urlImpugnados"
-                class="e-14 py-1 px-4"
+                class="w-full h-full min-h-[600px] rounded-lg shadow-md py-2 px-4"
                 title="YouTube video"
                 allowfullscreen
               ></iframe>
             </div>
-            <div class="col-3">
-              <form class="form-group" [formGroup]="createForm">
-                <div class="py-1">
-                  <label>
-                    <strong>Página</strong>
+            <div class="col-span-3">
+              <form class="space-y-4" [formGroup]="createForm">
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-gray-700">
+                    Página
                   </label>
                   <input
-                    class="form-control"
+                    class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     type="number"
                     placeholder="Número de página"
                     formControlName="pagina"
                     id="pagina"
                   />
                 </div>
-                <div class="py-1">
-                  <label>
-                    <strong>Observaciones</strong>
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-gray-700">
+                    Observaciones
                   </label>
                   <textarea
                     formControlName="observaciones"
-                    class="form-control"
+                    class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     rows="3"
                     id="observaciones"
                   ></textarea>
                 </div>
-                <div class=" py-2">
-                  <button type="button" class="btn btn-dark mx-2" (click)="atras()">
+                <div class="flex gap-2 py-2">
+                  <button type="button" class="px-4 py-2 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition-all duration-200 shadow-md" (click)="atras()">
                     Atrás
                   </button>
                   <button
                     type="button"
-                    class="btn btn-primary mx-2"
+                    class="px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md"
                     (click)="impugnar()"
                   >
                     Siguiente

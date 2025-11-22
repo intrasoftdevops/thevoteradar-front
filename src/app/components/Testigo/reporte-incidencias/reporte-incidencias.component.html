@@ -1,42 +1,42 @@
-<div class="container">
+<div class="max-w-7xl mx-auto px-4 py-8">
   <div class="py-5">
     <button
-      class="btn btn-primary btn-lg"
+      class="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md flex items-center gap-3"
       data-bs-toggle="offcanvas"
       data-bs-target="#offcanvasReporte"
       data-bs-placement="top"
       title="Agregar reporte de novedades"
     >
-      <i class="fas fa-plus-circle fa-2x align-middle"></i>
-      <span class="mx-3 fw-bold align-middle">Agregar novedades</span>
+      <i class="fas fa-plus-circle fa-2x"></i>
+      <span>Agregar novedades</span>
     </button>
-    <div class="card mt-3">
-      <div class="card-body">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+      <div class="p-6">
         <div
-          class="table-responsive my-4"
+          class="overflow-x-auto my-4"
           *ngIf="dataIncidencias.length > 0; else incidencias_content"
         >
           <table
             datatable
             [dtOptions]="dtOptionsIncidencias"
             [dtTrigger]="dtTrigger"
-            class="table text-center align-middle w-100"
+            class="min-w-full divide-y divide-gray-200 text-center align-middle w-full"
           >
-            <thead class="text-dark align-middle">
+            <thead class="bg-gray-50 text-gray-900 align-middle">
               <tr>
-                <th scope="col">CATEGORÍA</th>
-                <th scope="col">ESTADO</th>
-                <th scope="col"></th>
+                <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">CATEGORÍA</th>
+                <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">ESTADO</th>
+                <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">ACCIONES</th>
               </tr>
             </thead>
-            <tbody>
-              <tr class="bg-white" *ngFor="let incidencia of dataIncidencias">
-                <td>{{ incidencia.categoria }}</td>
-                <td>{{ incidencia.estado == 0 ? "Abierto" : "Cerrado" }}</td>
-                <td>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50" *ngFor="let incidencia of dataIncidencias">
+                <td class="px-6 py-4 whitespace-nowrap">{{ incidencia.categoria }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ incidencia.estado == 0 ? "Abierto" : "Cerrado" }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
                   <button
                     type="button"
-                    class="btn align-middle mx-1"
+                    class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                     data-bs-toggle="modal"
                     data-bs-placement="top"
                     title="Ver reporte"
@@ -51,28 +51,28 @@
           </table>
         </div>
         <ng-template #incidencias_content>
-          <p class="text-center mb-0">No hay novedades.</p>
+          <p class="text-center py-8 text-gray-600">No hay novedades.</p>
         </ng-template>
       </div>
     </div>
   </div>
 </div>
-<!-- REPORTAR INCIDENCIA -->
+<!-- REPORTAR INCIDENCIA - Offcanvas de Bootstrap con estilos Tailwind -->
 <div
   class="offcanvas offcanvas-start w-35"
   tabindex="-1"
   id="offcanvasReporte"
   data-bs-keyboard="false"
 >
-  <div class="c-contactos bg-primary py-4">
+  <div class="bg-primary py-4 px-4">
     <div class="offcanvas-header">
-      <h4 class="offcanvas-title text-white" id="offcanvas">
+      <h4 class="offcanvas-title text-white font-bold text-xl" id="offcanvas">
         Reportar novedad
       </h4>
-      <div class="d-flex align-items-end">
+      <div class="flex items-end">
         <button
           type="button"
-          class="btn p-0"
+          class="bg-transparent border-0 p-0 hover:bg-white/20 rounded-lg transition-colors"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
         >
@@ -82,18 +82,18 @@
     </div>
   </div>
   <div
-    class="offcanvas-body px-0 bg-secondary border border-primary border-5 border-top-0 border-bottom-0 border-start-0"
+    class="offcanvas-body px-0 bg-gray-50 border-l-4 border-primary"
   >
     <form class="mx-4" [formGroup]="createForm" (ngSubmit)="onSubmit()">
-      <div class="form-group pt-3">
-        <label class="form-label">
-          <span class="fw-bold">Asunto</span>
-          <span class="text-danger">*</span>
+      <div class="space-y-2 pt-3">
+        <label class="block text-sm font-semibold text-gray-700">
+          <span class="font-bold">Asunto</span>
+          <span class="text-red-500">*</span>
         </label>
         <ng-select
           [items]="categoryIncidencias"
           [searchable]="false"
-          class="custom-select rounded"
+          class="custom-select rounded-lg"
           formControlName="categoria_id"
           bindLabel="nombre"
           bindValue="id"
@@ -102,37 +102,37 @@
         >
         </ng-select>
       </div>
-      <div class="form-group pt-3">
-        <label class="form-label">
-          <span class="fw-bold">Mesa</span>
-          <span class="text-danger">*</span>
+      <div class="space-y-2 pt-3">
+        <label class="block text-sm font-semibold text-gray-700">
+          <span class="font-bold">Mesa</span>
+          <span class="text-red-500">*</span>
         </label>
         <ng-select
           [items]="mesas_asignadas"
           [searchable]="false"
-          class="custom-select rounded"
+          class="custom-select rounded-lg"
           formControlName="codigo_mesa"
           bindLabel="numero_mesa"
           bindValue="codigo_unico"
-          información="No hay informacion disponible"
+          información="No hay información disponible"
           placeholder="Seleccione mesa"
         >
         </ng-select>
       </div>
-      <div class="form-group pt-3">
-        <label class="form-label">
-          <span class="fw-bold">Descripción</span>
-          <span class="text-danger">*</span>
+      <div class="space-y-2 pt-3">
+        <label class="block text-sm font-semibold text-gray-700">
+          <span class="font-bold">Descripción</span>
+          <span class="text-red-500">*</span>
         </label>
         <textarea
-          class="form-control border-2 border-dark rounded"
+          class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
           rows="5"
           formControlName="descripcion"
           placeholder="Escriba una descripción de la novedad"
         ></textarea>
       </div>
-      <div class="form-group pt-3">
-        <label class="form-label fw-bold"> Adjuntar evidencia </label>
+      <div class="space-y-2 pt-3">
+        <label class="block text-sm font-bold text-gray-700">Adjuntar evidencia</label>
         <div>
           <ngx-dropzone
             (change)="onSelect($event)"
@@ -147,8 +147,8 @@
                 <i class="fas fa-paperclip text-primary fa-lg"></i>
                 Adjuntar archivo
               </p>
-              <hr class="mx-3 border border-primary rounded border-2" />
-              <p class="mb-0 px-4 fst-italic">
+              <hr class="mx-3 border-t-2 border-primary rounded" />
+              <p class="mb-0 px-4 italic text-gray-600">
                 (Imágenes máximo 10MB y videos máximo 100MB)
               </p>
             </ngx-dropzone-label>
@@ -177,13 +177,14 @@
           </ngx-dropzone>
         </div>
       </div>
-      <div class="d-flex justify-content-end pt-5">
-        <button type="submit" class="btn btn-primary">Enviar novedad</button>
+      <div class="flex justify-end pt-5">
+        <button type="submit" class="px-6 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md">Enviar novedad</button>
       </div>
     </form>
   </div>
 </div>
 
+<!-- Modal de Bootstrap con estilos Tailwind -->
 <div
   class="modal fade"
   id="incidenciaAbierta"
@@ -192,67 +193,63 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">
+    <div class="modal-content bg-white rounded-xl shadow-2xl overflow-hidden">
+      <div class="modal-header bg-primary text-white py-4 px-6">
+        <h5 class="modal-title font-bold text-lg" id="exampleModalLabel">
           REPORTE #{{ incidenciaActual.id }}
         </h5>
         <button
           type="button"
-          class="btn"
+          class="bg-transparent border-0 text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
           data-bs-dismiss="modal"
           aria-label="Close"
         >
-          <i class="fa-solid fa-xmark text-white"></i>
+          <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <div class="modal-body">
-        <p>
-          <span class="fw-bolder">Estado: </span
-          ><span>
+      <div class="modal-body p-6 space-y-4">
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Estado: </span
+          ><span class="text-gray-700">
             {{ incidenciaActual.estado == 0 ? "Abierto" : "Cerrado" }}</span
           >
         </p>
-        <p>
-          <span class="fw-bolder">Categoria: </span
-          ><span> {{ incidenciaActual.categoria }}</span>
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Categoria: </span
+          ><span class="text-gray-700"> {{ incidenciaActual.categoria }}</span>
         </p>
-        <p class="fw-bolder">Descripción:</p>
-        <p>
+        <p class="font-bold text-gray-900">Descripción:</p>
+        <p class="text-gray-700">
           {{ incidenciaActual.descripcion }}
         </p>
-        <p class="fw-bolder mb-0">Archivos adjuntos:</p>
-        <div class="w-100">
+        <p class="font-bold text-gray-900 mb-2">Archivos adjuntos:</p>
+        <div class="w-full">
           <ng-container *ngIf="photos.length > 0">
-            <p class="fst-italic">-Imágenes:</p>
-            <div class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
+            <p class="italic text-gray-600 mb-2">-Imágenes:</p>
+            <div class="grid grid-cols-2 gap-4 justify-center">
               <img
                 *ngFor="let img of photos; let i = index"
                 src="{{ img.url_archivo }}"
                 (click)="openLightbox(i)"
-                class="imgItem py-1"
-                style="cursor: pointer;"
+                class="w-full h-auto object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity py-1"
               />
             </div>
           </ng-container>
           <ng-container *ngIf="videos.length > 0">
-            <p class="fst-italic">-Videos:</p>
-            <div class="row gy-2 d-flex justify-content-center">
-              <div class="col-md-6" *ngFor="let video of videos">
-                <div class="ratio ratio-16x9">
-                  <video class="w-100" controls>
-                    <source src="{{ video.url_archivo }}" type="video/mp4" />
-                    Su navegador no soporta la etiqueta de video.
-                  </video>
-                </div>
+            <p class="italic text-gray-600 mb-2">-Videos:</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center">
+              <div *ngFor="let video of videos" class="aspect-video">
+                <video class="w-full h-full rounded-lg" controls>
+                  <source src="{{ video.url_archivo }}" type="video/mp4" />
+                  Su navegador no soporta la etiqueta de video.
+                </video>
               </div>
             </div>
           </ng-container>
         </div>
-        <p class="mt-3">
-          <span class="fw-bolder" *ngIf="incidenciaActual.respuesta"
-            >Respuesta: </span
-          ><span>{{ incidenciaActual.respuesta }}</span>
+        <p class="mt-3 text-gray-800" *ngIf="incidenciaActual.respuesta">
+          <span class="font-bold text-gray-900">Respuesta: </span
+          ><span class="text-gray-700">{{ incidenciaActual.respuesta }}</span>
         </p>
       </div>
     </div>
