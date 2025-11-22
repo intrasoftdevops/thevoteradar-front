@@ -89,24 +89,24 @@
       </div>
 
       <!-- Login Form -->
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5" *ngIf="!showOtpInput && !showProfileCompletion">
         
-        <!-- Usuario -->
+        <!-- Teléfono -->
         <div class="space-y-2">
-          <label for="numero_documento" class="block text-sm font-semibold text-gray-700">
-            Usuario
+          <label for="telefono" class="block text-sm font-semibold text-gray-700">
+            Teléfono
           </label>
           <div class="relative">
             <input
-              type="text"
-              id="numero_documento"
-              formControlName="numero_documento"
-              placeholder="Ingresa tu usuario"
+              type="tel"
+              id="telefono"
+              formControlName="telefono"
+              placeholder="Ingresa tu número de teléfono"
               class="w-full px-4 py-3.5 pl-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
               required
             />
             <div class="absolute inset-y-0 left-0 flex items-center pl-4">
-              <i class="fa-solid fa-user text-gray-400"></i>
+              <i class="fa-solid fa-phone text-gray-400"></i>
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@
               [type]="showPassword ? 'text' : 'password'"
               id="password"
               formControlName="password"
-              placeholder="••••••••"
+              placeholder="Ingresa tu contraseña (primera vez: tu teléfono)"
               class="w-full px-4 py-3.5 pl-12 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
               required
             />
@@ -137,21 +137,239 @@
               <i *ngIf="showPassword" class="fa-solid fa-eye-slash text-gray-400 hover:text-gray-600"></i>
             </button>
           </div>
+          <p class="text-xs text-gray-500 mt-1">Si es tu primera vez, usa tu número de teléfono como contraseña</p>
         </div>
 
         <!-- Submit Button -->
         <button
           type="submit"
-          class="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md"
+          [disabled]="isLoading"
+          class="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span class="flex items-center justify-center">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg *ngIf="!isLoading" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
             </svg>
-            Iniciar sesión
+            <i *ngIf="isLoading" class="fas fa-spinner fa-spin mr-2"></i>
+            {{ isLoading ? 'Procesando...' : 'Iniciar sesión' }}
           </span>
         </button>
 
+      </form>
+
+      <!-- OTP Input Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5" *ngIf="showOtpInput && !showProfileCompletion">
+        <div class="text-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">Verificación OTP</h3>
+          <p class="text-sm text-gray-600">Ingresa el código de 6 dígitos enviado a tu WhatsApp</p>
+        </div>
+
+        <!-- OTP Input -->
+        <div class="space-y-2">
+          <label for="otp" class="block text-sm font-semibold text-gray-700">
+            Código OTP
+          </label>
+          <div class="relative">
+            <input
+              type="text"
+              id="otp"
+              formControlName="otp"
+              placeholder="000000"
+              maxlength="6"
+              class="w-full px-4 py-3.5 pl-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm text-center text-2xl tracking-widest"
+              required
+            />
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4">
+              <i class="fa-solid fa-key text-gray-400"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="isLoading"
+          class="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span class="flex items-center justify-center">
+            <i *ngIf="isLoading" class="fas fa-spinner fa-spin mr-2"></i>
+            {{ isLoading ? 'Verificando...' : 'Verificar código' }}
+          </span>
+        </button>
+
+        <!-- Resend OTP -->
+        <div class="text-center">
+          <button
+            type="button"
+            (click)="resendOtp()"
+            class="text-primary hover:text-primary/80 font-medium text-sm transition-colors duration-200 hover:underline"
+          >
+            Reenviar código
+          </button>
+        </div>
+
+        <!-- Back Button -->
+        <div class="text-center">
+          <button
+            type="button"
+            (click)="goBack()"
+            class="text-gray-600 hover:text-gray-800 font-medium text-sm transition-colors duration-200 hover:underline"
+          >
+            <i class="fas fa-arrow-left mr-1"></i>
+            Volver
+          </button>
+        </div>
+      </form>
+
+      <!-- Profile Completion Form -->
+      <form [formGroup]="profileForm!" (ngSubmit)="handleProfileCompletion()" class="space-y-5" *ngIf="showProfileCompletion && profileForm">
+        <div class="text-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">Completar Perfil</h3>
+          <p class="text-sm text-gray-600">Necesitamos algunos datos adicionales para continuar</p>
+        </div>
+
+        <!-- Nombres -->
+        <div class="space-y-2">
+          <label for="nombres" class="block text-sm font-semibold text-gray-700">
+            Nombres <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="nombres"
+            formControlName="nombres"
+            placeholder="Ingresa tus nombres"
+            class="w-full px-4 py-3.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+            required
+          />
+        </div>
+
+        <!-- Apellidos -->
+        <div class="space-y-2">
+          <label for="apellidos" class="block text-sm font-semibold text-gray-700">
+            Apellidos <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="apellidos"
+            formControlName="apellidos"
+            placeholder="Ingresa tus apellidos"
+            class="w-full px-4 py-3.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+            required
+          />
+        </div>
+
+        <!-- Número de Documento -->
+        <div class="space-y-2">
+          <label for="numero_documento" class="block text-sm font-semibold text-gray-700">
+            Número de Documento <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="numero_documento"
+            formControlName="numero_documento"
+            placeholder="Ingresa tu número de documento"
+            class="w-full px-4 py-3.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+            required
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="space-y-2">
+          <label for="email" class="block text-sm font-semibold text-gray-700">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="Ingresa tu email (opcional)"
+            class="w-full px-4 py-3.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+          />
+        </div>
+
+        <!-- Contraseña -->
+        <div class="space-y-2">
+          <label for="profilePassword" class="block text-sm font-semibold text-gray-700">
+            Contraseña <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <input
+              [type]="showProfilePassword ? 'text' : 'password'"
+              id="profilePassword"
+              formControlName="password"
+              placeholder="Ingresa tu contraseña"
+              class="w-full px-4 py-3.5 pl-12 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+              required
+            />
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4">
+              <i class="fa-solid fa-lock text-gray-400"></i>
+            </div>
+            <button
+              type="button"
+              (click)="showProfilePassword = !showProfilePassword"
+              class="absolute inset-y-0 right-0 flex items-center pr-4 hover:bg-gray-50 rounded-r-xl transition-colors duration-200"
+            >
+              <i *ngIf="!showProfilePassword" class="fa-solid fa-eye text-gray-400 hover:text-gray-600"></i>
+              <i *ngIf="showProfilePassword" class="fa-solid fa-eye-slash text-gray-400 hover:text-gray-600"></i>
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Mínimo 6 caracteres</p>
+        </div>
+
+        <!-- Confirmar Contraseña -->
+        <div class="space-y-2">
+          <label for="profilePasswordConfirmation" class="block text-sm font-semibold text-gray-700">
+            Confirmar Contraseña <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <input
+              [type]="showProfilePasswordConfirmation ? 'text' : 'password'"
+              id="profilePasswordConfirmation"
+              formControlName="password_confirmation"
+              placeholder="Confirma tu contraseña"
+              class="w-full px-4 py-3.5 pl-12 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+              required
+            />
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4">
+              <i class="fa-solid fa-lock text-gray-400"></i>
+            </div>
+            <button
+              type="button"
+              (click)="showProfilePasswordConfirmation = !showProfilePasswordConfirmation"
+              class="absolute inset-y-0 right-0 flex items-center pr-4 hover:bg-gray-50 rounded-r-xl transition-colors duration-200"
+            >
+              <i *ngIf="!showProfilePasswordConfirmation" class="fa-solid fa-eye text-gray-400 hover:text-gray-600"></i>
+              <i *ngIf="showProfilePasswordConfirmation" class="fa-solid fa-eye-slash text-gray-400 hover:text-gray-600"></i>
+            </button>
+          </div>
+          <p *ngIf="profileForm?.hasError('passwordMismatch') && profileForm?.touched" class="text-xs text-red-500 mt-1">
+            Las contraseñas no coinciden
+          </p>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="isLoading"
+          class="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span class="flex items-center justify-center">
+            <i *ngIf="isLoading" class="fas fa-spinner fa-spin mr-2"></i>
+            {{ isLoading ? 'Completando...' : 'Completar perfil' }}
+          </span>
+        </button>
+
+        <!-- Back Button -->
+        <div class="text-center">
+          <button
+            type="button"
+            (click)="goBack()"
+            class="text-gray-600 hover:text-gray-800 font-medium text-sm transition-colors duration-200 hover:underline"
+          >
+            <i class="fas fa-arrow-left mr-1"></i>
+            Volver
+          </button>
+        </div>
       </form>
 
     <!-- Recovery Link -->
