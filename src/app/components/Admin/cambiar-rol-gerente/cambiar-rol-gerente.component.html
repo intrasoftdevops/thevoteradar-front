@@ -1,47 +1,47 @@
-<div class="container py-5">
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white">
-      <h4 class="m-0">Editar rol</h4>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
+    <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+      <h4 class="m-0 font-bold text-xl">Editar rol</h4>
     </div>
-    <div class="card-body">
-      <h4 class="ms-4 fw-bolder">Gerente</h4>
-      <div class="row m-3">
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <p>
-            <span class="fw-bolder">Nombre completo: </span>
-            <span>{{ dataGerente.nombres }} {{ dataGerente.apellidos }}</span>
+    <div class="p-6">
+      <h4 class="ml-4 mb-4 font-bold text-gray-900 text-lg">Gerente</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-3">
+        <div class="space-y-1">
+          <p class="text-gray-800">
+            <span class="font-bold text-gray-900">Nombre completo: </span>
+            <span class="text-gray-700">{{ dataGerente.nombres }} {{ dataGerente.apellidos }}</span>
           </p>
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <p>
-            <span class="fw-bolder">Departamento: </span>
-            <span>{{ dataDepartmentGerente }}</span>
+        <div class="space-y-1">
+          <p class="text-gray-800">
+            <span class="font-bold text-gray-900">Departamento: </span>
+            <span class="text-gray-700">{{ dataDepartmentGerente }}</span>
           </p>
         </div>
         <div
-          class="form-group col-md-6 col-lg-4 pt-2"
+          class="space-y-1"
           *ngIf="dataMunicipalsGerente"
         >
-          <p>
-            <span class="fw-bolder">Municipios: </span>
-            <span>{{ dataMunicipalsGerente }}</span>
+          <p class="text-gray-800">
+            <span class="font-bold text-gray-900">Municipios: </span>
+            <span class="text-gray-700">{{ dataMunicipalsGerente }}</span>
           </p>
         </div>
       </div>
     </div>
   </div>
   <form [formGroup]="updateForm" *ngIf="!rolActual">
-    <div class="card mt-5">
-      <div class="card-body">
-        <div class="row mx-4 my-4">
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="form-label">
-              <span class="fw-bold">Rol</span>
-              <span class="text-danger">*</span>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-4 my-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">
+              <span class="font-bold">Rol</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [searchable]="false"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               placeholder="Seleccione rol"
               formControlName="nuevo_rol"
               (change)="getSelectedRol($event)"
@@ -61,17 +61,17 @@
     (ngSubmit)="onSubmit()"
     *ngIf="rolActual == 3"
   >
-    <div class="card mt-5">
-      <div class="card-body">
-        <div class="row mx-4 my-4">
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="form-label">
-              <span class="fw-bold">Rol</span>
-              <span class="text-danger">*</span>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-4 my-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">
+              <span class="font-bold">Rol</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [searchable]="false"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               placeholder="Seleccione rol"
               formControlName="nuevo_rol"
               (change)="getSelectedRol($event)"
@@ -82,15 +82,15 @@
               <ng-option [value]="5">Testigo</ng-option>
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">
-              <span class="fw-bold">Departamento</span>
-              <span class="text-danger">*</span>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              <span class="font-bold">Departamento</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [items]="dataDepartments"
               [searchable]="false"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre_departamento_votacion"
               bindValue="codigo_unico"
               [clearAllText]="'Borrar todo'"
@@ -101,14 +101,14 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">
-              <span class="fw-bold">Municipio</span>
-              <span class="text-danger">*</span>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              <span class="font-bold">Municipio</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [items]="dataMunicipals"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               formControlName="municipio"
@@ -119,11 +119,11 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Zonas</label>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">Zonas</label>
             <ng-select
               [items]="dataZones"
-              class="custom-multiple-select rounded"
+              class="custom-multiple-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               placeholder="Seleccione zona"
@@ -137,8 +137,8 @@
         </div>
       </div>
     </div>
-    <div class="d-flex justify-content-end pt-4">
-      <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">
+    <div class="flex justify-end pt-6">
+      <button type="submit" class="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md text-lg">
         EDITAR
       </button>
     </div>
@@ -148,17 +148,17 @@
     (ngSubmit)="onSubmit()"
     *ngIf="rolActual == 4"
   >
-    <div class="card mt-5">
-      <div class="card-body">
-        <div class="row mx-4 my-4">
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="form-label">
-              <span class="fw-bold">Rol</span>
-              <span class="text-danger">*</span>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-4 my-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">
+              <span class="font-bold">Rol</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [searchable]="false"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               placeholder="Seleccione rol"
               formControlName="nuevo_rol"
               (change)="getSelectedRol($event)"
@@ -169,15 +169,15 @@
               <ng-option [value]="5">Testigo</ng-option>
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">
-              <span class="fw-bold">Departamento</span>
-              <span class="text-danger">*</span>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              <span class="font-bold">Departamento</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [items]="dataDepartments"
               [searchable]="false"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre_departamento_votacion"
               bindValue="codigo_unico"
               [clearAllText]="'Borrar todo'"
@@ -188,14 +188,14 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">
-              <span class="fw-bold">Municipio</span>
-              <span class="text-danger">*</span>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              <span class="font-bold">Municipio</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [items]="dataMunicipals"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               formControlName="municipio"
@@ -206,14 +206,14 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">
-              <span class="fw-bold">Zona</span>
-              <span class="text-danger">*</span>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              <span class="font-bold">Zona</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [items]="dataZones"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               placeholder="Seleccione zona"
@@ -224,11 +224,11 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Puestos</label>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">Puestos</label>
             <ng-select
               [items]="dataStations"
-              class="custom-multiple-select rounded"
+              class="custom-multiple-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               información="No hay información disponible"
@@ -242,8 +242,8 @@
         </div>
       </div>
     </div>
-    <div class="d-flex justify-content-end pt-4">
-      <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">
+    <div class="flex justify-end pt-6">
+      <button type="submit" class="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md text-lg">
         EDITAR
       </button>
     </div>
@@ -253,17 +253,17 @@
     (ngSubmit)="onSubmit()"
     *ngIf="rolActual == 5"
   >
-    <div class="card mt-5">
-      <div class="card-body">
-        <div class="row mx-4 my-4">
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="form-label">
-              <span class="fw-bold">Rol</span>
-              <span class="text-danger">*</span>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-4 my-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">
+              <span class="font-bold">Rol</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [searchable]="false"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               placeholder="Seleccione rol"
               formControlName="nuevo_rol"
               (change)="getSelectedRol($event)"
@@ -274,15 +274,15 @@
               <ng-option [value]="5">Testigo</ng-option>
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">
-              <span class="fw-bold">Departamento</span>
-              <span class="text-danger">*</span>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              <span class="font-bold">Departamento</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [items]="dataDepartments"
               [searchable]="false"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre_departamento_votacion"
               bindValue="codigo_unico"
               [clearAllText]="'Borrar todo'"
@@ -293,14 +293,14 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">
-              <span class="fw-bold">Municipio</span>
-              <span class="text-danger">*</span>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              <span class="font-bold">Municipio</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [items]="dataMunicipals"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               formControlName="municipio"
@@ -311,14 +311,14 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">
-              <span class="fw-bold">Zona</span>
-              <span class="text-danger">*</span>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              <span class="font-bold">Zona</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [items]="dataZones"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               placeholder="Seleccione zona"
@@ -329,14 +329,14 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">
-              <span class="fw-bold">Puesto</span>
-              <span class="text-danger">*</span>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">
+              <span class="font-bold">Puesto</span>
+              <span class="text-red-500">*</span>
             </label>
             <ng-select
               [items]="dataStations"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               información="No hay información disponible"
@@ -347,11 +347,11 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Mesas</label>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">Mesas</label>
             <ng-select
               [items]="dataTables"
-              class="custom-multiple-select rounded"
+              class="custom-multiple-select rounded-lg"
               bindLabel="numero_mesa"
               bindValue="codigo_unico"
               información="No hay información disponible"
@@ -365,8 +365,8 @@
         </div>
       </div>
     </div>
-    <div class="d-flex justify-content-end pt-4">
-      <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">
+    <div class="flex justify-end pt-6">
+      <button type="submit" class="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md text-lg">
         EDITAR
       </button>
     </div>
