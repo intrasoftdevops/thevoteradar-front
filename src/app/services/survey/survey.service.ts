@@ -1,0 +1,238 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { LocalDataService } from '../localData/local-data.service';
+
+
+export interface Survey {
+  id: string;
+  title: string;
+  description?: string;
+  questions_count: number;
+  created_at: string;
+  is_draft?: boolean;
+  status?: string;
+  recipients_count?: number;
+}
+
+export type QuestionType = "text" | "multiple_choice" | "multiple_select" | "scale" | "candidate_vote";
+
+export interface QuestionOptions {
+  choices?: string[];
+  min?: number;
+  max?: number;
+  min_label?: string;
+  max_label?: string;
+  candidates?: Array<{
+    name: string;
+    imageUrl?: string;
+    partyName?: string;
+    partyImageUrl?: string;
+    vicePresidentName?: string;
+    vicePresidentImageUrl?: string;
+  }>;
+}
+
+export interface Question {
+  id: string;
+  text: string;
+  type: QuestionType;
+  options?: QuestionOptions;
+}
+
+export interface BuilderState {
+  survey_id: string;
+  tenant_id: string;
+  title: string;
+  description: string | null;
+  questions: Question[];
+  layout_config: Record<string, any>;
+  last_saved_at: string;
+  version: number;
+  is_draft: boolean;
+}
+
+export interface RecipientImportItem {
+  name?: string;
+  phone?: string;
+  email?: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SurveyService {
+
+  private surveyApiUrl = environment.surveyApiURL || 'http://localhost:8001';
+  private apiBaseUrl = `${this.surveyApiUrl}/api/v1`;
+
+  constructor(
+    private http: HttpClient,
+    private localData: LocalDataService
+  ) { }
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.localData.getBackofficeToken();
+    if (!token) {
+      throw new Error('No hay token de autenticación disponible');
+    }
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
+  getSurveys(): Observable<Survey[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Survey[]>(`${this.apiBaseUrl}/surveys`, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener encuestas:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  createSurveyDraft(title: string, description: string = ''): Observable<BuilderState> {
+    const headers = this.getAuthHeaders();
+    const body = {
+      title,
+      description,
+      layout_config: {}
+    };
+    return this.http.post<BuilderState>(`${this.apiBaseUrl}/builder/draft`, body, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al crear borrador de encuesta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  getBuilderState(surveyId: string): Observable<BuilderState> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/state`, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener estado del builder:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  reorderQuestions(surveyId: string, questionIds: string[]): Observable<BuilderState> {
+    const headers = this.getAuthHeaders();
+    const body = {
+      question_orders: questionIds.map((id, index) => ({ id, order: index }))
+    };
+    return this.http.post<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/reorder`, body, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al reordenar preguntas:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  addQuestion(surveyId: string, questionType: QuestionType): Observable<BuilderState> {
+    const headers = this.getAuthHeaders();
+    const body: { type: string; text: string; options?: any } = {
+      type: questionType,
+      text: `Nueva pregunta (${questionType})`
+    };
+
+    switch (questionType) {
+      case 'multiple_choice':
+      case 'multiple_select':
+        body.options = { choices: ['Opción 1'] };
+        break;
+      case 'scale':
+        body.options = {
+          min: 1,
+          max: 5,
+          min_label: '',
+          max_label: ''
+        };
+        break;
+      case 'candidate_vote':
+        body.options = {
+          candidates: [
+            { name: 'Candidato 1', imageUrl: '', partyName: '', partyImageUrl: '' },
+            { name: 'Candidato 2', imageUrl: '', partyName: '', partyImageUrl: '' }
+          ]
+        };
+        break;
+    }
+
+    return this.http.post<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/questions`, body, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al agregar pregunta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  updateQuestion(surveyId: string, questionId: string, questionData: Partial<Question>): Observable<BuilderState> {
+    const headers = this.getAuthHeaders();
+    return this.http.put<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/questions/${questionId}`, questionData, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al actualizar pregunta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  deleteQuestion(surveyId: string, questionId: string): Observable<BuilderState> {
+    const headers = this.getAuthHeaders();
+    return this.http.delete<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/questions/${questionId}`, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al eliminar pregunta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  updateSurveyDetails(surveyId: string, details: { title?: string; description?: string; is_draft?: boolean; status?: string }): Observable<BuilderState> {
+    const headers = this.getAuthHeaders();
+    return this.http.put<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/details`, details, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al actualizar detalles de encuesta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  uploadRecipients(surveyId: string, recipients: RecipientImportItem[]): Observable<any> {
+    const headers = this.getAuthHeaders();
+    const body = {
+      survey_id: surveyId,
+      recipients
+    };
+    return this.http.post(`${this.apiBaseUrl}/delivery/recipients/import`, body, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al importar destinatarios:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  createShortLink(longUrl: string, params?: { survey_id?: string; recipient_id?: string }): Observable<any> {
+    const headers = this.getAuthHeaders();
+    const body = { long_url: longUrl, ...params };
+    return this.http.post(`${this.apiBaseUrl}/redirector/shorten`, body, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al crear enlace corto:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+}
+

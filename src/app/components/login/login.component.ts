@@ -9,6 +9,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { environment } from '../../../environments/environment';
 import { ThemeService } from '../../services/theme/theme.service';
 import { Theme } from '../../models/theme.model';
+import { BackofficeAuthService } from '../../services/backoffice-auth/backoffice-auth.service';
 
 @Component({
   selector: 'app-login',
@@ -67,7 +68,8 @@ export class LoginComponent implements OnInit {
     private alertService: AlertService, 
     private localData: LocalDataService, 
     private permissionsService: NgxPermissionsService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private backofficeAuth: BackofficeAuthService
   ) {
     // Suscribirse a cambios de tema para actualizar branding
     this.themeService.getCurrentTheme().subscribe(theme => {
@@ -108,11 +110,22 @@ export class LoginComponent implements OnInit {
     return this.loginForm.controls;
   }
 
+  private isEmail(input: string): boolean {
+    return input.includes('@') && input.includes('.');
+  }
+
   onSubmit() {
     if (this.loginForm.valid) {
       this.isLoading = true;
 
-      // Si ya tenemos OTP, intentar verificar y completar login
+      const input = this.loginForm.value.telefono?.trim() || '';
+      const password = this.loginForm.value.password;
+
+      if (this.isEmail(input)) {
+        this.handleAdminLogin(input, password);
+        return;
+      }
+
       if (this.showOtpInput && this.loginForm.value.otp) {
         this.handleOtpVerification();
         return;
@@ -518,6 +531,35 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('dev_user_name', devUser.name);
 
     this.redirectByRole(devUser.rol);
+  }
+
+  handleAdminLogin(email: string, password: string) {
+    const tenantId = environment.defaultTenantId || '473173';
+    
+    this.backofficeAuth.login(email, password, tenantId).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        
+        if (!this.backofficeAuth.isAdmin(response)) {
+          return;
+        }
+
+        this.localData.setBackofficeToken(response.access_token);
+        this.localData.setBackofficeUser(response.user);
+        this.localData.setToken(response.access_token);
+        this.localData.setRol(1);
+        this.localData.setId(response.user.email);
+        this.permissionsService.addPermission(['1']);
+        
+        this.router.navigate(['adminHome']);
+        this.alertService.successAlert('Bienvenido, administrador');
+      },
+      error: (error) => {
+        this.isLoading = false;
+        const errorMessage = error.error?.detail || error.error?.message || 'Error al iniciar sesión';
+        this.alertService.errorAlert(errorMessage);
+      }
+    });
   }
 
   redirectByRole(rol: number) {
