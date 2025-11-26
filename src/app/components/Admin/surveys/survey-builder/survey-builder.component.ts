@@ -1,0 +1,250 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SurveyService, BuilderState, Question, QuestionType } from '../../../../services/survey/survey.service';
+
+@Component({
+  selector: 'app-survey-builder',
+  templateUrl: './survey-builder.component.html',
+  styleUrls: ['./survey-builder.component.scss']
+})
+export class SurveyBuilderComponent implements OnInit {
+  surveyId: string | null = null;
+  builderState: BuilderState | null = null;
+  loading = false;
+  error: string | null = null;
+  editingQuestionId: string | null = null;
+  editingTitle = false;
+  surveyStatus: 'draft' | 'active' | 'closed' | 'paused' | 'archived' = 'draft';
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private surveyService: SurveyService
+  ) { }
+
+  ngOnInit(): void {
+    this.surveyId = this.route.snapshot.paramMap.get('surveyId');
+    if (this.surveyId) {
+      this.loadBuilderState();
+    } else {
+      this.error = 'ID de encuesta no válido';
+    }
+  }
+
+  loadBuilderState(): void {
+    if (!this.surveyId) return;
+
+    this.loading = true;
+    this.error = null;
+
+    this.surveyService.getBuilderState(this.surveyId).subscribe({
+      next: (state) => {
+        this.builderState = state;
+        this.surveyStatus = state.status || (state.is_draft ? 'draft' : 'active');
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar estado del builder:', error);
+        this.error = error.error?.detail || error.message || 'Error al cargar la encuesta';
+        this.loading = false;
+      }
+    });
+  }
+
+  addQuestion(type: QuestionType): void {
+    if (!this.surveyId) return;
+
+    this.surveyService.addQuestion(this.surveyId, type).subscribe({
+      next: (newState) => {
+        this.builderState = newState;
+        // Enfocar automáticamente la nueva pregunta
+        if (newState.questions.length > 0) {
+          const newQuestion = newState.questions[newState.questions.length - 1];
+          this.editingQuestionId = newQuestion.id;
+        }
+      },
+      error: (error) => {
+        console.error('Error al agregar pregunta:', error);
+        this.error = error.error?.detail || error.message || 'Error al agregar pregunta';
+      }
+    });
+  }
+
+  saveQuestion(question: Question): void {
+    if (!this.surveyId || !question.text.trim()) {
+      alert('El texto de la pregunta es requerido');
+      return;
+    }
+
+    // Validar opciones según el tipo
+    if ((question.type === 'multiple_choice' || question.type === 'multiple_select') && 
+        (!question.options?.choices || question.options.choices.length < 2)) {
+      alert('Debe haber al menos 2 opciones de respuesta');
+      return;
+    }
+
+    if (question.type === 'scale') {
+      if (!question.options?.min || !question.options?.max || 
+          question.options.min >= question.options.max) {
+        alert('La escala debe tener un mínimo menor que el máximo');
+        return;
+      }
+    }
+
+    if (question.type === 'candidate_vote' && 
+        (!question.options?.candidates || question.options.candidates.length < 1)) {
+      alert('Debe haber al menos 1 candidato');
+      return;
+    }
+
+    this.surveyService.updateQuestion(this.surveyId, question.id, {
+      text: question.text.trim(),
+      options: question.options
+    }).subscribe({
+      next: (updatedState) => {
+        this.builderState = updatedState;
+        this.editingQuestionId = null;
+        this.error = null;
+      },
+      error: (error) => {
+        console.error('Error al guardar pregunta:', error);
+        this.error = error.error?.detail || error.message || 'Error al guardar pregunta';
+      }
+    });
+  }
+
+  deleteQuestion(questionId: string): void {
+    if (!this.surveyId || !confirm('¿Estás seguro de eliminar esta pregunta?')) return;
+
+    this.surveyService.deleteQuestion(this.surveyId, questionId).subscribe({
+      next: (updatedState) => {
+        this.builderState = updatedState;
+        if (this.editingQuestionId === questionId) {
+          this.editingQuestionId = null;
+        }
+      },
+      error: (error) => {
+        console.error('Error al eliminar pregunta:', error);
+        this.error = error.error?.detail || error.message || 'Error al eliminar pregunta';
+      }
+    });
+  }
+
+  saveTitle(newTitle: string): void {
+    if (!this.builderState || !this.surveyId || newTitle === this.builderState.title || !newTitle.trim()) {
+      this.editingTitle = false;
+      return;
+    }
+
+    // Actualización optimista
+    const previousTitle = this.builderState.title;
+    this.builderState.title = newTitle.trim();
+    this.editingTitle = false;
+
+    // Actualizar en el backend
+    this.surveyService.updateSurvey(this.surveyId, { title: newTitle.trim() }).subscribe({
+      error: (error) => {
+        console.error('Error al actualizar título:', error);
+        // Revertir en caso de error
+        if (this.builderState) {
+          this.builderState.title = previousTitle;
+        }
+        this.error = 'No se pudo guardar el título. Inténtalo de nuevo.';
+      }
+    });
+  }
+
+  activateSurvey(): void {
+    if (!this.builderState || !this.surveyId || !this.builderState.is_draft) return;
+    
+    if (!confirm('¿Activar encuesta? Una vez activa, se recomienda no cambiar la estructura.')) {
+      return;
+    }
+
+    const previousState = { ...this.builderState };
+    this.builderState.is_draft = false;
+
+    this.surveyService.updateSurvey(this.surveyId, { status: 'active' }).subscribe({
+      next: () => {
+        this.surveyStatus = 'active';
+        if (this.builderState) {
+          this.builderState.is_draft = false;
+          this.builderState.status = 'active';
+        }
+        // Recargar estado para asegurar sincronización
+        this.loadBuilderState();
+      },
+      error: (error) => {
+        console.error('Error al activar encuesta:', error);
+        this.builderState = previousState;
+        this.error = 'No se pudo activar la encuesta.';
+      }
+    });
+  }
+
+  closeSurvey(): void {
+    if (!this.builderState || !this.surveyId || this.builderState.is_draft) return;
+    
+    if (!confirm('¿Cerrar encuesta? No aceptará más respuestas.')) {
+      return;
+    }
+
+    this.surveyService.updateSurvey(this.surveyId, { status: 'closed' }).subscribe({
+      next: () => {
+        this.surveyStatus = 'closed';
+        if (this.builderState) {
+          this.builderState.status = 'closed';
+        }
+        this.loadBuilderState();
+      },
+      error: (error) => {
+        console.error('Error al cerrar encuesta:', error);
+        this.error = 'No se pudo cerrar la encuesta.';
+      }
+    });
+  }
+
+  copyPublicLink(): void {
+    if (!this.surveyId) return;
+    
+    const origin = window.location.origin;
+    const publicUrl = `${origin}/survey/${this.surveyId}`;
+    
+    // Intentar crear enlace corto
+    this.surveyService.createShortLink(publicUrl, { survey_id: this.surveyId }).subscribe({
+      next: (response: any) => {
+        const linkToCopy = response?.short_url || publicUrl;
+        navigator.clipboard.writeText(linkToCopy).then(() => {
+          alert('Link copiado al portapapeles');
+        }).catch(() => {
+          // Fallback: mostrar el link
+          prompt('Copia este link:', linkToCopy);
+        });
+      },
+      error: () => {
+        // Si falla, usar el link largo
+        navigator.clipboard.writeText(publicUrl).then(() => {
+          alert('Link copiado al portapapeles');
+        }).catch(() => {
+          prompt('Copia este link:', publicUrl);
+        });
+      }
+    });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/admin/surveys']);
+  }
+
+  getQuestionTypeLabel(type: QuestionType): string {
+    const labels: Record<QuestionType, string> = {
+      'text': 'Texto',
+      'multiple_choice': 'Opción Múltiple',
+      'multiple_select': 'Selección Múltiple',
+      'scale': 'Escala Numérica',
+      'candidate_vote': 'Voto por Candidato'
+    };
+    return labels[type] || type;
+  }
+}
+

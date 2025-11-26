@@ -58,13 +58,39 @@ export class LoaderInterceptor implements HttpInterceptor {
           }
         },
         (err) => {
+          const url = req.url;
+          const isSurveyApi = url.includes('localhost:8001') || url.includes('/api/v1/');
+          const isLaravelApi = url.includes('localhost:8000') || url.includes(environment.apiURL);
+          const isConnectionRefused = err.status === 0 || err.statusText === 'Unknown Error';
+          
+          console.log('LoaderInterceptor - Error en petición:', url);
+          console.log('LoaderInterceptor - Status:', err.status);
+          console.log('LoaderInterceptor - Es servicio de encuestas?', isSurveyApi);
+          
+          // No mostrar error si es un error de conexión al servidor Laravel (puede no estar corriendo)
+          // Tampoco mostrar error si es una petición a contactos-usuario (el componente maneja el error)
+          if ((isConnectionRefused && isLaravelApi) || url.includes('contactos-usuario')) {
+            console.warn('LoaderInterceptor - Servidor Laravel no disponible o petición de contactos, omitiendo alerta de error');
+            this.removeRequest(req);
+            observer.error(err);
+            return;
+          }
+          
           if (err.status !== 401) {
             this.alertService.errorAlert(
               'Ha ocurrido un error. Por favor intente nuevamente.'
             );
           } else {
-            this.localData.deleteCookies();
-            window.location.reload();
+            // Solo limpiar localStorage si NO es del servicio de encuestas
+            // El servicio de encuestas puede tener problemas de autenticación diferentes
+            if (!isSurveyApi) {
+              console.warn('LoaderInterceptor - Error 401 en petición no relacionada con encuestas, limpiando localStorage');
+              this.localData.deleteCookies();
+              window.location.reload();
+            } else {
+              console.warn('LoaderInterceptor - Error 401 en servicio de encuestas, NO limpiando localStorage');
+              // No limpiar localStorage para errores del servicio de encuestas
+            }
           }
           this.removeRequest(req);
           observer.error(err);

@@ -5,6 +5,7 @@ import { ApiService } from '../../services/api/api.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../../services/alert/alert.service';
 import { CustomValidationService } from '../../services/validations/custom-validation.service';
+import { LocalDataService } from '../../services/localData/local-data.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -35,11 +36,27 @@ export class ContactosComponent implements OnInit {
   });
   listContactos: any = [];
 
-  constructor(private apiService: ApiService, private router: Router, private alertService: AlertService, private fb: FormBuilder, private customValidator: CustomValidationService) {
+  constructor(
+    private apiService: ApiService, 
+    private router: Router, 
+    private alertService: AlertService, 
+    private fb: FormBuilder, 
+    private customValidator: CustomValidationService,
+    private localData: LocalDataService
+  ) {
   }
 
   ngOnInit() {
-    this.getContactos();
+    const userId = this.localData.getId();
+    // Verificar si el ID es válido (no vacío y no es un email, que indicaría que viene del backoffice)
+    const isValidId = userId && userId.trim() !== '' && !userId.includes('@');
+    
+    if (isValidId) {
+      this.getContactos();
+    } else {
+      console.warn('ContactosComponent: No hay ID de usuario válido disponible. No se cargarán contactos.');
+      this.listContactos = [];
+    }
     this.innerWidth = window.innerWidth;
     this.resizeObservable$ = fromEvent(window, 'resize')
     this.resizeSubscription$ = this.resizeObservable$.subscribe(() => {
@@ -109,9 +126,15 @@ export class ContactosComponent implements OnInit {
   }
 
   getContactos() {
-    this.apiService.getContactos().subscribe((resp: any) => {
-      this.listContactos = resp;
-    })
+    this.apiService.getContactos().subscribe({
+      next: (resp: any) => {
+        this.listContactos = resp;
+      },
+      error: (error: any) => {
+        console.warn('No se pudieron cargar los contactos. El servidor puede no estar disponible:', error);
+        this.listContactos = [];
+      }
+    });
   }
 
   successAlert(message: any) {

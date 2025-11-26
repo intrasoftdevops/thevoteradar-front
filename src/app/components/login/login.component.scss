@@ -1,0 +1,27 @@
+// Asegurar que los inputs con iconos tengan suficiente padding izquierdo
+input[type="tel"],
+input[type="text"],
+input[type="password"] {
+  &[id="telefono"],
+  &[id="password"],
+  &[id="otp"],
+  &[id="profilePassword"],
+  &[id="profilePasswordConfirmation"] {
+    padding-left: 3.5rem !important;
+  }
+}
+
+// Asegurar que los iconos no interfieran con el texto
+.relative {
+  .absolute {
+    &.pointer-events-none {
+      z-index: 1;
+    }
+  }
+  
+  input {
+    position: relative;
+    z-index: 0;
+  }
+}
+

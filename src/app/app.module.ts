@@ -69,6 +69,12 @@ import { ImpugnacionesComponent } from './components/AdministradorImpugnaciones/
 import { HomeComponent } from './components/AdministradorImpugnaciones/home/home.component';
 import { MenuAdministradorImpugnacionesComponent } from './components/AdministradorImpugnaciones/menu-administrador-impugnaciones/menu-administrador-impugnaciones.component';
 import { ThemeSelectorComponent } from './components/shared/theme-selector/theme-selector.component';
+import { SurveyDashboardComponent } from './components/Admin/surveys/survey-dashboard/survey-dashboard.component';
+import { SurveyBuilderComponent } from './components/Admin/surveys/survey-builder/survey-builder.component';
+import { RecipientsModalComponent } from './components/Admin/surveys/recipients-modal/recipients-modal.component';
+import { SurveyAnalyticsComponent } from './components/Admin/surveys/survey-analytics/survey-analytics.component';
+import { SurveyResponsesComponent } from './components/Admin/surveys/survey-responses/survey-responses.component';
+import { SurveyLandingComponent } from './components/public/survey-landing/survey-landing.component';
 
 @NgModule({
   declarations: [
@@ -129,7 +135,13 @@ import { ThemeSelectorComponent } from './components/shared/theme-selector/theme
     ImpugnacionesComponent,
     HomeComponent,
     MenuAdministradorImpugnacionesComponent,
-    ThemeSelectorComponent
+    ThemeSelectorComponent,
+    SurveyDashboardComponent,
+    SurveyBuilderComponent,
+    RecipientsModalComponent,
+    SurveyAnalyticsComponent,
+    SurveyResponsesComponent,
+    SurveyLandingComponent
   ],
   imports: [
     BrowserModule,

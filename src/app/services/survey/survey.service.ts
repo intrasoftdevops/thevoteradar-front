@@ -52,6 +52,7 @@ export interface BuilderState {
   last_saved_at: string;
   version: number;
   is_draft: boolean;
+  status?: 'draft' | 'active' | 'closed' | 'paused' | 'archived';
 }
 
 export interface RecipientImportItem {
@@ -73,10 +74,11 @@ export class SurveyService {
     private localData: LocalDataService
   ) { }
 
-  private getAuthHeaders(): HttpHeaders {
+  private getAuthHeaders(): HttpHeaders | null {
     const token = this.localData.getBackofficeToken();
-    if (!token) {
-      throw new Error('No hay token de autenticación disponible');
+    if (!token || token === 'undefined' || token === '') {
+      console.warn('No hay token de autenticación disponible para el servicio de encuestas');
+      return null;
     }
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`,
@@ -86,6 +88,10 @@ export class SurveyService {
 
   getSurveys(): Observable<Survey[]> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      console.error('No se puede obtener encuestas: no hay token de autenticación');
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
     return this.http.get<Survey[]>(`${this.apiBaseUrl}/surveys`, { headers })
       .pipe(
         catchError(error => {
@@ -97,6 +103,9 @@ export class SurveyService {
 
   createSurveyDraft(title: string, description: string = ''): Observable<BuilderState> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
     const body = {
       title,
       description,
@@ -113,6 +122,9 @@ export class SurveyService {
 
   getBuilderState(surveyId: string): Observable<BuilderState> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
     return this.http.get<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/state`, { headers })
       .pipe(
         catchError(error => {
@@ -124,6 +136,9 @@ export class SurveyService {
 
   reorderQuestions(surveyId: string, questionIds: string[]): Observable<BuilderState> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
     const body = {
       question_orders: questionIds.map((id, index) => ({ id, order: index }))
     };
@@ -138,6 +153,9 @@ export class SurveyService {
 
   addQuestion(surveyId: string, questionType: QuestionType): Observable<BuilderState> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
     const body: { type: string; text: string; options?: any } = {
       type: questionType,
       text: `Nueva pregunta (${questionType})`
@@ -177,6 +195,9 @@ export class SurveyService {
 
   updateQuestion(surveyId: string, questionId: string, questionData: Partial<Question>): Observable<BuilderState> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
     return this.http.put<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/questions/${questionId}`, questionData, { headers })
       .pipe(
         catchError(error => {
@@ -188,6 +209,9 @@ export class SurveyService {
 
   deleteQuestion(surveyId: string, questionId: string): Observable<BuilderState> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
     return this.http.delete<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/questions/${questionId}`, { headers })
       .pipe(
         catchError(error => {
@@ -199,6 +223,9 @@ export class SurveyService {
 
   updateSurveyDetails(surveyId: string, details: { title?: string; description?: string; is_draft?: boolean; status?: string }): Observable<BuilderState> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
     return this.http.put<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/details`, details, { headers })
       .pipe(
         catchError(error => {
@@ -208,13 +235,64 @@ export class SurveyService {
       );
   }
 
+  updateSurvey(surveyId: string, data: Partial<{ title: string; description: string; status: 'draft' | 'active' | 'closed' | 'paused' | 'archived'; starts_at: string; ends_at: string }>): Observable<any> {
+    const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
+    return this.http.put(`${this.apiBaseUrl}/surveys/${surveyId}`, data, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al actualizar encuesta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
   uploadRecipients(surveyId: string, recipients: RecipientImportItem[]): Observable<any> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
+    
+    // Transformar los datos al formato que espera el backend
+    // El backend espera: { recipients: [{ phone_number: string, metadata?: { name?, email? } }] }
+    const transformedRecipients = recipients
+      .filter(r => r.phone || r.email) // Solo incluir si tiene teléfono o email
+      .map(r => {
+        const recipient: any = {};
+        
+        // El backend requiere phone_number, pero si solo hay email, podemos usar el email como identificador
+        if (r.phone) {
+          recipient.phone_number = r.phone;
+        } else if (r.email) {
+          // Si no hay teléfono pero hay email, usar email como phone_number temporalmente
+          // O podríamos requerir que siempre haya teléfono
+          recipient.phone_number = r.email; // Temporal: el backend podría necesitar ajuste
+        }
+        
+        // Agregar metadata si hay nombre o email
+        const metadata: any = {};
+        if (r.name) metadata.name = r.name;
+        if (r.email && r.phone) metadata.email = r.email; // Solo si también hay teléfono
+        
+        if (Object.keys(metadata).length > 0) {
+          recipient.metadata = metadata;
+        }
+        
+        return recipient;
+      })
+      .filter(r => r.phone_number); // Solo incluir si tiene phone_number
+    
+    if (transformedRecipients.length === 0) {
+      return throwError(() => new Error('No hay destinatarios válidos para importar. Se requiere al menos teléfono o email.'));
+    }
+    
     const body = {
-      survey_id: surveyId,
-      recipients
+      recipients: transformedRecipients
     };
-    return this.http.post(`${this.apiBaseUrl}/delivery/recipients/import`, body, { headers })
+    
+    return this.http.post(`${this.apiBaseUrl}/surveys/${surveyId}/recipients`, body, { headers })
       .pipe(
         catchError(error => {
           console.error('Error al importar destinatarios:', error);
@@ -225,6 +303,9 @@ export class SurveyService {
 
   createShortLink(longUrl: string, params?: { survey_id?: string; recipient_id?: string }): Observable<any> {
     const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
     const body = { long_url: longUrl, ...params };
     return this.http.post(`${this.apiBaseUrl}/redirector/shorten`, body, { headers })
       .pipe(
@@ -234,5 +315,53 @@ export class SurveyService {
         })
       );
   }
+
+  getSurveyAnalytics(surveyId: string): Observable<SurveyAnalytics> {
+    const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
+    return this.http.get<SurveyAnalytics>(`${this.apiBaseUrl}/responses/survey/${surveyId}/summary`, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener analytics de encuesta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  getSurveyResponses(surveyId: string): Observable<SurveyResponse[]> {
+    const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
+    return this.http.get<SurveyResponse[]>(`${this.apiBaseUrl}/responses/survey/${surveyId}/list`, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener respuestas de encuesta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+}
+
+export interface SurveyResponse {
+  id: string;
+  survey_id: string;
+  question_id: string;
+  value: any;
+  metadata_hash?: string;
+  created_at: string;
+}
+
+export interface SurveyAnalytics {
+  survey_id: string;
+  total_respondents: number;
+  per_question: Array<{
+    question_id: string;
+    text: string;
+    type: string;
+    counts: Record<string, number>;
+  }>;
 }
 

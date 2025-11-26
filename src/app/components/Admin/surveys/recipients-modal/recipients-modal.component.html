@@ -1,0 +1,84 @@
+<div 
+  class="modal fade" 
+  [class.show]="isOpen" 
+  [style.display]="isOpen ? 'block' : 'none'"
+  tabindex="-1"
+  *ngIf="isOpen"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cargar destinatarios</h5>
+        <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="surveyTitle" class="mb-3">
+          <small class="text-muted">Encuesta: <strong>{{ surveyTitle }}</strong></small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">
+            Pega uno por línea o separa con comas: nombre, teléfono, email. Ejemplos:
+          </label>
+          <pre class="bg-light p-2 rounded border small mb-2" style="font-size: 0.75rem;">
+Juan Pérez,+573001112233,juan@correo.com
++573221234567
+ana@correo.com</pre>
+          <textarea
+            class="form-control"
+            rows="10"
+            placeholder="Pega aquí tus destinatarios..."
+            [(ngModel)]="rawText"
+            (ngModelChange)="onTextChange()"
+            [disabled]="isUploading"
+          ></textarea>
+          <div class="mt-2 text-muted small">
+            <strong>{{ stats.total }}</strong> filas • 
+            <strong>{{ stats.phones }}</strong> teléfonos • 
+            <strong>{{ stats.emails }}</strong> emails
+          </div>
+        </div>
+
+        <div *ngIf="message" class="alert" [ngClass]="message.includes('exitosamente') ? 'alert-success' : 'alert-warning'">
+          {{ message }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="clearText()"
+          [disabled]="isUploading || !rawText"
+        >
+          Limpiar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="close()"
+          [disabled]="isUploading"
+        >
+          Cancelar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="importRecipients()"
+          [disabled]="parsedRows.length === 0 || isUploading"
+        >
+          <span *ngIf="isUploading" class="spinner-border spinner-border-sm me-2"></span>
+          {{ isUploading ? 'Importando...' : 'Importar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop -->
+<div 
+  class="modal-backdrop fade" 
+  [class.show]="isOpen"
+  *ngIf="isOpen"
+  (click)="close()"
+></div>
+
