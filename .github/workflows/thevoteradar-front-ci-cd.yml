@@ -14,11 +14,6 @@ on:
         - dev
         - prod
 
-env:
-  PROJECT_ID: political-referrals
-  REGION: us-central1
-  IMAGE_NAME: thevoteradar-front
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -42,7 +37,7 @@ jobs:
     - name: ☁️ Setup gcloud
       uses: google-github-actions/setup-gcloud@v2
       with:
-        project_id: ${{ env.PROJECT_ID }}
+        project_id: ${{ vars.GCP_PROJECT_ID }}
 
     - name: ✅ Verify gcloud auth
       run: |
@@ -78,11 +73,11 @@ jobs:
           ENVIRONMENT="development"
         fi
 
-        echo "Building image: gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:$TAG"
+        echo "Building image: gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG"
         echo "Deploying service: $SERVICE_NAME in $ENVIRONMENT"
 
-        docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:$TAG .
-        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:$TAG
+        docker build -t gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG .
+        docker push gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG
 
         # Exportar a env para siguientes pasos
         echo "TAG=$TAG" >> $GITHUB_ENV
@@ -91,16 +86,23 @@ jobs:
 
     - name: 🚀 Deploy to Cloud Run
       run: |
+        # Determinar min-instances según el entorno
+        if [ "$ENVIRONMENT" = "production" ]; then
+          MIN_INSTANCES=1  # Producción: siempre disponible, sin cold start
+        else
+          MIN_INSTANCES=0  # Desarrollo: escala a cero para ahorrar costos
+        fi
+        
         gcloud run deploy $SERVICE_NAME \
-          --image gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:$TAG \
-          --region ${{ env.REGION }} \
+          --image gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG \
+          --region ${{ vars.GCP_REGION }} \
           --platform managed \
           --allow-unauthenticated \
           --port 8080 \
           --memory=512Mi \
           --cpu=1 \
           --max-instances=10 \
-          --min-instances=0 \
+          --min-instances=$MIN_INSTANCES \
           --concurrency=80 \
           --timeout=300s
 
@@ -112,8 +114,8 @@ jobs:
         
         # Obtener la URL real del servicio desplegado
         SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
-          --project ${{ env.PROJECT_ID }} \
-          --region ${{ env.REGION }} \
+          --project ${{ vars.GCP_PROJECT_ID }} \
+          --region ${{ vars.GCP_REGION }} \
           --format="value(status.url)")
         
         echo "✅ Deployment completed!"
