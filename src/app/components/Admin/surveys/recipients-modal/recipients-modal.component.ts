@@ -53,15 +53,12 @@ export class RecipientsModalComponent implements OnInit, OnChanges {
       const item: RecipientImportItem = {};
       
       for (const p of parts) {
-        // Detectar teléfono: +?dígitos con al menos 6 caracteres
         if (/^\+?\d[\d\s-]{6,}$/.test(p)) {
           item.phone = p.replace(/\s|-/g, '');
         }
-        // Detectar email
         else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p)) {
           item.email = p;
         }
-        // Si no es teléfono ni email, es nombre
         else if (p) {
           item.name = p;
         }
@@ -96,12 +93,10 @@ export class RecipientsModalComponent implements OnInit, OnChanges {
     this.isUploading = true;
     this.message = null;
 
-    // Guardar en localStorage
     if (this.surveyId) {
       localStorage.setItem(`recipients:${this.surveyId}`, this.rawText);
     }
 
-    // Enviar al backend
     this.surveyService.uploadRecipients(this.surveyId, this.parsedRows).subscribe({
       next: () => {
         this.message = 'Destinatarios cargados exitosamente.';
