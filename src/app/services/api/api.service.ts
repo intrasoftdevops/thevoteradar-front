@@ -20,7 +20,7 @@ export class ApiService {
     return this.http.post(this._URL + "/login", data);
   }
 
-  // Nuevos métodos para login con tenant y Firestore
+  
   tenantLogin(data: any) {
     return this.http.post(this._URL + "/login", data);
   }
