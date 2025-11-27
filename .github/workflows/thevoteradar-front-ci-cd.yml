@@ -53,54 +53,42 @@ jobs:
 
     - name: 🔐 Generate environment file from Secrets Manager
       run: |
+        SECRET_PREFIX="thevoteradar"
+        
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
           ENV_FILE="environment.prod.ts"
           ENV_SUFFIX="prod"
           PRODUCTION="true"
           DEVELOPMENT="false"
-          
-          KEY1_SECRET="thevoteradar-key1-prod:latest"
-          KEY2_SECRET="thevoteradar-key2-prod:latest"
-          KEY3_SECRET="thevoteradar-key3-prod:latest"
-          KEY4_SECRET="thevoteradar-key4-prod:latest"
-          API_URL_SECRET="thevoteradar-api-url-prod:latest"
-          BACKOFFICE_API_URL_SECRET="thevoteradar-backoffice-api-url-prod:latest"
-          SURVEY_API_URL_SECRET="thevoteradar-survey-api-url-prod:latest"
-          
-          API_URL_DEFAULT="http://3.130.141.211/api"
-          BACKOFFICE_API_URL_DEFAULT="https://backoffice-api.produccion.com"
-          SURVEY_API_URL_DEFAULT="https://survey-api.produccion.com"
-          
           echo "🔴 PRODUCTION environment detected"
         else
           ENV_FILE="environment.ts"
           ENV_SUFFIX="dev"
           PRODUCTION="false"
           DEVELOPMENT="true"
-          
-          KEY1_SECRET="thevoteradar-key1-dev:latest"
-          KEY2_SECRET="thevoteradar-key2-dev:latest"
-          KEY3_SECRET="thevoteradar-key3-dev:latest"
-          KEY4_SECRET="thevoteradar-key4-dev:latest"
-          API_URL_SECRET="thevoteradar-api-url-dev:latest"
-          BACKOFFICE_API_URL_SECRET="thevoteradar-backoffice-api-url-dev:latest"
-          SURVEY_API_URL_SECRET="thevoteradar-survey-api-url-dev:latest"
-          
-          API_URL_DEFAULT="http://localhost:8000/api"
-          BACKOFFICE_API_URL_DEFAULT="https://backoffice-back-prod-331919709696.us-central1.run.app"
-          SURVEY_API_URL_DEFAULT="http://localhost:8001"
-          
           echo "🟢 DEVELOPMENT environment detected"
         fi
+        
+        KEY1_SECRET="$SECRET_PREFIX-key1-$ENV_SUFFIX:latest"
+        KEY2_SECRET="$SECRET_PREFIX-key2-$ENV_SUFFIX:latest"
+        KEY3_SECRET="$SECRET_PREFIX-key3-$ENV_SUFFIX:latest"
+        KEY4_SECRET="$SECRET_PREFIX-key4-$ENV_SUFFIX:latest"
+        API_URL_SECRET="$SECRET_PREFIX-api-url-$ENV_SUFFIX:latest"
+        BACKOFFICE_API_URL_SECRET="$SECRET_PREFIX-backoffice-api-url-$ENV_SUFFIX:latest"
+        SURVEY_API_URL_SECRET="$SECRET_PREFIX-survey-api-url-$ENV_SUFFIX:latest"
+        DEFAULT_TENANT_ID_SECRET="$SECRET_PREFIX-default-tenant-id-$ENV_SUFFIX:latest"
+        POWER_BI_URL_SECRET="$SECRET_PREFIX-powerbi-url-$ENV_SUFFIX:latest"
         
         echo "📋 Reading secrets from GCP Secret Manager..."
         KEY1=$(gcloud secrets versions access $KEY1_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
         KEY2=$(gcloud secrets versions access $KEY2_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
         KEY3=$(gcloud secrets versions access $KEY3_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
         KEY4=$(gcloud secrets versions access $KEY4_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
-        API_URL=$(gcloud secrets versions access $API_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo "$API_URL_DEFAULT")
-        BACKOFFICE_API_URL=$(gcloud secrets versions access $BACKOFFICE_API_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo "$BACKOFFICE_API_URL_DEFAULT")
-        SURVEY_API_URL=$(gcloud secrets versions access $SURVEY_API_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo "$SURVEY_API_URL_DEFAULT")
+        API_URL=$(gcloud secrets versions access $API_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
+        BACKOFFICE_API_URL=$(gcloud secrets versions access $BACKOFFICE_API_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
+        SURVEY_API_URL=$(gcloud secrets versions access $SURVEY_API_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
+        DEFAULT_TENANT_ID=$(gcloud secrets versions access $DEFAULT_TENANT_ID_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '475711')
+        POWER_BI_URL=$(gcloud secrets versions access $POWER_BI_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
         
         if [ -z "$KEY1" ] || [ -z "$KEY2" ] || [ -z "$KEY3" ] || [ -z "$KEY4" ]; then
           echo "⚠️ Warning: Some encryption keys are missing from Secrets Manager"
@@ -110,8 +98,13 @@ jobs:
           echo "✅ All encryption keys retrieved successfully"
         fi
         
-        printf "export const environment = {\n  production: %s,\n  development: %s,\n  apiURL: '%s',\n  backofficeApiURL: '%s',\n  surveyApiURL: '%s',\n  defaultTenantId: '475711',\n  key1: '%s',\n  key2: '%s',\n  key3: '%s',\n  key4: '%s',\n  powerBiURL: 'https://app.powerbi.com/view?r=eyJrIjoiNjZjOTIwMDMtZTM3Mi00ZmIxLWE4M2YtODI5MWRlNjdiODRkIiwidCI6IjIwMDlmYmJiLTdmMDUtNGQwYS05YmViLTViYzFkZjZhN2QzYSJ9&pageName=ReportSection',\n};\n" \
-          "$PRODUCTION" "$DEVELOPMENT" "$API_URL" "$BACKOFFICE_API_URL" "$SURVEY_API_URL" "$KEY1" "$KEY2" "$KEY3" "$KEY4" > src/environments/$ENV_FILE
+        if [ -z "$API_URL" ] || [ -z "$BACKOFFICE_API_URL" ] || [ -z "$SURVEY_API_URL" ] || [ -z "$POWER_BI_URL" ]; then
+          echo "⚠️ Warning: Some URL secrets are missing from Secrets Manager"
+          echo "⚠️ Environment: $ENV_SUFFIX"
+        fi
+        
+        printf "export const environment = {\n  production: %s,\n  development: %s,\n  apiURL: '%s',\n  backofficeApiURL: '%s',\n  surveyApiURL: '%s',\n  defaultTenantId: '%s',\n  key1: '%s',\n  key2: '%s',\n  key3: '%s',\n  key4: '%s',\n  powerBiURL: '%s',\n};\n" \
+          "$PRODUCTION" "$DEVELOPMENT" "$API_URL" "$BACKOFFICE_API_URL" "$SURVEY_API_URL" "$DEFAULT_TENANT_ID" "$KEY1" "$KEY2" "$KEY3" "$KEY4" "$POWER_BI_URL" > src/environments/$ENV_FILE
         
         echo "✅ Environment file generated: $ENV_FILE for $ENV_SUFFIX environment"
 
