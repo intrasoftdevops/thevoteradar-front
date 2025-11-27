@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate {
         keyBExists: !!keyB,
         rolLength: rol ? rol.length : 0
       });
-      // No eliminar cookies automáticamente, solo redirigir
+      
       this.router.navigate(['']);
       return false;
     } else if (route.data['rol'] && route.data['rol'].every((e: any) => e != rolNumber && e != rol)) {

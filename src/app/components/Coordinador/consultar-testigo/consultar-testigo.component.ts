@@ -52,11 +52,11 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
     this.apiService.getTestigos().subscribe((resp: any) => {
       const { testigos_asignados, testigos_no_asignados } = resp;
       this.listTestigoAsignados = testigos_asignados.filter((testigo: any) => {
-        // Filtrar el array mesas del testigo para que solo incluya las mesas con el código de puesto de votación deseado
+        
         testigo.mesas = testigo.mesas.filter(
           (mesa: any) => mesa.codigo_puesto_votacion === this.puestoSeleccionado
         );
-        // Solo incluir el testigo si tiene al menos una mesa con el código de puesto de votación deseado
+        
         return testigo.mesas.length > 0;
       });
       this.listTestigoNoAsignados = testigos_no_asignados;
@@ -94,7 +94,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
       pageLength: 20,
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: '
       },
     };
     this.dtOptionsTestigoNoAsignados = {
@@ -103,7 +103,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
       pageLength: 20,
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: '
       },
     };
   }

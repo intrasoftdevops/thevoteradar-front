@@ -337,7 +337,7 @@ const routes: Routes = [
       rol: [5]
     }
   },
-  //No olvidar cambiar id para poder utilizar el forbidden.
+  
   {
     path: 'impugnar',
     component: ImpugnarComponent,

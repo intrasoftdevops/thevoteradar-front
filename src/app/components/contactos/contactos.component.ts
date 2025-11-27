@@ -48,7 +48,7 @@ export class ContactosComponent implements OnInit {
 
   ngOnInit() {
     const userId = this.localData.getId();
-    // Verificar si el ID es válido (no vacío y no es un email, que indicaría que viene del backoffice)
+    
     const isValidId = userId && userId.trim() !== '' && !userId.includes('@');
     
     if (isValidId) {

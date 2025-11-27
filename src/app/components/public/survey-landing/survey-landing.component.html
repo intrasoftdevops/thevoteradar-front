@@ -32,7 +32,7 @@
       <div class="card-body p-4">
         <form (ngSubmit)="submitSurvey()">
           <div *ngFor="let question of questions" class="mb-4 question-block">
-            <!-- Text Question -->
+            
             <div *ngIf="question.type === 'text'">
               <label [for]="'q-' + question.id" class="form-label fw-bold">
                 {{ question.text }}
@@ -48,7 +48,7 @@
               />
             </div>
 
-            <!-- Multiple Choice Question -->
+            
             <div *ngIf="question.type === 'multiple_choice'">
               <label class="form-label fw-bold">
                 {{ question.text }}
@@ -73,7 +73,7 @@
               </div>
             </div>
 
-            <!-- Multiple Select Question -->
+            
             <div *ngIf="question.type === 'multiple_select'">
               <label class="form-label fw-bold">
                 {{ question.text }}
@@ -96,7 +96,7 @@
               </div>
             </div>
 
-            <!-- Scale Question -->
+            
             <div *ngIf="question.type === 'scale'">
               <label class="form-label fw-bold">
                 {{ question.text }}
@@ -127,7 +127,7 @@
               </div>
             </div>
 
-            <!-- Candidate Vote Question -->
+            
             <div *ngIf="question.type === 'candidate_vote'">
               <label class="form-label fw-bold text-center d-block mb-3">
                 {{ question.text }}

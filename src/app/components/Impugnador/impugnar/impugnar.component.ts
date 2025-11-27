@@ -76,12 +76,12 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     
 
 
-    //this.dataTableOptions();
+    
     this.getInteresesCandidato();
     this.getNameUser()
     this.getCliente()
     const data = 0
-    //this.getImpugnaciones(data)
+    
     this.getCategoriaImpugnacion()
   }
 
@@ -146,7 +146,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
       console.log(resp)
         this.dataRevisar = resp;
-       // this.actual = this.dataRevisar.length
+       
        if(this.dataRevisar.length == 0) {
         this.successAlert("No se encontraron reportes")
        }
@@ -240,7 +240,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
             }
           }
           else if (this.dataRevisar.length  == 1){
-            //this.ModalRevisarActual(this.dataRevisar[this.actual]);
+            
             window.location.reload()
 
           }
@@ -291,7 +291,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: '
       },
     };
     this.dtOptions[1] = {
@@ -320,7 +320,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: '
       },
     };
     this.dtOptions[2] = {
@@ -349,7 +349,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: '
       },
     };
   }
@@ -373,14 +373,14 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   atras(){
     this.actual--
     if (this.actual <= 9) {
-      //var rand = Math.floor(Math.random() * this.dataRevisar.length);
+      
       this.ModalRevisarActual(this.dataRevisar[this.actual]);
       
     } else {
       window.location.reload()
     }
-    this.createForm.get('pagina')?.reset(); // Limpiar el campo de página
-    this.createForm.get('observaciones')?.reset(); // Limpiar el campo de observaciones
+    this.createForm.get('pagina')?.reset(); 
+    this.createForm.get('observaciones')?.reset(); 
     this.renderer();
 
 

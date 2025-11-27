@@ -44,7 +44,7 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
       destroy:true,
       processing: true,
       pageLength: 20,
-      language: { url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json' },
+      language: { url: '
     };
   }
 
@@ -93,9 +93,9 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
     this.apiService.getTestigos().subscribe((resp: any) => {
       const { testigos_asignados, testigos_no_asignados } = resp;
       this.listTestigoAsignados = testigos_asignados.filter((testigo: any) => {
-        // Filtrar el array mesas del testigo para que solo incluya las mesas con el código de puesto de votación deseado
+        
         testigo.mesas = testigo.mesas.filter((mesa: any) => mesa.codigo_puesto_votacion === this.puestoSeleccionado);
-        // Solo incluir el testigo si tiene al menos una mesa con el código de puesto de votación deseado
+        
         return testigo.mesas.length > 0;
     });
       this.renderer();

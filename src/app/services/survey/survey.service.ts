@@ -66,7 +66,7 @@ export interface RecipientImportItem {
 })
 export class SurveyService {
 
-  private surveyApiUrl = environment.surveyApiURL || 'http://localhost:8001';
+  private surveyApiUrl = environment.surveyApiURL || 'http:
   private apiBaseUrl = `${this.surveyApiUrl}/api/v1`;
 
   constructor(
@@ -255,26 +255,26 @@ export class SurveyService {
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
     
-    // Transformar los datos al formato que espera el backend
-    // El backend espera: { recipients: [{ phone_number: string, metadata?: { name?, email? } }] }
+    
+    
     const transformedRecipients = recipients
-      .filter(r => r.phone || r.email) // Solo incluir si tiene teléfono o email
+      .filter(r => r.phone || r.email) 
       .map(r => {
         const recipient: any = {};
         
-        // El backend requiere phone_number, pero si solo hay email, podemos usar el email como identificador
+        
         if (r.phone) {
           recipient.phone_number = r.phone;
         } else if (r.email) {
-          // Si no hay teléfono pero hay email, usar email como phone_number temporalmente
-          // O podríamos requerir que siempre haya teléfono
-          recipient.phone_number = r.email; // Temporal: el backend podría necesitar ajuste
+          
+          
+          recipient.phone_number = r.email; 
         }
         
-        // Agregar metadata si hay nombre o email
+        
         const metadata: any = {};
         if (r.name) metadata.name = r.name;
-        if (r.email && r.phone) metadata.email = r.email; // Solo si también hay teléfono
+        if (r.email && r.phone) metadata.email = r.email; 
         
         if (Object.keys(metadata).length > 0) {
           recipient.metadata = metadata;
@@ -282,7 +282,7 @@ export class SurveyService {
         
         return recipient;
       })
-      .filter(r => r.phone_number); // Solo incluir si tiene phone_number
+      .filter(r => r.phone_number); 
     
     if (transformedRecipients.length === 0) {
       return throwError(() => new Error('No hay destinatarios válidos para importar. Se requiere al menos teléfono o email.'));

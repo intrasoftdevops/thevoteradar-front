@@ -57,7 +57,7 @@ export class SurveyBuilderComponent implements OnInit {
     this.surveyService.addQuestion(this.surveyId, type).subscribe({
       next: (newState) => {
         this.builderState = newState;
-        // Enfocar automáticamente la nueva pregunta
+        
         if (newState.questions.length > 0) {
           const newQuestion = newState.questions[newState.questions.length - 1];
           this.editingQuestionId = newQuestion.id;
@@ -76,7 +76,7 @@ export class SurveyBuilderComponent implements OnInit {
       return;
     }
 
-    // Validar opciones según el tipo
+    
     if ((question.type === 'multiple_choice' || question.type === 'multiple_select') && 
         (!question.options?.choices || question.options.choices.length < 2)) {
       alert('Debe haber al menos 2 opciones de respuesta');
@@ -136,16 +136,16 @@ export class SurveyBuilderComponent implements OnInit {
       return;
     }
 
-    // Actualización optimista
+    
     const previousTitle = this.builderState.title;
     this.builderState.title = newTitle.trim();
     this.editingTitle = false;
 
-    // Actualizar en el backend
+    
     this.surveyService.updateSurvey(this.surveyId, { title: newTitle.trim() }).subscribe({
       error: (error) => {
         console.error('Error al actualizar título:', error);
-        // Revertir en caso de error
+        
         if (this.builderState) {
           this.builderState.title = previousTitle;
         }
@@ -171,7 +171,7 @@ export class SurveyBuilderComponent implements OnInit {
           this.builderState.is_draft = false;
           this.builderState.status = 'active';
         }
-        // Recargar estado para asegurar sincronización
+        
         this.loadBuilderState();
       },
       error: (error) => {
@@ -210,19 +210,19 @@ export class SurveyBuilderComponent implements OnInit {
     const origin = window.location.origin;
     const publicUrl = `${origin}/survey/${this.surveyId}`;
     
-    // Intentar crear enlace corto
+    
     this.surveyService.createShortLink(publicUrl, { survey_id: this.surveyId }).subscribe({
       next: (response: any) => {
         const linkToCopy = response?.short_url || publicUrl;
         navigator.clipboard.writeText(linkToCopy).then(() => {
           alert('Link copiado al portapapeles');
         }).catch(() => {
-          // Fallback: mostrar el link
+          
           prompt('Copia este link:', linkToCopy);
         });
       },
       error: () => {
-        // Si falla, usar el link largo
+        
         navigator.clipboard.writeText(publicUrl).then(() => {
           alert('Link copiado al portapapeles');
         }).catch(() => {

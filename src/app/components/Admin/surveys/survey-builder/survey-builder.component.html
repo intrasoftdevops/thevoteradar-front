@@ -12,7 +12,7 @@
   </div>
 
   <div *ngIf="!loading && !error && builderState" class="row">
-    <!-- Header -->
+    
     <div class="col-12 mb-4">
       <div class="d-flex justify-content-between align-items-center">
         <div class="flex-grow-1">
@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <!-- Main Content -->
+    
     <div class="col-md-8">
       <h4 class="mb-3">Lienzo</h4>
       <p class="text-muted mb-4">
@@ -105,7 +105,7 @@
             </div>
           </div>
 
-          <!-- Editor de pregunta -->
+          
           <div *ngIf="editingQuestionId === question.id" class="card border-primary">
             <div class="card-body">
               <h5 class="card-title mb-3">Editando Pregunta</h5>
@@ -122,7 +122,7 @@
                 <small class="text-muted">El texto de la pregunta es obligatorio</small>
               </div>
 
-              <!-- Opciones para multiple_choice y multiple_select -->
+              
               <div *ngIf="question.type === 'multiple_choice' || question.type === 'multiple_select'" class="mb-3">
                 <label class="form-label">Opciones de Respuesta <span class="text-danger">*</span></label>
                 <small class="text-muted d-block mb-2">Mínimo 2 opciones requeridas</small>
@@ -150,7 +150,7 @@
                 </button>
               </div>
 
-              <!-- Opciones para scale -->
+              
               <div *ngIf="question.type === 'scale'" class="mb-3">
                 <label class="form-label">Configuración de Escala</label>
                 <div class="row">
@@ -191,7 +191,7 @@
                 </div>
               </div>
 
-              <!-- Opciones para candidate_vote -->
+              
               <div *ngIf="question.type === 'candidate_vote'" class="mb-3">
                 <label class="form-label">Candidatos</label>
                 <div *ngFor="let candidate of question.options?.candidates || []; let idx = index" class="card mb-2">
@@ -273,7 +273,7 @@
       </div>
     </div>
 
-    <!-- Sidebar -->
+    
     <div class="col-md-4">
       <div class="sticky-top" style="top: 20px;">
         <div class="card">

@@ -24,14 +24,14 @@ export class LoginComponent implements OnInit {
     otp: [''],
   });
 
-  // Tenant fijo por ahora
+  
   private readonly TENANT_CODE = '475711';
 
-  // Estados del flujo de login
+  
   public showOtpInput: boolean = false;
   public showProfileCompletion: boolean = false;
   public verificationId: string | null = null;
-  public verifiedOtp: string | null = null; // Guardar el OTP verificado
+  public verifiedOtp: string | null = null; 
   public remoteUser: any = null;
   public missingFields: string[] = [];
   public isLoading: boolean = false;
@@ -41,14 +41,14 @@ export class LoginComponent implements OnInit {
   public showDevUsers: boolean = false;
   public showPassword: boolean = false;
   
-  // Branding dinámico del tema actual
+  
   public currentTheme: Theme | null = null;
   public logo: string = '../../../assets/logo.png';
-  public logoSize: string = 'medium'; // small, medium, large
+  public logoSize: string = 'medium'; 
   public title: string = 'VoteRadar';
   public description: string = 'Sistema de gestión electoral';
 
-  // Usuarios de desarrollo
+  
   devUsers = [
     { id: 1, name: 'Admin Dev', documento: 'admin', password: 'admin123', rol: 1, description: 'Administrador completo' },
     { id: 2, name: 'Gerente Dev', documento: 'gerente', password: 'gerente123', rol: 2, description: 'Gestión de departamentos' },
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
     private themeService: ThemeService,
     private backofficeAuth: BackofficeAuthService
   ) {
-    // Suscribirse a cambios de tema para actualizar branding
+    
     this.themeService.getCurrentTheme().subscribe(theme => {
       this.currentTheme = theme;
       if (theme.branding) {
@@ -84,7 +84,7 @@ export class LoginComponent implements OnInit {
   }
 
   private checkDevelopmentMode(): boolean {
-    // Verificación de seguridad múltiple
+    
     return environment.development && 
            !environment.production && 
            (window.location.hostname === 'localhost' || 
@@ -93,12 +93,12 @@ export class LoginComponent implements OnInit {
             window.location.hostname.includes('test'));
   }
 
-  // Obtener clases CSS según el tamaño del logo
+  
   getLogoClasses(): string {
     const sizeClasses = {
-      small: 'w-24 md:w-32',      // 96px / 128px
-      medium: 'w-32 md:w-40',     // 128px / 160px
-      large: 'w-40 md:w-48'       // 160px / 192px
+      small: 'w-24 md:w-32',      
+      medium: 'w-32 md:w-40',     
+      large: 'w-40 md:w-48'       
     };
     return `${sizeClasses[this.logoSize as keyof typeof sizeClasses] || sizeClasses.medium} mx-auto mb-4`;
   }
@@ -136,13 +136,13 @@ export class LoginComponent implements OnInit {
         return;
       }
 
-      // Si estamos completando perfil
+      
       if (this.showProfileCompletion) {
         this.handleProfileCompletion();
         return;
       }
 
-      // Verificar si es modo desarrollo y usar usuario de prueba (legacy)
+      
       if (this.isDevelopmentMode && this.loginForm.value.numero_documento) {
         const devUser = this.devUsers.find(user => 
           user.documento === this.loginForm.value.numero_documento && 
@@ -155,15 +155,15 @@ export class LoginComponent implements OnInit {
         }
       }
 
-      // Login con telefono y password (tenant_code hardcodeado a 475711)
-      // Primero intentamos login legacy con password, si falla usamos el flujo de tenant
+      
+      
       const loginData: any = {
         tenant_code: this.TENANT_CODE,
         telefono: this.loginForm.value.telefono,
         otp: this.loginForm.value.otp || null
       };
 
-      // Si hay password, lo agregamos (para usuarios existentes en MySQL)
+      
       if (this.loginForm.value.password) {
         loginData.password = this.loginForm.value.password;
       }
@@ -172,41 +172,41 @@ export class LoginComponent implements OnInit {
         next: (resp: any) => {
           this.isLoading = false;
           
-          // Login exitoso
+          
           if (resp.res === true) {
             this.handleSuccessfulLogin(resp);
             return;
           }
 
-          // Requiere OTP (puede venir solo o junto con requires_profile_completion)
+          
           if (resp.requires_otp === true) {
-            // Establecer el estado ANTES de mostrar el alert
+            
             this.showOtpInput = true;
-            this.showProfileCompletion = false; // Asegurar que no se muestre el perfil aún
+            this.showProfileCompletion = false; 
             this.verificationId = resp.verification_id;
-            this.remoteUser = resp.remote_user || {}; // Guardar datos para prellenar después
+            this.remoteUser = resp.remote_user || {}; 
             this.missingFields = resp.missing_fields || [];
             
-            // Usar setTimeout para asegurar que Angular detecte el cambio de estado
+            
             setTimeout(() => {
               this.alertService.infoAlert(resp.message || 'Ingresa el código OTP enviado a tu WhatsApp');
             }, 100);
             return;
           }
 
-          // Requiere completar perfil (solo después de verificar OTP)
+          
           if (resp.requires_profile_completion === true && !resp.requires_otp) {
             this.showOtpInput = false;
             this.showProfileCompletion = true;
             this.verificationId = resp.verification_id;
             this.remoteUser = resp.remote_user || {};
             this.missingFields = resp.missing_fields || [];
-            this.initProfileForm(); // Esto prellenará los campos con remoteUser
+            this.initProfileForm(); 
             this.alertService.infoAlert(resp.message || 'Necesitamos completar algunos datos');
             return;
           }
 
-          // Requiere onboarding (nuevo usuario)
+          
           if (resp.requires_onboarding === true) {
             this.showOtpInput = true;
             this.verificationId = resp.verification_id;
@@ -215,7 +215,7 @@ export class LoginComponent implements OnInit {
             return;
           }
 
-          // Error
+          
           this.alertService.errorAlert(resp.message || 'Error al iniciar sesión');
         },
         error: (error) => {
@@ -235,7 +235,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // Intentar login con OTP directamente
+    
     const loginData = {
       tenant_code: this.TENANT_CODE,
       telefono: this.loginForm.value.telefono,
@@ -246,26 +246,26 @@ export class LoginComponent implements OnInit {
       next: (resp: any) => {
         this.isLoading = false;
         
-        // Login exitoso
+        
         if (resp.res === true) {
           this.handleSuccessfulLogin(resp);
           return;
         }
 
-        // Si después de verificar OTP requiere completar perfil
+        
         if (resp.requires_profile_completion === true && !resp.requires_otp) {
           this.showOtpInput = false;
           this.showProfileCompletion = true;
           this.verificationId = resp.verification_id;
-          this.verifiedOtp = this.loginForm.value.otp; // Guardar el OTP verificado
+          this.verifiedOtp = this.loginForm.value.otp; 
           this.remoteUser = resp.remote_user || {};
           this.missingFields = resp.missing_fields || [];
-          this.initProfileForm(); // Prellenará con datos de Firestore
+          this.initProfileForm(); 
           this.alertService.infoAlert(resp.message || 'Por favor completa los siguientes datos');
           return;
         }
 
-        // Si aún requiere OTP (no debería pasar aquí, pero por si acaso)
+        
         if (resp.requires_otp === true) {
           this.showOtpInput = true;
           this.showProfileCompletion = false;
@@ -275,7 +275,7 @@ export class LoginComponent implements OnInit {
           return;
         }
 
-        // Error
+        
         this.alertService.errorAlert(resp.message || 'Código OTP inválido');
       },
       error: (error) => {
@@ -286,7 +286,7 @@ export class LoginComponent implements OnInit {
   }
 
   handleProfileCompletion() {
-    // Crear formulario de perfil si no existe
+    
     if (!this.profileForm) {
       this.initProfileForm();
     }
@@ -297,7 +297,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // Verificar que tenemos OTP (usar el guardado o el del formulario)
+    
     const otp = this.verifiedOtp || this.loginForm.value.otp;
     if (!otp || otp.length !== 6) {
       this.alertService.errorAlert("Por favor ingresa el código OTP primero");
@@ -307,14 +307,14 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // Validar que las contraseñas coincidan
+    
     if (this.profileForm.value.password !== this.profileForm.value.password_confirmation) {
       this.alertService.errorAlert("Las contraseñas no coinciden");
       this.isLoading = false;
       return;
     }
 
-    // Limpiar y validar campos antes de enviar
+    
     const profileData: any = {
       tenant_code: this.TENANT_CODE,
       telefono: (this.loginForm.value.telefono || '').toString().trim(),
@@ -326,7 +326,7 @@ export class LoginComponent implements OnInit {
       password_confirmation: (this.profileForm.value.password_confirmation || '').toString().trim(),
     };
     
-    // Validar que los campos requeridos no estén vacíos con mensaje específico
+    
     const missingFields: string[] = [];
     if (!profileData.telefono) missingFields.push('Teléfono');
     if (!profileData.otp || profileData.otp.length !== 6) missingFields.push('Código OTP');
@@ -348,12 +348,12 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // Solo agregar campos opcionales si tienen valor
+    
     if (this.profileForm.value.email?.trim()) {
       profileData.email = this.profileForm.value.email.trim();
     }
     
-    // Convertir a entero si tiene valor, o no enviarlo si está vacío
+    
     if (this.profileForm.value.genero_id && this.profileForm.value.genero_id !== '') {
       const generoId = parseInt(this.profileForm.value.genero_id, 10);
       if (!isNaN(generoId) && generoId > 0) {
@@ -361,8 +361,8 @@ export class LoginComponent implements OnInit {
       }
     }
     
-    // Convertir a entero si tiene valor, o no enviarlo si está vacío
-    // IMPORTANTE: Si el campo está vacío o es string vacío, no lo enviamos
+    
+    
     const localidadValue = this.profileForm.value.localidad_residencia;
     if (localidadValue && localidadValue !== '' && localidadValue !== null && localidadValue !== undefined) {
       const localidadId = typeof localidadValue === 'number' 
@@ -381,7 +381,7 @@ export class LoginComponent implements OnInit {
       profileData.direccion = this.profileForm.value.direccion.trim();
     }
 
-    // Log para debugging
+    
     console.log('Datos enviados al completar perfil:', profileData);
     
     this.apiService.completeProfile(profileData).subscribe({
@@ -396,16 +396,16 @@ export class LoginComponent implements OnInit {
       error: (error) => {
         this.isLoading = false;
         
-        // Log detallado del error
+        
         console.error('Error completo al completar perfil:', error);
         console.error('Error details:', error.error);
         console.error('Validation errors:', error.error?.errors);
         
-        // Mostrar mensaje de error más detallado
+        
         let errorMessage = 'Error al completar el perfil';
         
         if (error.error?.errors) {
-          // Si hay errores de validación, mostrarlos de forma más clara
+          
           const validationErrors = error.error.errors;
           const errorMessages: string[] = [];
           
@@ -516,7 +516,7 @@ export class LoginComponent implements OnInit {
     this.showOtpInput = false;
     this.showProfileCompletion = false;
     this.verificationId = null;
-    this.verifiedOtp = null; // Limpiar OTP guardado
+    this.verifiedOtp = null; 
     this.remoteUser = null;
     this.missingFields = [];
     this.profileForm = null;
@@ -524,14 +524,14 @@ export class LoginComponent implements OnInit {
   }
 
   loginAsDevUser(devUser: any) {
-    // Simular login con usuario de desarrollo
+    
     this.localData.deleteCookies();
     this.localData.setToken('dev-token-' + devUser.id);
     this.localData.setRol(devUser.rol);
     this.localData.setId(devUser.id);
     this.permissionsService.addPermission([devUser.rol]);
     
-    // Marcar como usuario de desarrollo
+    
     localStorage.setItem('is_dev_user', 'true');
     localStorage.setItem('dev_user_name', devUser.name);
 
@@ -565,7 +565,7 @@ export class LoginComponent implements OnInit {
         this.permissionsService.addPermission(['1']);
         
         console.log('LoginComponent - Datos guardados, navegando a adminHome');
-        // Verificar que el rol se guardó
+        
         setTimeout(() => {
           const savedRol = this.localData.getRol();
           console.log('LoginComponent - Verificación: Rol guardado?', savedRol);

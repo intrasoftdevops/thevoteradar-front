@@ -84,7 +84,7 @@
   </div>
 </div>
 
-<!-- Modal para crear encuesta -->
+
 <div 
   class="modal fade" 
   [class.show]="showCreateModal" 
@@ -136,7 +136,7 @@
   </div>
 </div>
 
-<!-- Backdrop -->
+
 <div 
   class="modal-backdrop fade" 
   [class.show]="showCreateModal"
@@ -144,7 +144,7 @@
   (click)="closeCreateModal()"
 ></div>
 
-<!-- Modal de Destinatarios -->
+
 <app-recipients-modal
   [isOpen]="showRecipientsModal"
   [surveyId]="selectedSurveyForRecipients?.id || null"

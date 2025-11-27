@@ -150,7 +150,7 @@ import { SurveyLandingComponent } from './components/public/survey-landing/surve
     FormsModule,
     ReactiveFormsModule,
     NgSelectModule,
-    HammerModule, // <-- For Angular 9
+    HammerModule, 
     LightboxModule,
     NgxDropzoneModule,
     DataTablesModule,

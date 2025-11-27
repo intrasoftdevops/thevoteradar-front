@@ -15,7 +15,7 @@ export class SupervisorHomeComponent implements OnInit {
 
   constructor(private _sanitizer: DomSanitizer, private apiService: ApiService, private localData: LocalDataService) {
     this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl(
-      'https://www.youtube.com/embed/bNU_d8rei4k'
+      'https:
     );
   }
 

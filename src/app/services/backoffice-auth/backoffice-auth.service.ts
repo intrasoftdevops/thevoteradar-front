@@ -28,7 +28,7 @@ export interface BackofficeLoginResponse {
 })
 export class BackofficeAuthService {
 
-  private backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+  private backofficeUrl = environment.backofficeApiURL || 'http:
 
   constructor(private http: HttpClient) { }
 
