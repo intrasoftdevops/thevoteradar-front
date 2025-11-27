@@ -43,7 +43,12 @@ jobs:
       uses: google-github-actions/setup-gcloud@v2
       with:
         project_id: ${{ env.PROJECT_ID }}
-        export_default_credentials: true
+
+    - name: ✅ Verify gcloud auth
+      run: |
+        gcloud auth list
+        gcloud config list project
+        echo "✅ Authenticated successfully"
 
     - name: 🐳 Configure Docker for GCR
       run: gcloud auth configure-docker --quiet
@@ -95,13 +100,40 @@ jobs:
           --memory=512Mi \
           --cpu=1 \
           --max-instances=10 \
+          --min-instances=0 \
           --concurrency=80 \
-          --timeout=300
+          --timeout=300s
 
-    - name: 📡 Show deployment info
+    - name: 📡 Get service URL and health check
       run: |
+        # Esperar un momento para que el servicio se inicie
+        echo "⏳ Esperando que el servicio se inicie..."
+        sleep 15
+        
+        # Obtener la URL real del servicio desplegado
+        SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
+          --project ${{ env.PROJECT_ID }} \
+          --region ${{ env.REGION }} \
+          --format="value(status.url)")
+        
         echo "✅ Deployment completed!"
-        echo "🌍 URL: https://$SERVICE_NAME-${{ env.PROJECT_ID }}-${{ env.REGION }}.a.run.app"
+        echo "🔗 URL del servicio: $SERVICE_URL"
         echo "🏷️ Image tag: $TAG"
         echo "🔧 Environment: $ENVIRONMENT"
+        
+        # Hacer health check
+        echo "🏥 Ejecutando health check..."
+        curl -f "$SERVICE_URL" || {
+          echo "⚠️ Health check falló, pero el servicio puede estar iniciándose..."
+          echo "🔄 Reintentando en 15 segundos..."
+          sleep 15
+          curl -f "$SERVICE_URL" || {
+            echo "❌ Health check falló después del segundo intento"
+            echo "ℹ️ El servicio puede estar funcionando, pero el health check no respondió"
+            exit 1
+          }
+        }
+        
+        echo "✅ Health check exitoso"
+        echo "🎉 Deploy completado - thevoteradar-front $ENVIRONMENT está en línea"
 
