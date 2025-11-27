@@ -86,13 +86,6 @@ jobs:
 
     - name: 🚀 Deploy to Cloud Run
       run: |
-        # Determinar min-instances según el entorno
-        if [ "$ENVIRONMENT" = "production" ]; then
-          MIN_INSTANCES=1  # Producción: siempre disponible, sin cold start
-        else
-          MIN_INSTANCES=0  # Desarrollo: escala a cero para ahorrar costos
-        fi
-        
         gcloud run deploy $SERVICE_NAME \
           --image gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG \
           --region ${{ vars.GCP_REGION }} \
@@ -102,7 +95,7 @@ jobs:
           --memory=512Mi \
           --cpu=1 \
           --max-instances=10 \
-          --min-instances=$MIN_INSTANCES \
+          --min-instances=1 \
           --concurrency=80 \
           --timeout=300s
 
