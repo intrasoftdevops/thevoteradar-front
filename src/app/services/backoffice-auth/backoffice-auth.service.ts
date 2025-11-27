@@ -28,7 +28,7 @@ export interface BackofficeLoginResponse {
 })
 export class BackofficeAuthService {
 
-  private backofficeUrl = environment.backofficeApiURL || 'http:
+  private backofficeUrl = environment.backofficeApiURL || '';
 
   constructor(private http: HttpClient) { }
 

@@ -291,7 +291,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
     this.dtOptions[1] = {
@@ -320,7 +320,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
     this.dtOptions[2] = {
@@ -349,7 +349,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
   }

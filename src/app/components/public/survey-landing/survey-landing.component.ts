@@ -49,7 +49,7 @@ export class SurveyLandingComponent implements OnInit {
   success = false;
   deviceFingerprint: string = '';
 
-  private apiBaseUrl = `${environment.surveyApiURL || 'http:
+  private apiBaseUrl = `${environment.surveyApiURL || ''}/api/v1`;
 
   constructor(
     private route: ActivatedRoute,

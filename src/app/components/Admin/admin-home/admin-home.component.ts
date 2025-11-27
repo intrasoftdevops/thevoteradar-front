@@ -10,7 +10,7 @@ export class AdminHomeComponent implements OnInit {
   safeURL: any;
 
   constructor(private _sanitizer: DomSanitizer) {
-    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https:
+    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("");
   }
 
   ngOnInit(): void {

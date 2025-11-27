@@ -44,7 +44,7 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
       destroy:true,
       processing: true,
       pageLength: 20,
-      language: { url: '
+      language: { url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json' }
     };
   }
 

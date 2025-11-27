@@ -14,9 +14,7 @@ export class SupervisorHomeComponent implements OnInit {
   zona_asignada = [];
 
   constructor(private _sanitizer: DomSanitizer, private apiService: ApiService, private localData: LocalDataService) {
-    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl(
-      'https:
-    );
+    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('');
   }
 
   ngOnInit(){

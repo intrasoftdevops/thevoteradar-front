@@ -9,7 +9,7 @@ import { LocalDataService } from 'src/app/services/localData/local-data.service'
   styleUrls: ['./coordinador-home.component.scss']
 })
 export class CoordinadorHomeComponent implements OnInit {
-  videos: string[] = ["https:
+  videos: string[] = [];
   sanitizedVideos!: SafeResourceUrl[];
   puestos_asignados = []
   zona_asignada = ""

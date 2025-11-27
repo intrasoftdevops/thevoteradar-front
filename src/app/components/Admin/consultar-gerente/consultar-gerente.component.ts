@@ -113,7 +113,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
       ],
       responsive: true,
       language: {
-        url: '
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       }
     };
     this.dtOptionsGerenteNoAsignados = {
@@ -136,7 +136,7 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
       ],
       responsive: true,
       language: {
-        url: '
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       }
     };
   }

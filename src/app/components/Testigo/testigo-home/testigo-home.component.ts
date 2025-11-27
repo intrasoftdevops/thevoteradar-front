@@ -10,7 +10,7 @@ import { LocalDataService } from '../../../services/localData/local-data.service
 })
 export class TestigoHomeComponent implements OnInit {
 
-  videos: string[] = ["https:
+  videos: string[] = [];
   sanitizedVideos!: SafeResourceUrl[];
   mesas_asignadas = []
   puesto_asignado = ""

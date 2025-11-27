@@ -66,7 +66,7 @@ export interface RecipientImportItem {
 })
 export class SurveyService {
 
-  private surveyApiUrl = environment.surveyApiURL || 'http:
+  private surveyApiUrl = environment.surveyApiURL || '';
   private apiBaseUrl = `${this.surveyApiUrl}/api/v1`;
 
   constructor(

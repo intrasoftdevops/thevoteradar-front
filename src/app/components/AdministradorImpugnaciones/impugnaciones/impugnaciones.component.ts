@@ -320,7 +320,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     popupWin = window.open('', '_blank', `top=${top}, left=${left}, height=${height}, width=${width}`);
     popupWin?.document.open();
     popupWin?.document.write(`
-    <html xmlns="http:
+    <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
     <title></title>
     
@@ -427,7 +427,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     popupWin?.document.open();
     this.dataImpugnar.forEach((impugnar: any) => {
       popupWin?.document.write(`
-      <html xmlns="http:
+      <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
         <title></title>
         
@@ -554,7 +554,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
     this.dtOptions2 = {
@@ -583,7 +583,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
     this.dtOptions3 = {
@@ -612,7 +612,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
   }
