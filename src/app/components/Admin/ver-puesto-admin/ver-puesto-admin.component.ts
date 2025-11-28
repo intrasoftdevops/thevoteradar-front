@@ -37,7 +37,7 @@ export class VerPuestoAdminComponent implements OnInit {
   ) {}
 
   private checkDevelopmentMode(): boolean {
-    // Verificación de seguridad múltiple
+    
     return environment.development && 
            !environment.production && 
            (window.location.hostname === 'localhost' || 
@@ -55,22 +55,22 @@ export class VerPuestoAdminComponent implements OnInit {
   }
 
   loadDevData() {
-    // Cargar datos de prueba usando el servicio
+    
     this.dataDepartments = this.devDataService.getDepartments();
     this.dataMunicipals = this.devDataService.getMunicipals();
     this.dataZones = this.devDataService.getZones();
     this.dataStations = this.devDataService.getStations();
 
-    // Datos de estado de prueba para todas las secciones
+    
     this.dataStateDepartment = [this.devDataService.getTeamStatistics()];
     this.dataStateMunicipal = [this.devDataService.getTeamStatistics()];
     this.dataStateZone = [this.devDataService.getTeamStatistics()];
     this.dataStateStation = [this.devDataService.getTeamStatistics()];
 
-    // Configurar tabla por defecto
+    
     this.tabla = 'gerente';
 
-    // Seleccionar primer departamento por defecto
+    
     if (this.dataDepartments.length > 0) {
       this.searchForm.get('departamentos')?.setValue(this.dataDepartments[0].codigo_unico);
     }
@@ -86,7 +86,7 @@ export class VerPuestoAdminComponent implements OnInit {
     this.searchFormControl['puestos'].reset();
     if (item) {
       if (this.isDevelopmentMode) {
-        // En modo development, usar datos locales
+        
         this.dataMunicipals = this.devDataService.getMunicipals().filter(
           (municipal: any) => municipal.codigo_departamento_votacion === item.codigo_unico
         );
@@ -111,7 +111,7 @@ export class VerPuestoAdminComponent implements OnInit {
     this.searchFormControl['puestos'].reset();
     if (item) {
       if (this.isDevelopmentMode) {
-        // En modo development, usar datos locales
+        
         this.dataZones = this.devDataService.getZones();
         this.tabla = 'supervisor';
       } else {
@@ -132,7 +132,7 @@ export class VerPuestoAdminComponent implements OnInit {
     this.searchFormControl['puestos'].reset();
     if (item) {
       if (this.isDevelopmentMode) {
-        // En modo development, usar datos locales
+        
         this.dataStations = this.devDataService.getStations();
         this.tabla = 'coordinador';
       } else {
@@ -151,7 +151,7 @@ export class VerPuestoAdminComponent implements OnInit {
   getSelectedStation(item: any) {
     if (item) {
       if (this.isDevelopmentMode) {
-        // En modo development, solo cambiar tabla
+        
         this.tabla = 'testigo';
       } else {
         const codigo_unico = this.getCode(item);

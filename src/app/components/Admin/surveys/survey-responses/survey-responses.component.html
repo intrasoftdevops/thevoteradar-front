@@ -1,0 +1,55 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Respuestas de Encuesta</h2>
+    <button class="btn btn-secondary" (click)="goBack()">Volver</button>
+  </div>
+
+  <div *ngIf="loading" class="alert alert-info">
+    Cargando respuestas...
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error" class="row">
+    <div class="col-12 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Resumen</h5>
+          <p class="mb-0">
+            <strong>Total de respuestas:</strong> {{ responses.length }}<br>
+            <strong>Respondientes únicos:</strong> {{ groupedResponses.size }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12" *ngFor="let hash of getResponseKeys()">
+      <div class="card mb-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0">Respuesta #{{ getResponseKeys().indexOf(hash) + 1 }}</h6>
+          <small class="text-muted">Hash: {{ hash.substring(0, 8) }}...</small>
+        </div>
+        <div class="card-body">
+          <div *ngFor="let response of groupedResponses.get(hash)" class="mb-3 pb-3 border-bottom">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="flex-grow-1">
+                <h6 class="mb-1">{{ getQuestionText(response.question_id) }}</h6>
+                <p class="mb-0 text-muted">{{ formatResponseValue(response.value) }}</p>
+              </div>
+              <small class="text-muted">{{ response.created_at | date: 'short' }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="responses.length === 0" class="col-12">
+      <div class="alert alert-secondary">
+        Aún no hay respuestas para esta encuesta.
+      </div>
+    </div>
+  </div>
+</div>
+

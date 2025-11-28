@@ -47,11 +47,11 @@ export class ThemeService {
    */
   async loadThemeFromAPI(clientId: string): Promise<void> {
     try {
-      // TODO: hacer una llamada al backend
-      // const response = await this.http.get<Theme>(`/api/themes/${clientId}`).toPromise();
-      // this.setCustomTheme(response);
       
-      // temas predefinidos
+      
+      
+      
+      
       this.setTheme(`client${clientId}`);
     } catch (error) {
       console.error('Error al cargar tema:', error);
@@ -72,10 +72,10 @@ export class ThemeService {
   private applyThemeToDOM(theme: Theme): void {
     const root = document.documentElement;
     
-    // Aplicar data-theme attribute
+    
     root.setAttribute('data-theme', theme.id);
     
-    // Aplicar variables CSS
+    
     root.style.setProperty('--color-primary', theme.colors.primary);
     root.style.setProperty('--color-secondary', theme.colors.secondary);
     root.style.setProperty('--color-accent', theme.colors.accent);
@@ -104,9 +104,9 @@ export class ThemeService {
   private detectThemeFromDomain(): string {
     const hostname = window.location.hostname;
     
-    // TODO: detección
-	// const subdomain = hostname.split('.')[0];
-    // return subdomain === 'www' ? 'default' : subdomain;
+    
+	
+    
     if (hostname.includes('client1')) return 'client1';
     if (hostname.includes('client2')) return 'client2';
     if (hostname.includes('client3')) return 'client3';

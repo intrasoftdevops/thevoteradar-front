@@ -1,0 +1,58 @@
+.survey-landing-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 1rem;
+}
+
+.survey-form-container {
+  padding: 2rem 0;
+}
+
+.question-block {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.candidate-card {
+  transition: all 0.3s ease;
+  border: 2px solid #dee2e6;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  &.selected {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+  }
+}
+
+.candidate-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #dee2e6;
+}
+
+.party-image {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.selected-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+}
+
+.card {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+

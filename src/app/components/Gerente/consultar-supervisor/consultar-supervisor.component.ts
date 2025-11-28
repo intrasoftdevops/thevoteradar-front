@@ -91,7 +91,7 @@ export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       }
     };
     this.dtOptionsSupervisorNoAsignados = {
@@ -113,7 +113,7 @@ export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       }
     };
   }

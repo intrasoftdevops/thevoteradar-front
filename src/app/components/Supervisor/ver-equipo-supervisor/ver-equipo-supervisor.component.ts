@@ -57,7 +57,7 @@ export class VerEquipoSupervisorComponent implements OnInit {
       this.dataGraphics.municipio,
       this.dataGraphics.zonas
     );
-    //const objeto = new Filtro(this.idCliente, 2, ['1', '16'], ['001_01'], ['99_001_01'], ['B2_99_001_01'])
+    
     this.filtro = objeto
       .generar_filtro()
       .replace(new RegExp(' ', 'g'), '%20')

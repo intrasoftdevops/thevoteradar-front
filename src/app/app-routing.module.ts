@@ -45,6 +45,11 @@ import { AuthGuard } from './guards/AuthGuard/auth.guard';
 import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
 import { ImpugnacionesComponent } from './components/AdministradorImpugnaciones/impugnaciones/impugnaciones.component';
 import { MenuAdministradorImpugnacionesComponent } from './components/AdministradorImpugnaciones/menu-administrador-impugnaciones/menu-administrador-impugnaciones.component';
+import { SurveyDashboardComponent } from './components/Admin/surveys/survey-dashboard/survey-dashboard.component';
+import { SurveyBuilderComponent } from './components/Admin/surveys/survey-builder/survey-builder.component';
+import { SurveyAnalyticsComponent } from './components/Admin/surveys/survey-analytics/survey-analytics.component';
+import { SurveyResponsesComponent } from './components/Admin/surveys/survey-responses/survey-responses.component';
+import { SurveyLandingComponent } from './components/public/survey-landing/survey-landing.component';
 
 const routes: Routes = [
   {
@@ -63,6 +68,42 @@ const routes: Routes = [
     data: {
       rol: [1]
     }
+  },
+  {
+    path: 'admin/surveys',
+    component: SurveyDashboardComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/surveys/builder/:surveyId',
+    component: SurveyBuilderComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/surveys/analytics/:surveyId',
+    component: SurveyAnalyticsComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/surveys/responses/:surveyId',
+    component: SurveyResponsesComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'survey/:surveyId',
+    component: SurveyLandingComponent
   },
   {
     path: 'gerenteHome',
@@ -296,7 +337,7 @@ const routes: Routes = [
       rol: [5]
     }
   },
-  //No olvidar cambiar id para poder utilizar el forbidden.
+  
   {
     path: 'impugnar',
     component: ImpugnarComponent,

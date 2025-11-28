@@ -14,7 +14,7 @@ export class GerenteHomeComponent implements OnInit {
   municipio_asignado = [];
 
   constructor(private _sanitizer: DomSanitizer, private apiService: ApiService, private localData: LocalDataService) {
-    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/bNU_d8rei4k");
+    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl("");
   }
 
   ngOnInit() {
