@@ -107,13 +107,18 @@ jobs:
         # Asegurar que el directorio existe
         mkdir -p src/environments
         
-        # Generar el archivo de environment
-        printf "export const environment = {\n  production: %s,\n  development: %s,\n  apiURL: '%s',\n  backofficeApiURL: '%s',\n  surveyApiURL: '%s',\n  defaultTenantId: '%s',\n  key1: '%s',\n  key2: '%s',\n  key3: '%s',\n  key4: '%s',\n  powerBiURL: '%s',\n};\n" \
-          "$PRODUCTION" "$DEVELOPMENT" "$API_URL" "$BACKOFFICE_API_URL" "$SURVEY_API_URL" "$DEFAULT_TENANT_ID" "$KEY1" "$KEY2" "$KEY3" "$KEY4" "$POWER_BI_URL" > src/environments/$ENV_FILE
+        # Generar el contenido del environment
+        ENV_CONTENT=$(printf "export const environment = {\n  production: %s,\n  development: %s,\n  apiURL: '%s',\n  backofficeApiURL: '%s',\n  surveyApiURL: '%s',\n  defaultTenantId: '%s',\n  key1: '%s',\n  key2: '%s',\n  key3: '%s',\n  key4: '%s',\n  powerBiURL: '%s',\n};\n" \
+          "$PRODUCTION" "$DEVELOPMENT" "$API_URL" "$BACKOFFICE_API_URL" "$SURVEY_API_URL" "$DEFAULT_TENANT_ID" "$KEY1" "$KEY2" "$KEY3" "$KEY4" "$POWER_BI_URL")
         
-        echo "✅ Environment file generated: $ENV_FILE for $ENV_SUFFIX environment"
-        echo "📄 Verifying file exists:"
-        ls -la src/environments/$ENV_FILE || echo "⚠️ File not found!"
+        # Angular necesita environment.ts para hacer el reemplazo con environment.prod.ts
+        # Por lo tanto, generamos ambos archivos con el mismo contenido
+        echo "$ENV_CONTENT" > src/environments/environment.ts
+        echo "$ENV_CONTENT" > src/environments/environment.prod.ts
+        
+        echo "✅ Environment files generated: environment.ts and environment.prod.ts for $ENV_SUFFIX environment"
+        echo "📄 Verifying files exist:"
+        ls -la src/environments/environment.ts src/environments/environment.prod.ts || echo "⚠️ Files not found!"
 
     - name: 🧪 Run tests (if available)
       run: |
