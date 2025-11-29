@@ -62,11 +62,12 @@ jobs:
           DEVELOPMENT="false"
           echo "🔴 PRODUCTION environment detected"
         else
-          ENV_FILE="environment.ts"
+          # Para dev también generamos environment.prod.ts porque el Dockerfile usa --configuration production
+          ENV_FILE="environment.prod.ts"
           ENV_SUFFIX="dev"
           PRODUCTION="false"
           DEVELOPMENT="true"
-          echo "🟢 DEVELOPMENT environment detected"
+          echo "🟢 DEVELOPMENT environment detected (usando environment.prod.ts para build de producción)"
         fi
         
         KEY1_SECRET="$SECRET_PREFIX-key1-$ENV_SUFFIX:latest"
@@ -103,10 +104,16 @@ jobs:
           echo "⚠️ Environment: $ENV_SUFFIX"
         fi
         
+        # Asegurar que el directorio existe
+        mkdir -p src/environments
+        
+        # Generar el archivo de environment
         printf "export const environment = {\n  production: %s,\n  development: %s,\n  apiURL: '%s',\n  backofficeApiURL: '%s',\n  surveyApiURL: '%s',\n  defaultTenantId: '%s',\n  key1: '%s',\n  key2: '%s',\n  key3: '%s',\n  key4: '%s',\n  powerBiURL: '%s',\n};\n" \
           "$PRODUCTION" "$DEVELOPMENT" "$API_URL" "$BACKOFFICE_API_URL" "$SURVEY_API_URL" "$DEFAULT_TENANT_ID" "$KEY1" "$KEY2" "$KEY3" "$KEY4" "$POWER_BI_URL" > src/environments/$ENV_FILE
         
         echo "✅ Environment file generated: $ENV_FILE for $ENV_SUFFIX environment"
+        echo "📄 Verifying file exists:"
+        ls -la src/environments/$ENV_FILE || echo "⚠️ File not found!"
 
     - name: 🧪 Run tests (if available)
       run: |
