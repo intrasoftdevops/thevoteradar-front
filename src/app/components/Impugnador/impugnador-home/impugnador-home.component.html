@@ -1,14 +1,14 @@
-<div class="container py-4">
-  <div class="ratio mt-4" style="--bs-aspect-ratio: 50%">
-    <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="aspect-video w-full mt-4">
+    <iframe [src]="safeURL" frameborder="0" allowfullscreen class="w-full h-full rounded-xl shadow-lg"></iframe>
   </div>
 </div>
-<div class="toast-container">
+<div class="fixed bottom-4 right-4 z-50">
   <ngb-toast
-    class="welcomeBanner d-flex align-items-center bg-white"
+    class="flex items-center bg-white p-4 rounded-lg shadow-lg"
     [delay]="2000"
     [animation]="true"
   >
-    <h3 class="mb-0 fw-bolder text-dark">Bienvenido impugnador</h3>
+    <h3 class="mb-0 font-bold text-gray-900 text-lg">Bienvenido impugnador</h3>
   </ngb-toast>
 </div>

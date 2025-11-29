@@ -1,43 +1,44 @@
-<div class="container py-4">
-  <div class="row gy-4">
-    <div class="col-lg-6 d-flex align-items-stretch">
-      <div class="card text-dark w-100">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4 _ngcontent-utf-c133="" class="m-0">Bienvenido coordinador</h4>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="flex items-stretch">
+      <div class="bg-white text-gray-900 rounded-xl shadow-lg w-full overflow-hidden">
+        <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+          <h4 class="m-0 font-bold text-xl">Bienvenido coordinador</h4>
         </div>
-        <div class="card-body">
-          <div class="m-4">
-            <p>
-              <span class="fw-bolder">Departamento: </span
-              ><span> {{departamento_asignado}}</span>
+        <div class="p-6">
+          <div class="space-y-3">
+            <p class="text-gray-800">
+              <span class="font-bold text-gray-900">Departamento: </span
+              ><span class="text-gray-700"> {{departamento_asignado}}</span>
             </p>
-            <p>
-              <span class="fw-bolder">Municipio: </span><span> {{municipio_asignado}}</span>
+            <p class="text-gray-800">
+              <span class="font-bold text-gray-900">Municipio: </span><span class="text-gray-700"> {{municipio_asignado}}</span>
             </p>
-            <p><span class="fw-bolder">Zona: </span><span> {{zona_asignada}}</span></p>
-            <p><span class="fw-bolder">Puestos: </span><span>{{ puestos_asignados.length }}</span></p>
-            <ul *ngFor="let puesto of puestos_asignados"><li>{{ puesto }}</li></ul>
+            <p class="text-gray-800"><span class="font-bold text-gray-900">Zona: </span><span class="text-gray-700"> {{zona_asignada}}</span></p>
+            <p class="text-gray-800"><span class="font-bold text-gray-900">Puestos: </span><span class="text-gray-700">{{ puestos_asignados.length }}</span></p>
+            <ul class="list-disc list-inside space-y-1" *ngFor="let puesto of puestos_asignados">
+              <li class="text-gray-700">{{ puesto }}</li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="col-lg-6 align-items-stretch"
+      class="flex items-stretch"
       *ngFor="let video of sanitizedVideos"
     >
-      <div class="ratio ratio-16x9">
-        <iframe [src]="video" frameborder="0" allowfullscreen></iframe>
+      <div class="w-full aspect-video">
+        <iframe [src]="video" frameborder="0" allowfullscreen class="w-full h-full rounded-xl"></iframe>
       </div>
     </div>
   </div>
-  <div></div>
 </div>
-<div class="toast-container">
+<div class="fixed bottom-4 right-4 z-50">
   <ngb-toast
-    class="welcomeBanner d-flex align-items-center bg-white"
+    class="flex items-center bg-white p-4 rounded-lg shadow-lg"
     [delay]="2000"
     [animation]="true"
   >
-    <h3 class="mb-0 fw-bolder text-dark">Bienvenido testigo</h3>
+    <h3 class="mb-0 font-bold text-gray-900 text-lg">Bienvenido coordinador</h3>
   </ngb-toast>
 </div>

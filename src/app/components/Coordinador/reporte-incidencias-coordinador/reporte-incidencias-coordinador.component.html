@@ -1,39 +1,39 @@
-<div class="container py-5">
-    <div class="bg-primary py-3 px-5 text-white">
-        <h4>Reporte de novedades</h4>
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+        <h4 class="m-0 font-bold text-xl">Reporte de novedades</h4>
     </div>
-    <ul class="nav nav-tabs mt-5" id="myTab">
-        <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-md-5 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#abiertos"
+    <ul class="flex border-b border-gray-200 mt-5" id="myTab" role="tablist">
+        <li class="mr-2" role="presentation">
+            <button class="px-6 py-3 text-lg font-semibold border-b-2 border-primary text-primary bg-transparent active" id="home-tab" data-bs-toggle="tab" data-bs-target="#abiertos"
                 type="button" role="tab">Abiertas</button>
         </li>
-        <li class="nav-item" id="tab">
-            <button class="nav-link h4 px-md-5" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cerrados"
+        <li class="mr-2" role="presentation">
+            <button class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-gray-600 hover:text-primary hover:border-gray-300 bg-transparent" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cerrados"
                 type="button" role="tab">Cerradas</button>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="abiertos" role="tabpanel">
-            <div class="card mt-3">
-                <div class="card-body">
-                    <div class="table-responsive my-4" *ngIf="dataIncidenciasAbiertas.length>0;else open_content">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+                <div class="p-6">
+                    <div class="overflow-x-auto my-4" *ngIf="dataIncidenciasAbiertas.length>0;else open_content">
                         <table datatable [dtOptions]="dtOptionsIncidenciasAbiertas" [dtTrigger]="dtTrigger"
-                            class="table text-center align-middle w-100">
-                            <thead class="text-dark align-middle">
+                            class="min-w-full divide-y divide-gray-200 text-center align-middle w-full">
+                            <thead class="bg-gray-50 text-gray-900 align-middle">
                                 <tr>
-                                    <th scope="col">PUESTO</th>
-                                    <th scope="col">MESA</th>
-                                    <th scope="col">TESTIGO</th>
-                                    <th scope="col"></th>
+                                    <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">PUESTO</th>
+                                    <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">MESA</th>
+                                    <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">TESTIGO</th>
+                                    <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">ACCIONES</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr class="bg-white" *ngFor="let incidencia of dataIncidenciasAbiertas">
-                                    <td>{{incidencia.puesto}}</td>
-                                    <td>{{incidencia.mesa}}</td>
-                                    <td>{{incidencia.nombre_testigo}}</td>
-                                    <td>
-                                        <button class="btn align-middle mx-1" data-bs-toggle="modal"
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50" *ngFor="let incidencia of dataIncidenciasAbiertas">
+                                    <td class="px-6 py-4 whitespace-nowrap">{{incidencia.puesto}}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{incidencia.mesa}}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{incidencia.nombre_testigo}}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="px-2 py-1 hover:bg-gray-100 rounded transition-colors" data-bs-toggle="modal"
                                             data-bs-target="#incidenciaAbierta"
                                             (click)="ModalIncidenciaAbiertaActual(incidencia)">
                                             <i class="fa-solid fa-eye text-primary"></i>
@@ -44,32 +44,32 @@
                         </table>
                     </div>
                     <ng-template #open_content>
-                        <p class="text-center mb-0">No hay novedades abiertas por el momento.</p>
+                        <p class="text-center py-8 text-gray-600">No hay novedades abiertas por el momento.</p>
                     </ng-template>
                 </div>
             </div>
         </div>
         <div class="tab-pane fade" id="cerrados" role="tabpanel">
-            <div class="card mt-3">
-                <div class="card-body">
-                    <div class="table-responsive my-4" *ngIf="dataIncidenciasCerradas.length>0;else close_content">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+                <div class="p-6">
+                    <div class="overflow-x-auto my-4" *ngIf="dataIncidenciasCerradas.length>0;else close_content">
                         <table datatable [dtOptions]="dtOptionsIncidenciasCerradas" [dtTrigger]="dtTrigger"
-                            class="table text-center align-middle w-100">
-                            <thead class="text-dark align-middle">
+                            class="min-w-full divide-y divide-gray-200 text-center align-middle w-full">
+                            <thead class="bg-gray-50 text-gray-900 align-middle">
                                 <tr>
-                                    <th scope="col">PUESTO</th>
-                                    <th scope="col">MESA</th>
-                                    <th scope="col">TESTIGO</th>
-                                    <th scope="col"></th>
+                                    <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">PUESTO</th>
+                                    <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">MESA</th>
+                                    <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">TESTIGO</th>
+                                    <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">ACCIONES</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr class="bg-white" *ngFor="let incidencia of dataIncidenciasCerradas">
-                                    <td>{{incidencia.puesto}}</td>
-                                    <td>{{incidencia.mesa}}</td>
-                                    <td>{{incidencia.nombre_testigo}}</td>
-                                    <td>
-                                        <button class="btn align-middle mx-1" data-bs-toggle="modal"
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50" *ngFor="let incidencia of dataIncidenciasCerradas">
+                                    <td class="px-6 py-4 whitespace-nowrap">{{incidencia.puesto}}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{incidencia.mesa}}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{incidencia.nombre_testigo}}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="px-2 py-1 hover:bg-gray-100 rounded transition-colors" data-bs-toggle="modal"
                                             data-bs-target="#incidenciaCerrada"
                                             (click)="ModalIncidenciaCerradaActual(incidencia)">
                                             <i class="fa-solid fa-eye text-primary"></i>
@@ -80,7 +80,7 @@
                         </table>
                     </div>
                     <ng-template #close_content>
-                        <p class="text-center mb-0">No hay novedades cerradas por el momento.</p>
+                        <p class="text-center py-8 text-gray-600">No hay novedades cerradas por el momento.</p>
                     </ng-template>
                 </div>
             </div>
@@ -88,143 +88,141 @@
     </div>
 </div>
 
+<!-- Modal de Bootstrap con estilos Tailwind -->
 <div class="modal fade" id="incidenciaAbierta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <form class="modal-content" [formGroup]="replyForm" (ngSubmit)="onSubmit()">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">REPORTE #{{incidenciaAbiertaActual.id}}</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
+        <form class="modal-content bg-white rounded-xl shadow-2xl overflow-hidden" [formGroup]="replyForm" (ngSubmit)="onSubmit()">
+            <div class="modal-header bg-primary text-white py-4 px-6">
+                <h5 class="modal-title font-bold text-lg" id="exampleModalLabel">REPORTE #{{incidenciaAbiertaActual.id}}</h5>
+                <button type="button" class="bg-transparent border-0 text-white hover:bg-white/20 rounded-lg p-2 transition-colors" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <h4 class="fw-bolder">Información de testigo</h4>
-                <div class="row mt-3">
-                    <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Puesto: </span><span> {{incidenciaAbiertaActual.puesto}}</span></p>
+            <div class="modal-body p-6 space-y-4">
+                <h4 class="font-bold text-lg">Información de testigo</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                    <div>
+                        <p class="text-gray-800"><span class="font-bold text-gray-900">Puesto: </span><span class="text-gray-700"> {{incidenciaAbiertaActual.puesto}}</span></p>
                     </div>
-                    <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Mesa: </span><span> {{incidenciaAbiertaActual.puesto}}</span></p>
+                    <div>
+                        <p class="text-gray-800"><span class="font-bold text-gray-900">Mesa: </span><span class="text-gray-700"> {{incidenciaAbiertaActual.mesa}}</span></p>
                     </div>
-                    <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Testigo:
-                            </span><span>{{incidenciaAbiertaActual.nombre_testigo}}</span></p>
+                    <div>
+                        <p class="text-gray-800"><span class="font-bold text-gray-900">Testigo:
+                            </span><span class="text-gray-700">{{incidenciaAbiertaActual.nombre_testigo}}</span></p>
                     </div>
-                    <div class="col-lg-6 pb-2">
-                        <p>
-                            <span class="fw-bolder">Teléfono: </span>
-                            <span>
+                    <div>
+                        <p class="text-gray-800">
+                            <span class="font-bold text-gray-900">Teléfono: </span>
+                            <span class="text-gray-700">
                                 {{incidenciaAbiertaActual.telefono_testigo}}
                             </span>
                         </p>
                     </div>
-                    <hr class="border border-primary rounded border-2">
-                    <h4 class="fw-bolder">Información de reporte</h4>
-                    <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaAbiertaActual.categoria}}</span>
-                    </p>
                 </div>
-                <p class="fw-bolder">Descripción: </p>
-                <p>
+                <hr class="border-t-2 border-primary rounded">
+                <h4 class="font-bold text-lg">Información de reporte</h4>
+                <p class="text-gray-800"><span class="font-bold text-gray-900">Asunto: </span><span class="text-gray-700"> {{incidenciaAbiertaActual.categoria}}</span>
+                </p>
+                <p class="font-bold text-gray-900">Descripción: </p>
+                <p class="text-gray-700">
                     {{incidenciaAbiertaActual.descripcion}}
                 </p>
-                <p class="fw-bolder mb-0">Archivos adjuntos: </p>
-                <div class="w-100">
+                <p class="font-bold text-gray-900 mb-2">Archivos adjuntos: </p>
+                <div class="w-full">
                     <ng-container *ngIf="photosOpen.length>0">
-                        <p class="fst-italic">-Imágenes: </p>
-                        <div class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
+                        <p class="italic text-gray-600 mb-2">-Imágenes: </p>
+                        <div class="grid grid-cols-2 gap-4 justify-center">
                             <img *ngFor="let img of photosOpen; let i = index" src="{{img.url_archivo}}"
-                                (click)="openLightboxOpen(i)" class="imgItem py-1" style="cursor: pointer;" />
+                                (click)="openLightboxOpen(i)" class="w-full h-auto object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" />
                         </div>
                     </ng-container>
                     <ng-container *ngIf="videosOpen.length>0">
-                        <p class="fst-italic">-Videos: </p>
-                        <div class="row gy-2 d-flex justify-content-center">
-                            <div class="col-md-6" *ngFor="let video of videosOpen">
-                                <div class="ratio ratio-16x9" controls>
-                                    <video class="w-100" controls>
-                                        <source src="{{video.url_archivo}}" type="video/mp4">
-                                        Su navegador no soporta la etiqueta video.
-                                    </video>
-                                </div>
+                        <p class="italic text-gray-600 mb-2">-Videos: </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center">
+                            <div *ngFor="let video of videosOpen" class="aspect-video">
+                                <video class="w-full h-full rounded-lg" controls>
+                                    <source src="{{video.url_archivo}}" type="video/mp4">
+                                    Su navegador no soporta la etiqueta video.
+                                </video>
                             </div>
                         </div>
                     </ng-container>
                 </div>
-                <textarea class="form-control border-2 border-dark rounded mt-3" rows="2"
+                <textarea class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all mt-3" rows="2"
                     placeholder="Escribir una respuesta" formControlName="respuesta"></textarea>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-danger">Cerrar novedad</button>
+            <div class="modal-footer p-4 border-t border-gray-200">
+                <button type="submit" class="px-6 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-all duration-200 shadow-md">Cerrar novedad</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- Modal de Bootstrap con estilos Tailwind -->
 <div class="modal fade" id="incidenciaCerrada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">REPORTE {{incidenciaCerradaActual.id}}</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark text-white"></i>
+        <div class="modal-content bg-white rounded-xl shadow-2xl overflow-hidden">
+            <div class="modal-header bg-primary text-white py-4 px-6">
+                <h5 class="modal-title font-bold text-lg" id="exampleModalLabel">REPORTE {{incidenciaCerradaActual.id}}</h5>
+                <button type="button" class="bg-transparent border-0 text-white hover:bg-white/20 rounded-lg p-2 transition-colors" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <h4 class="fw-bolder">Información de testigo</h4>
-                <div class="row mt-3">
-                    <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Puesto: </span><span> {{incidenciaCerradaActual.puesto}}</span></p>
+            <div class="modal-body p-6 space-y-4">
+                <h4 class="font-bold text-lg">Información de testigo</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                    <div>
+                        <p class="text-gray-800"><span class="font-bold text-gray-900">Puesto: </span><span class="text-gray-700"> {{incidenciaCerradaActual.puesto}}</span></p>
                     </div>
-                    <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Mesa: </span><span> {{incidenciaCerradaActual.puesto}}</span></p>
+                    <div>
+                        <p class="text-gray-800"><span class="font-bold text-gray-900">Mesa: </span><span class="text-gray-700"> {{incidenciaCerradaActual.mesa}}</span></p>
                     </div>
-                    <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Testigo: </span><span>
+                    <div>
+                        <p class="text-gray-800"><span class="font-bold text-gray-900">Testigo: </span><span class="text-gray-700">
                                 {{incidenciaCerradaActual.nombre_testigo}}</span></p>
                     </div>
-                    <div class="col-lg-6 pb-2">
-                        <p><span class="fw-bolder">Telefono: </span>
-                            <span>{{incidenciaCerradaActual.telefono_testigo}}</span>
+                    <div>
+                        <p class="text-gray-800"><span class="font-bold text-gray-900">Teléfono: </span>
+                            <span class="text-gray-700">{{incidenciaCerradaActual.telefono_testigo}}</span>
                         </p>
                     </div>
-                    <hr class="border border-primary rounded border-2">
                 </div>
-                <h4 class="fw-bolder">Información de reporte</h4>
-                <p><span class="fw-bolder mt-3">Asunto: </span><span> {{incidenciaCerradaActual.categoria}}</span>
+                <hr class="border-t-2 border-primary rounded">
+                <h4 class="font-bold text-lg">Información de reporte</h4>
+                <p class="text-gray-800"><span class="font-bold text-gray-900">Asunto: </span><span class="text-gray-700"> {{incidenciaCerradaActual.categoria}}</span>
                 </p>
-                <p class="fw-bolder">Descripción: </p>
-                <p>
+                <p class="font-bold text-gray-900">Descripción: </p>
+                <p class="text-gray-700">
                     {{incidenciaCerradaActual.descripcion}}
                 </p>
-                <p class="fw-bolder mb-0">Archivos adjuntos: </p>
-                <div class="w-100">
+                <p class="font-bold text-gray-900 mb-2">Archivos adjuntos: </p>
+                <div class="w-full">
                     <ng-container *ngIf="photosClose.length>0">
-                        <p class="fst-italic">Imágenes: </p>
-                        <div class="row row-cols-sm-2 gy-2 d-flex justify-content-center">
+                        <p class="italic text-gray-600 mb-2">Imágenes: </p>
+                        <div class="grid grid-cols-2 gap-4 justify-center">
                             <img *ngFor="let img of photosClose; let i = index" src="{{img.url_archivo}}"
-                                (click)="openLightboxClose(i)" class="imgItem py-1" style="cursor: pointer;" />
+                                (click)="openLightboxClose(i)" class="w-full h-auto object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" />
                         </div>
                     </ng-container>
                     <ng-container *ngIf="videosClose.length>0">
-                        <p class="fst-italic">Videos: </p>
-                        <div class="row gy-2 d-flex justify-content-center">
-                            <div class="col-md-6" *ngFor="let video of videosClose">
-                                <div class="ratio ratio-16x9" controls>
-                                    <video class="w-100" controls>
-                                        <source src="{{video.url_archivo}}" type="video/mp4">
-                                        Su navegador no soporta la etiqueta video.
-                                    </video>
-                                </div>
+                        <p class="italic text-gray-600 mb-2">Videos: </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center">
+                            <div *ngFor="let video of videosClose" class="aspect-video">
+                                <video class="w-full h-full rounded-lg" controls>
+                                    <source src="{{video.url_archivo}}" type="video/mp4">
+                                    Su navegador no soporta la etiqueta video.
+                                </video>
                             </div>
                         </div>
                     </ng-container>
                 </div>
-                <p class="mt-3"><span class="fw-bolder">Respuesta:
-                    </span><span>{{incidenciaCerradaActual.respuesta}}</span>
+                <p class="mt-3 text-gray-800"><span class="font-bold text-gray-900">Respuesta:
+                    </span><span class="text-gray-700">{{incidenciaCerradaActual.respuesta}}</span>
                 </p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" (click)="openIncidencia()">Reabrir novedad</button>
+            <div class="modal-footer p-4 border-t border-gray-200">
+                <button type="button" class="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-all duration-200 shadow-md" (click)="openIncidencia()">Reabrir novedad</button>
             </div>
         </div>
     </div>

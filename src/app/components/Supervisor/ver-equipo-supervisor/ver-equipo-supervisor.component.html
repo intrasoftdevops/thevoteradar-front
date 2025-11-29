@@ -1,33 +1,22 @@
-<div class="container py-5">
-  <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
-    <h4>Mi equipo de trabajo</h4>
-    <!--<button class="btn btn-sm btn-info position-relative" data-bs-toggle="tooltip" data-bs-placement="top"
-      title="{{(showMap)?'Ver lista':'Ver mapa'}}" (click)="showIframe()">
-      <i class="fa-solid fa-map fa-lg text-white" *ngIf="!showMap;else list_content"></i>
-      <ng-template #list_content>
-        <i class="fa-solid fa-list fa-lg text-white"></i>
-      </ng-template>
-      <span
-        class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1">
-        <i class="fa-solid fa-repeat fa-sm"></i>
-      </span>
-    </button>-->
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+    <h4 class="m-0 font-bold text-xl">Mi equipo de trabajo</h4>
   </div>
-  <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe; else content_map">
-    <iframe [src]="urlSafe" frameborder="0" allowFullScreen="true"></iframe>
+  <div class="aspect-video w-full" *ngIf="showMap && urlSafe; else content_map">
+    <iframe [src]="urlSafe" frameborder="0" allowFullScreen="true" class="w-full h-full rounded-b-xl"></iframe>
   </div>
   <ng-template #content_map>
-    <div class="card mt-5">
-      <div class="card-body">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+      <div class="p-6">
         <form
-          class="row m-4 d-flex justify-content-center"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-4 justify-center"
           [formGroup]="searchForm"
         >
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Equipo por zona</label>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">Equipo por zona</label>
             <ng-select
               [items]="dataZones"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               (change)="getSelectedZone($event)"
@@ -38,11 +27,11 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Coordinadores por puesto</label>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">Coordinadores por puesto</label>
             <ng-select
               [items]="dataStations"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="nombre"
               bindValue="codigo_unico"
               (change)="getSelectedStation($event)"
@@ -53,11 +42,11 @@
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Testigos por mesa</label>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700">Testigos por mesa</label>
             <ng-select
               [items]="dataTables"
-              class="custom-select rounded"
+              class="custom-select rounded-lg"
               bindLabel="numero_mesa"
               bindValue="codigo_unico"
               (change)="getSelectedTable($event)"
@@ -72,80 +61,80 @@
       </div>
     </div>
     <ng-container [ngSwitch]="tabla">
-      <div class="card mt-5" *ngSwitchCase="'coordinador'">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4>Coordinadores</h4>
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5" *ngSwitchCase="'coordinador'">
+        <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+          <h4 class="m-0 font-bold text-xl">Coordinadores</h4>
         </div>
-        <div class="card-body">
+        <div class="p-6">
           <div
-            class="table-responsive"
+            class="overflow-x-auto"
             *ngIf="listCoordinadores.length > 0; else other_content"
           >
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
+            <table class="min-w-full text-center align-middle">
+              <thead class="bg-gray-100 text-gray-900 align-middle">
                 <tr>
-                  <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col" class="d-none d-md-table-cell">
+                  <th scope="col" class="px-4 py-3 font-semibold">NOMBRE COMPLETO</th>
+                  <th scope="col" class="px-4 py-3 font-semibold hidden md:table-cell">
                     CORREO ELECTRÓNICO
                   </th>
-                  <th scope="col">TELÉFONO</th>
+                  <th scope="col" class="px-4 py-3 font-semibold">TELÉFONO</th>
                 </tr>
               </thead>
               <tbody>
                 <tr
                   *ngFor="let coordinador of listCoordinadores"
-                  class="bg-white"
+                  class="bg-white border-b hover:bg-gray-50"
                 >
-                  <td scope="row">
+                  <td class="px-4 py-3">
                     {{ coordinador.nombres }} {{ coordinador.apellidos }}
                   </td>
-                  <td class="d-none d-md-table-cell">
+                  <td class="px-4 py-3 hidden md:table-cell">
                     {{ coordinador.email }}
                   </td>
-                  <td>{{ coordinador.telefono }}</td>
+                  <td class="px-4 py-3">{{ coordinador.telefono }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <ng-template #other_content>
-            <p class="text-center">
+            <p class="text-center py-8 text-gray-600">
               No hay coordinador asignado para este puesto.
             </p>
           </ng-template>
         </div>
       </div>
-      <div class="card mt-5" *ngSwitchCase="'testigo'">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4>Testigos</h4>
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5" *ngSwitchCase="'testigo'">
+        <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+          <h4 class="m-0 font-bold text-xl">Testigos</h4>
         </div>
-        <div class="card-body">
+        <div class="p-6">
           <div
-            class="table-responsive"
+            class="overflow-x-auto"
             *ngIf="listTestigos.length > 0; else other_content"
           >
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
+            <table class="min-w-full text-center align-middle">
+              <thead class="bg-gray-100 text-gray-900 align-middle">
                 <tr>
-                  <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col" class="d-none d-md-table-cell">
+                  <th scope="col" class="px-4 py-3 font-semibold">NOMBRE COMPLETO</th>
+                  <th scope="col" class="px-4 py-3 font-semibold hidden md:table-cell">
                     CORREO ELECTRÓNICO
                   </th>
-                  <th scope="col">TELÉFONO</th>
+                  <th scope="col" class="px-4 py-3 font-semibold">TELÉFONO</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let testigo of listTestigos" class="bg-white">
-                  <td scope="row">
+                <tr *ngFor="let testigo of listTestigos" class="bg-white border-b hover:bg-gray-50">
+                  <td class="px-4 py-3">
                     {{ testigo.nombres }} {{ testigo.apellidos }}
                   </td>
-                  <td class="d-none d-md-table-cell">{{ testigo.email }}</td>
-                  <td>{{ testigo.telefono }}</td>
+                  <td class="px-4 py-3 hidden md:table-cell">{{ testigo.email }}</td>
+                  <td class="px-4 py-3">{{ testigo.telefono }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <ng-template #other_content>
-            <p class="text-center">No hay testigo asignado para esta mesa.</p>
+            <p class="text-center py-8 text-gray-600">No hay testigo asignado para esta mesa.</p>
           </ng-template>
         </div>
       </div>

@@ -4,111 +4,118 @@
   id="offcanvasExample"
   aria-labelledby="offcanvasExampleLabel"
 >
-  <div class="c-contactos bg-primary pb-3">
+  <div class="bg-primary pb-3">
     <div class="offcanvas-header">
-      <h4 class="offcanvas-title text-white" id="offcanvas">Tus contactos</h4>
-      <div class="d-flex align-items-end">
+      <h4 class="offcanvas-title text-white font-bold" id="offcanvas">Tus contactos</h4>
+      <div class="flex items-end">
         <button
           type="button"
-          class="btn p-0"
+          class="p-0 bg-transparent border-0 hover:scale-110 transition-transform duration-200 cursor-pointer"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
         >
-          <i class="fa-solid fa-xmark text-white fa-2xl"></i>
+          <i class="fa-solid fa-xmark text-white text-3xl"></i>
         </button>
       </div>
     </div>
-    <div class="text-end">
+    <div class="text-right pr-4">
       <button
         type="button"
-        class="btn text-white"
+        class="text-white bg-transparent border-0 hover:scale-110 transition-transform duration-200 cursor-pointer"
         [ngbPopover]="popCreateContent"
         placement="{{ innerWidth >= 720 ? 'end-top' : 'bottom-end' }}"
         [autoClose]="'outside'"
       >
-        <i class="fa-solid fa-circle-plus fa-2x"></i>
+        <i class="fa-solid fa-circle-plus text-4xl"></i>
       </button>
       <ng-template #popCreateContent>
-        <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
-          <div class="row mb-3">
-            <div class="col-6">
+        <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="p-4 min-w-[280px]">
+          <h5 class="text-lg font-bold text-gray-800 mb-4">Nuevo Contacto</h5>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
               <input
                 type="name"
-                class="form-control"
-                placeholder="Ingrese nombres"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                placeholder="Nombres"
                 formControlName="nombres"
                 (keypress)="keypressValidator.keyPressLetters($event)"
               />
             </div>
-            <div class="col-6">
+            <div>
               <input
                 type="name"
-                class="form-control"
-                placeholder="Ingrese apellidos"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                placeholder="Apellidos"
                 formControlName="apellidos"
                 (keypress)="keypressValidator.keyPressLetters($event)"
               />
             </div>
           </div>
-          <div class="row mb-3">
-            <div class="col-6">
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
               <input
                 type="name"
-                class="form-control"
-                placeholder="¿Como le dices?"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                placeholder="¿Cómo le dices?"
                 formControlName="apodo"
                 (keypress)="keypressValidator.keyPressLetters($event)"
               />
             </div>
-            <div class="col-6">
+            <div>
               <input
                 type="name"
-                class="form-control"
-                placeholder="¿Como te dice?"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                placeholder="¿Cómo te dice?"
                 formControlName="como_te_dice"
                 (keypress)="keypressValidator.keyPressLetters($event)"
               />
             </div>
           </div>
-          <div class="mb-3">
+          <div class="mb-4">
             <input
               type="number"
-              class="form-control"
-              placeholder="Ingrese número de contacto"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              placeholder="Número de contacto"
               formControlName="numero_contacto"
               (keypress)="keypressValidator.keyPressNumbers($event)"
             />
           </div>
-          <div class="text-end">
-            <button type="submit" class="btn btn-primary">Guardar</button>
+          <div class="text-right">
+            <button type="submit" class="px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md">
+              Guardar
+            </button>
           </div>
         </form>
       </ng-template>
     </div>
   </div>
   <div
-    class="offcanvas-body px-0 bg-secondary border border-primary border-5 border-top-0 border-bottom-0 border-start-0"
+    class="offcanvas-body px-0 bg-secondary border-r-4 border-primary"
   >
     <ng-container *ngIf="listContactos.length > 0; else other_content">
       <ng-container *ngFor="let contacto of listContactos">
-        <div class="row mx-2 text-dark">
-          <div class="col-11 row">
-            <h3 class="fw-bolder">{{ contacto.apodo }}</h3>
-            <div class="col-7">
-              {{ contacto.nombres }} {{ contacto.apellidos }}
+        <div class="flex mx-4 my-3 text-gray-800">
+          <div class="flex-1">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ contacto.apodo }}</h3>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <div class="col-span-2 md:col-span-1">
+                <i class="fas fa-user text-gray-500 mr-2"></i>
+                {{ contacto.nombres }} {{ contacto.apellidos }}
+              </div>
+              <div>
+                <i class="fas fa-phone text-gray-500 mr-2"></i>
+                {{ contacto.numero_contacto }}
+              </div>
             </div>
-            <div class="col-5">
-              {{ contacto.numero_contacto }}
-            </div>
-            <small>
-              <span class="fw-bolder">Me dice: </span>
+            <small class="block mt-2 text-gray-600">
+              <span class="font-bold">Me dice: </span>
               {{ contacto.como_te_dice }}
             </small>
           </div>
-          <div class="col-1">
+          <div class="flex flex-col gap-2 ml-2">
             <button
               type="button"
-              class="btn"
+              class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
               [ngbPopover]="popUpdateContent"
               (click)="updateData(contacto)"
               placement="{{ innerWidth >= 720 ? 'end-top' : 'bottom-end' }}"
@@ -120,75 +127,83 @@
               <form
                 [formGroup]="updateForm"
                 (ngSubmit)="onSubmitItem(contacto.id)"
+                class="p-4 min-w-[280px]"
               >
-                <div class="row mb-3">
-                  <div class="col-6">
+                <h5 class="text-lg font-bold text-gray-800 mb-4">Editar Contacto</h5>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                  <div>
                     <input
                       type="name"
-                      class="form-control"
-                      placeholder="Ingrese nombres"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="Nombres"
                       formControlName="nombres"
                       (keypress)="keypressValidator.keyPressLetters($event)"
                     />
                   </div>
-                  <div class="col-6">
+                  <div>
                     <input
                       type="name"
-                      class="form-control"
-                      placeholder="Ingrese apellidos"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="Apellidos"
                       formControlName="apellidos"
                       (keypress)="keypressValidator.keyPressLetters($event)"
                     />
                   </div>
                 </div>
-                <div class="row mb-3">
-                  <div class="col-6">
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                  <div>
                     <input
                       type="name"
-                      class="form-control"
-                      placeholder="¿Como le dices?"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="¿Cómo le dices?"
                       formControlName="apodo"
                       (keypress)="keypressValidator.keyPressLetters($event)"
                     />
                   </div>
-                  <div class="col-6">
+                  <div>
                     <input
                       type="name"
-                      class="form-control"
-                      placeholder="¿Como te dice?"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="¿Cómo te dice?"
                       formControlName="como_te_dice"
                       (keypress)="keypressValidator.keyPressLetters($event)"
                     />
                   </div>
                 </div>
-                <div class="mb-3">
+                <div class="mb-4">
                   <input
                     type="number"
-                    class="form-control"
-                    placeholder="Ingrese numero de contacto"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    placeholder="Número de contacto"
                     formControlName="numero_contacto"
                     (keypress)="keypressValidator.keyPressNumbers($event)"
                   />
                 </div>
-                <div class="mb-3 text-end">
-                  <button type="submit" class="btn btn-primary">Guardar</button>
+                <div class="text-right">
+                  <button type="submit" class="px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md">
+                    Guardar
+                  </button>
                 </div>
               </form>
             </ng-template>
             <button
               type="button"
-              class="btn"
+              class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
               (click)="deleteContacto(contacto.id)"
             >
               <i class="fa-solid fa-trash"></i>
             </button>
           </div>
         </div>
-        <hr class="bg-primary" />
+        <hr class="border-t border-primary my-3" />
       </ng-container>
     </ng-container>
     <ng-template #other_content>
-      <p class="text-center">No tiene contactos.</p>
+      <div class="flex flex-col items-center justify-center py-12 px-4">
+        <i class="fas fa-address-book text-6xl text-gray-300 mb-4"></i>
+        <p class="text-center text-gray-500 text-lg">No tiene contactos.</p>
+        <p class="text-center text-gray-400 text-sm mt-2">Agrega uno usando el botón <i class="fas fa-plus-circle text-primary"></i></p>
+      </div>
     </ng-template>
   </div>
 </div>

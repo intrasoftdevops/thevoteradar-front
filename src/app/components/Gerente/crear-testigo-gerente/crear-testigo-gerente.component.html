@@ -1,45 +1,45 @@
-<form class="container py-5" [formGroup]="createForm" (ngSubmit)="onSubmit()">
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white">
-      <h4 class="m-0">Añadir testigo</h4>
+<form class="max-w-7xl mx-auto px-4 py-8" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+      <h4 class="m-0 font-bold text-xl">Añadir testigo</h4>
     </div>
-    <div class="card-body">
-      <h4 class="ms-4 fw-bolder">Datos personales</h4>
-      <div class="row m-4">
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Nombres</span>
-            <span class="text-danger">*</span>
+    <div class="p-6">
+      <h4 class="ml-4 mb-4 font-bold text-lg text-gray-900">Datos personales</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-4">
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <span class="font-bold">Nombres</span>
+            <span class="text-red-500">*</span>
           </label>
           <input
             type="text"
-            class="form-control border-2 border-dark rounded"
+            class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             formControlName="nombres"
             (keypress)="keypressValidator.keyPressLetters($event)"
             placeholder="Ingrese nombres"
           />
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Apellidos</span>
-            <span class="text-danger">*</span>
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <span class="font-bold">Apellidos</span>
+            <span class="text-red-500">*</span>
           </label>
           <input
             type="text"
-            class="form-control border-2 border-dark rounded"
+            class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             formControlName="apellidos"
             (keypress)="keypressValidator.keyPressLetters($event)"
             placeholder="Ingrese apellidos"
           />
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Género</span>
-            <span class="text-danger">*</span>
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <span class="font-bold">Género</span>
+            <span class="text-red-500">*</span>
           </label>
           <ng-select
             [searchable]="false"
-            class="custom-select rounded"
+            class="custom-select rounded-lg"
             formControlName="genero_id"
             placeholder="Seleccione género"
             [clearAllText]="'Borrar todo'"
@@ -49,14 +49,14 @@
             <ng-option [value]="3">Otro</ng-option>
           </ng-select>
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Tipo de documento</span>
-            <span class="text-danger">*</span>
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <span class="font-bold">Tipo de documento</span>
+            <span class="text-red-500">*</span>
           </label>
           <ng-select
             [searchable]="false"
-            class="custom-select rounded"
+            class="custom-select rounded-lg"
             formControlName="tipo_documento_id"
             placeholder="Seleccione tipo de documento"
             [clearAllText]="'Borrar todo'"
@@ -64,79 +64,80 @@
             <ng-option [value]="1">Cédula de ciudadanía</ng-option>
           </ng-select>
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Número de documento</span>
-            <span class="text-danger">*</span>
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <span class="font-bold">Número de documento</span>
+            <span class="text-red-500">*</span>
           </label>
           <input
             type="number"
-            class="form-control border-2 border-dark rounded"
+            class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             placeholder="Ingrese número de documento"
             formControlName="numero_documento"
             (keypress)="keypressValidator.keyPressNumbers($event)"
           />
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label fw-bold">
-            <span class="fw-bold">Teléfono</span>
-            <span class="text-danger">*</span>
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-bold text-gray-700">
+            <span class="font-bold">Teléfono</span>
+            <span class="text-red-500">*</span>
           </label>
           <input
             type="number"
-            class="form-control border-2 border-dark rounded"
+            class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             formControlName="telefono"
             (keypress)="keypressValidator.keyPressNumbers($event)"
             placeholder="Ingrese número de teléfono"
           />
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Correo electrónico</span>
-            <span class="text-danger">*</span>
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <span class="font-bold">Correo electrónico</span>
+            <span class="text-red-500">*</span>
           </label>
           <input
             type="email"
-            class="form-control border-2 border-dark rounded"
+            class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             formControlName="email"
             placeholder="Ingrese correo electrónico"
           />
           <small
-            class="text-danger"
+            class="text-red-500 text-sm"
             *ngIf="createFormControl['email'].errors?.['email'] || createFormControl['email'].errors?.['invalidEmail']"
           >
             Ingrese una dirección de correo electrónico valido.
           </small>
         </div>
       </div>
-      <hr class="mx-4 border border-primary rounded border-2" />
-      <h4 class="ms-4 fw-bolder">Lugar de trabajo</h4>
-      <div class="row mx-4 my-4">
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">
-            <span class="fw-bold">Municipio de votación</span>
-            <span class="text-danger">*</span>
+      <hr class="mx-4 my-6 border-t-2 border-primary rounded" />
+      <h4 class="ml-4 mb-4 font-bold text-lg text-gray-900">Lugar de trabajo</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-4 my-4">
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-bold text-gray-700">
+            <span class="font-bold">Municipio de votación</span>
+            <span class="text-red-500">*</span>
           </label>
           <ng-select
             [items]="dataMunicipals"
-            class="custom-select rounded"
+            class="custom-select rounded-lg"
             bindLabel="nombre"
             bindValue="codigo_unico"
             (change)="getSelectedMunicipal($event)"
             [clearAllText]="'Borrar todo'"
             información="No hay información disponible"
             placeholder="Seleccione municipio"
+            formControlName="municipio"
           >
           </ng-select>
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">
-            <span class="fw-bold">Zona de votación</span>
-            <span class="text-danger">*</span>
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-bold text-gray-700">
+            <span class="font-bold">Zona de votación</span>
+            <span class="text-red-500">*</span>
           </label>
           <ng-select
             [items]="dataZones"
-            class="custom-select rounded"
+            class="custom-select rounded-lg"
             bindLabel="nombre"
             bindValue="codigo_unico"
             (change)="getSelectedZone($event)"
@@ -148,15 +149,15 @@
           >
           </ng-select>
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">
-            <span class="fw-bold">Puesto de votación</span>
-            <span class="text-danger">*</span>
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-bold text-gray-700">
+            <span class="font-bold">Puesto de votación</span>
+            <span class="text-red-500">*</span>
           </label>
           <ng-select
             [items]="dataStations"
             [searchable]="false"
-            class="custom-select rounded"
+            class="custom-select rounded-lg"
             formControlName="puesto"
             bindLabel="nombre"
             bindValue="codigo_unico"
@@ -167,11 +168,11 @@
           >
           </ng-select>
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Mesas de votación</label>
+        <div class="flex flex-col space-y-2">
+          <label class="block text-sm font-bold text-gray-700">Mesas de votación</label>
           <ng-select
             [items]="dataTables"
-            class="custom-multiple-select rounded"
+            class="custom-multiple-select rounded-lg"
             formControlName="mesas"
             bindLabel="numero_mesa"
             bindValue="codigo_unico"
@@ -185,8 +186,8 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end pt-4">
-    <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">
+  <div class="flex justify-end pt-6">
+    <button type="submit" class="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-md">
       CREAR
     </button>
   </div>

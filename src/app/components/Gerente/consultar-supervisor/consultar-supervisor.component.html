@@ -1,11 +1,11 @@
-<div class="container py-5">
-  <div class="bg-primary py-3 px-5 text-white">
-    <h4>Consultar supervisor</h4>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+    <h4 class="m-0 font-bold text-xl">Consultar supervisor</h4>
   </div>
-  <ul class="nav nav-tabs mt-5" id="myTab">
-    <li class="nav-item" id="tab">
+  <ul class="flex border-b border-gray-200 mt-5" id="myTab" role="tablist">
+    <li class="mr-2" role="presentation">
       <button
-        class="nav-link h4 px-md-5 active"
+        class="px-6 py-3 text-lg font-semibold border-b-2 border-primary text-primary bg-transparent active"
         id="home-tab"
         data-bs-toggle="tab"
         data-bs-target="#asignados"
@@ -15,9 +15,9 @@
         Asignados
       </button>
     </li>
-    <li class="nav-item" id="tab">
+    <li class="mr-2" role="presentation">
       <button
-        class="nav-link h4 px-md-5"
+        class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-gray-600 hover:text-primary hover:border-gray-300 bg-transparent"
         id="profile-tab"
         data-bs-toggle="tab"
         data-bs-target="#noasignados"
@@ -30,45 +30,43 @@
   </ul>
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="asignados" role="tabpanel">
-      <div class="card mt-3">
-        <div class="card-body">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+        <div class="p-6">
           <div
-            class="table-responsive my-4"
+            class="overflow-x-auto my-4"
             *ngIf="listSupervisorAsignados.length > 0; else zona_content"
           >
             <table
               datatable
               [dtOptions]="dtOptionsSupervisorAsignados"
               [dtTrigger]="dtTrigger"
-              class="table text-center align-middle w-100"
+              class="min-w-full divide-y divide-gray-200 text-center align-middle w-full"
             >
-              <thead class="text-dark align-middle">
+              <thead class="bg-gray-50 text-gray-900 align-middle">
                 <tr>
-                  <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col">TELÉFONO</th>
-                  <th scope="col">CORREO ELECTRÓNICO</th>
-                  <th scope="col">ZONAS</th>
-                  <th scope="col"></th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">NOMBRE COMPLETO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">TELÉFONO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">CORREO ELECTRÓNICO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">ZONAS</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">ACCIONES</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="bg-white divide-y divide-gray-200">
                 <tr
-                  class="bg-white"
+                  class="hover:bg-gray-50"
                   *ngFor="
                     let supervisor of listSupervisorAsignados;
                     let index = index
                   "
                 >
-                  <td>{{ supervisor.nombres }} {{ supervisor.apellidos }}</td>
-                  <td>{{ supervisor.telefono }}</td>
-                  <td>{{ supervisor.email }}</td>
-                  <td>{{ listZones[index] }}</td>
-                  <td>
-                    <div
-                      class="d-grid gap-1 d-md-flex justify-content-center align-items-center"
-                    >
+                  <td class="px-6 py-4 whitespace-nowrap">{{ supervisor.nombres }} {{ supervisor.apellidos }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ supervisor.telefono }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ supervisor.email }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ listZones[index] }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex gap-2 justify-center items-center">
                       <button
-                        class="btn align-middle"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                         data-bs-toggle="modal"
                         data-bs-target="#supervisor"
                         (click)="
@@ -83,7 +81,7 @@
                         <i class="fa-solid fa-eye text-primary"></i>
                       </button>
                       <button
-                        class="btn align-middle"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                         (click)="redirectUpdateSupervisor(supervisor.id)"
                         data-bs-placement="top"
                         title="Editar información"
@@ -91,7 +89,7 @@
                         <i class="fa-solid fa-pen text-primary"></i>
                       </button>
                       <button
-                        class="btn align-middle d-none"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors hidden"
                         data-bs-placement="top"
                         title="Cambiar de rol"
                       >
@@ -107,7 +105,7 @@
             </table>
           </div>
           <ng-template #zona_content>
-            <p class="text-center mb-0">
+            <p class="text-center py-8 text-gray-600">
               No hay supervisores con asignación de zona.
             </p>
           </ng-template>
@@ -115,40 +113,38 @@
       </div>
     </div>
     <div class="tab-pane fade" id="noasignados" role="tabpanel">
-      <div class="card mt-3">
-        <div class="card-body">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+        <div class="p-6">
           <div
-            class="table-responsive my-4"
+            class="overflow-x-auto my-4"
             *ngIf="listSupervisorNoAsignados.length > 0; else no_zona_content"
           >
             <table
               datatable
               [dtOptions]="dtOptionsSupervisorNoAsignados"
               [dtTrigger]="dtTrigger"
-              class="table text-center align-middle w-100"
+              class="min-w-full divide-y divide-gray-200 text-center align-middle w-full"
             >
-              <thead class="text-dark align-middle">
+              <thead class="bg-gray-50 text-gray-900 align-middle">
                 <tr>
-                  <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col">TELÉFONO</th>
-                  <th scope="col">CORREO ELECTRÓNICO</th>
-                  <th scope="col"></th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">NOMBRE COMPLETO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">TELÉFONO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">CORREO ELECTRÓNICO</th>
+                  <th scope="col" class="px-6 py-3 text-sm font-bold uppercase tracking-wider">ACCIONES</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="bg-white divide-y divide-gray-200">
                 <tr
-                  class="bg-white"
+                  class="hover:bg-gray-50"
                   *ngFor="let supervisor of listSupervisorNoAsignados"
                 >
-                  <td>{{ supervisor.nombres }} {{ supervisor.apellidos }}</td>
-                  <td>{{ supervisor.telefono }}</td>
-                  <td>{{ supervisor.email }}</td>
-                  <td>
-                    <div
-                      class="d-grid gap-1 d-md-flex justify-content-center align-items-center"
-                    >
+                  <td class="px-6 py-4 whitespace-nowrap">{{ supervisor.nombres }} {{ supervisor.apellidos }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ supervisor.telefono }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ supervisor.email }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex gap-2 justify-center items-center">
                       <button
-                        class="btn align-middle"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                         data-bs-toggle="modal"
                         data-bs-target="#supervisor"
                         (click)="supervisorActualSeleccionado(supervisor)"
@@ -158,7 +154,7 @@
                         <i class="fa-solid fa-eye text-primary"></i>
                       </button>
                       <button
-                        class="btn align-middle"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                         (click)="redirectUpdateSupervisor(supervisor.id)"
                         data-bs-placement="top"
                         title="Editar información"
@@ -166,7 +162,7 @@
                         <i class="fa-solid fa-pen text-primary"></i>
                       </button>
                       <button
-                        class="btn align-middle d-none"
+                        class="px-2 py-1 hover:bg-gray-100 rounded transition-colors hidden"
                         data-bs-placement="top"
                         title="Cambiar de rol"
                       >
@@ -182,7 +178,7 @@
             </table>
           </div>
           <ng-template #no_zona_content>
-            <p class="text-center mb-0">
+            <p class="text-center py-8 text-gray-600">
               No hay supervisores sin asignación de zona.
             </p>
           </ng-template>
@@ -192,6 +188,7 @@
   </div>
 </div>
 
+<!-- Modal de Bootstrap con estilos Tailwind -->
 <div
   class="modal fade"
   id="supervisor"
@@ -200,40 +197,40 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Información</h5>
+    <div class="modal-content bg-white rounded-xl shadow-2xl overflow-hidden">
+      <div class="modal-header bg-primary text-white py-4 px-6">
+        <h5 class="modal-title font-bold text-lg" id="exampleModalLabel">Información</h5>
         <button
           type="button"
-          class="btn"
+          class="bg-transparent border-0 text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
           data-bs-dismiss="modal"
           aria-label="Close"
         >
-          <i class="fa-solid fa-xmark text-white"></i>
+          <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <div class="modal-body">
-        <p>
-          <span class="fw-bolder">Nombre completo: </span
-          ><span>
+      <div class="modal-body p-6 space-y-3">
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Nombre completo: </span
+          ><span class="text-gray-700">
             {{ supervisorActual.nombres }}
             {{ supervisorActual.apellidos }}</span
           >
         </p>
-        <p>
-          <span class="fw-bolder">Teléfono: </span
-          ><span> {{ supervisorActual.telefono }}</span>
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Teléfono: </span
+          ><span class="text-gray-700"> {{ supervisorActual.telefono }}</span>
         </p>
-        <p>
-          <span class="fw-bolder">Correo electrónico: </span
-          ><span> {{ supervisorActual.email }}</span>
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Correo electrónico: </span
+          ><span class="text-gray-700"> {{ supervisorActual.email }}</span>
         </p>
-        <p>
-          <span class="fw-bolder">Número de documento: </span
-          ><span> {{ supervisorActual.numero_documento }}</span>
+        <p class="text-gray-800">
+          <span class="font-bold text-gray-900">Número de documento: </span
+          ><span class="text-gray-700"> {{ supervisorActual.numero_documento }}</span>
         </p>
-        <p [ngClass]="{ 'd-none': !zonasActual }">
-          <span class="fw-bolder">Zonas: </span><span> {{ zonasActual }}</span>
+        <p class="text-gray-800" [ngClass]="{ 'hidden': !zonasActual }">
+          <span class="font-bold text-gray-900">Zonas: </span><span class="text-gray-700"> {{ zonasActual }}</span>
         </p>
       </div>
     </div>

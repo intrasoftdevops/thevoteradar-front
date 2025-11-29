@@ -1,25 +1,25 @@
-<div class="container py-5">
-  <div class="d-grid d-flex justify-content-end">
-    <button class="btn btn-sm btn-danger disabled">- 50% Requerido</button>
-    <button class="btn btn-sm btn-warning disabled">+ 50% Requerido</button>
-    <button class="btn btn-sm btn-success disabled">100% Requerido</button>
-    <button class="btn btn-sm btn-primary disabled">+ 100% Requerido</button>
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="flex justify-end gap-2 mb-4">
+    <button class="px-3 py-1.5 bg-red-500 text-white text-sm rounded-lg opacity-50 cursor-not-allowed">- 50% Requerido</button>
+    <button class="px-3 py-1.5 bg-yellow-500 text-white text-sm rounded-lg opacity-50 cursor-not-allowed">+ 50% Requerido</button>
+    <button class="px-3 py-1.5 bg-green-500 text-white text-sm rounded-lg opacity-50 cursor-not-allowed">100% Requerido</button>
+    <button class="px-3 py-1.5 bg-primary text-white text-sm rounded-lg opacity-50 cursor-not-allowed">+ 100% Requerido</button>
   </div>
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
-      <h4>Estadísticas de equipo</h4>
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="bg-primary py-4 px-6 text-white rounded-t-xl">
+      <h4 class="m-0 font-bold text-xl">Estadísticas de equipo</h4>
     </div>
-    <div class="card-body">
+    <div class="p-6">
       <form
-        class="row m-4 d-flex justify-content-center align-items-center align-items-center"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-4 justify-center items-center"
         [formGroup]="searchForm"
       >
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Estado por puesto</label>
+        <div class="space-y-2">
+          <label class="block text-sm font-bold text-gray-700">Estado por puesto</label>
           <ng-select
             [items]="dataStations"
             [searchable]="false"
-            class="custom-select rounded"
+            class="custom-select rounded-lg"
             bindLabel="nombre"
             (change)="getSelectedStation($event)"
             bindValue="codigo_unico"
@@ -33,23 +33,24 @@
       </form>
     </div>
   </div>
-  <div class="card mt-5" *ngIf="tabla">
-    <div class="card-body">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-5" *ngIf="tabla">
+    <div class="p-6">
       <div
-        class="table-responsive"
+        class="overflow-x-auto"
         *ngIf="dataStateStation.length > 0; else content_equipo"
       >
-        <table class="table text-center align-middle">
-          <thead class="text-dark align-middle">
+        <table class="min-w-full text-center align-middle">
+          <thead class="bg-gray-100 text-gray-900 align-middle">
             <tr>
-              <th scope="col">TESTIGOS</th>
-              <th scope="col">POR ASIGNAR</th>
-              <th scope="col"></th>
+              <th scope="col" class="px-4 py-3 font-semibold">TESTIGOS</th>
+              <th scope="col" class="px-4 py-3 font-semibold">POR ASIGNAR</th>
+              <th scope="col" class="px-4 py-3 font-semibold"></th>
             </tr>
           </thead>
           <tbody>
-            <tr class="bg-white" *ngFor="let state of dataStateStation">
+            <tr class="bg-white border-b hover:bg-gray-50" *ngFor="let state of dataStateStation">
               <td
+                class="px-4 py-3"
                 *ngIf="state.nombre"
                 [ngClass]="
                   textColor(
@@ -62,6 +63,7 @@
               </td>
 
               <td
+                class="px-4 py-3"
                 [ngClass]="
                   textColor(
                     state.testigos.testigos_con_mesa,
@@ -79,12 +81,12 @@
                   )
                 }}
               </td>
-              <td>
+              <td class="px-4 py-3">
                 {{ state.testigos.testigos_sin_mesa }}
               </td>
-              <td>
+              <td class="px-4 py-3">
                 <button
-                  class="btn align-middle mx-1"
+                  class="px-2 py-1 hover:bg-gray-100 rounded transition-colors"
                   data-bs-toggle="modal"
                   data-bs-target="#state"
                   (click)="stateSeleccionado(state)"
@@ -99,7 +101,7 @@
         </table>
       </div>
       <ng-template #content_equipo>
-        <p class="text-center mb-0">
+        <p class="text-center py-8 text-gray-600">
           No hay estadísticas de equipo actualmente.
         </p>
       </ng-template>
@@ -107,6 +109,7 @@
   </div>
 </div>
 
+<!-- Modal de Bootstrap con estilos Tailwind -->
 <div
   class="modal fade"
   id="state"
@@ -115,39 +118,39 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">
+    <div class="modal-content bg-white rounded-xl shadow-2xl overflow-hidden">
+      <div class="modal-header bg-primary text-white py-4 px-6 rounded-t-lg">
+        <h5 class="modal-title font-bold text-lg" id="exampleModalLabel">
           Estadísticas de equipo
         </h5>
         <button
           type="button"
-          class="btn"
+          class="px-3 py-2 hover:bg-primary/80 rounded transition-colors"
           data-bs-dismiss="modal"
           aria-label="Close"
         >
           <i class="fa-solid fa-xmark text-white"></i>
         </button>
       </div>
-      <div class="modal-body" *ngIf="stateActual.testigos">
-        <h4 class="fw-bolder">Información de testigos</h4>
-        <div class="row mt-3">
-          <div class="col-6">
-            <p>
-              <span class="fw-bolder">Con mesa: </span
-              ><span> {{ stateActual.testigos.testigos_con_mesa }}</span>
+      <div class="modal-body p-6" *ngIf="stateActual.testigos">
+        <h4 class="font-bold text-lg mb-4">Información de testigos</h4>
+        <div class="grid grid-cols-2 gap-4 mt-3">
+          <div>
+            <p class="text-gray-800">
+              <span class="font-bold text-gray-900">Con mesa: </span
+              ><span class="text-gray-700"> {{ stateActual.testigos.testigos_con_mesa }}</span>
             </p>
           </div>
-          <div class="col-6">
-            <p>
-              <span class="fw-bolder">Sin mesa: </span
-              ><span> {{ stateActual.testigos.testigos_sin_mesa }}</span>
+          <div>
+            <p class="text-gray-800">
+              <span class="font-bold text-gray-900">Sin mesa: </span
+              ><span class="text-gray-700"> {{ stateActual.testigos.testigos_sin_mesa }}</span>
             </p>
           </div>
-          <div class="col-6">
-            <p>
-              <span class="fw-bolder">Necesarios: </span
-              ><span>
+          <div>
+            <p class="text-gray-800">
+              <span class="font-bold text-gray-900">Necesarios: </span
+              ><span class="text-gray-700">
                 {{ stateActual.testigos.cantidad_testigos_necesitados }}</span
               >
             </p>

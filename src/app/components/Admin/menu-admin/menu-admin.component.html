@@ -1,9 +1,21 @@
-<nav class="navbar navbar-dark bg-dark">
-  <div class="container d-flex align-items-center justify-content-between">
-    <a class="navbar-brand d-flex align-items-center" routerLink="/adminHome">
-      <img src="../../../../assets/logo.png" class="img-logo" alt="logo" />
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/adminHome">
+      <img [src]="logo" class="img-logo" alt="logo" />
     </a>
-    <ul class="navbar-nav d-flex flex-column flex-lg-row align-items-center gap-2 gap-lg-4 ms-auto mb-0">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto text- center">
         <li class="nav-item align-middle">
           <a
             class="nav-link px-xl-3 text-white"

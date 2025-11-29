@@ -49,6 +49,12 @@
   --color-text-secondary: #6b7280;
 }
 
+/* ========================================
+   SOBRESCRIBIR Bootstrap con Variables CSS Dinámicas
+   ======================================== */
+/* Estos estilos se aplicarán DESPUÉS de que Bootstrap se compile */
+/* y usarán las variables CSS dinámicas para temas */
+
 /* Variables SCSS para Bootstrap (mantener compatibilidad) */
 $primary: #64248b;
 $dark: #000;
@@ -74,6 +80,60 @@ $swal2-deny-button-background-color: $danger !important;
 }
 
 @import "../node_modules/sweetalert2/src/sweetalert2.scss";
+
+/* ========================================
+   SOBRESCRITURA: Bootstrap con Variables CSS Dinámicas
+   ======================================== */
+
+/* Sobrescribir .bg-primary de Bootstrap con variable CSS dinámica */
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+/* Sobrescribir .text-primary de Bootstrap */
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+/* Sobrescribir .border-primary de Bootstrap */
+.border-primary {
+  border-color: var(--color-primary) !important;
+}
+
+/* Sobrescribir .btn-primary de Bootstrap */
+.btn-primary {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+}
+
+/* Sobrescribir .btn-outline-primary */
+.btn-outline-primary {
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+/* Sobrescribir .link-active (router) */
+.link-active {
+  background-color: var(--color-accent) !important;
+}
+
+/* Asegurar que los navbars usen el color primario */
+.navbar.bg-primary {
+  background-color: var(--color-primary) !important;
+}
 
 *:not(i) {
   font-family: "Outfit", sans-serif !important;
