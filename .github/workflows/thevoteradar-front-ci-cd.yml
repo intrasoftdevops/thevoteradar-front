@@ -62,7 +62,6 @@ jobs:
           DEVELOPMENT="false"
           echo "🔴 PRODUCTION environment detected"
         else
-          # Para dev también generamos environment.prod.ts porque el Dockerfile usa --configuration production
           ENV_FILE="environment.prod.ts"
           ENV_SUFFIX="dev"
           PRODUCTION="false"
@@ -104,24 +103,17 @@ jobs:
           echo "⚠️ Environment: $ENV_SUFFIX"
         fi
         
-        # Asegurar que el directorio existe
         mkdir -p src/environments
         
-        # Generar el contenido del environment
         ENV_CONTENT=$(printf "export const environment = {\n  production: %s,\n  development: %s,\n  apiURL: '%s',\n  backofficeApiURL: '%s',\n  surveyApiURL: '%s',\n  defaultTenantId: '%s',\n  key1: '%s',\n  key2: '%s',\n  key3: '%s',\n  key4: '%s',\n  powerBiURL: '%s',\n};\n" \
           "$PRODUCTION" "$DEVELOPMENT" "$API_URL" "$BACKOFFICE_API_URL" "$SURVEY_API_URL" "$DEFAULT_TENANT_ID" "$KEY1" "$KEY2" "$KEY3" "$KEY4" "$POWER_BI_URL")
         
-        # Angular necesita environment.ts para hacer el reemplazo según la configuración
-        # Generamos environment.ts como base y el archivo correspondiente según el entorno
         echo "$ENV_CONTENT" > src/environments/environment.ts
         
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          # Para producción, generamos environment.prod.ts
           echo "$ENV_CONTENT" > src/environments/environment.prod.ts
           echo "✅ Environment files generated: environment.ts and environment.prod.ts for $ENV_SUFFIX environment"
         else
-          # Para desarrollo, generamos environment.development.ts (con development: true)
-          # y también environment.prod.ts con el mismo contenido (porque el Dockerfile usa --configuration production)
           echo "$ENV_CONTENT" > src/environments/environment.development.ts
           echo "$ENV_CONTENT" > src/environments/environment.prod.ts
           echo "✅ Environment files generated: environment.ts, environment.development.ts and environment.prod.ts for $ENV_SUFFIX environment"
@@ -143,7 +135,6 @@ jobs:
 
     - name: 🐳 Build & Push Docker image
       run: |
-        # Determinar el tag y servicio según la rama
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
           TAG="prod-${{ github.sha }}"
           SERVICE_NAME="thevoteradar-front-prod"
@@ -160,7 +151,6 @@ jobs:
         docker build -t gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG .
         docker push gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG
 
-        # Exportar a env para siguientes pasos
         echo "TAG=$TAG" >> $GITHUB_ENV
         echo "SERVICE_NAME=$SERVICE_NAME" >> $GITHUB_ENV
         echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_ENV
@@ -182,11 +172,9 @@ jobs:
 
     - name: 📡 Get service URL and health check
       run: |
-        # Esperar un momento para que el servicio se inicie
         echo "⏳ Esperando que el servicio se inicie..."
         sleep 15
         
-        # Obtener la URL real del servicio desplegado
         SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
           --project ${{ vars.GCP_PROJECT_ID }} \
           --region ${{ vars.GCP_REGION }} \
@@ -197,7 +185,6 @@ jobs:
         echo "🏷️ Image tag: $TAG"
         echo "🔧 Environment: $ENVIRONMENT"
         
-        # Hacer health check
         echo "🏥 Ejecutando health check..."
         curl -f "$SERVICE_URL" || {
           echo "⚠️ Health check falló, pero el servicio puede estar iniciándose..."
