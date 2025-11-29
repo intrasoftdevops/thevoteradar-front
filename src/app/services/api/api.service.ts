@@ -2,15 +2,26 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { LocalDataService } from '../localData/local-data.service';
+import { ConfigService } from '../config/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  _URL = environment.apiURL;
+  private _URL: string;
 
-  constructor(private http: HttpClient, private localData: LocalDataService) { }
+  constructor(
+    private http: HttpClient, 
+    private localData: LocalDataService,
+    private configService: ConfigService
+  ) {
+    try {
+      this._URL = this.configService.getConfig().apiURL;
+    } catch {
+      this._URL = environment.apiURL;
+    }
+  }
 
   getHeaders() {
     return { 'Accept': 'application/json', 'Authorization': "Bearer " + this.localData.getToken() };

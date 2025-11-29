@@ -1,7 +1,12 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ConfigService } from './services/config/config.service';
+
+export function initializeApp(configService: ConfigService) {
+  return () => configService.loadConfig();
+}
 import { LoginComponent } from './components/login/login.component';
 import { AdminHomeComponent } from './components/Admin/admin-home/admin-home.component';
 import { GerenteHomeComponent } from './components/Gerente/gerente-home/gerente-home.component';
@@ -161,6 +166,13 @@ import { SurveyLandingComponent } from './components/public/survey-landing/surve
     AuthGuard,
     LogoutGuard,
     LoaderService,
+    ConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [ConfigService],
+      multi: true
+    },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

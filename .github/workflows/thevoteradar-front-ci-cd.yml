@@ -157,12 +157,44 @@ jobs:
 
     - name: 🚀 Deploy to Cloud Run
       run: |
+        SECRET_PREFIX="thevoteradar"
+        
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          ENV_SUFFIX="prod"
+          PRODUCTION="true"
+          DEVELOPMENT="false"
+        else
+          ENV_SUFFIX="dev"
+          PRODUCTION="false"
+          DEVELOPMENT="true"
+        fi
+        
+        KEY1_SECRET="$SECRET_PREFIX-key1-$ENV_SUFFIX:latest"
+        KEY2_SECRET="$SECRET_PREFIX-key2-$ENV_SUFFIX:latest"
+        KEY3_SECRET="$SECRET_PREFIX-key3-$ENV_SUFFIX:latest"
+        KEY4_SECRET="$SECRET_PREFIX-key4-$ENV_SUFFIX:latest"
+        API_URL_SECRET="$SECRET_PREFIX-api-url-$ENV_SUFFIX:latest"
+        BACKOFFICE_API_URL_SECRET="$SECRET_PREFIX-backoffice-api-url-$ENV_SUFFIX:latest"
+        SURVEY_API_URL_SECRET="$SECRET_PREFIX-survey-api-url-$ENV_SUFFIX:latest"
+        DEFAULT_TENANT_ID_SECRET="$SECRET_PREFIX-default-tenant-id-$ENV_SUFFIX:latest"
+        POWER_BI_URL_SECRET="$SECRET_PREFIX-powerbi-url-$ENV_SUFFIX:latest"
+        
         gcloud run deploy $SERVICE_NAME \
           --image gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG \
           --region ${{ vars.GCP_REGION }} \
           --platform managed \
           --allow-unauthenticated \
           --port 8080 \
+          --set-env-vars PRODUCTION=$PRODUCTION,DEVELOPMENT=$DEVELOPMENT \
+          --set-secrets API_URL=$API_URL_SECRET \
+          --set-secrets BACKOFFICE_API_URL=$BACKOFFICE_API_URL_SECRET \
+          --set-secrets SURVEY_API_URL=$SURVEY_API_URL_SECRET \
+          --set-secrets DEFAULT_TENANT_ID=$DEFAULT_TENANT_ID_SECRET \
+          --set-secrets KEY1=$KEY1_SECRET \
+          --set-secrets KEY2=$KEY2_SECRET \
+          --set-secrets KEY3=$KEY3_SECRET \
+          --set-secrets KEY4=$KEY4_SECRET \
+          --set-secrets POWER_BI_URL=$POWER_BI_URL_SECRET \
           --memory=512Mi \
           --cpu=1 \
           --max-instances=10 \

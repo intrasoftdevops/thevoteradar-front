@@ -5,6 +5,7 @@ import { filter, Subscription } from 'rxjs';
 import { LocalDataService } from './services/localData/local-data.service';
 import { ApiService } from './services/api/api.service';
 import { environment } from '../environments/environment';
+import { ConfigService } from './services/config/config.service';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,8 @@ export class AppComponent {
   constructor(
     private localData: LocalDataService,
     private router: Router,
-    private permissionsService: NgxPermissionsService
+    private permissionsService: NgxPermissionsService,
+    private configService: ConfigService
   ) {}
 
   ngOnInit() {
@@ -44,11 +46,21 @@ export class AppComponent {
   }
 
   private checkDevelopmentMode(): boolean {
-    return environment.development && 
-           !environment.production && 
-           (window.location.hostname === 'localhost' || 
-            window.location.hostname === '127.0.0.1' ||
-            window.location.hostname.includes('dev') ||
-            window.location.hostname.includes('test'));
+    try {
+      const config = this.configService.getConfig();
+      return config.development && 
+             !config.production && 
+             (window.location.hostname === 'localhost' || 
+              window.location.hostname === '127.0.0.1' ||
+              window.location.hostname.includes('dev') ||
+              window.location.hostname.includes('test'));
+    } catch {
+      return environment.development && 
+             !environment.production && 
+             (window.location.hostname === 'localhost' || 
+              window.location.hostname === '127.0.0.1' ||
+              window.location.hostname.includes('dev') ||
+              window.location.hostname.includes('test'));
+    }
   }
 }

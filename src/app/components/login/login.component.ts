@@ -7,6 +7,7 @@ import { LocalDataService } from '../../services/localData/local-data.service';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { environment } from '../../../environments/environment';
+import { ConfigService } from '../../services/config/config.service';
 import { ThemeService } from '../../services/theme/theme.service';
 import { Theme } from '../../models/theme.model';
 import { BackofficeAuthService } from '../../services/backoffice-auth/backoffice-auth.service';
@@ -69,7 +70,8 @@ export class LoginComponent implements OnInit {
     private localData: LocalDataService, 
     private permissionsService: NgxPermissionsService,
     private themeService: ThemeService,
-    private backofficeAuth: BackofficeAuthService
+    private backofficeAuth: BackofficeAuthService,
+    private configService: ConfigService
   ) {
     
     this.themeService.getCurrentTheme().subscribe(theme => {
@@ -540,7 +542,12 @@ export class LoginComponent implements OnInit {
 
   handleAdminLogin(email: string, password: string) {
     console.log('LoginComponent - handleAdminLogin llamado con email:', email);
-    const tenantId = environment.defaultTenantId || this.TENANT_CODE || '475711';
+    let tenantId: string;
+    try {
+      tenantId = this.configService.getConfig().defaultTenantId || this.TENANT_CODE || '475711';
+    } catch {
+      tenantId = (environment as any).defaultTenantId || this.TENANT_CODE || '475711';
+    }
     console.log('LoginComponent - Tenant ID:', tenantId);
     console.log('LoginComponent - Llamando backofficeAuth.login...');
     

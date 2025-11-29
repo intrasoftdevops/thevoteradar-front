@@ -9,5 +9,21 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+(async () => {
+  try {
+    const response = await fetch('/assets/config.js');
+    if (response.ok) {
+      const configText = await response.text();
+      const configMatch = configText.match(/window\.APP_CONFIG\s*=\s*({[\s\S]*?});/);
+      if (configMatch) {
+        const config = eval(`(${configMatch[1]})`);
+        (window as any).APP_CONFIG = config;
+      }
+    }
+  } catch (error) {
+    console.warn('No se pudo cargar config.js, usando environment por defecto', error);
+  }
+
+  platformBrowserDynamic().bootstrapModule(AppModule)
+    .catch(err => console.error(err));
+})();

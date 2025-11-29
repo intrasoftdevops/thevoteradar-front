@@ -1,0 +1,18 @@
+// Este archivo es un ejemplo para desarrollo local
+// En Cloud Run, este archivo se genera automáticamente desde las variables de entorno
+// Para usar en local, copia este archivo como config.js y ajusta los valores
+
+window.APP_CONFIG = {
+  production: false,
+  development: true,
+  apiURL: 'http://3.130.141.211/api',
+  backofficeApiURL: 'https://backoffice-back-prod-331919709696.us-central1.run.app/',
+  surveyApiURL: 'http://localhost:8001',
+  defaultTenantId: '475711',
+  key1: 'F29^2Fk$S8UuP#7#TA4TksJVUL1HKb7qap1KoozVO7!%1l6^Ie',
+  key2: '$7lA@FlzEH4fKp&YHGC8oVU2WvADNBrk8NM5X7B6ocTc&n*CP@',
+  key3: 'qwY$BNKw#pe2wjIf!UaB4n$1Vvij%AJ^T$HW@d!CGeODVs%eL^',
+  key4: 'r0GIAQU^Jaa1V6NtTelORjEq6iQ3hTWxULMc%UutHpH1h4Myo!',
+  powerBiURL: 'https://app.powerbi.com/view?r=eyJrIjoiNjZjOTIwMDMtZTM3Mi00ZmIxLWE4M2YtODI5MWRlNjdiODRkIiwidCI6IjIwMDlmYmJiLTdmMDUtNGQwYS05YmViLTViYzFkZjZhN2QzYSJ9&pageName=ReportSection'
+};
+
