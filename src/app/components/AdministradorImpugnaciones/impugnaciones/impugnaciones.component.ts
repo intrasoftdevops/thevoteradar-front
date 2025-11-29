@@ -158,7 +158,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     this.apiService.getImpugnacionesRevisadas(data).subscribe((resp: any) => {
       console.log(resp);
       this.dataRevisar = resp.reportes_revisados;
-      // Crea un mapa de categorías para fácil acceso
+      
       const categoriasMap = new Map(
         this.categoryList.map((cat: any) => [cat.id, cat.nombre])
       );
@@ -312,15 +312,15 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   print(impugnar: any) {
     let printContents, popupWin;
     printContents = '../../../../assets/target001.jpg';
-    const height = window.screen.height * 0.7; // Establecer el 70% de la altura de la pantalla
-    const width = window.screen.width * 0.7; // Establecer el 70% del ancho de la pantalla
-    const top = (window.screen.height - height) / 2; // Calcular la posición superior en función de la altura
-    const left = (window.screen.width - width) / 2; // Calcular la posición izquierda en función del ancho
+    const height = window.screen.height * 0.7; 
+    const width = window.screen.width * 0.7; 
+    const top = (window.screen.height - height) / 2; 
+    const left = (window.screen.width - width) / 2; 
 
     popupWin = window.open('', '_blank', `top=${top}, left=${left}, height=${height}, width=${width}`);
     popupWin?.document.open();
     popupWin?.document.write(`
-    <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+    <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
     <title></title>
     
@@ -427,7 +427,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     popupWin?.document.open();
     this.dataImpugnar.forEach((impugnar: any) => {
       popupWin?.document.write(`
-      <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+      <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
         <title></title>
         
@@ -554,7 +554,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
     this.dtOptions2 = {
@@ -583,7 +583,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
     this.dtOptions3 = {
@@ -612,7 +612,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
   }
@@ -638,7 +638,7 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
       const a = document.createElement('a');
       const objectUrl = URL.createObjectURL(blob);
       a.href = objectUrl;
-      a.download = 'archivo.pdf'; // Nombre del archivo descargado
+      a.download = 'archivo.pdf'; 
       a.click();
       URL.revokeObjectURL(objectUrl);
     });
@@ -647,13 +647,13 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   atras() {
     this.actual--;
     if (this.actual <= 9) {
-      //var rand = Math.floor(Math.random() * this.dataRevisar.length);
+      
       this.ModalRevisarActual(this.dataRevisar[this.actual]);
     } else {
       window.location.reload();
     }
-    this.createForm.get('pagina')?.reset(); // Limpiar el campo de página
-    this.createForm.get('observaciones')?.reset(); // Limpiar el campo de observaciones
+    this.createForm.get('pagina')?.reset(); 
+    this.createForm.get('observaciones')?.reset(); 
     this.renderer();
   }
 

@@ -183,6 +183,16 @@
         <li class="nav-item align-middle">
           <a
             class="nav-link px-xl-3 text-white"
+            [routerLink]="['/admin/surveys']"
+            [routerLinkActive]="['link-active']"
+          >
+            <i class="fa-solid fa-clipboard-list fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Encuestas</span>
+          </a>
+        </li>
+        <li class="nav-item align-middle">
+          <a
+            class="nav-link px-xl-3 text-white"
             data-bs-toggle="offcanvas"
             href="#offcanvasExample"
             [routerLinkActive]="['link-active']"
@@ -195,7 +205,6 @@
         </li>
         <app-dropdown-menu-users class="my-auto"></app-dropdown-menu-users>
       </ul>
-    </div>
   </div>
 </nav>
 <app-contactos></app-contactos>

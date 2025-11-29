@@ -190,16 +190,16 @@ export class CambiarRolGerenteComponent implements OnInit {
     this.dataZones = [];
     this.dataStations = [];
     this.dataTables = [];
-    //Supervisor
+    
     this.updateFormControlSupervisor['departamento'].reset();
     this.updateFormControlSupervisor['municipio'].reset();
     this.updateFormControlSupervisor['zonas'].reset();
-    //Coordinador
+    
     this.updateFormControlCoordinador['departamento'].reset();
     this.updateFormControlCoordinador['municipio'].reset();
     this.updateFormControlCoordinador['zona'].reset();
     this.updateFormControlCoordinador['puestos'].reset();
-    //Testigo
+    
     this.updateFormControlTestigo['departamento'].reset();
     this.updateFormControlTestigo['municipio'].reset();
     this.updateFormControlTestigo['zona'].reset();
@@ -224,14 +224,14 @@ export class CambiarRolGerenteComponent implements OnInit {
   }
 
   getSelectedDepartment(item: any) {
-    //Supervisor
+    
     this.updateFormControlSupervisor['municipio'].reset();
     this.updateFormControlSupervisor['zonas'].reset();
-    //Coordinador
+    
     this.updateFormControlCoordinador['municipio'].reset();
     this.updateFormControlCoordinador['zona'].reset();
     this.updateFormControlCoordinador['puestos'].reset();
-    //Testigo
+    
     this.updateFormControlTestigo['municipio'].reset();
     this.updateFormControlTestigo['zona'].reset();
     this.updateFormControlTestigo['puesto'].reset();
@@ -247,12 +247,12 @@ export class CambiarRolGerenteComponent implements OnInit {
   }
 
   getSelectedMunicipal(item: any) {
-    //Supervisor
+    
     this.updateFormControlSupervisor['zonas'].reset();
-    //Coordinador
+    
     this.updateFormControlCoordinador['zona'].reset();
     this.updateFormControlCoordinador['puestos'].reset();
-    //Testigo
+    
     this.updateFormControlTestigo['zona'].reset();
     this.updateFormControlTestigo['puesto'].reset();
     this.updateFormControlTestigo['mesas'].reset();
@@ -268,9 +268,9 @@ export class CambiarRolGerenteComponent implements OnInit {
   }
 
   getSelectedZone(item: any) {
-    //Coordinador
+    
     this.updateFormControlCoordinador['puestos'].reset();
-    //Testigo
+    
     this.updateFormControlTestigo['puesto'].reset();
     this.updateFormControlTestigo['mesas'].reset();
     if (item) {
@@ -284,7 +284,7 @@ export class CambiarRolGerenteComponent implements OnInit {
   }
 
   getSelectedStation(item: any) {
-    //Testigo
+    
     this.updateFormControlTestigo['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);
