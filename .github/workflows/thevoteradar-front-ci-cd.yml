@@ -111,14 +111,26 @@ jobs:
         ENV_CONTENT=$(printf "export const environment = {\n  production: %s,\n  development: %s,\n  apiURL: '%s',\n  backofficeApiURL: '%s',\n  surveyApiURL: '%s',\n  defaultTenantId: '%s',\n  key1: '%s',\n  key2: '%s',\n  key3: '%s',\n  key4: '%s',\n  powerBiURL: '%s',\n};\n" \
           "$PRODUCTION" "$DEVELOPMENT" "$API_URL" "$BACKOFFICE_API_URL" "$SURVEY_API_URL" "$DEFAULT_TENANT_ID" "$KEY1" "$KEY2" "$KEY3" "$KEY4" "$POWER_BI_URL")
         
-        # Angular necesita environment.ts para hacer el reemplazo con environment.prod.ts
-        # Por lo tanto, generamos ambos archivos con el mismo contenido
+        # Angular necesita environment.ts para hacer el reemplazo según la configuración
+        # Generamos environment.ts como base y el archivo correspondiente según el entorno
         echo "$ENV_CONTENT" > src/environments/environment.ts
-        echo "$ENV_CONTENT" > src/environments/environment.prod.ts
         
-        echo "✅ Environment files generated: environment.ts and environment.prod.ts for $ENV_SUFFIX environment"
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          # Para producción, generamos environment.prod.ts
+          echo "$ENV_CONTENT" > src/environments/environment.prod.ts
+          echo "✅ Environment files generated: environment.ts and environment.prod.ts for $ENV_SUFFIX environment"
+        else
+          # Para desarrollo, generamos environment.development.ts (con development: true)
+          # y también environment.prod.ts con el mismo contenido (porque el Dockerfile usa --configuration production)
+          echo "$ENV_CONTENT" > src/environments/environment.development.ts
+          echo "$ENV_CONTENT" > src/environments/environment.prod.ts
+          echo "✅ Environment files generated: environment.ts, environment.development.ts and environment.prod.ts for $ENV_SUFFIX environment"
+          echo "ℹ️ Note: Dockerfile uses --configuration production, so environment.prod.ts will be used in the build"
+          echo "ℹ️ For local development with ng serve, use --configuration development to use environment.development.ts"
+        fi
+        
         echo "📄 Verifying files exist:"
-        ls -la src/environments/environment.ts src/environments/environment.prod.ts || echo "⚠️ Files not found!"
+        ls -la src/environments/environment*.ts || echo "⚠️ Files not found!"
 
     - name: 🧪 Run tests (if available)
       run: |
