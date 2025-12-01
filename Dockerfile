@@ -8,6 +8,13 @@ RUN npm ci
 
 COPY . .
 
+# Crear environment.ts si no existe (necesario para el build de Angular)
+# Angular necesita este archivo como base para los fileReplacements
+RUN if [ ! -f src/environments/environment.ts ]; then \
+      cp src/environments/environment.example.ts src/environments/environment.ts || \
+      echo "export const environment = { production: false, development: true, apiURL: '', backofficeApiURL: '', surveyApiURL: '', defaultTenantId: '', key1: '', key2: '', key3: '', key4: '', powerBiURL: '' };" > src/environments/environment.ts; \
+    fi
+
 RUN npm run build -- --configuration production
 
 FROM nginx:alpine
