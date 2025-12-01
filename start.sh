@@ -3,22 +3,36 @@ set -e
 
 PORT=${PORT:-8080}
 
-# Configurar puerto de nginx
-sed -i "s/listen 8080/listen $PORT/g" /etc/nginx/conf.d/default.conf
+# Configurar puerto de nginx (compatible con Alpine Linux)
+sed -i.bak "s/listen 8080/listen $PORT/g" /etc/nginx/conf.d/default.conf
+rm -f /etc/nginx/conf.d/default.conf.bak
 
 # Crear directorio assets si no existe
 mkdir -p /usr/share/nginx/html/assets
 
 # Función para escapar caracteres especiales en JavaScript
 escape_js() {
-  printf '%s' "$1" | sed 's/\\/\\\\/g' | sed "s/'/\\'/g" | sed 's/"/\\"/g' | sed 's/`/\\`/g' | sed 's/\$/\\$/g'
+  printf '%s' "$1" | sed 's/\\/\\\\/g' | sed "s/'/\\\\'/g" | sed 's/"/\\"/g' | sed 's/`/\\\\`/g' | sed 's/\$/\\\\$/g'
 }
 
 # Generar archivo JavaScript con variables de entorno desde Secret Manager
 {
   echo 'window.__ENV__ = {'
-  echo "  production: ${PRODUCTION:-false},"
-  echo "  development: ${DEVELOPMENT:-true},"
+  
+  # Producción y desarrollo
+  if [ "${PRODUCTION:-false}" = "true" ]; then
+    echo '  production: true,'
+  else
+    echo '  production: false,'
+  fi
+  
+  if [ "${DEVELOPMENT:-true}" = "true" ]; then
+    echo '  development: true,'
+  else
+    echo '  development: false,'
+  fi
+  
+  # URLs y otros valores con escape
   printf '  apiURL: "%s",\n' "$(escape_js "${API_URL:-}")"
   printf '  backofficeApiURL: "%s",\n' "$(escape_js "${BACKOFFICE_API_URL:-}")"
   printf '  surveyApiURL: "%s",\n' "$(escape_js "${SURVEY_API_URL:-}")"
