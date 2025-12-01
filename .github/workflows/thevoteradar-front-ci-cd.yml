@@ -123,6 +123,18 @@ jobs:
         
         echo "📄 Verifying files exist:"
         ls -la src/environments/environment*.ts || echo "⚠️ Files not found!"
+        
+        # Guardar nombres de secretos para usar en el deploy
+        echo "KEY1_SECRET_NAME=$KEY1_SECRET" >> $GITHUB_ENV
+        echo "KEY2_SECRET_NAME=$KEY2_SECRET" >> $GITHUB_ENV
+        echo "KEY3_SECRET_NAME=$KEY3_SECRET" >> $GITHUB_ENV
+        echo "KEY4_SECRET_NAME=$KEY4_SECRET" >> $GITHUB_ENV
+        echo "API_URL_SECRET_NAME=$API_URL_SECRET" >> $GITHUB_ENV
+        echo "BACKOFFICE_API_URL_SECRET_NAME=$BACKOFFICE_API_URL_SECRET" >> $GITHUB_ENV
+        echo "SURVEY_API_URL_SECRET_NAME=$SURVEY_API_URL_SECRET" >> $GITHUB_ENV
+        echo "DEFAULT_TENANT_ID_SECRET_NAME=$DEFAULT_TENANT_ID_SECRET" >> $GITHUB_ENV
+        echo "POWER_BI_URL_SECRET_NAME=$POWER_BI_URL_SECRET" >> $GITHUB_ENV
+        echo "ENV_SUFFIX=$ENV_SUFFIX" >> $GITHUB_ENV
 
     - name: 🧪 Run tests (if available)
       run: |
@@ -157,18 +169,30 @@ jobs:
 
     - name: 🚀 Deploy to Cloud Run
       run: |
+        echo "🚀 Desplegando servicio con referencias a Secret Manager..."
         gcloud run deploy $SERVICE_NAME \
           --image gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG \
           --region ${{ vars.GCP_REGION }} \
           --platform managed \
           --allow-unauthenticated \
           --port 8080 \
+          --set-env-vars ENVIRONMENT=$ENVIRONMENT \
+          --set-secrets KEY1=$KEY1_SECRET_NAME \
+          --set-secrets KEY2=$KEY2_SECRET_NAME \
+          --set-secrets KEY3=$KEY3_SECRET_NAME \
+          --set-secrets KEY4=$KEY4_SECRET_NAME \
+          --set-secrets API_URL=$API_URL_SECRET_NAME \
+          --set-secrets BACKOFFICE_API_URL=$BACKOFFICE_API_URL_SECRET_NAME \
+          --set-secrets SURVEY_API_URL=$SURVEY_API_URL_SECRET_NAME \
+          --set-secrets DEFAULT_TENANT_ID=$DEFAULT_TENANT_ID_SECRET_NAME \
+          --set-secrets POWER_BI_URL=$POWER_BI_URL_SECRET_NAME \
           --memory=512Mi \
           --cpu=1 \
           --max-instances=10 \
           --min-instances=1 \
           --concurrency=80 \
           --timeout=300s
+        echo "✅ Servicio desplegado con referencias a Secret Manager configuradas"
 
     - name: 📡 Get service URL and health check
       run: |
