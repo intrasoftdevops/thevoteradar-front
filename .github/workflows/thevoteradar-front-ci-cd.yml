@@ -51,90 +51,38 @@ jobs:
     - name: 📦 Install dependencies
       run: npm ci --no-audit --no-fund
 
-    - name: 🔐 Generate environment file from Secrets Manager
+    - name: 🔐 Preparar configuración para variables de entorno en Cloud Run
       run: |
         SECRET_PREFIX="thevoteradar"
         
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          ENV_FILE="environment.prod.ts"
           ENV_SUFFIX="prod"
           PRODUCTION="true"
           DEVELOPMENT="false"
           echo "🔴 PRODUCTION environment detected"
         else
-          ENV_FILE="environment.prod.ts"
           ENV_SUFFIX="dev"
           PRODUCTION="false"
           DEVELOPMENT="true"
-          echo "🟢 DEVELOPMENT environment detected (usando environment.prod.ts para build de producción)"
+          echo "🟢 DEVELOPMENT environment detected"
         fi
-        
-        KEY1_SECRET="$SECRET_PREFIX-key1-$ENV_SUFFIX:latest"
-        KEY2_SECRET="$SECRET_PREFIX-key2-$ENV_SUFFIX:latest"
-        KEY3_SECRET="$SECRET_PREFIX-key3-$ENV_SUFFIX:latest"
-        KEY4_SECRET="$SECRET_PREFIX-key4-$ENV_SUFFIX:latest"
-        API_URL_SECRET="$SECRET_PREFIX-api-url-$ENV_SUFFIX:latest"
-        BACKOFFICE_API_URL_SECRET="$SECRET_PREFIX-backoffice-api-url-$ENV_SUFFIX:latest"
-        SURVEY_API_URL_SECRET="$SECRET_PREFIX-survey-api-url-$ENV_SUFFIX:latest"
-        DEFAULT_TENANT_ID_SECRET="$SECRET_PREFIX-default-tenant-id-$ENV_SUFFIX:latest"
-        POWER_BI_URL_SECRET="$SECRET_PREFIX-powerbi-url-$ENV_SUFFIX:latest"
-        
-        echo "📋 Reading secrets from GCP Secret Manager..."
-        KEY1=$(gcloud secrets versions access $KEY1_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
-        KEY2=$(gcloud secrets versions access $KEY2_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
-        KEY3=$(gcloud secrets versions access $KEY3_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
-        KEY4=$(gcloud secrets versions access $KEY4_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
-        API_URL=$(gcloud secrets versions access $API_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
-        BACKOFFICE_API_URL=$(gcloud secrets versions access $BACKOFFICE_API_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
-        SURVEY_API_URL=$(gcloud secrets versions access $SURVEY_API_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
-        DEFAULT_TENANT_ID=$(gcloud secrets versions access $DEFAULT_TENANT_ID_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '475711')
-        POWER_BI_URL=$(gcloud secrets versions access $POWER_BI_URL_SECRET --project=${{ vars.GCP_PROJECT_ID }} 2>/dev/null || echo '')
-        
-        if [ -z "$KEY1" ] || [ -z "$KEY2" ] || [ -z "$KEY3" ] || [ -z "$KEY4" ]; then
-          echo "⚠️ Warning: Some encryption keys are missing from Secrets Manager"
-          echo "⚠️ Environment: $ENV_SUFFIX"
-          echo "⚠️ Missing secrets will use empty values. Please configure secrets in GCP Secret Manager"
-        else
-          echo "✅ All encryption keys retrieved successfully"
-        fi
-        
-        if [ -z "$API_URL" ] || [ -z "$BACKOFFICE_API_URL" ] || [ -z "$SURVEY_API_URL" ] || [ -z "$POWER_BI_URL" ]; then
-          echo "⚠️ Warning: Some URL secrets are missing from Secrets Manager"
-          echo "⚠️ Environment: $ENV_SUFFIX"
-        fi
-        
-        mkdir -p src/environments
-        
-        ENV_CONTENT=$(printf "export const environment = {\n  production: %s,\n  development: %s,\n  apiURL: '%s',\n  backofficeApiURL: '%s',\n  surveyApiURL: '%s',\n  defaultTenantId: '%s',\n  key1: '%s',\n  key2: '%s',\n  key3: '%s',\n  key4: '%s',\n  powerBiURL: '%s',\n};\n" \
-          "$PRODUCTION" "$DEVELOPMENT" "$API_URL" "$BACKOFFICE_API_URL" "$SURVEY_API_URL" "$DEFAULT_TENANT_ID" "$KEY1" "$KEY2" "$KEY3" "$KEY4" "$POWER_BI_URL")
-        
-        echo "$ENV_CONTENT" > src/environments/environment.ts
-        
-        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          echo "$ENV_CONTENT" > src/environments/environment.prod.ts
-          echo "✅ Environment files generated: environment.ts and environment.prod.ts for $ENV_SUFFIX environment"
-        else
-          echo "$ENV_CONTENT" > src/environments/environment.development.ts
-          echo "$ENV_CONTENT" > src/environments/environment.prod.ts
-          echo "✅ Environment files generated: environment.ts, environment.development.ts and environment.prod.ts for $ENV_SUFFIX environment"
-          echo "ℹ️ Note: Dockerfile uses --configuration production, so environment.prod.ts will be used in the build"
-          echo "ℹ️ For local development with ng serve, use --configuration development to use environment.development.ts"
-        fi
-        
-        echo "📄 Verifying files exist:"
-        ls -la src/environments/environment*.ts || echo "⚠️ Files not found!"
         
         # Guardar nombres de secretos para usar en el deploy
-        echo "KEY1_SECRET_NAME=$KEY1_SECRET" >> $GITHUB_ENV
-        echo "KEY2_SECRET_NAME=$KEY2_SECRET" >> $GITHUB_ENV
-        echo "KEY3_SECRET_NAME=$KEY3_SECRET" >> $GITHUB_ENV
-        echo "KEY4_SECRET_NAME=$KEY4_SECRET" >> $GITHUB_ENV
-        echo "API_URL_SECRET_NAME=$API_URL_SECRET" >> $GITHUB_ENV
-        echo "BACKOFFICE_API_URL_SECRET_NAME=$BACKOFFICE_API_URL_SECRET" >> $GITHUB_ENV
-        echo "SURVEY_API_URL_SECRET_NAME=$SURVEY_API_URL_SECRET" >> $GITHUB_ENV
-        echo "DEFAULT_TENANT_ID_SECRET_NAME=$DEFAULT_TENANT_ID_SECRET" >> $GITHUB_ENV
-        echo "POWER_BI_URL_SECRET_NAME=$POWER_BI_URL_SECRET" >> $GITHUB_ENV
+        echo "KEY1_SECRET_NAME=$SECRET_PREFIX-key1-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "KEY2_SECRET_NAME=$SECRET_PREFIX-key2-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "KEY3_SECRET_NAME=$SECRET_PREFIX-key3-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "KEY4_SECRET_NAME=$SECRET_PREFIX-key4-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "API_URL_SECRET_NAME=$SECRET_PREFIX-api-url-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "BACKOFFICE_API_URL_SECRET_NAME=$SECRET_PREFIX-backoffice-api-url-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "SURVEY_API_URL_SECRET_NAME=$SECRET_PREFIX-survey-api-url-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "DEFAULT_TENANT_ID_SECRET_NAME=$SECRET_PREFIX-default-tenant-id-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "POWER_BI_URL_SECRET_NAME=$SECRET_PREFIX-powerbi-url-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "PRODUCTION=$PRODUCTION" >> $GITHUB_ENV
+        echo "DEVELOPMENT=$DEVELOPMENT" >> $GITHUB_ENV
         echo "ENV_SUFFIX=$ENV_SUFFIX" >> $GITHUB_ENV
+        
+        echo "✅ Variables de entorno se configurarán en Cloud Run desde Secret Manager"
+        echo "ℹ️ Las variables se inyectarán en runtime mediante el script de inicio de nginx"
 
     - name: 🧪 Run tests (if available)
       run: |
@@ -169,14 +117,14 @@ jobs:
 
     - name: 🚀 Deploy to Cloud Run
       run: |
-        echo "🚀 Desplegando servicio con referencias a Secret Manager..."
+        echo "🚀 Desplegando servicio con variables de entorno desde Secret Manager..."
         gcloud run deploy $SERVICE_NAME \
           --image gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG \
           --region ${{ vars.GCP_REGION }} \
           --platform managed \
           --allow-unauthenticated \
           --port 8080 \
-          --set-env-vars ENVIRONMENT=$ENVIRONMENT \
+          --set-env-vars ENVIRONMENT=$ENVIRONMENT,PRODUCTION=$PRODUCTION,DEVELOPMENT=$DEVELOPMENT \
           --set-secrets KEY1=$KEY1_SECRET_NAME \
           --set-secrets KEY2=$KEY2_SECRET_NAME \
           --set-secrets KEY3=$KEY3_SECRET_NAME \
@@ -192,7 +140,7 @@ jobs:
           --min-instances=1 \
           --concurrency=80 \
           --timeout=300s
-        echo "✅ Servicio desplegado con referencias a Secret Manager configuradas"
+        echo "✅ Servicio desplegado con variables de entorno desde Secret Manager configuradas"
 
     - name: 📡 Get service URL and health check
       run: |
