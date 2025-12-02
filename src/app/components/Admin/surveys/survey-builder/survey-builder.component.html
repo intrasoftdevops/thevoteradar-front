@@ -106,7 +106,7 @@
           </div>
 
           
-          <div *ngIf="editingQuestionId === question.id" class="card border-primary">
+          <div *ngIf="editingQuestionId === question.id" class="card border-primary" [attr.data-question-id]="question.id">
             <div class="card-body">
               <h5 class="card-title mb-3">Editando Pregunta</h5>
               
@@ -144,7 +144,7 @@
                 </div>
                 <button 
                   class="btn btn-sm btn-outline-primary"
-                  (click)="(question.options?.choices || (question.options = {choices: []}).choices).push('Nueva opción')"
+                  (click)="addChoice(question)"
                 >
                   <i class="fa-solid fa-plus me-1"></i>
                   Añadir Opción
