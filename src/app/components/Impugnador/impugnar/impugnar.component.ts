@@ -142,9 +142,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   }
 
   getImpugnaciones(data: any) {
-    console.log("entro")
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
-      console.log(resp)
         this.dataRevisar = resp;
        
        if(this.dataRevisar.length == 0) {
@@ -176,12 +174,9 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   
 
   ModalRevisarActual(porrevisar: any) {
-    console.log("entro")
-    console.log(porrevisar)
     
     this.apiService.getReporteTransmision(porrevisar.id).subscribe((resp:any)=>{
         const revisar = resp
-        console.log(resp)
        
         this.dataRevisarActual = revisar;
         this.createForm
@@ -214,28 +209,21 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     this.actual++
     const pagina: any = this.createForm.get('pagina')
     const observaciones:any = this.createForm.get('observaciones')
-   console.log(pagina.value)
     if(pagina.value === null && observaciones.value === null){
       this.createForm.value['categoria_impugnacion'] = null
-      console.log("vacio")
     }
     else{
       this.createForm.value['categoria_impugnacion'] = 9
     }
-      console.log(this.createForm.value)
       this.apiService
         .impugnar(this.dataRevisarActual.id, this.createForm.value)
         .subscribe((resp: any) => {
-          console.log(resp)
           
           
           if (this.dataRevisar.length > 1) {
-            console.log(this.dataRevisar.length )
-            console.log(this.actual)
             
             this.ModalRevisarActual(this.dataRevisar[this.actual]);
             if(this.actual == 9){
-              console.log("Son iguales")
               window.location.reload()
             }
           }

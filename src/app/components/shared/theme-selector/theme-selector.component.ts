@@ -14,7 +14,6 @@ export class ThemeSelectorComponent {
   changeTheme(themeId: string) {
     this.themeService.setTheme(themeId);
     this.showThemeSelector = false;
-    console.log('✅ Tema cambiado a:', themeId);
   }
 
   toggleSelector() {

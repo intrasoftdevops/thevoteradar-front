@@ -25,17 +25,13 @@ export class LocalDataService {
 
   setRol(rol: any) {
     try {
-      console.log('LocalDataService - setRol llamado con:', rol);
       const rolString = rol.toString();
       const rolEncrypt = CryptoJS.AES.encrypt(rolString, environment.key2).toString();
       localStorage.setItem('keyB', rolEncrypt);
-      console.log('LocalDataService - Rol guardado en localStorage keyB');
       
       const saved = localStorage.getItem('keyB');
-      console.log('LocalDataService - Verificación: keyB existe?', !!saved);
       
     } catch (error) {
-      console.error('LocalDataService - Error al guardar rol:', error);
     }
   }
 

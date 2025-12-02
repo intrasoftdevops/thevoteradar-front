@@ -85,7 +85,6 @@ export class EditarTestigoComponent implements OnInit {
     this.idTestigo = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getTestigo(this.idTestigo).subscribe((resp: any) => {
       const { testigo, puestos_asignados, mesas_asignadas } = resp;
-      console.log(puestos_asignados)
 
       this.updateForm.get('nombres')?.setValue(testigo.nombres);
       this.updateForm.get('apellidos')?.setValue(testigo.apellidos);
@@ -119,7 +118,6 @@ export class EditarTestigoComponent implements OnInit {
   getCodeMunicipals(data: any) {
     return data.map((seletedData: any) => {
       const { codigo_unico } = seletedData;
-      console.log(codigo_unico)
       return codigo_unico;
     });
   }

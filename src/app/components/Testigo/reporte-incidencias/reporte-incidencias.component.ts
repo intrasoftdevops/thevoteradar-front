@@ -113,7 +113,6 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   }
 
   ModalIncidenciaActual(incidencia: any) {
-    console.log(incidencia);
     this.photos = [];
     this.videos = [];
     this.incidenciaActual = {};
@@ -138,7 +137,6 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   getIncidenciasDeTestigo() {
     this.apiService.getIncidenciasDeTestigo().subscribe((resp: any) => {
       this.dataIncidencias = resp;
-      console.log(this.dataIncidencias);
       setTimeout(() => {
         this.dtTrigger.next(void 0);
       });
@@ -150,7 +148,6 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   }
 
   onRemove(event: any) {
-    console.log(event);
     this.files.splice(this.files.indexOf(event), 1);
   }
 

@@ -61,7 +61,6 @@ export class VerEquipoCoordinadorComponent implements OnDestroy, OnInit {
       const codigo_unico = this.getCode(item);
       const data = { puesto: codigo_unico };
       this.puestoSeleccionado = data.puesto;
-      console.log(this.puestoSeleccionado)
       this.getTestigos();
       this.tabla = true;
     } else {

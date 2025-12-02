@@ -77,7 +77,6 @@ export class CambiarRolGerenteComponent implements OnInit {
     if (this.rolActual == 3) {
       if (this.updateFormSupervisor.valid) {
         delete this.updateFormSupervisor.value.departamento;
-        console.log(this.updateFormSupervisor.value)
       } else {
 
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -86,7 +85,6 @@ export class CambiarRolGerenteComponent implements OnInit {
       if (this.updateFormCoordinador.valid) {
         delete this.updateFormCoordinador.value.departamento;
         delete this.updateFormCoordinador.value.municipio;
-        console.log(this.updateFormCoordinador.value)
       } else {
 
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -96,9 +94,7 @@ export class CambiarRolGerenteComponent implements OnInit {
         delete this.updateFormTestigo.value.departamento;
         delete this.updateFormTestigo.value.municipio;
         delete this.updateFormTestigo.value.zona;
-        console.log(this.updateFormTestigo.value);
         this.apiService.changeRole(this.idGerente, this.updateFormTestigo.value).subscribe((resp: any) => {
-          console.log(resp)
         })
       } else {
 
@@ -111,7 +107,6 @@ export class CambiarRolGerenteComponent implements OnInit {
     this.idGerente = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
 
-      console.log(resp)
 
       const { gerente, departamentos_asignados, municipios_asignados } = resp;
       if (gerente) {

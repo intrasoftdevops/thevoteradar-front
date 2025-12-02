@@ -28,10 +28,8 @@ export class CoordinadorHomeComponent implements OnInit {
   getCoordinador(){
     this.apiService.getCoordinador(this.localData.getId()).subscribe((resp: any) => {
 
-      console.log(resp)
 
       this.puestos_asignados = resp.puestos_asignados.map((puestos: any) => " " + puestos.nombre);
-      console.log(this.puestos_asignados)
 
       this.zona_asignada = resp.zonas_asignadas.nombre
 
