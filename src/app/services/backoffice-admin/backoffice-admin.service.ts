@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { LocalDataService } from '../localData/local-data.service';
 import {
@@ -232,7 +232,7 @@ export class BackofficeAdminService {
     this.loadingSubject.next(true);
     this.errorSubject.next(null);
 
-    this.getAllUsers(params).subscribe({
+    this.getAllUsers(params).pipe(take(1)).subscribe({
       next: (response) => {
         if (reset) {
           this.usersSubject.next(response.users);
@@ -267,7 +267,7 @@ export class BackofficeAdminService {
     this.loadingSubject.next(true);
     this.errorSubject.next(null);
 
-    this.getGlobalRanking(params).subscribe({
+    this.getGlobalRanking(params).pipe(take(1)).subscribe({
       next: (response) => {
         if (reset) {
           this.globalRankingSubject.next(response.leaderboard);
@@ -289,7 +289,7 @@ export class BackofficeAdminService {
     this.loadingSubject.next(true);
     this.errorSubject.next(null);
 
-    this.getCityRanking(params).subscribe({
+    this.getCityRanking(params).pipe(take(1)).subscribe({
       next: (response) => {
         if (reset) {
           this.cityRankingSubject.next(response.leaderboard);
@@ -311,7 +311,7 @@ export class BackofficeAdminService {
     this.loadingSubject.next(true);
     this.errorSubject.next(null);
 
-    this.getStateRanking(params).subscribe({
+    this.getStateRanking(params).pipe(take(1)).subscribe({
       next: (response) => {
         if (reset) {
           this.stateRankingSubject.next(response.leaderboard);
@@ -358,7 +358,7 @@ export class BackofficeAdminService {
     this.loadingSubject.next(true);
     this.errorSubject.next(null);
 
-    this.getLocations().subscribe({
+    this.getLocations().pipe(take(1)).subscribe({
       next: (response) => {
         this.locationsSubject.next(response);
         this.loadingSubject.next(false);
@@ -374,7 +374,7 @@ export class BackofficeAdminService {
     this.loadingSubject.next(true);
     this.errorSubject.next(null);
 
-    this.getUserStatistics().subscribe({
+    this.getUserStatistics().pipe(take(1)).subscribe({
       next: (response) => {
         this.statisticsSubject.next(response);
         this.loadingSubject.next(false);
