@@ -15,6 +15,7 @@ export class SurveyBuilderComponent implements OnInit {
   editingQuestionId: string | null = null;
   editingTitle = false;
   surveyStatus: 'draft' | 'active' | 'closed' | 'paused' | 'archived' = 'draft';
+  private lastAddedChoiceInfo: { questionId: string; index: number } | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -245,6 +246,54 @@ export class SurveyBuilderComponent implements OnInit {
       'candidate_vote': 'Voto por Candidato'
     };
     return labels[type] || type;
+  }
+
+  // Función trackBy para opciones de respuesta (choices)
+  trackByChoice(index: number, choice: string): any {
+    return index;
+  }
+
+  // Función trackBy para candidatos
+  trackByCandidate(index: number, candidate: any): any {
+    return index;
+  }
+
+  // Método para actualizar opción sin perder el foco
+  updateChoice(question: Question, index: number, value: string): void {
+    if (question.options?.choices && question.options.choices[index] !== undefined) {
+      question.options.choices[index] = value;
+    }
+  }
+
+  // Método para agregar una nueva opción y enfocar el input
+  addChoice(question: Question): void {
+    if (!question.options) {
+      question.options = { choices: [] };
+    }
+    if (!question.options.choices) {
+      question.options.choices = [];
+    }
+    
+    // Agregar opción vacía para que solo muestre el placeholder
+    question.options.choices.push('');
+    const newIndex = question.options.choices.length - 1;
+    this.lastAddedChoiceInfo = { questionId: question.id, index: newIndex };
+    
+    setTimeout(() => {
+      if (this.lastAddedChoiceInfo) {
+        const questionElement = document.querySelector(`[data-question-id="${this.lastAddedChoiceInfo.questionId}"]`);
+        if (questionElement) {
+          const inputs = questionElement.querySelectorAll('input[type="text"][placeholder*="Opción"]');
+          if (inputs.length > this.lastAddedChoiceInfo.index) {
+            const targetInput = inputs[this.lastAddedChoiceInfo.index] as HTMLInputElement;
+            if (targetInput) {
+              targetInput.focus();
+            }
+          }
+        }
+        this.lastAddedChoiceInfo = null;
+      }
+    }, 10);
   }
 }
 
