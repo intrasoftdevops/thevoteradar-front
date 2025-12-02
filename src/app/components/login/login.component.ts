@@ -555,7 +555,7 @@ export class LoginComponent implements OnInit {
         if (response.user.tenant_id) {
           localStorage.setItem('tenant_id', response.user.tenant_id);
         } else {
-          const tenantId = environment.defaultTenantId || this.TENANT_CODE || '473173';
+          const tenantId = environment.defaultTenantId || this.TENANT_CODE;
           localStorage.setItem('tenant_id', tenantId);
         }
         

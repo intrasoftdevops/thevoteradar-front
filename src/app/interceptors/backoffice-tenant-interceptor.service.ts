@@ -20,7 +20,7 @@ export class BackofficeTenantInterceptor implements HttpInterceptor {
       req.url.endsWith('/users/token');
     
     if (isLoginRequest) {
-      const tenantId = environment.defaultTenantId || '473173';
+      const tenantId = environment.defaultTenantId;
       
       if (req.headers.has('X-Tenant-ID')) {
         return next.handle(req);
