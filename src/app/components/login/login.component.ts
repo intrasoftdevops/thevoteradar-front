@@ -551,12 +551,8 @@ export class LoginComponent implements OnInit {
         this.localData.setRol(1);
         this.localData.setId(response.user.email);
         
-        if (response.user.tenant_id) {
-          localStorage.setItem('tenant_id', response.user.tenant_id);
-        } else {
-          const tenantId = environment.defaultTenantId || this.TENANT_CODE;
-          localStorage.setItem('tenant_id', tenantId);
-        }
+        const tenantIdToStore = response.user.tenant_id || tenantId;
+        localStorage.setItem('tenant_id', tenantIdToStore);
         
         this.permissionsService.addPermission(['1']);
         
