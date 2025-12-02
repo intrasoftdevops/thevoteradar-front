@@ -126,11 +126,12 @@
               <div *ngIf="question.type === 'multiple_choice' || question.type === 'multiple_select'" class="mb-3">
                 <label class="form-label">Opciones de Respuesta <span class="text-danger">*</span></label>
                 <small class="text-muted d-block mb-2">Mínimo 2 opciones requeridas</small>
-                <div *ngFor="let choice of question.options?.choices || []; let idx = index" class="input-group mb-2">
+                <div *ngFor="let choice of question.options?.choices || []; let idx = index; trackBy: trackByChoice" class="input-group mb-2">
                   <input 
                     type="text" 
                     class="form-control" 
-                    [(ngModel)]="question.options!.choices![idx]"
+                    [value]="question.options!.choices![idx]"
+                    (input)="updateChoice(question, idx, $any($event.target).value)"
                     [placeholder]="'Opción ' + (idx + 1)"
                   />
                   <button 
@@ -194,7 +195,7 @@
               
               <div *ngIf="question.type === 'candidate_vote'" class="mb-3">
                 <label class="form-label">Candidatos</label>
-                <div *ngFor="let candidate of question.options?.candidates || []; let idx = index" class="card mb-2">
+                <div *ngFor="let candidate of question.options?.candidates || []; let idx = index; trackBy: trackByCandidate" class="card mb-2">
                   <div class="card-body">
                     <div class="row g-2">
                       <div class="col-md-6">

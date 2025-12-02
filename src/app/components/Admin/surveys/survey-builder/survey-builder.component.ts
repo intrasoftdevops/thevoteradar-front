@@ -246,5 +246,22 @@ export class SurveyBuilderComponent implements OnInit {
     };
     return labels[type] || type;
   }
+
+  // Función trackBy para opciones de respuesta (choices)
+  trackByChoice(index: number, choice: string): any {
+    return index;
+  }
+
+  // Función trackBy para candidatos
+  trackByCandidate(index: number, candidate: any): any {
+    return index;
+  }
+
+  // Método para actualizar opción sin perder el foco
+  updateChoice(question: Question, index: number, value: string): void {
+    if (question.options?.choices && question.options.choices[index] !== undefined) {
+      question.options.choices[index] = value;
+    }
+  }
 }
 
