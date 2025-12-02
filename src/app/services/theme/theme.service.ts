@@ -99,19 +99,60 @@ export class ThemeService {
   }
 
   /**
-   * Detectar tema basado en el dominio/subdominio (Multitenant)
+   * Detectar tema basado en el dominio/subdominio o tenant_id (Multitenant)
    */
   private detectThemeFromDomain(): string {
+    // Primero intentar obtener el tema desde tenant_id (prioridad)
+    const tenantId = localStorage.getItem('tenant_id');
+    if (tenantId) {
+      const themeId = this.getThemeIdFromTenantId(tenantId);
+      if (themeId) {
+        return themeId;
+      }
+    }
+    
+    // Si no hay tenant_id, intentar detectar desde el dominio
     const hostname = window.location.hostname;
-    
-    
-	
-    
     if (hostname.includes('client1')) return 'client1';
     if (hostname.includes('client2')) return 'client2';
     if (hostname.includes('client3')) return 'client3';
     
     return 'default';
+  }
+
+  /**
+   * Mapear tenant_id a theme_id
+   * Este mapeo debe coincidir con la configuración del backend
+   */
+  private getThemeIdFromTenantId(tenantId: string): string | null {
+    // Mapeo de tenant_id a theme_id
+    // Puedes ajustar estos valores según tu configuración
+    const tenantThemeMap: { [key: string]: string } = {
+      '473173': 'client1', // Partido Azul (colores azul/amarillo)
+      '475711': 'client1', // También puede ser client1
+      // Agregar más mapeos según sea necesario
+    };
+    
+    return tenantThemeMap[tenantId] || null;
+  }
+
+  /**
+   * Cargar tema basado en tenant_id
+   * Se llama después del login cuando se guarda el tenant_id
+   */
+  loadThemeFromTenantId(tenantId?: string): void {
+    const id = tenantId || localStorage.getItem('tenant_id');
+    if (id) {
+      const themeId = this.getThemeIdFromTenantId(id);
+      if (themeId) {
+        this.setTheme(themeId);
+      } else {
+        // Si no hay mapeo, usar el tema por defecto
+        this.setTheme('default');
+      }
+    } else {
+      this.setTheme('default');
+    }
   }
 
   /**

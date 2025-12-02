@@ -534,9 +534,8 @@ export class LoginComponent implements OnInit {
   }
 
   handleAdminLogin(email: string, password: string) {
-    const tenantId = environment.defaultTenantId || this.TENANT_CODE || '475711';
-    
-    this.backofficeAuth.login(email, password, tenantId).subscribe({
+    // El interceptor agregará automáticamente X-Tenant-ID usando environment.defaultTenantId
+    this.backofficeAuth.login(email, password).subscribe({
       next: (response) => {
         this.isLoading = false;
         
@@ -545,11 +544,20 @@ export class LoginComponent implements OnInit {
           return;
         }
 
+        // Guardar token y datos del usuario
         this.localData.setBackofficeToken(response.access_token);
         this.localData.setBackofficeUser(response.user);
         this.localData.setToken(response.access_token);
         this.localData.setRol(1);
         this.localData.setId(response.user.email);
+        
+        // Guardar tenant_id del usuario o usar el default del environment
+        const tenantIdToStore = response.user.tenant_id || environment.defaultTenantId || this.TENANT_CODE;
+        localStorage.setItem('tenant_id', tenantIdToStore);
+        
+        // Aplicar tema basado en tenant_id
+        this.themeService.loadThemeFromTenantId();
+        
         this.permissionsService.addPermission(['1']);
         
         

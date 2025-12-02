@@ -32,23 +32,35 @@ export class BackofficeAuthService {
 
   constructor(private http: HttpClient) { }
 
-  login(email: string, password: string, tenantId?: string): Observable<BackofficeLoginResponse> {
+  /**
+   * Login al backoffice
+   * @param email Email del usuario (se envía como username)
+   * @param password Contraseña del usuario
+   * @returns Observable con la respuesta del login
+   * 
+   * Flujo:
+   * 1. Login: Frontend envía email, password → El interceptor agrega automáticamente X-Tenant-ID → Backend devuelve token
+   * 2. Almacenar: Guardar access_token y tenant_id en localStorage
+   * 3. Peticiones protegidas: Enviar solo Authorization: Bearer <token> (el tenant_id viene en el token)
+   * 
+   * Nota: El header X-Tenant-ID se agrega automáticamente por el BackofficeTenantInterceptor
+   * usando el valor de environment.defaultTenantId
+   * 
+   * Body (form-data):
+   * - username: email del usuario
+   * - password: contraseña del usuario
+   */
+  login(email: string, password: string): Observable<BackofficeLoginResponse> {
     const url = `${this.backofficeUrl}/users/token`;
     
-    let headers = new HttpHeaders({
+    // Headers - El interceptor agregará automáticamente X-Tenant-ID usando environment.defaultTenantId
+    const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'
     });
-
-    if (tenantId) {
-      headers = headers.set('X-Tenant-ID', tenantId);
-    }
 
     const body = new URLSearchParams();
     body.set('username', email);
     body.set('password', password);
-    if (tenantId && !headers.has('X-Tenant-ID')) {
-      body.set('tenant_id', tenantId);
-    }
 
     return this.http.post<BackofficeLoginResponse>(url, body.toString(), { headers })
       .pipe(

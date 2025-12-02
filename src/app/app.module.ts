@@ -51,6 +51,7 @@ import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home
 import { LoadingComponent } from './components/loading/loading.component';
 import { LoaderService } from './services/loader/loader.service';
 import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
+import { BackofficeTenantInterceptor } from './interceptors/backoffice-tenant-interceptor.service';
 import { CrearSupervisorAdminComponent } from './components/Admin/crear-supervisor-admin/crear-supervisor-admin.component';
 import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordinador-admin/crear-coordinador-admin.component';
 import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
@@ -75,6 +76,9 @@ import { RecipientsModalComponent } from './components/Admin/surveys/recipients-
 import { SurveyAnalyticsComponent } from './components/Admin/surveys/survey-analytics/survey-analytics.component';
 import { SurveyResponsesComponent } from './components/Admin/surveys/survey-responses/survey-responses.component';
 import { SurveyLandingComponent } from './components/public/survey-landing/survey-landing.component';
+import { AdminDashboardPageComponent } from './components/Admin/backoffice/admin-dashboard-page/admin-dashboard-page.component';
+import { AdminUsersManagementPageComponent } from './components/Admin/backoffice/admin-users-management-page/admin-users-management-page.component';
+import { AdminRankingsPageComponent } from './components/Admin/backoffice/admin-rankings-page/admin-rankings-page.component';
 
 @NgModule({
   declarations: [
@@ -141,7 +145,10 @@ import { SurveyLandingComponent } from './components/public/survey-landing/surve
     RecipientsModalComponent,
     SurveyAnalyticsComponent,
     SurveyResponsesComponent,
-    SurveyLandingComponent
+    SurveyLandingComponent,
+    AdminDashboardPageComponent,
+    AdminUsersManagementPageComponent,
+    AdminRankingsPageComponent
   ],
   imports: [
     BrowserModule,
@@ -161,7 +168,8 @@ import { SurveyLandingComponent } from './components/public/survey-landing/surve
     AuthGuard,
     LogoutGuard,
     LoaderService,
-    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: BackofficeTenantInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
