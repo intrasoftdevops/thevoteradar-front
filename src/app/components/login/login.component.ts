@@ -555,6 +555,9 @@ export class LoginComponent implements OnInit {
         const tenantIdToStore = response.user.tenant_id || environment.defaultTenantId || this.TENANT_CODE;
         localStorage.setItem('tenant_id', tenantIdToStore);
         
+        // Aplicar tema basado en tenant_id
+        this.themeService.loadThemeFromTenantId();
+        
         this.permissionsService.addPermission(['1']);
         
         

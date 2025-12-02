@@ -3,7 +3,7 @@
   <div *ngIf="loading && !statistics" class="px-4 sm:px-6 lg:px-8 py-8">
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2" [style.border-color]="'var(--color-primary)'"></div>
         <span class="ml-3 text-gray-600">Cargando estadísticas...</span>
       </div>
     </div>
@@ -38,12 +38,12 @@
       <div class="relative px-4 sm:px-6 lg:px-8 py-8">
         <div class="max-w-7xl mx-auto">
           <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl mb-4 shadow-lg">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-lg" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
               <i class="fas fa-shield-alt text-white text-2xl"></i>
             </div>
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Panel de 
-              <span class="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent"> Administración</span>
+              <span class="bg-clip-text text-transparent" [style.background-image]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"> Administración</span>
             </h1>
             <p class="text-lg text-gray-600 max-w-2xl mx-auto">
               Estadísticas generales y métricas del sistema
@@ -59,7 +59,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <div class="group bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             <div class="flex items-center justify-between mb-4">
-              <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-600">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl shadow-lg" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
                 <i class="fas fa-users text-white text-xl"></i>
               </div>
             </div>
@@ -85,7 +85,7 @@
 
           <div class="group bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             <div class="flex items-center justify-between mb-4">
-              <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-600">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl shadow-lg" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
                 <i class="fas fa-chart-line text-white text-xl"></i>
               </div>
             </div>
@@ -105,7 +105,7 @@
               <h3 class="text-lg font-semibold text-gray-900 mb-6">Top 5 Estados</h3>
               <div class="space-y-4">
                 <div *ngFor="let stateData of topStates; let i = index" class="flex items-center">
-                  <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold mr-4">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-full text-white text-sm font-bold mr-4" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
                     {{ i + 1 }}
                   </div>
                   <div class="flex-1">
@@ -115,7 +115,8 @@
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
                       <div 
-                        class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
+                        class="h-2 rounded-full transition-all duration-500"
+                        [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
                         [style.width.%]="getPercentage(stateData[1])"
                       ></div>
                     </div>

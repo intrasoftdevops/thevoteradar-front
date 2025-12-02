@@ -178,5 +178,52 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
   formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('es-ES');
   }
+
+  // Métodos helper para manejar eventos hover y focus con TypeScript
+  onButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.background = 'linear-gradient(to right, var(--color-accent), var(--color-primary))';
+    }
+  }
+
+  onButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.background = 'linear-gradient(to right, var(--color-primary), var(--color-accent))';
+    }
+  }
+
+  onDetailButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.1)';
+    }
+  }
+
+  onDetailButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'rgba(var(--color-primary-rgb), 0.3)';
+      target.style.backgroundColor = '';
+    }
+  }
+
+  onInputFocus(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.boxShadow = '0 0 0 2px rgba(var(--color-primary-rgb), 0.2)';
+    }
+  }
+
+  onInputBlur(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = '';
+      target.style.boxShadow = '';
+    }
+  }
 }
 

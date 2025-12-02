@@ -180,7 +180,19 @@ export class AdminRankingsPageComponent implements OnInit, OnDestroy {
     if (rank === 1) return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     if (rank === 2) return 'bg-gray-100 text-gray-800 border-gray-200';
     if (rank === 3) return 'bg-orange-100 text-orange-800 border-orange-200';
-    return 'bg-blue-50 text-blue-700 border-blue-200';
+    // Usar variables CSS del tema para posiciones > 3
+    return '';
+  }
+
+  getPositionStyle(rank: number): any {
+    if (rank > 3) {
+      return {
+        'background-color': 'rgba(var(--color-primary-rgb), 0.1)',
+        'color': 'var(--color-primary)',
+        'border-color': 'rgba(var(--color-primary-rgb), 0.3)'
+      };
+    }
+    return {};
   }
 
   toTitleCase(text: string | null | undefined): string {
@@ -200,6 +212,67 @@ export class AdminRankingsPageComponent implements OnInit, OnDestroy {
     this.activeTab = tab;
     if (tab === 'global') {
       this.adminService.fetchGlobalRanking({ limit: 50 }, true);
+    }
+  }
+
+  // Métodos helper para manejar eventos hover y focus con TypeScript
+  onButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.background = 'linear-gradient(to right, var(--color-accent), var(--color-primary))';
+    }
+  }
+
+  onButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.background = 'linear-gradient(to right, var(--color-primary), var(--color-accent))';
+    }
+  }
+
+  onDetailButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.1)';
+    }
+  }
+
+  onDetailButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'rgba(var(--color-primary-rgb), 0.3)';
+      target.style.backgroundColor = '';
+    }
+  }
+
+  onTabHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+    }
+  }
+
+  onTabHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = '';
+    }
+  }
+
+  onInputFocus(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.boxShadow = '0 0 0 2px rgba(var(--color-primary-rgb), 0.2)';
+    }
+  }
+
+  onInputBlur(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = '';
+      target.style.boxShadow = '';
     }
   }
 }
