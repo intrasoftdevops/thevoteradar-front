@@ -534,9 +534,8 @@ export class LoginComponent implements OnInit {
   }
 
   handleAdminLogin(email: string, password: string) {
-    const tenantId = environment.defaultTenantId || this.TENANT_CODE || '475711';
-    
-    this.backofficeAuth.login(email, password, tenantId).subscribe({
+    // El interceptor agregará automáticamente X-Tenant-ID usando environment.defaultTenantId
+    this.backofficeAuth.login(email, password).subscribe({
       next: (response) => {
         this.isLoading = false;
         
