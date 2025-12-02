@@ -168,6 +168,57 @@
             </li>
           </ul>
         </li>
+        <li
+          class="nav-item dropdown align-middle"
+          [routerLinkActive]="['link-active']"
+        >
+          <a
+            class="nav-link px-xl-3 text-white"
+            href="#"
+            id="navbarDropdownBackoffice"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-chart-line fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Backoffice</span>
+          </a>
+          <ul
+            class="dropdown-menu bg-dark border border-secondary"
+            aria-labelledby="navbarDropdownBackoffice"
+          >
+            <li>
+              <a
+                class="dropdown-item text-white"
+                [routerLink]="['/admin/backoffice/dashboard']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                <i class="fa-solid fa-chart-pie me-2"></i>
+                Dashboard
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item text-white"
+                [routerLink]="['/admin/backoffice/users']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                <i class="fa-solid fa-users me-2"></i>
+                Gestión de Usuarios
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item text-white"
+                [routerLink]="['/admin/backoffice/rankings']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                <i class="fa-solid fa-trophy me-2"></i>
+                Rankings
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="nav-item align-middle">
           <a
             class="nav-link px-xl-3 text-white"

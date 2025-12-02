@@ -1,0 +1,280 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="space-y-8">
+      <div class="text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+          Gestión de Usuarios
+        </h2>
+        <p class="text-gray-600 mt-2">Administrar y visualizar usuarios del sistema</p>
+      </div>
+
+      <!-- Filtros -->
+      <div *ngIf="locations" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+        <div class="p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
+              <i class="fas fa-search text-white text-lg"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Filtros de Búsqueda</h3>
+          </div>
+          
+          <div class="grid grid-cols-1 gap-4 sm:gap-6">
+            <!-- Selectores en una fila en desktop, stack en móvil -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Estado</label>
+                <select
+                  [(ngModel)]="selectedState"
+                  class="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/50 backdrop-blur-sm transition-all duration-200"
+                >
+                  <option value="">Todos los estados</option>
+                  <option *ngFor="let state of locations.states" [value]="state">{{ state }}</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Ciudad</label>
+                <select
+                  [(ngModel)]="selectedCity"
+                  class="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/50 backdrop-blur-sm transition-all duration-200"
+                >
+                  <option value="">Todas las ciudades</option>
+                  <option *ngFor="let city of locations.cities" [value]="city">{{ city }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Botones stack en móvil, horizontal en desktop -->
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <button 
+                (click)="handleFilterByCity(true)" 
+                [disabled]="!selectedCity || isFiltering"
+                class="w-full sm:flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm sm:text-base py-2 sm:py-3 rounded-lg transition-all duration-200 flex items-center justify-center"
+              >
+                <div *ngIf="isFiltering" class="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2"></div>
+                <i class="fas fa-map-marker-alt mr-2"></i>
+                <span class="hidden sm:inline">Filtrar por </span>Ciudad
+              </button>
+              <button 
+                (click)="handleFilterByState(true)" 
+                [disabled]="!selectedState || isFiltering"
+                class="w-full sm:flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm sm:text-base py-2 sm:py-3 rounded-lg transition-all duration-200 flex items-center justify-center"
+              >
+                <div *ngIf="isFiltering" class="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2"></div>
+                <i class="fas fa-map-marker-alt mr-2"></i>
+                <span class="hidden sm:inline">Filtrar por </span>Estado
+              </button>
+              <button 
+                (click)="handleClearFilters()" 
+                [disabled]="isFiltering"
+                class="w-full sm:w-auto border-2 border-gray-300 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 text-sm sm:text-base py-2 sm:py-3 rounded-lg transition-all duration-200 flex items-center justify-center"
+              >
+                <i class="fas fa-trash mr-2"></i>
+                Limpiar
+              </button>
+            </div>
+          </div>
+          
+          <!-- Error de filtros -->
+          <div *ngIf="filterError" class="mt-6 bg-red-50 border border-red-200 rounded-xl p-4">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Error en filtro</h3>
+                <p class="text-sm text-red-700 mt-1">{{ filterError }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indicador de filtro activo -->
+      <div *ngIf="isFilterActive()" class="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
+              <i class="fas fa-filter text-white"></i>
+            </div>
+            <span class="text-gray-800 font-semibold ml-3">
+              Filtro activo: <span *ngIf="selectedCity">Ciudad: {{ selectedCity }}</span> <span *ngIf="selectedState">Estado: {{ selectedState }}</span>
+            </span>
+          </div>
+          <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+            {{ filteredUsers.length }} resultado{{ filteredUsers.length !== 1 ? 's' : '' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading && getCurrentUsers().length === 0" class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span class="ml-3 text-gray-600">Cargando usuarios...</span>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !isFilterActive()" class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">Error al cargar usuarios</h3>
+            <p class="text-sm text-red-700 mt-1">{{ error }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de usuarios -->
+      <div *ngIf="getCurrentUsers().length > 0" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+        <div class="p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
+              <i class="fas fa-users text-white text-lg"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">
+              Lista de Usuarios ({{ getCurrentUsers().length }})
+            </h3>
+          </div>
+
+          <div class="space-y-4">
+            <div 
+              *ngFor="let user of getCurrentUsers()"
+              class="bg-white/70 backdrop-blur-sm rounded-xl border border-gray-200/50 p-4 sm:p-6 hover:shadow-lg transition-all duration-300 hover:bg-white/90"
+            >
+              <div class="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+                <!-- Información principal del usuario -->
+                <div class="flex items-start sm:items-center gap-3 sm:gap-4 flex-1">
+                  <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center shrink-0">
+                    <span class="text-blue-600 font-bold text-lg sm:text-xl">
+                      {{ user.name ? user.name.charAt(0).toUpperCase() : '?' }}
+                    </span>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h4 class="font-bold text-gray-900 text-base sm:text-lg leading-tight">
+                      {{ user.name || 'Sin nombre' }} {{ user.lastname || '' }}
+                    </h4>
+                    <p class="text-gray-600 text-sm sm:text-base truncate mt-1">
+                      {{ user.email || 'Sin email' }}
+                    </p>
+                    
+                    <!-- Información de contacto - Stack en móvil -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2 text-xs sm:text-sm text-gray-500">
+                      <span class="flex items-center gap-1">
+                        <i class="fas fa-phone text-xs"></i>
+                        <span class="truncate">{{ user.phone || 'Sin teléfono' }}</span>
+                      </span>
+                      <span class="flex items-center gap-1">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="truncate">{{ user.city || 'Sin ciudad' }}, {{ user.state || 'Sin estado' }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Acciones y puntos - Stack en móvil -->
+                <div class="flex items-center justify-between sm:justify-end gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-200/50">
+                  <div *ngIf="user.points !== undefined" class="bg-gradient-to-r from-green-100 to-emerald-100 px-2 sm:px-3 py-1 rounded-full">
+                    <span class="text-green-700 font-semibold text-xs sm:text-sm">
+                      {{ user.points }} pts
+                    </span>
+                  </div>
+                  <button
+                    (click)="openUserDetails(user)"
+                    class="border border-blue-200 hover:border-blue-300 hover:bg-blue-50 text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg transition-all duration-200"
+                  >
+                    Ver Detalles
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cargar más - para usuarios normales o filtrados -->
+          <div *ngIf="((hasMore && !isFilterActive()) || (hasMoreFiltered && isFilterActive()))" class="text-center mt-6 pt-6 border-t border-gray-200">
+            <button 
+              (click)="isFilterActive() ? loadMoreFiltered() : loadMore()" 
+              [disabled]="loading || isFiltering" 
+              class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base py-2 sm:py-3 rounded-lg transition-all duration-200"
+            >
+              <div *ngIf="loading || isFiltering" class="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2 inline-block"></div>
+              {{ (loading || isFiltering) ? 'Cargando...' : 'Cargar Más Usuarios' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- No hay usuarios -->
+      <div *ngIf="getCurrentUsers().length === 0 && !loading" class="text-center py-16">
+        <div class="mx-auto w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-6">
+          <i class="fas fa-users text-gray-400 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No hay usuarios disponibles</h3>
+        <p class="text-gray-500">No se encontraron usuarios con los filtros aplicados</p>
+      </div>
+
+      <!-- Modal de detalles de usuario -->
+      <div *ngIf="selectedUser" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" (click)="closeUserDetails()">
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl max-w-sm sm:max-w-md w-full shadow-2xl border border-white/20 max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+          <div class="px-4 sm:px-6 py-4 border-b border-gray-200/50 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-sm">
+            <h3 class="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              Detalles del Usuario
+            </h3>
+            <button
+              (click)="closeUserDetails()"
+              class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <span class="text-gray-400 text-xl">✕</span>
+            </button>
+          </div>
+          <div class="p-4 sm:p-6 space-y-4">
+            <div>
+              <label class="text-xs sm:text-sm font-semibold text-gray-600">Nombre Completo</label>
+              <p class="text-sm sm:text-base text-gray-900 font-medium break-words">
+                {{ selectedUser?.name || 'Sin nombre' }} {{ selectedUser?.lastname || '' }}
+              </p>
+            </div>
+            <div>
+              <label class="text-xs sm:text-sm font-semibold text-gray-600">Email</label>
+              <p class="text-sm sm:text-base text-gray-900 break-all">{{ selectedUser?.email || 'Sin email' }}</p>
+            </div>
+            <div>
+              <label class="text-xs sm:text-sm font-semibold text-gray-600">Teléfono</label>
+              <p class="text-sm sm:text-base text-gray-900">{{ selectedUser?.phone || 'Sin teléfono' }}</p>
+            </div>
+            <div>
+              <label class="text-xs sm:text-sm font-semibold text-gray-600">Ubicación</label>
+              <p class="text-sm sm:text-base text-gray-900 break-words">
+                {{ selectedUser?.city || 'Sin ciudad' }}, {{ selectedUser?.state || 'Sin estado' }}
+              </p>
+            </div>
+            <div *ngIf="selectedUser?.points !== undefined">
+              <label class="text-xs sm:text-sm font-semibold text-gray-600">Puntos</label>
+              <p class="text-sm sm:text-base text-green-600 font-bold">{{ selectedUser.points }} puntos</p>
+            </div>
+            <div>
+              <label class="text-xs sm:text-sm font-semibold text-gray-600">Fecha de Registro</label>
+              <p class="text-sm sm:text-base text-gray-900">
+                {{ selectedUser?.created_at ? formatDate(selectedUser.created_at) : 'Fecha no disponible' }}
+              </p>
+            </div>
+          </div>
+          <div class="px-4 sm:px-6 py-4 border-t border-gray-200/50 bg-gray-50/50 flex justify-end">
+            <button 
+              (click)="closeUserDetails()"
+              class="w-full sm:w-auto bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white text-sm sm:text-base py-2 sm:py-3 px-4 rounded-lg transition-all duration-200"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

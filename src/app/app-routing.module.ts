@@ -50,6 +50,9 @@ import { SurveyBuilderComponent } from './components/Admin/surveys/survey-builde
 import { SurveyAnalyticsComponent } from './components/Admin/surveys/survey-analytics/survey-analytics.component';
 import { SurveyResponsesComponent } from './components/Admin/surveys/survey-responses/survey-responses.component';
 import { SurveyLandingComponent } from './components/public/survey-landing/survey-landing.component';
+import { AdminDashboardPageComponent } from './components/Admin/backoffice/admin-dashboard-page/admin-dashboard-page.component';
+import { AdminUsersManagementPageComponent } from './components/Admin/backoffice/admin-users-management-page/admin-users-management-page.component';
+import { AdminRankingsPageComponent } from './components/Admin/backoffice/admin-rankings-page/admin-rankings-page.component';
 
 const routes: Routes = [
   {
@@ -104,6 +107,30 @@ const routes: Routes = [
   {
     path: 'survey/:surveyId',
     component: SurveyLandingComponent
+  },
+  {
+    path: 'admin/backoffice/dashboard',
+    component: AdminDashboardPageComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/backoffice/users',
+    component: AdminUsersManagementPageComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/backoffice/rankings',
+    component: AdminRankingsPageComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
   },
   {
     path: 'gerenteHome',

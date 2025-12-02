@@ -1,0 +1,165 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+  <!-- Loading State -->
+  <div *ngIf="loading && !statistics" class="px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span class="ml-3 text-gray-600">Cargando estadísticas...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !statistics" class="px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="bg-red-50 border border-red-200 rounded-2xl p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">Error al cargar estadísticas</h3>
+            <p class="text-sm text-red-700 mt-1">{{ error }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading || statistics">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden">
+      <!-- Background Pattern -->
+      <div class="absolute inset-0 opacity-5" [style.background-image]="getBackgroundPatternStyle()"></div>
+      
+      <div class="relative px-4 sm:px-6 lg:px-8 py-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl mb-4 shadow-lg">
+              <i class="fas fa-shield-alt text-white text-2xl"></i>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+              Panel de 
+              <span class="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent"> Administración</span>
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+              Estadísticas generales y métricas del sistema
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-4 sm:px-6 lg:px-8 pb-12" *ngIf="statistics">
+      <div class="max-w-7xl mx-auto">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div class="group bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-600">
+                <i class="fas fa-users text-white text-xl"></i>
+              </div>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-900 mb-1">
+              {{ statistics.total_users.toLocaleString() }}
+            </h3>
+            <p class="text-sm font-semibold text-gray-700 mb-1">Total de Usuarios</p>
+            <p class="text-xs text-gray-500">Usuarios registrados en el sistema</p>
+          </div>
+
+          <div class="group bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl shadow-lg bg-gradient-to-r from-green-500 to-green-600">
+                <i class="fas fa-map-marker-alt text-white text-xl"></i>
+              </div>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-900 mb-1">
+              {{ getStatesCount() }}
+            </h3>
+            <p class="text-sm font-semibold text-gray-700 mb-1">Estados Activos</p>
+            <p class="text-xs text-gray-500">Estados con usuarios registrados</p>
+          </div>
+
+          <div class="group bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-600">
+                <i class="fas fa-chart-line text-white text-xl"></i>
+              </div>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-900 mb-1">
+              {{ getCitiesCount() }}
+            </h3>
+            <p class="text-sm font-semibold text-gray-700 mb-1">Ciudades Activas</p>
+            <p class="text-xs text-gray-500">Ciudades con usuarios registrados</p>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Top Estados -->
+          <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+            <div class="p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-6">Top 5 Estados</h3>
+              <div class="space-y-4">
+                <div *ngFor="let stateData of topStates; let i = index" class="flex items-center">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold mr-4">
+                    {{ i + 1 }}
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-sm font-medium text-gray-900">{{ stateData[0] }}</span>
+                      <span class="text-sm text-gray-600">{{ stateData[1].toLocaleString() }}</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
+                        [style.width.%]="getPercentage(stateData[1])"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Ciudades -->
+          <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+            <div class="p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-6">Top 5 Ciudades</h3>
+              <div class="space-y-4">
+                <div *ngFor="let cityData of topCities; let i = index" class="flex items-center">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-bold mr-4">
+                    {{ i + 1 }}
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-sm font-medium text-gray-900">{{ cityData[0] }}</span>
+                      <span class="text-sm text-gray-600">{{ cityData[1].toLocaleString() }}</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500"
+                        [style.width.%]="getPercentage(cityData[1])"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Última actualización -->
+        <div *ngIf="statistics.last_updated" class="mt-8 text-center">
+          <p class="text-sm text-gray-500">
+            Última actualización: {{ formatDate(statistics.last_updated) }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
