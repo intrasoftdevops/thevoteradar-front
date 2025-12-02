@@ -551,7 +551,8 @@ export class LoginComponent implements OnInit {
         this.localData.setRol(1);
         this.localData.setId(response.user.email);
         
-        const tenantIdToStore = response.user.tenant_id || tenantId;
+        // Guardar tenant_id del usuario o usar el default del environment
+        const tenantIdToStore = response.user.tenant_id || environment.defaultTenantId || this.TENANT_CODE;
         localStorage.setItem('tenant_id', tenantIdToStore);
         
         this.permissionsService.addPermission(['1']);

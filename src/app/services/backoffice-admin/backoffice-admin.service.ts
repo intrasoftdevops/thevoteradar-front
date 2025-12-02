@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { catchError, map, take } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { LocalDataService } from '../localData/local-data.service';
 import {
