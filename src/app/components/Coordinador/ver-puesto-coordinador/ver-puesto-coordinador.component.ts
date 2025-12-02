@@ -60,7 +60,6 @@ export class VerPuestoCoordinadorComponent implements OnInit {
         let aux = { ...resp, ...data };
         this.dataStateStation = [...this.dataStateStation, aux];
       }
-      console.log(this.dataStateStation);
     });
   }
 

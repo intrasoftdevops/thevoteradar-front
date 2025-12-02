@@ -27,8 +27,6 @@ export class GerenteHomeComponent implements OnInit {
       this.departamento_asignado = resp.departamentos_asignados[0].nombre_departamento_votacion;
 
       this.municipio_asignado = resp.municipios_asignados.map((municipios: any) => " " + municipios.nombre);
-      console.log(this.municipio_asignado);
-      
     });
   }
 

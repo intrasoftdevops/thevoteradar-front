@@ -24,7 +24,6 @@ export class DropdownMenuUsersComponent implements OnInit {
     this.inactivityService.inactivityObservable.subscribe(() => {
       
       this.logout();
-      console.log('Inactividad detectada');
     });
 
     

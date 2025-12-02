@@ -16,17 +16,7 @@ export class AuthGuard implements CanActivate {
     const rol = this.localData.getRol();
     const rolNumber = rol ? parseInt(rol, 10) : null;
     const keyB = localStorage.getItem('keyB');
-    console.log('AuthGuard - Verificando acceso a:', state.url);
-    console.log('AuthGuard - Rol del usuario (string):', rol);
-    console.log('AuthGuard - Rol del usuario (number):', rolNumber);
-    console.log('AuthGuard - Roles permitidos:', route.data['rol']);
-    console.log('AuthGuard - localStorage keyB:', keyB);
-    console.log('AuthGuard - localStorage completo:', {
-      keyA: localStorage.getItem('keyA') ? 'existe' : 'no existe',
-      keyB: localStorage.getItem('keyB') ? 'existe' : 'no existe',
-      keyC: localStorage.getItem('keyC') ? 'existe' : 'no existe',
-      backoffice_token: localStorage.getItem('backoffice_token') ? 'existe' : 'no existe'
-    });
+   
 
     if (!rol || rol === '' || rol === '0' || rol === 'undefined' || rolNumber === null || isNaN(rolNumber)) {
       console.warn('AuthGuard - No hay rol válido, redirigiendo al login');
@@ -45,7 +35,6 @@ export class AuthGuard implements CanActivate {
       this.router.navigate(['forbidden']);
       return false;
     }
-    console.log('AuthGuard - Acceso permitido');
     return true;
 
   }

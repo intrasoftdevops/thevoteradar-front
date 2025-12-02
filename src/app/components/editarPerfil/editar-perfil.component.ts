@@ -97,12 +97,10 @@ export class EditarPerfilComponent implements OnInit {
   onSelect(event: any) {
     this.files = [];
     this.files.push(...event.addedFiles);
-    console.log(this.files)
   }
 
   onRemove(event: any) {
     this.files.splice(this.files.indexOf(event), 1);
-    console.log(this.files)
   }
 
 }

@@ -62,9 +62,6 @@ export class LoaderInterceptor implements HttpInterceptor {
           const isLaravelApi = url.includes('localhost:8000') || url.includes(environment.apiURL);
           const isConnectionRefused = err.status === 0 || err.statusText === 'Unknown Error';
           
-          console.log('LoaderInterceptor - Error en petición:', url);
-          console.log('LoaderInterceptor - Status:', err.status);
-          console.log('LoaderInterceptor - Es servicio de encuestas?', isSurveyApi);
           
           
           

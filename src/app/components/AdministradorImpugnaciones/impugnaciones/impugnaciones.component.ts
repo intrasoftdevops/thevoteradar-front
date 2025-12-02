@@ -129,7 +129,6 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
   }
 
   getSelectedValue(item: any) {
-    console.log("entro")
     if (item) {
       const data = { candidato_comparacion: item.codigo_unico };
       this.getImpugnaciones(data);
@@ -156,7 +155,6 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
 
   getImpugnaciones(data: any) {
     this.apiService.getImpugnacionesRevisadas(data).subscribe((resp: any) => {
-      console.log(resp);
       this.dataRevisar = resp.reportes_revisados;
       
       const categoriasMap = new Map(
@@ -184,13 +182,11 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     if (item) {
       this.selectedCategory = item.nombre;
 
-      console.log(this.originalDataImpugnar)
 
       this.dataImpugnar = this.originalDataImpugnar.filter((reporte: any) => {
         
         return reporte.category === this.selectedCategory;
       });
-      console.log(this.dataImpugnar)
       this.renderer();
     } else {
       this.dataImpugnar = this.originalDataImpugnar;
@@ -242,7 +238,6 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     this.urlImpugnados = this.sanitizer.bypassSecurityTrustResourceUrl(
       impugnar.e_14
     );
-    console.log(this.urlImpugnados);
     this.dataImpugnarActual = impugnar;
   }
 
@@ -256,11 +251,9 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
     } else {
       this.createForm.value['categoria_impugnacion'] = 9;
     }
-    console.log(this.createForm.value);
     this.apiService
       .impugnar(this.dataRevisarActual.id, this.createForm.value)
       .subscribe((resp: any) => {
-        console.log(resp);
 
         if (this.actual <= 9) {
           this.ModalRevisarActual(this.dataRevisar[this.actual]);
@@ -659,15 +652,12 @@ export class ImpugnacionesComponent implements OnInit, OnDestroy {
 
   seleccionarImpugnacion(impugnacion:any){
     this.impugnacionActual = impugnacion
-    console.log(this.impugnacionActual)
   }
 
   
 
   saveObservation(observaciones:any){
-     console.log(this.impugnacionActual)
      this.apiService.impugnar(this.impugnacionActual.id, this.impugnacionActual).subscribe((resp)=>{
-      console.log(resp)
      })
 
 

@@ -121,12 +121,8 @@ export class LoginComponent implements OnInit {
       const input = this.loginForm.value.telefono?.trim() || '';
       const password = this.loginForm.value.password;
 
-      console.log('LoginComponent - onSubmit llamado');
-      console.log('LoginComponent - Input:', input);
-      console.log('LoginComponent - Es email?', this.isEmail(input));
 
       if (this.isEmail(input)) {
-        console.log('LoginComponent - Llamando handleAdminLogin');
         this.handleAdminLogin(input, password);
         return;
       }
@@ -382,7 +378,6 @@ export class LoginComponent implements OnInit {
     }
 
     
-    console.log('Datos enviados al completar perfil:', profileData);
     
     this.apiService.completeProfile(profileData).subscribe({
       next: (resp: any) => {
@@ -539,36 +534,27 @@ export class LoginComponent implements OnInit {
   }
 
   handleAdminLogin(email: string, password: string) {
-    console.log('LoginComponent - handleAdminLogin llamado con email:', email);
     const tenantId = environment.defaultTenantId || this.TENANT_CODE || '475711';
-    console.log('LoginComponent - Tenant ID:', tenantId);
-    console.log('LoginComponent - Llamando backofficeAuth.login...');
     
     this.backofficeAuth.login(email, password, tenantId).subscribe({
       next: (response) => {
-        console.log('LoginComponent - Respuesta recibida:', response);
         this.isLoading = false;
         
-        console.log('LoginComponent - Verificando si es admin...');
         if (!this.backofficeAuth.isAdmin(response)) {
           console.warn('LoginComponent - Usuario no es admin, abortando');
           return;
         }
 
-        console.log('LoginComponent - Login exitoso, guardando datos...');
         this.localData.setBackofficeToken(response.access_token);
         this.localData.setBackofficeUser(response.user);
         this.localData.setToken(response.access_token);
-        console.log('LoginComponent - Guardando rol: 1');
         this.localData.setRol(1);
         this.localData.setId(response.user.email);
         this.permissionsService.addPermission(['1']);
         
-        console.log('LoginComponent - Datos guardados, navegando a adminHome');
         
         setTimeout(() => {
           const savedRol = this.localData.getRol();
-          console.log('LoginComponent - Verificación: Rol guardado?', savedRol);
         }, 100);
         
         this.router.navigate(['adminHome']);
