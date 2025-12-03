@@ -79,6 +79,8 @@ import { SurveyLandingComponent } from './components/public/survey-landing/surve
 import { AdminDashboardPageComponent } from './components/Admin/backoffice/admin-dashboard-page/admin-dashboard-page.component';
 import { AdminUsersManagementPageComponent } from './components/Admin/backoffice/admin-users-management-page/admin-users-management-page.component';
 import { AdminRankingsPageComponent } from './components/Admin/backoffice/admin-rankings-page/admin-rankings-page.component';
+import { WhatsAppTemplatesDashboardComponent } from './components/Admin/whatsapp/whatsapp-templates-dashboard/whatsapp-templates-dashboard.component';
+import { SendTemplateModalComponent } from './components/Admin/whatsapp/send-template-modal/send-template-modal.component';
 
 @NgModule({
   declarations: [
@@ -148,7 +150,9 @@ import { AdminRankingsPageComponent } from './components/Admin/backoffice/admin-
     SurveyLandingComponent,
     AdminDashboardPageComponent,
     AdminUsersManagementPageComponent,
-    AdminRankingsPageComponent
+    AdminRankingsPageComponent,
+    WhatsAppTemplatesDashboardComponent,
+    SendTemplateModalComponent
   ],
   imports: [
     BrowserModule,

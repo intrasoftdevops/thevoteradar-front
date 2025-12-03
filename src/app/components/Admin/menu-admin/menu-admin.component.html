@@ -270,6 +270,19 @@
                 Rankings
               </a>
             </li>
+            <li>
+              <a
+                class="dropdown-item transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
+                [routerLink]="['/admin/whatsapp/templates']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                <i class="fa-brands fa-whatsapp me-2"></i>
+                WhatsApp Difusión
+              </a>
+            </li>
           </ul>
         </li>
         <li class="nav-item align-middle">
