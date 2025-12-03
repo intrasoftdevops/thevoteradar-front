@@ -53,6 +53,7 @@ import { SurveyLandingComponent } from './components/public/survey-landing/surve
 import { AdminDashboardPageComponent } from './components/Admin/backoffice/admin-dashboard-page/admin-dashboard-page.component';
 import { AdminUsersManagementPageComponent } from './components/Admin/backoffice/admin-users-management-page/admin-users-management-page.component';
 import { AdminRankingsPageComponent } from './components/Admin/backoffice/admin-rankings-page/admin-rankings-page.component';
+import { WhatsAppTemplatesDashboardComponent } from './components/Admin/whatsapp/whatsapp-templates-dashboard/whatsapp-templates-dashboard.component';
 
 const routes: Routes = [
   {
@@ -127,6 +128,14 @@ const routes: Routes = [
   {
     path: 'admin/backoffice/rankings',
     component: AdminRankingsPageComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/whatsapp/templates',
+    component: WhatsAppTemplatesDashboardComponent,
     canActivate: [AuthGuard],
     data: {
       rol: [1]
