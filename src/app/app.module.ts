@@ -149,6 +149,7 @@ import { SendTemplateModalComponent } from './components/Admin/whatsapp/send-tem
     SurveyAnalyticsComponent,
     SurveyResponsesComponent,
     SurveyLandingComponent,
+    ShortLinkRedirectComponent,
     AdminDashboardPageComponent,
     AdminUsersManagementPageComponent,
     AdminRankingsPageComponent,
