@@ -52,6 +52,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { LoaderService } from './services/loader/loader.service';
 import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
 import { BackofficeTenantInterceptor } from './interceptors/backoffice-tenant-interceptor.service';
+import { SurveyDomainInterceptor } from './interceptors/survey-domain-interceptor.service';
 import { CrearSupervisorAdminComponent } from './components/Admin/crear-supervisor-admin/crear-supervisor-admin.component';
 import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordinador-admin/crear-coordinador-admin.component';
 import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
@@ -173,7 +174,8 @@ import { SendTemplateModalComponent } from './components/Admin/whatsapp/send-tem
     LogoutGuard,
     LoaderService,
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: BackofficeTenantInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: BackofficeTenantInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: SurveyDomainInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
