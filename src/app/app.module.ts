@@ -77,6 +77,7 @@ import { RecipientsModalComponent } from './components/Admin/surveys/recipients-
 import { SurveyAnalyticsComponent } from './components/Admin/surveys/survey-analytics/survey-analytics.component';
 import { SurveyResponsesComponent } from './components/Admin/surveys/survey-responses/survey-responses.component';
 import { SurveyLandingComponent } from './components/public/survey-landing/survey-landing.component';
+import { ShortLinkRedirectComponent } from './components/public/short-link-redirect/short-link-redirect.component';
 import { AdminDashboardPageComponent } from './components/Admin/backoffice/admin-dashboard-page/admin-dashboard-page.component';
 import { AdminUsersManagementPageComponent } from './components/Admin/backoffice/admin-users-management-page/admin-users-management-page.component';
 import { AdminRankingsPageComponent } from './components/Admin/backoffice/admin-rankings-page/admin-rankings-page.component';
