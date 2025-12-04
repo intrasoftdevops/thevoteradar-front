@@ -65,6 +65,9 @@ export class ShortLinkRedirectComponent implements OnInit {
     }
     backendBase = backendBase.replace(/\/$/, ''); // Remover trailing slash
     
+    console.log(`[ShortLinkRedirect] Obteniendo long_url para short code: ${this.shortCode}`);
+    console.log(`[ShortLinkRedirect] Backend base: ${backendBase}`);
+    
     // Hacer fetch al backend para obtener la redirección
     // El backend reconstruirá la long_url con el dominio del frontend actual
     fetch(`${backendBase}/${this.shortCode}`, {
@@ -78,37 +81,69 @@ export class ShortLinkRedirectComponent implements OnInit {
       },
     })
     .then(response => {
+      console.log(`[ShortLinkRedirect] Respuesta del backend: ${response.status}`);
+      
       // Si el backend devuelve un redirect (302/301), extraer la Location
-      if (response.status === 302 || response.status === 301) {
+      if (response.status === 302 || response.status === 301 || response.status === 307 || response.status === 308) {
         const location = response.headers.get('Location');
+        console.log(`[ShortLinkRedirect] Location header: ${location}`);
+        
         if (location) {
-          // La location ya viene con el dominio correcto desde el backend
-          // Redirigir a esa URL
-          window.location.href = location;
+          // Parsear la URL para extraer path y query params
+          try {
+            const url = new URL(location, window.location.origin);
+            const path = url.pathname;
+            const search = url.search;
+            const fullPath = path + search;
+            
+            console.log(`[ShortLinkRedirect] Redirigiendo a: ${fullPath}`);
+            
+            // Usar router.navigate en lugar de window.location.href para evitar loops
+            // Si la URL es del mismo dominio, usar router.navigate
+            if (url.hostname === window.location.hostname || url.hostname === currentHost) {
+              this.router.navigateByUrl(fullPath).catch(err => {
+                console.error('[ShortLinkRedirect] Error al navegar:', err);
+                // Si falla la navegación con router, usar window.location como fallback
+                window.location.href = location;
+              });
+            } else {
+              // Si es otro dominio, usar window.location
+              window.location.href = location;
+            }
+          } catch (e) {
+            console.error('[ShortLinkRedirect] Error al parsear URL:', e);
+            // Si la location es relativa, intentar navegar directamente
+            if (location.startsWith('/')) {
+              this.router.navigateByUrl(location).catch(() => {
+                window.location.href = location;
+              });
+            } else {
+              this.handleError();
+            }
+          }
         } else {
+          console.error('[ShortLinkRedirect] No se encontró header Location en la respuesta');
           this.handleError();
         }
-      } else if (response.ok) {
-        // Si la respuesta es OK, intentar obtener la URL del body o headers
-        const location = response.headers.get('Location');
-        if (location) {
-          window.location.href = location;
-        } else {
-          this.handleError();
-        }
+      } else if (response.status === 404) {
+        console.error('[ShortLinkRedirect] Short code no encontrado (404)');
+        this.handleError();
       } else {
+        console.error(`[ShortLinkRedirect] Respuesta inesperada del backend: ${response.status}`);
         this.handleError();
       }
     })
     .catch(error => {
-      console.error('Error al obtener short link del backend:', error);
+      console.error('[ShortLinkRedirect] Error al obtener short link del backend:', error);
       this.handleError();
     });
   }
 
   handleError(): void {
     // Si hay error o el short code no existe, redirigir al inicio
-    this.router.navigate(['/']);
+    console.error('[ShortLinkRedirect] Error: redirigiendo al inicio');
+    // Usar replace para evitar que el usuario pueda volver atrás a una página de error
+    this.router.navigate(['/'], { replaceUrl: true });
   }
 }
 
