@@ -10,7 +10,7 @@ export const environment = {
   apiURL: runtimeEnv.apiURL || '',
   backofficeApiURL: runtimeEnv.backofficeApiURL || '',
   surveyApiURL: runtimeEnv.surveyApiURL || '',
-  defaultTenantId: runtimeEnv.defaultTenantId || '475711',
+  defaultTenantId: runtimeEnv.defaultTenantId || '473173',
   key1: runtimeEnv.key1 || '',
   key2: runtimeEnv.key2 || '',
   key3: runtimeEnv.key3 || '',
