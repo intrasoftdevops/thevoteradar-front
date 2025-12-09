@@ -31,4 +31,13 @@ export class AlertService {
     });
   }
 
+  infoAlert(message: any) {
+    Swal.fire({
+      icon: 'info',
+      title: 'Información',
+      text: message,
+      confirmButtonText: 'Entendido'
+    });
+  }
+
 }

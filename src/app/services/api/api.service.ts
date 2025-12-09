@@ -20,6 +20,23 @@ export class ApiService {
     return this.http.post(this._URL + "/login", data);
   }
 
+  
+  tenantLogin(data: any) {
+    return this.http.post(this._URL + "/login", data);
+  }
+
+  requestOtp(data: any) {
+    return this.http.post(this._URL + "/tenant/auth/request-otp", data);
+  }
+
+  verifyOtp(data: any) {
+    return this.http.post(this._URL + "/tenant/auth/verify-otp", data);
+  }
+
+  completeProfile(data: any) {
+    return this.http.post(this._URL + "/tenant/auth/complete-profile", data);
+  }
+
   createGerente(data: any) {
     return this.http.post(this._URL + "/crear-gerente", data, { headers: this.getHeaders() });
   }

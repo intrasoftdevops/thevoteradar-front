@@ -20,14 +20,13 @@ export class DropdownMenuUsersComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Contador de inactividad
+    
     this.inactivityService.inactivityObservable.subscribe(() => {
-      // Realiza acciones cuando se detecta inactividad, como cerrar la sesión del usuario
+      
       this.logout();
-      console.log('Inactividad detectada');
     });
 
-    // Reinicia el temporizador de inactividad cuando ocurran eventos de actividad
+    
     window.addEventListener('mousemove', () => this.inactivityService.resetTimer());
     window.addEventListener('click', () => this.inactivityService.resetTimer());
     window.addEventListener('keypress', () => this.inactivityService.resetTimer());

@@ -1,4 +1,3 @@
-// loader-interceptor.service.ts
 import { Injectable } from '@angular/core';
 import {
   HttpResponse,
@@ -30,7 +29,7 @@ export class LoaderInterceptor implements HttpInterceptor {
     if (i >= 0) {
       this.requests.splice(i, 1);
     }
-    // No mostrar loading en modo development
+    
     if (!environment.development) {
       this.loaderService.isLoading.next(this.requests.length > 0);
     }
@@ -42,29 +41,52 @@ export class LoaderInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     this.requests.push(req);
 
-    //console.log("No of requests--->" + this.requests.length);
+    
 
-    // No mostrar loading en modo development
+    
     if (!environment.development) {
       this.loaderService.isLoading.next(true);
     }
     return Observable.create((observer: any) => {
       const subscription = next.handle(req).subscribe(
         (event) => {
-          //console.log(event)
+          
           if (event instanceof HttpResponse) {
             this.removeRequest(req);
             observer.next(event);
           }
         },
         (err) => {
+          const url = req.url;
+          const isSurveyApi = url.includes('localhost:8001') || url.includes('/api/v1/');
+          const isLaravelApi = url.includes('localhost:8000') || url.includes(environment.apiURL);
+          const isConnectionRefused = err.status === 0 || err.statusText === 'Unknown Error';
+          
+          
+          
+          
+          if ((isConnectionRefused && isLaravelApi) || url.includes('contactos-usuario')) {
+            console.warn('LoaderInterceptor - Servidor Laravel no disponible o petición de contactos, omitiendo alerta de error');
+            this.removeRequest(req);
+            observer.error(err);
+            return;
+          }
+          
           if (err.status !== 401) {
             this.alertService.errorAlert(
               'Ha ocurrido un error. Por favor intente nuevamente.'
             );
           } else {
-            this.localData.deleteCookies();
-            window.location.reload();
+            
+            
+            if (!isSurveyApi) {
+              console.warn('LoaderInterceptor - Error 401 en petición no relacionada con encuestas, limpiando localStorage');
+              this.localData.deleteCookies();
+              window.location.reload();
+            } else {
+              console.warn('LoaderInterceptor - Error 401 en servicio de encuestas, NO limpiando localStorage');
+              
+            }
           }
           this.removeRequest(req);
           observer.error(err);
@@ -74,7 +96,7 @@ export class LoaderInterceptor implements HttpInterceptor {
           observer.complete();
         }
       );
-      // remove request from queue when cancelled
+      
       return () => {
         this.removeRequest(req);
         subscription.unsubscribe();

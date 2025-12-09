@@ -51,6 +51,8 @@ import { ImpugnadorHomeComponent } from './components/Impugnador/impugnador-home
 import { LoadingComponent } from './components/loading/loading.component';
 import { LoaderService } from './services/loader/loader.service';
 import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
+import { BackofficeTenantInterceptor } from './interceptors/backoffice-tenant-interceptor.service';
+import { SurveyDomainInterceptor } from './interceptors/survey-domain-interceptor.service';
 import { CrearSupervisorAdminComponent } from './components/Admin/crear-supervisor-admin/crear-supervisor-admin.component';
 import { CrearCoordinadorAdminComponent } from './components/Admin/crear-coordinador-admin/crear-coordinador-admin.component';
 import { CrearTestigoAdminComponent } from './components/Admin/crear-testigo-admin/crear-testigo-admin.component';
@@ -68,6 +70,19 @@ import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
 import { ImpugnacionesComponent } from './components/AdministradorImpugnaciones/impugnaciones/impugnaciones.component';
 import { HomeComponent } from './components/AdministradorImpugnaciones/home/home.component';
 import { MenuAdministradorImpugnacionesComponent } from './components/AdministradorImpugnaciones/menu-administrador-impugnaciones/menu-administrador-impugnaciones.component';
+import { ThemeSelectorComponent } from './components/shared/theme-selector/theme-selector.component';
+import { SurveyDashboardComponent } from './components/Admin/surveys/survey-dashboard/survey-dashboard.component';
+import { SurveyBuilderComponent } from './components/Admin/surveys/survey-builder/survey-builder.component';
+import { RecipientsModalComponent } from './components/Admin/surveys/recipients-modal/recipients-modal.component';
+import { SurveyAnalyticsComponent } from './components/Admin/surveys/survey-analytics/survey-analytics.component';
+import { SurveyResponsesComponent } from './components/Admin/surveys/survey-responses/survey-responses.component';
+import { SurveyLandingComponent } from './components/public/survey-landing/survey-landing.component';
+import { ShortLinkRedirectComponent } from './components/public/short-link-redirect/short-link-redirect.component';
+import { AdminDashboardPageComponent } from './components/Admin/backoffice/admin-dashboard-page/admin-dashboard-page.component';
+import { AdminUsersManagementPageComponent } from './components/Admin/backoffice/admin-users-management-page/admin-users-management-page.component';
+import { AdminRankingsPageComponent } from './components/Admin/backoffice/admin-rankings-page/admin-rankings-page.component';
+import { WhatsAppTemplatesDashboardComponent } from './components/Admin/whatsapp/whatsapp-templates-dashboard/whatsapp-templates-dashboard.component';
+import { SendTemplateModalComponent } from './components/Admin/whatsapp/send-template-modal/send-template-modal.component';
 
 @NgModule({
   declarations: [
@@ -127,7 +142,20 @@ import { MenuAdministradorImpugnacionesComponent } from './components/Administra
     CambiarRolGerenteComponent,
     ImpugnacionesComponent,
     HomeComponent,
-    MenuAdministradorImpugnacionesComponent
+    MenuAdministradorImpugnacionesComponent,
+    ThemeSelectorComponent,
+    SurveyDashboardComponent,
+    SurveyBuilderComponent,
+    RecipientsModalComponent,
+    SurveyAnalyticsComponent,
+    SurveyResponsesComponent,
+    SurveyLandingComponent,
+    ShortLinkRedirectComponent,
+    AdminDashboardPageComponent,
+    AdminUsersManagementPageComponent,
+    AdminRankingsPageComponent,
+    WhatsAppTemplatesDashboardComponent,
+    SendTemplateModalComponent
   ],
   imports: [
     BrowserModule,
@@ -136,7 +164,7 @@ import { MenuAdministradorImpugnacionesComponent } from './components/Administra
     FormsModule,
     ReactiveFormsModule,
     NgSelectModule,
-    HammerModule, // <-- For Angular 9
+    HammerModule, 
     LightboxModule,
     NgxDropzoneModule,
     DataTablesModule,
@@ -147,7 +175,9 @@ import { MenuAdministradorImpugnacionesComponent } from './components/Administra
     AuthGuard,
     LogoutGuard,
     LoaderService,
-    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: BackofficeTenantInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: SurveyDomainInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

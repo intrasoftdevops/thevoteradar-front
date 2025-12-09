@@ -24,13 +24,30 @@ export class LocalDataService {
   }
 
   setRol(rol: any) {
-    const rolEncrypt = CryptoJS.AES.encrypt(rol.toString(), environment.key2).toString();
-    localStorage.setItem('keyB', rolEncrypt);
-    this.router.navigateByUrl('/');
+    try {
+      const rolString = rol.toString();
+      const rolEncrypt = CryptoJS.AES.encrypt(rolString, environment.key2).toString();
+      localStorage.setItem('keyB', rolEncrypt);
+      
+      const saved = localStorage.getItem('keyB');
+      
+    } catch (error) {
+    }
   }
 
   getRol() {
-    return CryptoJS.AES.decrypt(localStorage.getItem('keyB') ?? "0", environment.key2).toString(CryptoJS.enc.Utf8);
+    try {
+      const encrypted = localStorage.getItem('keyB');
+      if (!encrypted) {
+        return '';
+      }
+      const decrypted = CryptoJS.AES.decrypt(encrypted, environment.key2).toString(CryptoJS.enc.Utf8);
+      
+      return decrypted && decrypted !== '0' ? decrypted : '';
+    } catch (error) {
+      console.error('Error al obtener rol:', error);
+      return '';
+    }
   }
 
   setId(id: any) {
@@ -48,6 +65,47 @@ export class LocalDataService {
 
   decryptIdUser(id: any){
     return CryptoJS.AES.decrypt(id.toString()?? '', environment.key4).toString(CryptoJS.enc.Utf8);
+  }
+
+  setBackofficeToken(token: string) {
+    const tokenEncrypt = CryptoJS.AES.encrypt(token, environment.key1).toString();
+    localStorage.setItem('backoffice_token', tokenEncrypt);
+    this.setToken(token);
+  }
+
+  getBackofficeToken(): string | null {
+    try {
+      const encrypted = localStorage.getItem('backoffice_token');
+      if (!encrypted) {
+        return this.getToken();
+      }
+      return CryptoJS.AES.decrypt(encrypted, environment.key1).toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+      console.error('Error al obtener token de backoffice:', error);
+      return null;
+    }
+  }
+
+  setBackofficeUser(userInfo: any) {
+    const userEncrypt = CryptoJS.AES.encrypt(JSON.stringify(userInfo), environment.key2).toString();
+    localStorage.setItem('backoffice_user', userEncrypt);
+  }
+
+  getBackofficeUser(): any | null {
+    try {
+      const encrypted = localStorage.getItem('backoffice_user');
+      if (!encrypted) return null;
+      const decrypted = CryptoJS.AES.decrypt(encrypted, environment.key2).toString(CryptoJS.enc.Utf8);
+      return JSON.parse(decrypted);
+    } catch (error) {
+      console.error('Error al obtener usuario de backoffice:', error);
+      return null;
+    }
+  }
+
+  isBackofficeAuthenticated(): boolean {
+    const token = this.getBackofficeToken();
+    return token !== null && token !== '' && token !== 'undefined';
   }
 
 }

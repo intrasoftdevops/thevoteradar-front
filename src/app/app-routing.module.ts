@@ -43,8 +43,19 @@ import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { CambiarRolGerenteComponent } from './components/Admin/cambiar-rol-gerente/cambiar-rol-gerente.component';
 import { AuthGuard } from './guards/AuthGuard/auth.guard';
 import { LogoutGuard } from './guards/LogoutGuard/logout.guard';
+import { ShortCodeGuard } from './guards/ShortCodeGuard/short-code.guard';
 import { ImpugnacionesComponent } from './components/AdministradorImpugnaciones/impugnaciones/impugnaciones.component';
 import { MenuAdministradorImpugnacionesComponent } from './components/AdministradorImpugnaciones/menu-administrador-impugnaciones/menu-administrador-impugnaciones.component';
+import { SurveyDashboardComponent } from './components/Admin/surveys/survey-dashboard/survey-dashboard.component';
+import { SurveyBuilderComponent } from './components/Admin/surveys/survey-builder/survey-builder.component';
+import { SurveyAnalyticsComponent } from './components/Admin/surveys/survey-analytics/survey-analytics.component';
+import { SurveyResponsesComponent } from './components/Admin/surveys/survey-responses/survey-responses.component';
+import { SurveyLandingComponent } from './components/public/survey-landing/survey-landing.component';
+import { ShortLinkRedirectComponent } from './components/public/short-link-redirect/short-link-redirect.component';
+import { AdminDashboardPageComponent } from './components/Admin/backoffice/admin-dashboard-page/admin-dashboard-page.component';
+import { AdminUsersManagementPageComponent } from './components/Admin/backoffice/admin-users-management-page/admin-users-management-page.component';
+import { AdminRankingsPageComponent } from './components/Admin/backoffice/admin-rankings-page/admin-rankings-page.component';
+import { WhatsAppTemplatesDashboardComponent } from './components/Admin/whatsapp/whatsapp-templates-dashboard/whatsapp-templates-dashboard.component';
 
 const routes: Routes = [
   {
@@ -59,6 +70,74 @@ const routes: Routes = [
   {
     path: 'adminHome',
     component: AdminHomeComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/surveys',
+    component: SurveyDashboardComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/surveys/builder/:surveyId',
+    component: SurveyBuilderComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/surveys/analytics/:surveyId',
+    component: SurveyAnalyticsComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/surveys/responses/:surveyId',
+    component: SurveyResponsesComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'survey/:surveyId',
+    component: SurveyLandingComponent
+  },
+  {
+    path: 'admin/backoffice/dashboard',
+    component: AdminDashboardPageComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/backoffice/users',
+    component: AdminUsersManagementPageComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/backoffice/rankings',
+    component: AdminRankingsPageComponent,
+    canActivate: [AuthGuard],
+    data: {
+      rol: [1]
+    }
+  },
+  {
+    path: 'admin/whatsapp/templates',
+    component: WhatsAppTemplatesDashboardComponent,
     canActivate: [AuthGuard],
     data: {
       rol: [1]
@@ -296,7 +375,7 @@ const routes: Routes = [
       rol: [5]
     }
   },
-  //No olvidar cambiar id para poder utilizar el forbidden.
+  
   {
     path: 'impugnar',
     component: ImpugnarComponent,
@@ -384,6 +463,11 @@ const routes: Routes = [
     data: {
       rol: [7]
     }
+  },
+  {
+    path: ':shortCode',
+    component: ShortLinkRedirectComponent,
+    canActivate: [ShortCodeGuard],
   },
   {
     path: '**',

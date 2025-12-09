@@ -1,0 +1,21 @@
+// Solo estilos necesarios para estados que Bootstrap/Angular controlan dinámicamente
+// y que no podemos manejar con Tailwind desde el HTML
+
+// Clases agregadas por routerLinkActive
+:host ::ng-deep .link-active {
+  background-color: var(--color-accent) !important;
+  color: var(--color-surface) !important;
+  border-radius: 0.25rem;
+}
+
+:host ::ng-deep .sublink-active {
+  background-color: var(--color-accent) !important;
+  color: var(--color-surface) !important;
+}
+
+// Estados dinámicos de Bootstrap (.show) - agregados por JavaScript de Bootstrap
+:host ::ng-deep .nav-link.show,
+:host ::ng-deep .dropdown-toggle.show {
+  background-color: var(--color-accent) !important;
+  color: var(--color-surface) !important;
+}

@@ -1,24 +1,15 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" routerLink="/adminHome">
-      <img src="../../../../assets/logo.png" class="img-logo" alt="logo" />
+<nav class="navbar navbar-dark" [style.background-color]="'var(--color-primary)'" [style.border-bottom]="'2px solid var(--color-accent)'" [style.color]="'var(--color-surface)'">
+  <div class="container d-flex align-items-center justify-content-between">
+    <a class="navbar-brand d-flex align-items-center hover:opacity-80 transition-opacity" routerLink="/adminHome">
+      <img [src]="logo" class="img-logo" alt="logo" />
     </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ms-auto text-center">
+    <ul class="navbar-nav d-flex flex-column flex-lg-row align-items-center gap-2 gap-lg-4 ms-auto mb-0">
         <li class="nav-item align-middle">
           <a
-            class="nav-link px-xl-3 text-white"
+            class="nav-link px-xl-3 transition-all duration-300"
+            [style.color]="'var(--color-surface)'"
+            (mouseenter)="onNavLinkHoverEnter($event)"
+            (mouseleave)="onNavLinkHoverLeave($event)"
             aria-current="page"
             [routerLink]="['/adminHome']"
             [routerLinkActive]="['link-active']"
@@ -32,7 +23,10 @@
           [routerLinkActive]="['link-active']"
         >
           <a
-            class="nav-link px-xl-3 text-white"
+            class="nav-link px-xl-3 transition-all duration-300"
+            [style.color]="'var(--color-surface)'"
+            (mouseenter)="onNavLinkHoverEnter($event)"
+            (mouseleave)="onNavLinkHoverLeave($event)"
             href="#"
             id="navbarDropdown"
             role="button"
@@ -43,12 +37,17 @@
             <span class="fs-5 align-middle">Crear usuarios</span>
           </a>
           <ul
-            class="dropdown-menu bg-dark border border-secondary"
+            class="dropdown-menu transition-colors"
+            [style.background-color]="'var(--color-primary)'"
+            [style.border-color]="'var(--color-accent)'"
             aria-labelledby="navbarDropdown"
           >
             <li>
               <a
-                class="dropdown-item text-white fs-6"
+                class="dropdown-item fs-6 transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
                 [routerLink]="['/crearGerente']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -57,7 +56,10 @@
             </li>
             <li>
               <a
-                class="dropdown-item text-white fs-6"
+                class="dropdown-item fs-6 transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
                 [routerLink]="['/crearSupervisorAdmin']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -66,7 +68,10 @@
             </li>
             <li>
               <a
-                class="dropdown-item text-white fs-6"
+                class="dropdown-item fs-6 transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
                 [routerLink]="['/crearCoordinadorAdmin']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -75,7 +80,10 @@
             </li>
             <li>
               <a
-                class="dropdown-item text-white fs-6"
+                class="dropdown-item fs-6 transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
                 [routerLink]="['/crearTestigoAdmin']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -89,7 +97,10 @@
           [routerLinkActive]="['link-active']"
         >
           <a
-            class="nav-link px-xl-3 text-white"
+            class="nav-link px-xl-3 transition-all duration-300"
+            [style.color]="'var(--color-surface)'"
+            (mouseenter)="onNavLinkHoverEnter($event)"
+            (mouseleave)="onNavLinkHoverLeave($event)"
             href="#"
             id="navbarDropdown"
             role="button"
@@ -100,12 +111,17 @@
             <span class="fs-5 align-middle">Consultar</span>
           </a>
           <ul
-            class="dropdown-menu bg-dark border border-secondary"
+            class="dropdown-menu transition-colors"
+            [style.background-color]="'var(--color-primary)'"
+            [style.border-color]="'var(--color-accent)'"
             aria-labelledby="navbarDropdown"
           >
             <li>
               <a
-                class="dropdown-item text-white"
+                class="dropdown-item transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
                 [routerLink]="['/consultarEquipoAdmin']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -114,7 +130,10 @@
             </li>
             <li>
               <a
-                class="dropdown-item text-white"
+                class="dropdown-item transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
                 [routerLink]="['/estadisticasEquipoAdmin']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -128,7 +147,10 @@
           [routerLinkActive]="['link-active']"
         >
           <a
-            class="nav-link px-xl-3 text-white"
+            class="nav-link px-xl-3 transition-all duration-300"
+            [style.color]="'var(--color-surface)'"
+            (mouseenter)="onNavLinkHoverEnter($event)"
+            (mouseleave)="onNavLinkHoverLeave($event)"
             href="#"
             id="navbarDropdown"
             role="button"
@@ -139,12 +161,17 @@
             <span class="fs-5 align-middle">Usuarios</span>
           </a>
           <ul
-            class="dropdown-menu bg-dark border border-secondary"
+            class="dropdown-menu transition-colors"
+            [style.background-color]="'var(--color-primary)'"
+            [style.border-color]="'var(--color-accent)'"
             aria-labelledby="navbarDropdown"
           >
             <li>
               <a
-                class="dropdown-item text-white"
+                class="dropdown-item transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
                 [routerLink]="['/consultarGerente']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -153,7 +180,7 @@
             </li>
             <li>
               <a
-                class="dropdown-item text-white d-none"
+                class="dropdown-item d-none"
                 [routerLink]="['/consultarSupervisor']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -162,7 +189,7 @@
             </li>
             <li>
               <a
-                class="dropdown-item text-white d-none"
+                class="dropdown-item d-none"
                 [routerLink]="['/consultarCoordinador']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -171,7 +198,7 @@
             </li>
             <li>
               <a
-                class="dropdown-item text-white d-none"
+                class="dropdown-item d-none"
                 [routerLink]="['/consultarTestigo']"
                 [routerLinkActive]="['sublink-active']"
               >
@@ -180,9 +207,103 @@
             </li>
           </ul>
         </li>
+        <li
+          class="nav-item dropdown align-middle"
+          [routerLinkActive]="['link-active']"
+        >
+          <a
+            class="nav-link px-xl-3 transition-all duration-300 dropdown-toggle"
+            [style.color]="'var(--color-surface)'"
+            (mouseenter)="onNavLinkHoverEnter($event)"
+            (mouseleave)="onNavLinkHoverLeave($event)"
+            href="#"
+            id="navbarDropdownBackoffice"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-chart-line fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Backoffice</span>
+          </a>
+          <ul
+            class="dropdown-menu"
+            [style.background-color]="'var(--color-primary)'"
+            [style.border-color]="'var(--color-accent)'"
+            aria-labelledby="navbarDropdownBackoffice"
+          >
+            <li>
+              <a
+                class="dropdown-item transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
+                [routerLink]="['/admin/backoffice/dashboard']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                <i class="fa-solid fa-chart-pie me-2"></i>
+                Dashboard
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
+                [routerLink]="['/admin/backoffice/users']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                <i class="fa-solid fa-users me-2"></i>
+                Gestión de Usuarios
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
+                [routerLink]="['/admin/backoffice/rankings']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                <i class="fa-solid fa-trophy me-2"></i>
+                Rankings
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item transition-all duration-200"
+                [style.color]="'var(--color-surface)'"
+                (mouseenter)="onDropdownItemHoverEnter($event)"
+                (mouseleave)="onDropdownItemHoverLeave($event)"
+                [routerLink]="['/admin/whatsapp/templates']"
+                [routerLinkActive]="['sublink-active']"
+              >
+                <i class="fa-brands fa-whatsapp me-2"></i>
+                WhatsApp Difusión
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="nav-item align-middle">
           <a
-            class="nav-link px-xl-3 text-white"
+            class="nav-link px-xl-3 transition-all duration-300"
+            [style.color]="'var(--color-surface)'"
+            (mouseenter)="onNavLinkHoverEnter($event)"
+            (mouseleave)="onNavLinkHoverLeave($event)"
+            [routerLink]="['/admin/surveys']"
+            [routerLinkActive]="['link-active']"
+          >
+            <i class="fa-solid fa-clipboard-list fa-lg align-middle me-2"></i>
+            <span class="fs-5 align-middle">Encuestas</span>
+          </a>
+        </li>
+        <li class="nav-item align-middle">
+          <a
+            class="nav-link px-xl-3 transition-all duration-300"
+            [style.color]="'var(--color-surface)'"
+            (mouseenter)="onNavLinkHoverEnter($event)"
+            (mouseleave)="onNavLinkHoverLeave($event)"
             data-bs-toggle="offcanvas"
             href="#offcanvasExample"
             [routerLinkActive]="['link-active']"
@@ -195,7 +316,6 @@
         </li>
         <app-dropdown-menu-users class="my-auto"></app-dropdown-menu-users>
       </ul>
-    </div>
   </div>
 </nav>
 <app-contactos></app-contactos>

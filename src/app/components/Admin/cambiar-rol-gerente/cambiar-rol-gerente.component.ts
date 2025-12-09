@@ -77,7 +77,6 @@ export class CambiarRolGerenteComponent implements OnInit {
     if (this.rolActual == 3) {
       if (this.updateFormSupervisor.valid) {
         delete this.updateFormSupervisor.value.departamento;
-        console.log(this.updateFormSupervisor.value)
       } else {
 
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -86,7 +85,6 @@ export class CambiarRolGerenteComponent implements OnInit {
       if (this.updateFormCoordinador.valid) {
         delete this.updateFormCoordinador.value.departamento;
         delete this.updateFormCoordinador.value.municipio;
-        console.log(this.updateFormCoordinador.value)
       } else {
 
         this.alertService.errorAlert("Llene los campos obligatorios.");
@@ -96,9 +94,7 @@ export class CambiarRolGerenteComponent implements OnInit {
         delete this.updateFormTestigo.value.departamento;
         delete this.updateFormTestigo.value.municipio;
         delete this.updateFormTestigo.value.zona;
-        console.log(this.updateFormTestigo.value);
         this.apiService.changeRole(this.idGerente, this.updateFormTestigo.value).subscribe((resp: any) => {
-          console.log(resp)
         })
       } else {
 
@@ -111,7 +107,6 @@ export class CambiarRolGerenteComponent implements OnInit {
     this.idGerente = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
     this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
 
-      console.log(resp)
 
       const { gerente, departamentos_asignados, municipios_asignados } = resp;
       if (gerente) {
@@ -190,16 +185,16 @@ export class CambiarRolGerenteComponent implements OnInit {
     this.dataZones = [];
     this.dataStations = [];
     this.dataTables = [];
-    //Supervisor
+    
     this.updateFormControlSupervisor['departamento'].reset();
     this.updateFormControlSupervisor['municipio'].reset();
     this.updateFormControlSupervisor['zonas'].reset();
-    //Coordinador
+    
     this.updateFormControlCoordinador['departamento'].reset();
     this.updateFormControlCoordinador['municipio'].reset();
     this.updateFormControlCoordinador['zona'].reset();
     this.updateFormControlCoordinador['puestos'].reset();
-    //Testigo
+    
     this.updateFormControlTestigo['departamento'].reset();
     this.updateFormControlTestigo['municipio'].reset();
     this.updateFormControlTestigo['zona'].reset();
@@ -224,14 +219,14 @@ export class CambiarRolGerenteComponent implements OnInit {
   }
 
   getSelectedDepartment(item: any) {
-    //Supervisor
+    
     this.updateFormControlSupervisor['municipio'].reset();
     this.updateFormControlSupervisor['zonas'].reset();
-    //Coordinador
+    
     this.updateFormControlCoordinador['municipio'].reset();
     this.updateFormControlCoordinador['zona'].reset();
     this.updateFormControlCoordinador['puestos'].reset();
-    //Testigo
+    
     this.updateFormControlTestigo['municipio'].reset();
     this.updateFormControlTestigo['zona'].reset();
     this.updateFormControlTestigo['puesto'].reset();
@@ -247,12 +242,12 @@ export class CambiarRolGerenteComponent implements OnInit {
   }
 
   getSelectedMunicipal(item: any) {
-    //Supervisor
+    
     this.updateFormControlSupervisor['zonas'].reset();
-    //Coordinador
+    
     this.updateFormControlCoordinador['zona'].reset();
     this.updateFormControlCoordinador['puestos'].reset();
-    //Testigo
+    
     this.updateFormControlTestigo['zona'].reset();
     this.updateFormControlTestigo['puesto'].reset();
     this.updateFormControlTestigo['mesas'].reset();
@@ -268,9 +263,9 @@ export class CambiarRolGerenteComponent implements OnInit {
   }
 
   getSelectedZone(item: any) {
-    //Coordinador
+    
     this.updateFormControlCoordinador['puestos'].reset();
-    //Testigo
+    
     this.updateFormControlTestigo['puesto'].reset();
     this.updateFormControlTestigo['mesas'].reset();
     if (item) {
@@ -284,7 +279,7 @@ export class CambiarRolGerenteComponent implements OnInit {
   }
 
   getSelectedStation(item: any) {
-    //Testigo
+    
     this.updateFormControlTestigo['mesas'].reset();
     if (item) {
       const codigo_unico = this.getCode(item);

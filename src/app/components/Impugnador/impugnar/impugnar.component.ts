@@ -76,12 +76,12 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     
 
 
-    //this.dataTableOptions();
+    
     this.getInteresesCandidato();
     this.getNameUser()
     this.getCliente()
     const data = 0
-    //this.getImpugnaciones(data)
+    
     this.getCategoriaImpugnacion()
   }
 
@@ -142,11 +142,9 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   }
 
   getImpugnaciones(data: any) {
-    console.log("entro")
     this.apiService.getImpugnaciones(data).subscribe((resp: any) => {
-      console.log(resp)
         this.dataRevisar = resp;
-       // this.actual = this.dataRevisar.length
+       
        if(this.dataRevisar.length == 0) {
         this.successAlert("No se encontraron reportes")
        }
@@ -176,12 +174,9 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   
 
   ModalRevisarActual(porrevisar: any) {
-    console.log("entro")
-    console.log(porrevisar)
     
     this.apiService.getReporteTransmision(porrevisar.id).subscribe((resp:any)=>{
         const revisar = resp
-        console.log(resp)
        
         this.dataRevisarActual = revisar;
         this.createForm
@@ -214,33 +209,26 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
     this.actual++
     const pagina: any = this.createForm.get('pagina')
     const observaciones:any = this.createForm.get('observaciones')
-   console.log(pagina.value)
     if(pagina.value === null && observaciones.value === null){
       this.createForm.value['categoria_impugnacion'] = null
-      console.log("vacio")
     }
     else{
       this.createForm.value['categoria_impugnacion'] = 9
     }
-      console.log(this.createForm.value)
       this.apiService
         .impugnar(this.dataRevisarActual.id, this.createForm.value)
         .subscribe((resp: any) => {
-          console.log(resp)
           
           
           if (this.dataRevisar.length > 1) {
-            console.log(this.dataRevisar.length )
-            console.log(this.actual)
             
             this.ModalRevisarActual(this.dataRevisar[this.actual]);
             if(this.actual == 9){
-              console.log("Son iguales")
               window.location.reload()
             }
           }
           else if (this.dataRevisar.length  == 1){
-            //this.ModalRevisarActual(this.dataRevisar[this.actual]);
+            
             window.location.reload()
 
           }
@@ -291,7 +279,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
     this.dtOptions[1] = {
@@ -320,7 +308,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
     this.dtOptions[2] = {
@@ -349,7 +337,7 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       },
     };
   }
@@ -373,14 +361,14 @@ export class ImpugnarComponent implements OnInit, OnDestroy {
   atras(){
     this.actual--
     if (this.actual <= 9) {
-      //var rand = Math.floor(Math.random() * this.dataRevisar.length);
+      
       this.ModalRevisarActual(this.dataRevisar[this.actual]);
       
     } else {
       window.location.reload()
     }
-    this.createForm.get('pagina')?.reset(); // Limpiar el campo de página
-    this.createForm.get('observaciones')?.reset(); // Limpiar el campo de observaciones
+    this.createForm.get('pagina')?.reset(); 
+    this.createForm.get('observaciones')?.reset(); 
     this.renderer();
 
 

@@ -1,0 +1,229 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription, firstValueFrom } from 'rxjs';
+import { BackofficeAdminService } from '../../../../services/backoffice-admin/backoffice-admin.service';
+import { User, LocationsResponse } from '../../../../services/backoffice-admin/backoffice-admin.types';
+
+@Component({
+  selector: 'app-admin-users-management-page',
+  templateUrl: './admin-users-management-page.component.html',
+  styleUrls: ['./admin-users-management-page.component.scss']
+})
+export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
+  users: User[] = [];
+  filteredUsers: User[] = [];
+  locations: LocationsResponse | null = null;
+  loading = false;
+  error: string | null = null;
+  hasMore = false;
+  hasMoreFiltered = false;
+  
+  selectedCity = '';
+  selectedState = '';
+  selectedUser: User | null = null;
+  isFiltering = false;
+  filterError: string | null = null;
+  filterCursor: string | undefined;
+  activeFilter: { type: 'city' | 'state', value: string } | null = null;
+
+  private subscriptions: Subscription[] = [];
+
+  constructor(private adminService: BackofficeAdminService) { }
+
+  ngOnInit(): void {
+    // Subscribe to users
+    const usersSub = this.adminService.users$.subscribe(users => {
+      this.users = users;
+    });
+
+    // Subscribe to loading
+    const loadingSub = this.adminService.loading$.subscribe(loading => {
+      this.loading = loading;
+    });
+
+    // Subscribe to error
+    const errorSub = this.adminService.error$.subscribe(error => {
+      this.error = error;
+    });
+
+    // Subscribe to hasMore
+    const hasMoreSub = this.adminService.hasMore$.subscribe(hasMore => {
+      this.hasMore = hasMore;
+    });
+
+    // Subscribe to locations
+    const locationsSub = this.adminService.locations$.subscribe(locations => {
+      this.locations = locations;
+    });
+
+    this.subscriptions.push(usersSub, loadingSub, errorSub, hasMoreSub, locationsSub);
+
+    // Fetch initial data
+    this.adminService.fetchUsers({ limit: 50 });
+    this.adminService.fetchLocations();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  getCurrentUsers(): User[] {
+    return this.filteredUsers.length > 0 ? this.filteredUsers : this.users;
+  }
+
+  isFilterActive(): boolean {
+    return this.filteredUsers.length > 0;
+  }
+
+  async handleFilterByCity(reset: boolean = true): Promise<void> {
+    if (!this.selectedCity) return;
+    
+    this.isFiltering = true;
+    this.filterError = null;
+    
+    try {
+      const params = {
+        city: this.selectedCity,
+        limit: 50,
+        cursor: reset ? undefined : this.filterCursor
+      };
+      
+      const response = await firstValueFrom(this.adminService.getUsersByCity(params));
+      
+      if (response) {
+        if (reset) {
+          this.filteredUsers = response.users;
+          this.activeFilter = { type: 'city', value: this.selectedCity };
+        } else {
+          this.filteredUsers = [...this.filteredUsers, ...response.users];
+        }
+        
+        this.filterCursor = response.next_page_cursor;
+        this.hasMoreFiltered = !!response.next_page_cursor;
+      }
+    } catch (err: any) {
+      console.error('Error filtering by city:', err);
+      this.filterError = err.error?.detail || 'Error al filtrar por ciudad';
+    } finally {
+      this.isFiltering = false;
+    }
+  }
+
+  async handleFilterByState(reset: boolean = true): Promise<void> {
+    if (!this.selectedState) return;
+    
+    this.isFiltering = true;
+    this.filterError = null;
+    
+    try {
+      const params = {
+        state: this.selectedState,
+        limit: 50,
+        cursor: reset ? undefined : this.filterCursor
+      };
+      
+      const response = await firstValueFrom(this.adminService.getUsersByState(params));
+      
+      if (response) {
+        if (reset) {
+          this.filteredUsers = response.users;
+          this.activeFilter = { type: 'state', value: this.selectedState };
+        } else {
+          this.filteredUsers = [...this.filteredUsers, ...response.users];
+        }
+        
+        this.filterCursor = response.next_page_cursor;
+        this.hasMoreFiltered = !!response.next_page_cursor;
+      }
+    } catch (err: any) {
+      console.error('Error filtering by state:', err);
+      this.filterError = err.error?.detail || 'Error al filtrar por estado';
+    } finally {
+      this.isFiltering = false;
+    }
+  }
+
+  async loadMoreFiltered(): Promise<void> {
+    if (!this.activeFilter || !this.filterCursor || this.isFiltering) return;
+    
+    if (this.activeFilter.type === 'city') {
+      await this.handleFilterByCity(false);
+    } else {
+      await this.handleFilterByState(false);
+    }
+  }
+
+  handleClearFilters(): void {
+    this.selectedCity = '';
+    this.selectedState = '';
+    this.filteredUsers = [];
+    this.filterError = null;
+    this.filterCursor = undefined;
+    this.hasMoreFiltered = false;
+    this.activeFilter = null;
+    this.adminService.refreshUsers();
+  }
+
+  loadMore(): void {
+    this.adminService.loadMoreUsers();
+  }
+
+  openUserDetails(user: User): void {
+    this.selectedUser = user;
+  }
+
+  closeUserDetails(): void {
+    this.selectedUser = null;
+  }
+
+  formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('es-ES');
+  }
+
+  // Métodos helper para manejar eventos hover y focus con TypeScript
+  onButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.background = 'linear-gradient(to right, var(--color-accent), var(--color-primary))';
+    }
+  }
+
+  onButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.background = 'linear-gradient(to right, var(--color-primary), var(--color-accent))';
+    }
+  }
+
+  onDetailButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.1)';
+    }
+  }
+
+  onDetailButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'rgba(var(--color-primary-rgb), 0.3)';
+      target.style.backgroundColor = '';
+    }
+  }
+
+  onInputFocus(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.boxShadow = '0 0 0 2px rgba(var(--color-primary-rgb), 0.2)';
+    }
+  }
+
+  onInputBlur(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = '';
+      target.style.boxShadow = '';
+    }
+  }
+}
+

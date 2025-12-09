@@ -1,0 +1,174 @@
+name: CI/CD Pipeline - thevoteradar-front
+
+on:
+  push:
+    branches: [ main, dev ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - prod
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: package-lock.json
+
+    - name: 🔑 Authenticate to GCP
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: ☁️ Setup gcloud
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ vars.GCP_PROJECT_ID }}
+
+    - name: ✅ Verify gcloud auth
+      run: |
+        gcloud auth list
+        gcloud config list project
+        echo "✅ Authenticated successfully"
+
+    - name: 🐳 Configure Docker for GCR
+      run: gcloud auth configure-docker --quiet
+
+    - name: 📦 Install dependencies
+      run: npm ci --no-audit --no-fund
+
+    - name: 🔐 Preparar configuración para variables de entorno en Cloud Run
+      run: |
+        SECRET_PREFIX="thevoteradar"
+        
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          ENV_SUFFIX="prod"
+          PRODUCTION="true"
+          DEVELOPMENT="false"
+          echo "🔴 PRODUCTION environment detected"
+        else
+          ENV_SUFFIX="dev"
+          PRODUCTION="false"
+          DEVELOPMENT="true"
+          echo "🟢 DEVELOPMENT environment detected"
+        fi
+        
+        # Guardar nombres de secretos para usar en el deploy
+        echo "KEY1_SECRET_NAME=$SECRET_PREFIX-key1-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "KEY2_SECRET_NAME=$SECRET_PREFIX-key2-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "KEY3_SECRET_NAME=$SECRET_PREFIX-key3-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "KEY4_SECRET_NAME=$SECRET_PREFIX-key4-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "API_URL_SECRET_NAME=$SECRET_PREFIX-api-url-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "BACKOFFICE_API_URL_SECRET_NAME=$SECRET_PREFIX-backoffice-api-url-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "SURVEY_API_URL_SECRET_NAME=$SECRET_PREFIX-survey-api-url-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "DEFAULT_TENANT_ID_SECRET_NAME=$SECRET_PREFIX-default-tenant-id-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "POWER_BI_URL_SECRET_NAME=$SECRET_PREFIX-powerbi-url-$ENV_SUFFIX:latest" >> $GITHUB_ENV
+        echo "PRODUCTION=$PRODUCTION" >> $GITHUB_ENV
+        echo "DEVELOPMENT=$DEVELOPMENT" >> $GITHUB_ENV
+        echo "ENV_SUFFIX=$ENV_SUFFIX" >> $GITHUB_ENV
+        
+        echo "✅ Variables de entorno se configurarán en Cloud Run desde Secret Manager"
+        echo "ℹ️ Las variables se inyectarán en runtime mediante el script de inicio de nginx"
+
+    - name: 🧪 Run tests (if available)
+      run: |
+        if npm run | grep -q "test"; then
+          npm test -- --watch=false --browsers=ChromeHeadless
+        else
+          echo "No tests configured, skipping..."
+        fi
+      continue-on-error: true
+
+    - name: 🐳 Build & Push Docker image
+      run: |
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          TAG="prod-${{ github.sha }}"
+          SERVICE_NAME="thevoteradar-front-prod"
+          ENVIRONMENT="production"
+        else
+          TAG="dev-${{ github.sha }}"
+          SERVICE_NAME="thevoteradar-front-dev"
+          ENVIRONMENT="development"
+        fi
+
+        echo "Building image: gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG"
+        echo "Deploying service: $SERVICE_NAME in $ENVIRONMENT"
+
+        docker build -t gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG .
+        docker push gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG
+
+        echo "TAG=$TAG" >> $GITHUB_ENV
+        echo "SERVICE_NAME=$SERVICE_NAME" >> $GITHUB_ENV
+        echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_ENV
+
+    - name: 🚀 Deploy to Cloud Run
+      run: |
+        echo "🚀 Desplegando servicio con variables de entorno desde Secret Manager..."
+        gcloud run deploy $SERVICE_NAME \
+          --image gcr.io/${{ vars.GCP_PROJECT_ID }}/thevoteradar-front:$TAG \
+          --region ${{ vars.GCP_REGION }} \
+          --platform managed \
+          --allow-unauthenticated \
+          --port 8080 \
+          --set-env-vars ENVIRONMENT=$ENVIRONMENT,PRODUCTION=$PRODUCTION,DEVELOPMENT=$DEVELOPMENT \
+          --set-secrets KEY1=$KEY1_SECRET_NAME \
+          --set-secrets KEY2=$KEY2_SECRET_NAME \
+          --set-secrets KEY3=$KEY3_SECRET_NAME \
+          --set-secrets KEY4=$KEY4_SECRET_NAME \
+          --set-secrets API_URL=$API_URL_SECRET_NAME \
+          --set-secrets BACKOFFICE_API_URL=$BACKOFFICE_API_URL_SECRET_NAME \
+          --set-secrets SURVEY_API_URL=$SURVEY_API_URL_SECRET_NAME \
+          --set-secrets DEFAULT_TENANT_ID=$DEFAULT_TENANT_ID_SECRET_NAME \
+          --set-secrets POWER_BI_URL=$POWER_BI_URL_SECRET_NAME \
+          --memory=512Mi \
+          --cpu=1 \
+          --max-instances=10 \
+          --min-instances=1 \
+          --concurrency=80 \
+          --timeout=300s
+        echo "✅ Servicio desplegado con variables de entorno desde Secret Manager configuradas"
+
+    - name: 📡 Get service URL and health check
+      run: |
+        echo "⏳ Esperando que el servicio se inicie..."
+        sleep 15
+        
+        SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
+          --project ${{ vars.GCP_PROJECT_ID }} \
+          --region ${{ vars.GCP_REGION }} \
+          --format="value(status.url)")
+        
+        echo "✅ Deployment completed!"
+        echo "🔗 URL del servicio: $SERVICE_URL"
+        echo "🏷️ Image tag: $TAG"
+        echo "🔧 Environment: $ENVIRONMENT"
+        
+        echo "🏥 Ejecutando health check..."
+        curl -f "$SERVICE_URL" || {
+          echo "⚠️ Health check falló, pero el servicio puede estar iniciándose..."
+          echo "🔄 Reintentando en 15 segundos..."
+          sleep 15
+          curl -f "$SERVICE_URL" || {
+            echo "❌ Health check falló después del segundo intento"
+            echo "ℹ️ El servicio puede estar funcionando, pero el health check no respondió"
+            exit 1
+          }
+        }
+        
+        echo "✅ Health check exitoso"
+        echo "🎉 Deploy completado - thevoteradar-front $ENVIRONMENT está en línea"
+

@@ -44,7 +44,7 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   }
 
   loadDevData() {
-    // Datos de prueba para modo development
+    
     this.categoryIncidencias = [
       { id: 1, nombre: 'Problemas de conectividad' },
       { id: 2, nombre: 'Fallas en equipos' },
@@ -113,7 +113,6 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   }
 
   ModalIncidenciaActual(incidencia: any) {
-    console.log(incidencia);
     this.photos = [];
     this.videos = [];
     this.incidenciaActual = {};
@@ -138,7 +137,6 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   getIncidenciasDeTestigo() {
     this.apiService.getIncidenciasDeTestigo().subscribe((resp: any) => {
       this.dataIncidencias = resp;
-      console.log(this.dataIncidencias);
       setTimeout(() => {
         this.dtTrigger.next(void 0);
       });
@@ -150,7 +148,6 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
   }
 
   onRemove(event: any) {
-    console.log(event);
     this.files.splice(this.files.indexOf(event), 1);
   }
 
@@ -177,7 +174,7 @@ export class ReporteIncidenciasComponent implements OnInit, OnDestroy {
       ],
       responsive: true,
       language: {
-        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
       }
     };
   }
