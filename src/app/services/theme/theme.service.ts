@@ -129,7 +129,6 @@ export class ThemeService {
     // Puedes ajustar estos valores según tu configuración
     const tenantThemeMap: { [key: string]: string } = {
       '473173': 'client1', // Partido Azul (colores azul/amarillo)
-      '475711': 'client1', // También puede ser client1
       // Agregar más mapeos según sea necesario
     };
     

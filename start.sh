@@ -36,7 +36,7 @@ escape_js() {
   printf '  apiURL: "%s",\n' "$(escape_js "${API_URL:-}")"
   printf '  backofficeApiURL: "%s",\n' "$(escape_js "${BACKOFFICE_API_URL:-}")"
   printf '  surveyApiURL: "%s",\n' "$(escape_js "${SURVEY_API_URL:-}")"
-  printf '  defaultTenantId: "%s",\n' "$(escape_js "${DEFAULT_TENANT_ID:-475711}")"
+  printf '  defaultTenantId: "%s",\n' "$(escape_js "${DEFAULT_TENANT_ID:-473173}")"
   printf '  key1: "%s",\n' "$(escape_js "${KEY1:-}")"
   printf '  key2: "%s",\n' "$(escape_js "${KEY2:-}")"
   printf '  key3: "%s",\n' "$(escape_js "${KEY3:-}")"

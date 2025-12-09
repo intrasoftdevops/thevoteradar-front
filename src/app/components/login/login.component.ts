@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   });
 
   
-  private readonly TENANT_CODE = '475711';
+  private readonly TENANT_CODE = '473173';
 
   
   public showOtpInput: boolean = false;
