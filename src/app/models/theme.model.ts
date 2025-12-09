@@ -57,7 +57,7 @@ export const THEMES: { [key: string]: Theme } = {
       textSecondary: '#6b7280',
     },
     branding: {
-      logo: '../../../assets/clients/client1/logo.jpg',
+      logo: '../../../assets/logo.png',
       logoSize: 'small',
       title: 'Reset a la política',
       description: 'Ingresa a tu cuenta de la plataforma electoral',
@@ -95,7 +95,7 @@ export const THEMES: { [key: string]: Theme } = {
       textSecondary: '#6b7280',
     },
     branding: {
-      logo: '../../../assets/clients/client2/AlejoToro.jpg',
+      logo: '../../../assets/logo.png',
       logoSize: 'small',
       title: 'RedPower',
       description: 'Energía y pasión en cada proyecto',
