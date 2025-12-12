@@ -94,6 +94,17 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "allowedHosts": [
+              "client1.localhost",
+              "client2.localhost",
+              "client3.localhost",
+              "partido-azul.localhost",
+              "partido-verde.localhost",
+              "partido-rojo.localhost",
+              "localhost"
+            ]
+          },
           "configurations": {
             "staging": {
               "browserTarget": "voteradar-front:build:staging"

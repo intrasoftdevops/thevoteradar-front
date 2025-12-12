@@ -125,11 +125,10 @@ export class ThemeService {
    * Este mapeo debe coincidir con la configuración del backend
    */
   private getThemeIdFromTenantId(tenantId: string): string | null {
-    // Mapeo de tenant_id a theme_id
-    // Puedes ajustar estos valores según tu configuración
     const tenantThemeMap: { [key: string]: string } = {
       '473173': 'client1', // Partido Azul (colores azul/amarillo)
-      // Agregar más mapeos según sea necesario
+      '473174': 'client2', // Partido Verde (colores verdes)
+      '473175': 'client3', // Partido Rojo (colores rojos)
     };
     
     return tenantThemeMap[tenantId] || null;
@@ -152,6 +151,91 @@ export class ThemeService {
     } else {
       this.setTheme('default');
     }
+  }
+
+  /**
+   * Mapear dominio/subdominio a tenant_id
+   */
+  getTenantIdFromDomain(): string | null {
+    const hostname = window.location.hostname.toLowerCase();
+    
+    const domainTenantMap: { [key: string]: string } = {
+      // Subdominios
+      'client1': '473173',
+      'client1.localhost': '473173',
+      'partido-azul': '473173',
+      'reset-politica': '473173',
+      
+      'client2': '473174',
+      'client2.localhost': '473174',
+      'partido-verde': '473174',
+      'ecoverde': '473174',
+      
+      'client3': '473175',
+      'client3.localhost': '473175',
+      'partido-rojo': '473175',
+      'redpower': '473175',
+      
+      // Dominios completos (opcional)
+      'partido-azul.com': '473173',
+      'reset-politica.com': '473173',
+      'partido-verde.com': '473174',
+      'partido-rojo.com': '473175',
+    };
+    
+    // Buscar coincidencia exacta primero
+    if (domainTenantMap[hostname]) {
+      return domainTenantMap[hostname];
+    }
+    
+    // Buscar por subdominio (ej: client1.voteradar.com)
+    const subdomainMatch = hostname.match(/^([^.]+)\./);
+    if (subdomainMatch) {
+      const subdomain = subdomainMatch[1];
+      if (domainTenantMap[subdomain]) {
+        return domainTenantMap[subdomain];
+      }
+    }
+    
+    // Buscar por palabra clave en el hostname
+    for (const [key, tenantId] of Object.entries(domainTenantMap)) {
+      if (hostname.includes(key)) {
+        return tenantId;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Detectar y aplicar tema desde el dominio al cargar la página
+   * Retorna el tenant_id detectado para usarlo en el login
+   */
+  detectAndApplyThemeFromDomain(): string | null {
+    // Primero verificar si ya hay un tenant_id guardado (después de login)
+    const savedTenantId = localStorage.getItem('tenant_id');
+    if (savedTenantId) {
+      // Si ya hay un tenant_id, usar ese y aplicar su tema
+      this.loadThemeFromTenantId(savedTenantId);
+      return savedTenantId;
+    }
+    
+    // Si no hay tenant_id guardado, detectar desde el dominio
+    const tenantId = this.getTenantIdFromDomain();
+    
+    if (tenantId) {
+      // Guardar el tenant_id detectado temporalmente
+      localStorage.setItem('detected_tenant_id', tenantId);
+      
+      // Aplicar el tema correspondiente
+      this.loadThemeFromTenantId(tenantId);
+      
+      return tenantId;
+    }
+    
+    // Si no se detecta ningún dominio, usar el tema por defecto
+    this.setTheme('default');
+    return null;
   }
 
   /**
