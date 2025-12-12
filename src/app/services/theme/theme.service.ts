@@ -112,10 +112,16 @@ export class ThemeService {
     }
     
     // Si no hay tenant_id, intentar detectar desde el dominio
-    const hostname = window.location.hostname;
-    if (hostname.includes('client1')) return 'client1';
-    if (hostname.includes('client2')) return 'client2';
-    if (hostname.includes('client3')) return 'client3';
+    const hostname = window.location.hostname.toLowerCase();
+	if (hostname.includes('daniel-quintero')) {
+		return 'daniel-quintero';
+	  }
+	  if (hostname.includes('juan-duque')) {
+		return 'juan-duque';
+	  }
+	  if (hostname.includes('potus-44')) {
+		return 'potus-44';
+	  }
     
     return 'default';
   }
@@ -125,11 +131,10 @@ export class ThemeService {
    * Este mapeo debe coincidir con la configuración del backend
    */
   private getThemeIdFromTenantId(tenantId: string): string | null {
-    // Mapeo de tenant_id a theme_id
-    // Puedes ajustar estos valores según tu configuración
     const tenantThemeMap: { [key: string]: string } = {
-      '473173': 'client1', // Partido Azul (colores azul/amarillo)
-      // Agregar más mapeos según sea necesario
+      '475711': 'daniel-quintero',
+      '475757': 'juan-duque',
+      '473173': 'potus-44',
     };
     
     return tenantThemeMap[tenantId] || null;
@@ -152,6 +157,87 @@ export class ThemeService {
     } else {
       this.setTheme('default');
     }
+  }
+
+  /**
+   * Mapear dominio/subdominio a tenant_id
+   */
+  getTenantIdFromDomain(): string | null {
+    const hostname = window.location.hostname.toLowerCase();
+    
+    const domainTenantMap: { [key: string]: string } = {
+		// ===== DANIEL QUINTERO (475711) =====
+		'daniel-quintero': '475711',
+		'daniel-quintero.localhost': '475711',
+		// Dominios de producción
+		'daniel-quintero.com': '475711',
+		
+		// ===== JUAN DUQUE (475757) =====
+		'juan-duque': '475757',
+		'juan-duque.localhost': '475757',
+		// Dominios de producción
+		'juan-duque.com': '475757',
+		
+		// ===== POTUS 44 (473173) =====
+		'potus-44': '473173',
+		'potus-44.localhost': '473173',
+		// Dominios de producción
+		'potus-44.com': '473173',
+    };
+    
+    // Buscar coincidencia exacta primero
+    if (domainTenantMap[hostname]) {
+      return domainTenantMap[hostname];
+    }
+    
+    // Buscar por subdominio (ej: client1.voteradar.com)
+    const subdomainMatch = hostname.match(/^([^.]+)\./);
+    if (subdomainMatch) {
+      const subdomain = subdomainMatch[1];
+      if (domainTenantMap[subdomain]) {
+        return domainTenantMap[subdomain];
+      }
+    }
+    
+    // Buscar por palabra clave en el hostname
+    for (const [key, tenantId] of Object.entries(domainTenantMap)) {
+      if (hostname.includes(key)) {
+        return tenantId;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Detectar y aplicar tema desde el dominio al cargar la página
+   * Retorna el tenant_id detectado para usarlo en el login
+   */
+  detectAndApplyThemeFromDomain(): string | null {
+    // Primero verificar si ya hay un tenant_id guardado (después de login)
+    const savedTenantId = localStorage.getItem('tenant_id');
+    if (savedTenantId) {
+      // Si ya hay un tenant_id, usar ese y aplicar su tema
+      this.loadThemeFromTenantId(savedTenantId);
+      return savedTenantId;
+    }
+    
+    // Si no hay tenant_id guardado, detectar desde el dominio
+    const tenantId = this.getTenantIdFromDomain();
+    
+    if (tenantId) {
+      // Guardar el tenant_id detectado temporalmente
+      localStorage.setItem('detected_tenant_id', tenantId);
+      
+      // Aplicar el tema correspondiente
+      this.loadThemeFromTenantId(tenantId);
+      
+      return tenantId;
+    }
+    
+    // Si no se detecta ningún dominio, usar el tema por defecto
+    this.setTheme('default');
+    return null;
   }
 
   /**

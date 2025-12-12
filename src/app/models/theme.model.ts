@@ -44,9 +44,9 @@ export const THEMES: { [key: string]: Theme } = {
       description: 'Sistema de gestión electoral en tiempo real',
     },
   },
-  client1: {
-    id: 'client1',
-    name: 'Cliente Azul',
+  'daniel-quintero': {
+    id: 'daniel-quintero',
+    name: 'Daniel Quintero',
     colors: {
       primary: '#0032fd',
       secondary: '#ffef03',
@@ -63,9 +63,9 @@ export const THEMES: { [key: string]: Theme } = {
       description: 'Ingresa a tu cuenta de la plataforma electoral',
     },
   },
-  client2: {
-    id: 'client2',
-    name: 'Cliente Verde',
+  'juan-duque': {
+    id: 'juan-duque',
+    name: 'Juan Duque',
     colors: {
       primary: '#10b981',
       secondary: '#34d399',
@@ -82,9 +82,9 @@ export const THEMES: { [key: string]: Theme } = {
       description: 'Soluciones sostenibles para un futuro mejor',
     },
   },
-  client3: {
-    id: 'client3',
-    name: 'Cliente Rojo',
+  'potus-44': {
+    id: 'potus-44',
+    name: 'Potus 44',
     colors: {
       primary: '#ef4444',
       secondary: '#fca5a5',

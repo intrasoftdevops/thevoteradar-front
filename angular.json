@@ -94,6 +94,14 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "allowedHosts": [
+			  "daniel-quintero.localhost",
+			  "juan-duque.localhost",
+			  "potus-44.localhost",
+              "localhost"
+            ]
+          },
           "configurations": {
             "staging": {
               "browserTarget": "voteradar-front:build:staging"
