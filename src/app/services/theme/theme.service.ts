@@ -112,10 +112,16 @@ export class ThemeService {
     }
     
     // Si no hay tenant_id, intentar detectar desde el dominio
-    const hostname = window.location.hostname;
-    if (hostname.includes('client1')) return 'client1';
-    if (hostname.includes('client2')) return 'client2';
-    if (hostname.includes('client3')) return 'client3';
+    const hostname = window.location.hostname.toLowerCase();
+	if (hostname.includes('daniel-quintero')) {
+		return 'daniel-quintero';
+	  }
+	  if (hostname.includes('juan-duque')) {
+		return 'juan-duque';
+	  }
+	  if (hostname.includes('potus-44')) {
+		return 'potus-44';
+	  }
     
     return 'default';
   }
@@ -126,9 +132,9 @@ export class ThemeService {
    */
   private getThemeIdFromTenantId(tenantId: string): string | null {
     const tenantThemeMap: { [key: string]: string } = {
-      '473173': 'client1', // Partido Azul (colores azul/amarillo)
-      '473174': 'client2', // Partido Verde (colores verdes)
-      '473175': 'client3', // Partido Rojo (colores rojos)
+      '475711': 'daniel-quintero',
+      '475757': 'juan-duque',
+      '473173': 'potus-44',
     };
     
     return tenantThemeMap[tenantId] || null;
@@ -160,27 +166,23 @@ export class ThemeService {
     const hostname = window.location.hostname.toLowerCase();
     
     const domainTenantMap: { [key: string]: string } = {
-      // Subdominios
-      'client1': '473173',
-      'client1.localhost': '473173',
-      'partido-azul': '473173',
-      'reset-politica': '473173',
-      
-      'client2': '473174',
-      'client2.localhost': '473174',
-      'partido-verde': '473174',
-      'ecoverde': '473174',
-      
-      'client3': '473175',
-      'client3.localhost': '473175',
-      'partido-rojo': '473175',
-      'redpower': '473175',
-      
-      // Dominios completos (opcional)
-      'partido-azul.com': '473173',
-      'reset-politica.com': '473173',
-      'partido-verde.com': '473174',
-      'partido-rojo.com': '473175',
+		// ===== DANIEL QUINTERO (475711) =====
+		'daniel-quintero': '475711',
+		'daniel-quintero.localhost': '475711',
+		// Dominios de producción
+		'daniel-quintero.com': '475711',
+		
+		// ===== JUAN DUQUE (475757) =====
+		'juan-duque': '475757',
+		'juan-duque.localhost': '475757',
+		// Dominios de producción
+		'juan-duque.com': '475757',
+		
+		// ===== POTUS 44 (473173) =====
+		'potus-44': '473173',
+		'potus-44.localhost': '473173',
+		// Dominios de producción
+		'potus-44.com': '473173',
     };
     
     // Buscar coincidencia exacta primero
