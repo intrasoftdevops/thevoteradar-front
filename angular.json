@@ -96,12 +96,9 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "allowedHosts": [
-              "client1.localhost",
-              "client2.localhost",
-              "client3.localhost",
-              "partido-azul.localhost",
-              "partido-verde.localhost",
-              "partido-rojo.localhost",
+			  "daniel-quintero.localhost",
+			  "juan-duque.localhost",
+			  "potus-44.localhost",
               "localhost"
             ]
           },
