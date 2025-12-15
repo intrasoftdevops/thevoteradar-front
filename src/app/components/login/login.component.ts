@@ -8,7 +8,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators }
 import { NgxPermissionsService } from 'ngx-permissions';
 import { environment } from '../../../environments/environment';
 import { ThemeService } from '../../services/theme/theme.service';
-import { Theme } from '../../models/theme.model';
+import { Theme } from '../../core/models/theme.model';
 import { BackofficeAuthService } from '../../services/backoffice-auth/backoffice-auth.service';
 
 @Component({

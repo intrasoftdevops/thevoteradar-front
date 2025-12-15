@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BackofficeAdminService } from '../../../../services/backoffice-admin/backoffice-admin.service';
 import { UserStatistics } from '../../../../services/backoffice-admin/backoffice-admin.types';
@@ -9,6 +9,12 @@ import { UserStatistics } from '../../../../services/backoffice-admin/backoffice
   styleUrls: ['./admin-dashboard-page.component.scss']
 })
 export class AdminDashboardPageComponent implements OnInit, OnDestroy {
+  /**
+   * compact=true: pensado para embebirse dentro de otra pantalla (ej: Estructura > Usuarios)
+   * sin el hero/full background y sin pisar estados globales de loading/error.
+   */
+  @Input() compact = false;
+
   statistics: UserStatistics | null = null;
   loading = false;
   error: string | null = null;
@@ -20,33 +26,35 @@ export class AdminDashboardPageComponent implements OnInit, OnDestroy {
   constructor(private adminService: BackofficeAdminService) { }
 
   ngOnInit(): void {
-    // Subscribe to statistics
-    const statsSub = this.adminService.statistics$.subscribe(stats => {
-      this.statistics = stats;
-      if (stats) {
-        this.calculateTopStates();
-        this.calculateTopCities();
-      }
-    });
-
-    // Subscribe to loading
-    const loadingSub = this.adminService.loading$.subscribe(loading => {
-      this.loading = loading;
-    });
-
-    // Subscribe to error
-    const errorSub = this.adminService.error$.subscribe(error => {
-      this.error = error;
-    });
-
-    this.subscriptions.push(statsSub, loadingSub, errorSub);
-
-    // Fetch statistics
-    this.adminService.fetchStatistics();
+    this.loadStatistics();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private loadStatistics(): void {
+    this.loading = true;
+    this.error = null;
+
+    const sub = this.adminService.getUserStatisticsSilent().subscribe({
+      next: (stats) => {
+        this.statistics = stats;
+        this.calculateTopStates();
+        this.calculateTopCities();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('❌ AdminDashboardPage - Error cargando estadísticas:', err);
+        this.loading = false;
+        this.error = err?.error?.detail || 'No se pudieron cargar las estadísticas';
+        this.statistics = null;
+        this.topStates = [];
+        this.topCities = [];
+      }
+    });
+
+    this.subscriptions.push(sub);
   }
 
   private calculateTopStates(): void {

@@ -1,0 +1,9 @@
+# Feature Modules Directory
+# Los módulos de características se crearán aquí con lazy loading
+# Ejemplos futuros:
+# - auth/
+# - dashboard/
+# - users/
+# - surveys/
+# - backoffice/
+

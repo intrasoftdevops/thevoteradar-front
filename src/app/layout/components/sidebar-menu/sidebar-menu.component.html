@@ -1,0 +1,91 @@
+<nav class="sidebar-menu" [class.collapsed]="collapsed">
+  <!-- Logo/Branding -->
+  <div class="sidebar-header">
+    <div 
+      class="brand" 
+      *ngIf="currentTheme"
+      (click)="goToHome()"
+      [title]="'Ir al inicio'"
+      style="cursor: pointer;">
+      <img 
+        [src]="currentTheme.branding.logo" 
+        [alt]="currentTheme.branding.title"
+        class="brand-logo">
+      <span class="brand-name" *ngIf="!collapsed">
+        {{ currentTheme.branding.title }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Menu Items -->
+  <div class="sidebar-content">
+    <ul class="menu-list">
+      <li 
+        *ngFor="let item of menuItems" 
+        class="menu-item"
+        [class.expanded]="isExpanded(item.id)"
+        [class.has-active]="hasActiveChild(item.id)"
+        [class.coming-soon]="item.comingSoon">
+        
+        <!-- Menu Header (clickeable) -->
+        <div 
+          class="menu-header"
+          (click)="item.children ? toggleMenu(item.id, $event) : navigateTo(item.route!, item.id)"
+          [class.active]="hasActiveChild(item.id)">
+          
+          <div class="menu-icon-wrapper">
+            <i [class]="item.icon"></i>
+          </div>
+          
+          <span class="menu-label" *ngIf="!collapsed">
+            {{ item.label }}
+          </span>
+          
+          <span class="coming-soon-badge" *ngIf="item.comingSoon && !collapsed">
+            Próximamente
+          </span>
+          
+          <i 
+            *ngIf="item.children && !collapsed" 
+            class="fas fa-chevron-down menu-arrow"
+            [class.rotated]="isExpanded(item.id)">
+          </i>
+        </div>
+
+        <!-- Submenu -->
+        <ul 
+          class="submenu" 
+          *ngIf="item.children && isExpanded(item.id) && !collapsed"
+          [@submenuAnimation]>
+          
+          <li 
+            *ngFor="let child of item.children" 
+            class="submenu-item"
+            [class.active]="isActive(child.id)"
+            [class.disabled]="item.comingSoon"
+            (click)="!item.comingSoon && navigateTo(child.route, child.id)">
+            
+            <i [class]="child.icon || 'fas fa-circle'" class="submenu-icon"></i>
+            <span class="submenu-label">{{ child.label }}</span>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Footer del Sidebar -->
+  <div class="sidebar-footer" *ngIf="!collapsed">
+    <div class="user-info">
+      <div class="user-avatar">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <div class="user-details">
+        <span class="user-role">Administrador</span>
+      </div>
+    </div>
+    <button class="btn-logout" routerLink="/" title="Cerrar sesión">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+</nav>
+

@@ -1,7 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { LocalDataService } from '../localData/local-data.service';
+
+/**
+ * Interfaz para la respuesta del API de challenges
+ * Según la documentación: GET /challenges/my-challenges
+ * Retorna un array: [{ challenge_id, name, description, status, ... }]
+ */
+export interface ChallengeApiResponse {
+  challenge_id: string;
+  name: string;
+  description: string;
+  status: string;
+  max_date: string;
+  puntos: number;
+  max_users: number;
+  date_creation: string;
+  creator_phone: string;
+  max_limit?: number;
+  reward_id?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -290,6 +310,15 @@ export class ApiService {
 
   getReporteTransmision(id:any){
     return this.http.get(this._URL + "/get-reporte/" + id, { headers: this.getHeaders() });
+  }
+
+  /**
+   * Obtiene los challenges creados por el usuario autenticado
+   * Retorna un array de challenges según la documentación del API: []
+   * Si no hay challenges, retorna un array vacío
+   */
+  getMyChallenges(): Observable<ChallengeApiResponse[]> {
+    return this.http.get<ChallengeApiResponse[]>(this._URL + "/challenges/my-challenges", { headers: this.getHeaders() });
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { WhatsAppTemplatesService } from 'src/app/services/whatsapp-templates/whatsapp-templates.service';
 import { 
@@ -24,7 +24,7 @@ interface SendResult {
   templateUrl: './send-template-modal.component.html',
   styleUrls: ['./send-template-modal.component.scss']
 })
-export class SendTemplateModalComponent implements OnInit, OnDestroy {
+export class SendTemplateModalComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isOpen = false;
   @Input() template: WhatsAppTemplatePending | null = null;
   @Output() close = new EventEmitter<void>();
@@ -58,9 +58,24 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    console.log('🔄 SendTemplateModal - ngOnInit, isOpen:', this.isOpen, 'template:', this.template);
     if (this.isOpen) {
       this.recipients = [];
       this.currentPage = 1;
+      this.successState = false;
+      this.error = null;
+      this.sending = false;
+    }
+  }
+
+  ngOnChanges(): void {
+    console.log('🔄 SendTemplateModal - ngOnChanges, isOpen:', this.isOpen, 'template:', this.template);
+    if (this.isOpen && this.template) {
+      this.recipients = [];
+      this.currentPage = 1;
+      this.successState = false;
+      this.error = null;
+      this.sending = false;
     }
   }
 
@@ -163,10 +178,22 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy {
   }
 
   handleSend(): void {
-    if (!this.template || !this.validateForm()) {
+    console.log('🔄 SendTemplateModal - handleSend llamado');
+    console.log('📋 SendTemplateModal - Template:', this.template);
+    console.log('📋 SendTemplateModal - Recipients:', this.recipients);
+    
+    if (!this.template) {
+      console.error('❌ SendTemplateModal - No hay template');
+      this.error = 'No hay template seleccionado';
       return;
     }
 
+    if (!this.validateForm()) {
+      console.error('❌ SendTemplateModal - Validación falló:', this.error);
+      return;
+    }
+
+    console.log('✅ SendTemplateModal - Validación exitosa, enviando...');
     this.sending = true;
     this.error = null;
     this.results = [];
@@ -184,8 +211,11 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy {
       parameters_values: parametersValues
     };
 
+    console.log('📤 SendTemplateModal - Enviando request:', request);
+
     const sub = this.whatsappService.sendPendingTemplate(request).subscribe({
       next: (data) => {
+        console.log('✅ SendTemplateModal - Envío exitoso:', data);
         this.successState = true;
         this.results = data.results || [];
         
@@ -198,8 +228,8 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy {
         }, 3000);
       },
       error: (err) => {
-        console.error('Error sending template:', err);
-        this.error = err.error?.detail || 'Error al enviar templates';
+        console.error('❌ SendTemplateModal - Error sending template:', err);
+        this.error = err.error?.detail || err.message || 'Error al enviar templates';
         this.sending = false;
       }
     });
