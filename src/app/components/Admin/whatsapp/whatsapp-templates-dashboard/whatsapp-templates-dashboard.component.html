@@ -1,393 +1,335 @@
-<!-- Vista de carga -->
-<div *ngIf="loading" class="p-6">
-  <div class="text-center">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" [style.border-color]="'var(--color-primary)'"></div>
-    <p class="mt-4 text-gray-600">Cargando...</p>
-  </div>
-</div>
-
-<!-- Vista de templates -->
-<div *ngIf="!loading && currentView === 'templates'" class="p-6">
-  <div class="mb-6">
-    <button 
-      (click)="handleBackToMain()"
-      class="mb-4 hover:underline"
-      [style.color]="'var(--color-primary)'"
-    >
-      ← Volver al inicio
+<div class="whatsapp-dashboard">
+  <!-- Header -->
+  <div class="dashboard-header mb-4">
+    <div>
+      <h2 class="mb-2">
+        <i class="fab fa-whatsapp me-2" [style.color]="'var(--color-primary)'"></i>
+        WhatsApp Difusión
+      </h2>
+      <p class="text-muted mb-0">
+        Gestiona tus templates de WhatsApp y envíalos a tus contactos
+      </p>
+    </div>
+    <button
+      class="btn btn-primary"
+      (click)="openCreateModal()"
+      [style.background-color]="'var(--color-primary)'"
+      [style.border-color]="'var(--color-primary)'">
+      <i class="fas fa-plus me-2"></i>
+      Crear Template
     </button>
-    <h1 class="text-2xl font-bold text-gray-900">
-      Mis Templates
-    </h1>
   </div>
 
-  <!-- Loading state -->
-  <div *ngIf="templatesLoading" class="text-center py-8">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" [style.border-color]="'var(--color-primary)'"></div>
-    <p class="mt-4 text-gray-600">Cargando templates...</p>
+  <!-- Loading State -->
+  <div *ngIf="templatesLoading" class="text-center py-5">
+    <div class="spinner-border" [style.color]="'var(--color-primary)'" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="text-muted mt-3">Cargando templates...</p>
   </div>
 
-  <!-- Error state -->
-  <div *ngIf="!templatesLoading && error" class="bg-red-50 border border-red-200 rounded-lg p-4">
-    <p class="text-red-800">{{ error }}</p>
-    <button 
-      (click)="loadTemplates()"
-      class="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-    >
+  <!-- Error State -->
+  <div *ngIf="!templatesLoading && error" class="alert alert-danger" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    {{ error }}
+    <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadTemplates()">
       Reintentar
     </button>
   </div>
 
-  <!-- Empty state -->
-  <div *ngIf="!templatesLoading && !error && templates.length === 0" class="bg-white border border-gray-200 rounded-lg p-8 text-center">
-    <p class="text-gray-500 mb-4">No tienes templates creados aún</p>
-    <button 
-      (click)="handleCreateView()"
-      class="px-4 py-2 text-white rounded"
-      [style.background-color]="'var(--color-accent)'"
-    >
+  <!-- Filtros y Búsqueda -->
+  <div *ngIf="!templatesLoading && !error && templates.length > 0" class="filters-section mb-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-3">
+        <div class="row g-3">
+          <!-- Buscador -->
+          <div class="col-md-4">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text" [style.border-color]="'var(--color-primary)'">
+                <i class="fas fa-search"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                placeholder="Buscar por nombre o contenido..."
+                [(ngModel)]="searchTerm"
+                (ngModelChange)="applyFilters()"
+                [style.border-color]="'var(--color-primary)'">
+            </div>
+          </div>
+
+          <!-- Filtro por Status -->
+          <div class="col-md-2">
+            <select
+              class="form-select form-select-sm"
+              [(ngModel)]="selectedStatus"
+              (ngModelChange)="applyFilters()"
+              [style.border-color]="'var(--color-primary)'">
+              <option value="">Todos los departamentos</option>
+              <option value="pending">Pendiente</option>
+              <option value="created">Aprobado</option>
+              <option value="failed">Rechazado</option>
+            </select>
+          </div>
+
+          <!-- Filtro por Categoría -->
+          <div class="col-md-2">
+            <select
+              class="form-select form-select-sm"
+              [(ngModel)]="selectedCategory"
+              (ngModelChange)="applyFilters()"
+              [style.border-color]="'var(--color-primary)'">
+              <option value="">Todas las categorías</option>
+              <option value="MARKETING">Marketing</option>
+              <option value="UTILITY">Utilidad</option>
+              <option value="AUTHENTICATION">Autenticación</option>
+            </select>
+          </div>
+
+          <!-- Ordenar -->
+          <div class="col-md-2">
+            <select
+              class="form-select form-select-sm"
+              [(ngModel)]="sortBy"
+              (ngModelChange)="applyFilters()"
+              [style.border-color]="'var(--color-primary)'">
+              <option value="date">Más recientes</option>
+              <option value="name">Nombre</option>
+              <option value="status">Estado</option>
+            </select>
+          </div>
+
+          <!-- Botón Limpiar -->
+          <div class="col-md-2">
+            <button
+              class="btn btn-sm btn-outline-secondary w-100"
+              (click)="clearFilters()"
+              [disabled]="!searchTerm && !selectedStatus && !selectedCategory">
+              <i class="fas fa-times me-1"></i>
+              Limpiar
+            </button>
+          </div>
+        </div>
+
+        <!-- Contador de resultados -->
+        <div class="mt-2 text-muted small">
+          <i class="fas fa-file-alt me-1"></i>
+          Mostrando {{ filteredTemplates.length }} de {{ templates.length }} templates
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Templates List (SOLO TEMPLATES REALES) -->
+  <div *ngIf="!templatesLoading && !error && filteredTemplates.length > 0" class="templates-list">
+    <div class="row g-4">
+      <div *ngFor="let template of filteredTemplates" class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm h-100 template-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <h5 class="card-title mb-0">{{ template.template_name }}</h5>
+              <span class="badge" [ngClass]="getStatusBadgeClass(template.status)">
+                {{ getStatusLabel(template.status) }}
+              </span>
+            </div>
+            
+            <p class="card-text text-muted small mb-3" [title]="template.template_content">
+              {{ truncateText(template.template_content, 120) }}
+            </p>
+
+            <div class="template-meta mb-3">
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-light text-dark" *ngIf="template.category">
+                  <i class="fas fa-tag me-1"></i>
+                  {{ getCategoryLabel(template.category) }}
+                </span>
+                <span class="badge bg-light text-dark" *ngIf="template.language">
+                  <i class="fas fa-language me-1"></i>
+                  {{ getLanguageDisplay(template.language) }}
+                </span>
+                <span class="badge bg-light text-dark" *ngIf="template.parameters && template.parameters.length > 0">
+                  <i class="fas fa-code me-1"></i>
+                  {{ template.parameters.length }} {{ template.parameters.length === 1 ? 'parámetro' : 'parámetros' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="template-actions">
+              <button
+                *ngIf="isApproved(template)"
+                class="btn btn-sm btn-success w-100"
+                (click)="openSendModal(template)"
+                [style.background-color]="'#28a745'"
+                [style.border-color]="'#28a745'">
+                <i class="fas fa-paper-plane me-2"></i>
+                Enviar Template
+              </button>
+              <button
+                *ngIf="!isApproved(template)"
+                class="btn btn-sm btn-outline-secondary w-100"
+                disabled>
+                <i class="fas fa-clock me-2"></i>
+                {{ template.status === 'pending' ? 'Pendiente de aprobación' : template.status === 'failed' ? 'Rechazado' : 'No disponible' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State después de filtrar -->
+  <div *ngIf="!templatesLoading && !error && templates.length > 0 && filteredTemplates.length === 0" class="text-center py-5">
+    <i class="fas fa-filter fa-3x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+    <h5 class="mb-3">No se encontraron templates</h5>
+    <p class="text-muted mb-4">
+      No hay templates que coincidan con los filtros seleccionados
+    </p>
+    <button
+      class="btn btn-outline-secondary"
+      (click)="clearFilters()">
+      <i class="fas fa-times me-2"></i>
+      Limpiar filtros
+    </button>
+  </div>
+
+  <!-- Empty State sin templates -->
+  <div *ngIf="!templatesLoading && !error && templates.length === 0" class="empty-state text-center py-5">
+    <i class="fab fa-whatsapp fa-4x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+    <h4 class="mb-3">No tienes templates creados aún</h4>
+    <p class="text-muted mb-4">
+      Crea tu primer template de WhatsApp para comenzar a enviar mensajes a tus contactos
+    </p>
+    <button
+      class="btn btn-primary"
+      (click)="openCreateModal()"
+      [style.background-color]="'var(--color-primary)'"
+      [style.border-color]="'var(--color-primary)'">
+      <i class="fas fa-plus me-2"></i>
       Crear mi primer template
     </button>
   </div>
 
-  <!-- Templates list -->
-  <div *ngIf="!templatesLoading && !error && templates.length > 0" class="space-y-4">
-    <div *ngFor="let template of templates" class="bg-white border border-gray-200 rounded-lg p-4">
-      <div class="flex justify-between items-start">
-        <div class="flex-1">
-          <h3 class="font-semibold text-gray-900">{{ template.template_name }}</h3>
-          <p class="text-sm text-gray-600 mt-1">{{ template.template_content }}</p>
+  <!-- Modal Crear Template -->
+  <div 
+    *ngIf="showCreateModal"
+    class="modal fade show" 
+    style="display: block !important; z-index: 1055 !important; position: fixed !important;"
+    tabindex="-1" 
+    role="dialog"
+    (click)="$event.target === $event.currentTarget && closeCreateModal()">
+    <div class="modal-dialog modal-lg" role="document" (click)="$event.stopPropagation()" style="z-index: 1056; position: relative;">
+      <div class="modal-content" style="position: relative; z-index: 1057;">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-plus-circle me-2" [style.color]="'var(--color-primary)'"></i>
+            Crear Nuevo Template
+          </h5>
+          <button type="button" class="btn-close" (click)="closeCreateModal()" aria-label="Close"></button>
         </div>
-        <div class="flex gap-2 ml-4">
-          <div class="flex items-center">
-            <span class="px-2 py-1 rounded text-xs" [ngClass]="getStatusBadgeClass(template.status)">
-              {{ getStatusLabel(template.status) }}
-            </span>
+
+        <div class="modal-body">
+          <!-- Success message -->
+          <div *ngIf="createSuccess" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            ¡Template creado exitosamente! Ahora está pendiente de aprobación.
           </div>
+
+          <!-- Error message -->
+          <div *ngIf="error" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ error }}
+          </div>
+
+          <!-- Form -->
+          <form (ngSubmit)="onCreateTemplate()">
+            <div class="mb-3">
+              <label class="form-label">Nombre del Template *</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="formData.template_name"
+                name="template_name"
+                placeholder="ej: promo_enero_2024"
+                required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Contenido del Template *</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="formData.template_content"
+                name="template_content"
+                rows="4"
+                required></textarea>
+              <small class="form-text text-muted">
+                Usa <code>{{ "{{variable}}" }}</code> para parámetros dinámicos. Ejemplo: 
+                <code ngNonBindable>Hola {{name}}, ¡Tenemos una oferta especial! Descuento: {{discount}}</code>
+              </small>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Categoría</label>
+                <select
+                  class="form-select"
+                  [(ngModel)]="formData.category"
+                  name="category">
+                  <option value="MARKETING">Marketing</option>
+                  <option value="UTILITY">Utilidad</option>
+                  <option value="AUTHENTICATION">Autenticación</option>
+                </select>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Idioma</label>
+                <select
+                  class="form-select"
+                  [(ngModel)]="formData.language"
+                  name="language">
+                  <option value="es">Español</option>
+                  <option value="en">Inglés</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Notas (opcional)</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="formData.notes"
+                name="notes"
+                rows="2"
+                placeholder="Notas adicionales sobre el template..."></textarea>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeCreateModal()" [disabled]="creating">
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="creating"
+                [style.background-color]="'var(--color-primary)'"
+                [style.border-color]="'var(--color-primary)'">
+                <span *ngIf="creating" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                {{ creating ? 'Creando...' : 'Crear Template' }}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
+  <div *ngIf="showCreateModal" class="modal-backdrop fade show" style="z-index: 1054 !important;"></div>
+
+  <!-- Modal Enviar Template -->
+  <app-send-template-modal
+    *ngIf="showSendModal && selectedTemplate"
+    [isOpen]="showSendModal"
+    [template]="selectedTemplate"
+    (close)="closeSendModal()"
+    (success)="onSendSuccess()">
+  </app-send-template-modal>
 </div>
-
-<!-- Vista de crear template -->
-<div *ngIf="!loading && currentView === 'create'" class="p-6">
-  <div class="mb-6">
-    <button 
-      (click)="handleBackToMain()"
-      class="mb-4 hover:underline"
-      [style.color]="'var(--color-primary)'"
-    >
-      ← Volver al inicio
-    </button>
-    <h1 class="text-2xl font-bold text-gray-900">
-      Crear Nuevo Template
-    </h1>
-  </div>
-
-  <!-- Success message -->
-  <div *ngIf="createSuccess" class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
-    <p class="text-green-800">
-      ✅ ¡Template creado exitosamente! Ahora está pendiente de aprobación.
-    </p>
-  </div>
-
-  <!-- Error message -->
-  <div *ngIf="error" class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-    <p class="text-red-800">{{ error }}</p>
-  </div>
-
-  <!-- Form -->
-  <div class="bg-white border border-gray-200 rounded-lg p-6">
-    <form (ngSubmit)="handleCreateTemplate($event)" class="space-y-4">
-      <!-- Template Name -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Nombre del Template *
-        </label>
-        <input
-          type="text"
-          [(ngModel)]="formData.template_name"
-          name="template_name"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
-          [style.--tw-ring-color]="'var(--color-primary)'"
-          placeholder="ej: promo_enero_2024"
-          required
-        />
-      </div>
-
-      <!-- Template Content -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Contenido del Template *
-        </label>
-        <textarea
-          [(ngModel)]="formData.template_content"
-          name="template_content"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
-          [style.--tw-ring-color]="'var(--color-primary)'"
-          rows="4"
-          required
-        >
-        </textarea>
-        <div class="text-xs text-gray-500 mt-1">
-          <span>Ejemplo: </span>
-          <span ngNonBindable>Hola {{name}}, ¡Tenemos una oferta especial para ti! Descuento: {{discount}}</span>
-        </div>
-        <div class="text-xs text-gray-500 mt-1">
-          <span>Usa </span>
-          <span ngNonBindable>{{variable}}</span>
-          <span> para parámetros dinámicos. Los parámetros se detectarán automáticamente.</span>
-        </div>
-      </div>
-
-      <!-- Category and Language -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Categoría
-          </label>
-          <select
-            [(ngModel)]="formData.category"
-            name="category"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
-            [style.--tw-ring-color]="'var(--color-primary)'"
-          >
-            <option value="MARKETING">Marketing</option>
-            <option value="UTILITY">Utilidad</option>
-            <option value="AUTHENTICATION">Autenticación</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Idioma
-          </label>
-          <select
-            [(ngModel)]="formData.language"
-            name="language"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
-            [style.--tw-ring-color]="'var(--color-primary)'"
-          >
-            <option value="es">Español</option>
-            <option value="en">Inglés</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Notes -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Notas (opcional)
-        </label>
-        <textarea
-          [(ngModel)]="formData.notes"
-          name="notes"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
-          [style.--tw-ring-color]="'var(--color-primary)'"
-          rows="2"
-          placeholder="Notas adicionales sobre el template..."
-        ></textarea>
-      </div>
-
-      <!-- Action buttons -->
-      <div class="flex justify-end gap-3">
-        <button 
-          type="button"
-          (click)="handleBackToMain()"
-          class="px-4 py-2 border border-red-300 rounded hover:bg-red-50 text-red-600"
-          [disabled]="creating"
-        >
-          Cancelar
-        </button>
-        <button 
-          type="submit"
-          [disabled]="creating"
-          class="px-4 py-2 text-white rounded disabled:opacity-50"
-          [style.background-color]="'var(--color-accent)'"
-        >
-          {{ creating ? 'Creando...' : 'Crear Template' }}
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Vista de enviar templates -->
-<div *ngIf="!loading && currentView === 'send'" class="p-6">
-  <div class="mb-6">
-    <button 
-      (click)="handleBackToMain()"
-      class="mb-4 hover:underline"
-      [style.color]="'var(--color-primary)'"
-    >
-      ← Volver al inicio
-    </button>
-    <h1 class="text-2xl font-bold text-gray-900">
-      Enviar Templates
-    </h1>
-    <p class="text-gray-600 mt-1">
-      Selecciona un template aprobado para enviarlo a tus contactos
-    </p>
-  </div>
-
-  <!-- Loading state -->
-  <div *ngIf="templatesLoading" class="text-center py-8">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" [style.border-color]="'var(--color-primary)'"></div>
-    <p class="mt-4 text-gray-600">Cargando templates...</p>
-  </div>
-
-  <!-- Error state -->
-  <div *ngIf="!templatesLoading && error" class="bg-red-50 border border-red-200 rounded-lg p-4">
-    <p class="text-red-800">{{ error }}</p>
-    <button 
-      (click)="loadTemplates()"
-      class="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-    >
-      Reintentar
-    </button>
-  </div>
-
-  <!-- Templates list -->
-  <div *ngIf="!templatesLoading && !error" class="space-y-4">
-    <!-- Empty state for approved templates -->
-    <div *ngIf="!hasApprovedTemplates" class="bg-white border border-gray-200 rounded-lg p-8 text-center">
-      <p class="text-gray-500 mb-4">No tienes templates aprobados para enviar</p>
-      <p class="text-sm text-gray-400 mb-4">Los templates deben estar en estado "Aprobado" para poder enviarlos</p>
-      <button 
-        (click)="handleCreateView()"
-        class="px-4 py-2 text-white rounded"
-        [style.background-color]="'var(--color-accent)'"
-      >
-        Crear mi primer template
-      </button>
-    </div>
-
-    <!-- Approved templates -->
-    <div *ngFor="let template of approvedTemplates" class="bg-white border border-gray-200 rounded-lg p-4">
-      <div class="flex justify-between items-start">
-        <div class="flex-1">
-          <h3 class="font-semibold text-gray-900">{{ template.template_name }}</h3>
-          <p class="text-sm text-gray-600 mt-1">{{ template.template_content }}</p>
-        </div>
-        <div class="flex gap-2 ml-4">
-          <button
-            (click)="handleSendTemplate(template)"
-            class="px-4 py-2 text-white rounded text-sm"
-            [style.background-color]="'var(--color-accent)'"
-          >
-            Enviar
-          </button>
-          <div class="flex items-center">
-            <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
-              Aprobado
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Vista principal (main) -->
-<div *ngIf="!loading && currentView === 'main'" class="p-6">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-900">
-      WhatsApp Difusión
-    </h1>
-    <p class="text-gray-600 mt-2">
-      Gestiona templates de WhatsApp y su proceso de aprobación
-    </p>
-  </div>
-  
-  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
-    <div *ngIf="isAuthenticated" class="mt-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Tarjeta Ver Templates -->
-        <div class="rounded-lg p-6 hover:shadow-md transition-shadow border"
-             [style.background]="'linear-gradient(to bottom right, rgba(var(--color-primary-rgb), 0.1), rgba(var(--color-primary-rgb), 0.2))'"
-             [style.border-color]="'rgba(var(--color-primary-rgb), 0.3)'">
-          <div class="flex items-center mb-4">
-            <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4"
-                 [style.background-color]="'var(--color-primary)'">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900">Ver Mis Templates</h3>
-              <p class="text-sm text-gray-600">Revisa tus templates creados y su estado</p>
-            </div>
-          </div>
-          <button 
-            (click)="handleViewTemplates()"
-            class="w-full px-4 py-2 text-white rounded-lg transition-colors"
-            [style.background-color]="'var(--color-primary)'"
-          >
-            Acceder →
-          </button>
-        </div>
-
-        <!-- Tarjeta Crear Template -->
-        <div class="rounded-lg p-6 hover:shadow-md transition-shadow border"
-             [style.background]="'linear-gradient(to bottom right, rgba(var(--color-accent-rgb), 0.1), rgba(var(--color-accent-rgb), 0.2))'"
-             [style.border-color]="'rgba(var(--color-accent-rgb), 0.3)'">
-          <div class="flex items-center mb-4">
-            <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4"
-                 [style.background-color]="'var(--color-accent)'">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900">Crear Nuevo Template</h3>
-              <p class="text-sm text-gray-600">Crea templates para WhatsApp Business</p>
-            </div>
-          </div>
-          <button 
-            (click)="handleCreateView()"
-            class="w-full px-4 py-2 text-white rounded-lg transition-colors"
-            [style.background-color]="'var(--color-accent)'"
-          >
-            Crear →
-          </button>
-        </div>
-
-        <!-- Tarjeta Enviar Templates -->
-        <div class="rounded-lg p-6 hover:shadow-md transition-shadow border"
-             [style.background]="'linear-gradient(to bottom right, rgba(var(--color-secondary-rgb), 0.1), rgba(var(--color-secondary-rgb), 0.2))'"
-             [style.border-color]="'rgba(var(--color-secondary-rgb), 0.3)'">
-          <div class="flex items-center mb-4">
-            <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4"
-                 [style.background-color]="'var(--color-secondary)'">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900">Enviar Templates</h3>
-              <p class="text-sm text-gray-600">Envía templates aprobados a destinatarios</p>
-            </div>
-          </div>
-          <button 
-            (click)="handleSendTemplates()"
-            class="w-full px-4 py-2 text-white rounded-lg transition-colors"
-            [style.background-color]="'var(--color-secondary)'"
-          >
-            Enviar →
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de envío de templates -->
-<app-send-template-modal
-  *ngIf="sendModalOpen && selectedTemplate"
-  [isOpen]="sendModalOpen"
-  [template]="selectedTemplate"
-  (close)="closeSendModal()"
-  (success)="onSendSuccess()"
-></app-send-template-modal>
-

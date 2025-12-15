@@ -1,11 +1,12 @@
-<div 
-  class="modal fade" 
-  [class.show]="isOpen" 
-  [style.display]="isOpen ? 'block' : 'none'"
-  tabindex="-1"
+<div
   *ngIf="isOpen"
+  class="modal d-block"
+  tabindex="-1"
+  role="dialog"
+  style="background-color: rgba(0,0,0,0.5);"
+  (click)="close()"
 >
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document" (click)="$event.stopPropagation()">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Cargar destinatarios</h5>
@@ -16,14 +17,39 @@
           <small class="text-muted">Encuesta: <strong>{{ surveyTitle }}</strong></small>
         </div>
 
-        <div class="mb-3">
+        <!-- Tabs -->
+        <ul class="nav nav-pills mb-3">
+          <li class="nav-item">
+            <button
+              type="button"
+              class="nav-link"
+              [class.active]="activeTab === 'manual'"
+              (click)="activeTab = 'manual'"
+            >
+              Manual
+            </button>
+          </li>
+          <li class="nav-item">
+            <button
+              type="button"
+              class="nav-link"
+              [class.active]="activeTab === 'segment'"
+              (click)="activeTab = 'segment'; respondents.length === 0 && loadRespondents(true)"
+            >
+              Segmento (Muestra)
+            </button>
+          </li>
+        </ul>
+
+        <!-- Manual -->
+        <div *ngIf="activeTab === 'manual'" class="mb-3">
           <label class="form-label">
             Pega uno por línea o separa con comas: nombre, teléfono, email. Ejemplos:
           </label>
           <pre class="bg-light p-2 rounded border small mb-2" style="font-size: 0.75rem;">
-            Juan Pérez,+573001112233,juan@correo.com
-            +573001234567
-            ana@correo.com
+Juan Pérez,+573001112233,juan@correo.com
++573001234567
+ana@correo.com
           </pre>
           <textarea
             class="form-control"
@@ -34,9 +60,107 @@
             [disabled]="isUploading"
           ></textarea>
           <div class="mt-2 text-muted small">
-            <strong>{{ stats.total }}</strong> filas • 
-            <strong>{{ stats.phones }}</strong> teléfonos • 
+            <strong>{{ stats.total }}</strong> filas •
+            <strong>{{ stats.phones }}</strong> teléfonos •
             <strong>{{ stats.emails }}</strong> emails
+          </div>
+        </div>
+
+        <!-- Segment -->
+        <div *ngIf="activeTab === 'segment'">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div class="text-muted small">
+              Fuente: <strong>/api/v1/respondents</strong> • Se excluyen <strong>opt_out</strong> automáticamente
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-secondary" type="button" (click)="loadRespondents(true)" [disabled]="respondentsLoading || isUploading">
+                Recargar
+              </button>
+              <button class="btn btn-sm btn-outline-primary" type="button" (click)="loadRespondents(false)" [disabled]="respondentsLoading || isUploading || !hasMore">
+                Cargar más
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="respondentsLoading" class="alert alert-info py-2">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Cargando respondents...
+          </div>
+          <div *ngIf="respondentsError" class="alert alert-danger py-2">
+            {{ respondentsError }}
+          </div>
+
+          <div class="row g-2 mb-3" *ngIf="respondents.length > 0">
+            <div class="col-md-5">
+              <label class="form-label mb-1">Demográfico</label>
+              <select class="form-select" [(ngModel)]="selectedKey" (ngModelChange)="onKeyChange()">
+                <option value="">(Sin filtro)</option>
+                <option *ngFor="let k of demographicKeys" [value]="k">{{ k }}</option>
+              </select>
+            </div>
+            <div class="col-md-5">
+              <label class="form-label mb-1">Valor</label>
+              <select class="form-select" [(ngModel)]="selectedValue" (ngModelChange)="onValueChange()" [disabled]="!selectedKey">
+                <option value="">(Todos)</option>
+                <option *ngFor="let v of demographicValues" [value]="v">{{ v }}</option>
+              </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+              <button class="btn btn-outline-secondary w-100" type="button" (click)="clearSelection()" [disabled]="selectedPhones.size === 0">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between mb-2" *ngIf="respondents.length > 0">
+            <div class="text-muted small">
+              Cargados: <strong>{{ respondentsLoaded }}</strong> • Coinciden filtro: <strong>{{ getFilteredRespondents().length }}</strong> • Seleccionados: <strong>{{ selectedPhones.size }}</strong>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-secondary" type="button" (click)="revealPhones = !revealPhones">
+                {{ revealPhones ? 'Ocultar teléfonos' : 'Revelar teléfonos' }}
+              </button>
+              <button class="btn btn-sm btn-outline-primary" type="button" (click)="selectAllFiltered()" [disabled]="getFilteredRespondents().length === 0">
+                Seleccionar todos
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="respondents.length > 0" class="table-responsive" style="max-height: 320px; overflow: auto;">
+            <table class="table table-sm align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 44px;"></th>
+                  <th>Teléfono</th>
+                  <th class="text-end">Opt-out</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let r of getFilteredRespondents() | slice:0:200" [class.table-secondary]="r.opt_out">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [checked]="selectedPhones.has(r.phone_number)"
+                      (change)="toggleSelectPhone(r.phone_number)"
+                      [disabled]="!r.phone_number || r.opt_out"
+                    />
+                  </td>
+                  <td class="fw-semibold">
+                    {{ maskPhone(r.phone_number) }}
+                  </td>
+                  <td class="text-end">
+                    <span class="badge" [class.bg-danger]="r.opt_out" [class.bg-success]="!r.opt_out">
+                      {{ r.opt_out ? 'Sí' : 'No' }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="text-muted small mt-2" *ngIf="respondents.length > 0">
+            Nota: se muestran hasta 200 filas del filtro por performance.
           </div>
         </div>
 
@@ -50,6 +174,7 @@
           class="btn btn-secondary" 
           (click)="clearText()"
           [disabled]="isUploading || !rawText"
+          *ngIf="activeTab === 'manual'"
         >
           Limpiar
         </button>
@@ -66,20 +191,28 @@
           class="btn btn-primary" 
           (click)="importRecipients()"
           [disabled]="parsedRows.length === 0 || isUploading"
+          [style.background-color]="'var(--color-primary)'"
+          [style.border-color]="'var(--color-primary)'"
+          *ngIf="activeTab === 'manual'"
         >
           <span *ngIf="isUploading" class="spinner-border spinner-border-sm me-2"></span>
           {{ isUploading ? 'Importando...' : 'Importar' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="importSegmentRecipients()"
+          [disabled]="selectedPhones.size === 0 || isUploading"
+          [style.background-color]="'var(--color-primary)'"
+          [style.border-color]="'var(--color-primary)'"
+          *ngIf="activeTab === 'segment'"
+        >
+          <span *ngIf="isUploading" class="spinner-border spinner-border-sm me-2"></span>
+          {{ isUploading ? 'Importando...' : ('Importar segmento (' + selectedPhones.size + ')') }}
         </button>
       </div>
     </div>
   </div>
 </div>
-
-
-<div 
-  class="modal-backdrop fade" 
-  [class.show]="isOpen"
-  *ngIf="isOpen"
-  (click)="close()"
-></div>
 

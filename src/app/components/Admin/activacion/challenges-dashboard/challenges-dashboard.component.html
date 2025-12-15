@@ -1,0 +1,310 @@
+<div class="challenges-dashboard">
+  <!-- Header -->
+  <div class="dashboard-header mb-4">
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <h2 class="mb-1 fw-bold">
+          <i class="fas fa-bolt me-2" [style.color]="'var(--color-primary)'"></i>
+          Retos y Activación
+        </h2>
+        <p class="text-muted mb-0">Gestiona los challenges y retos de tu campaña</p>
+      </div>
+      <button 
+        class="btn btn-primary"
+        (click)="openCreateModal()"
+        [style.background-color]="'var(--color-primary)'"
+        [style.border-color]="'var(--color-primary)'">
+        <i class="fas fa-plus me-2"></i>
+        Crear Reto
+      </button>
+    </div>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="statistics-section mb-4" *ngIf="!challengesLoading && !challengesError && challenges.length > 0">
+    <div class="row g-3">
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-primary">
+            <i class="fas fa-tasks"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ getStatistics().total }}</div>
+            <div class="stat-label">Total Retos</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-success">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ getStatistics().active }}</div>
+            <div class="stat-label">Activos</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-secondary">
+            <i class="fas fa-flag-checkered"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ getStatistics().completed }}</div>
+            <div class="stat-label">Completados</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-accent">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ getStatistics().upcoming }}</div>
+            <div class="stat-label">Próximos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Búsqueda y Filtros -->
+  <div class="search-filters-section mb-4">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="fas fa-search"></i>
+          </span>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearchChange()"
+            placeholder="Buscar por nombre o descripción...">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="btn-group w-100" role="group">
+          <button 
+            type="button" 
+            class="btn filter-btn"
+            [class.filter-btn-active]="statusFilter === 'all'"
+            [style.background-color]="statusFilter === 'all' ? 'var(--color-primary)' : 'transparent'"
+            [style.color]="statusFilter === 'all' ? 'white' : 'var(--color-primary)'"
+            [style.border-color]="'var(--color-primary)'"
+            (click)="changeStatusFilter('all')">
+            Todos
+          </button>
+          <button 
+            type="button" 
+            class="btn filter-btn"
+            [class.filter-btn-active]="statusFilter === 'active'"
+            [style.background-color]="statusFilter === 'active' ? 'var(--color-accent)' : 'transparent'"
+            [style.color]="statusFilter === 'active' ? 'white' : 'var(--color-accent)'"
+            [style.border-color]="'var(--color-accent)'"
+            (click)="changeStatusFilter('active')">
+            Activos
+          </button>
+          <button 
+            type="button" 
+            class="btn filter-btn"
+            [class.filter-btn-active]="statusFilter === 'completed'"
+            [style.background-color]="statusFilter === 'completed' ? 'var(--color-secondary)' : 'transparent'"
+            [style.color]="statusFilter === 'completed' ? 'white' : 'var(--color-secondary)'"
+            [style.border-color]="'var(--color-secondary)'"
+            (click)="changeStatusFilter('completed')">
+            Completados
+          </button>
+          <button 
+            type="button" 
+            class="btn filter-btn"
+            [class.filter-btn-active]="statusFilter === 'upcoming'"
+            [style.background-color]="statusFilter === 'upcoming' ? 'var(--color-accent)' : 'transparent'"
+            [style.color]="statusFilter === 'upcoming' ? 'white' : 'var(--color-accent)'"
+            [style.border-color]="'var(--color-accent)'"
+            (click)="changeStatusFilter('upcoming')">
+            Próximos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Loading State -->
+  <div *ngIf="challengesLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted">Cargando challenges...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="challengesError && !challengesLoading" class="alert alert-danger" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    {{ challengesError }}
+  </div>
+
+  <!-- Results Count -->
+  <div *ngIf="!challengesLoading && !challengesError && filteredChallenges.length > 0" class="results-count mb-3">
+    <small class="text-muted">
+      Mostrando {{ getStartIndex() }} - 
+      {{ getEndIndex() }} 
+      de {{ filteredChallenges.length }} 
+      {{ filteredChallenges.length === 1 ? 'reto' : 'retos' }}
+    </small>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!challengesLoading && !challengesError && filteredChallenges.length === 0" class="empty-state text-center py-5">
+    <div class="empty-icon mb-3">
+      <i class="fas fa-bolt fa-4x text-muted opacity-50"></i>
+    </div>
+    <h4 class="text-muted mb-2">No hay challenges disponibles</h4>
+    <p class="text-muted mb-4">
+      <span *ngIf="statusFilter !== 'all'">No hay challenges con estado "{{ getStatusText(statusFilter) }}".</span>
+      <span *ngIf="statusFilter === 'all'">Crea tu primer reto para comenzar a activar a tu equipo.</span>
+    </p>
+    <button 
+      *ngIf="statusFilter === 'all'"
+      class="btn btn-primary"
+      (click)="openCreateModal()"
+      [style.background-color]="'var(--color-primary)'">
+      <i class="fas fa-plus me-2"></i>
+      Crear Primer Reto
+    </button>
+  </div>
+
+  <!-- Challenges List -->
+  <div *ngIf="!challengesLoading && !challengesError && filteredChallenges.length > 0" class="challenges-list">
+    <div class="row g-4">
+      <div 
+        *ngFor="let challenge of getPaginatedChallenges()" 
+        class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm h-100 challenge-card">
+          <div class="card-body">
+            <!-- Header -->
+            <div class="d-flex align-items-start justify-content-between mb-3">
+              <div class="flex-grow-1">
+                <h5 class="card-title mb-1 fw-bold">{{ challenge.name }}</h5>
+                <span [class]="getStatusBadgeClass(challenge.status)">
+                  {{ getStatusText(challenge.status) }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <p class="card-text text-muted small mb-3" *ngIf="challenge.description">
+              {{ challenge.description }}
+            </p>
+
+            <!-- Stats -->
+            <div class="challenge-stats mb-3">
+              <div class="stat-item">
+                <i class="fas fa-users text-muted me-2"></i>
+                <span class="small">{{ challenge.max_users || 0 }} participantes</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-star text-warning me-2"></i>
+                <span class="small">{{ challenge.puntos || 0 }} puntos</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-calendar-alt text-muted me-2"></i>
+                <span class="small">{{ formatDate(challenge.max_date) }}</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="challenge-actions">
+              <div class="btn-group w-100" role="group">
+                <button 
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="openEditModal(challenge)"
+                  title="Editar">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-success"
+                  (click)="openAssignModal(challenge)"
+                  title="Asignar">
+                  <i class="fas fa-user-plus"></i>
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-info"
+                  (click)="openAssignedUsersModal(challenge)"
+                  title="Ver usuarios asignados">
+                  <i class="fas fa-users"></i>
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-warning"
+                  (click)="openConfirmModal(challenge)"
+                  title="Confirmar completaciones">
+                  <i class="fas fa-check-circle"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginación -->
+  <div *ngIf="!challengesLoading && !challengesError && totalPages > 1" class="pagination-section mt-4">
+    <nav aria-label="Paginación de challenges">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" (click)="changePage(currentPage - 1)" [style.cursor]="currentPage === 1 ? 'not-allowed' : 'pointer'">
+            <i class="fas fa-chevron-left"></i>
+          </a>
+        </li>
+        <li *ngFor="let page of getPageNumbers()" class="page-item" [class.active]="page === currentPage">
+          <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link" (click)="changePage(currentPage + 1)" [style.cursor]="currentPage === totalPages ? 'not-allowed' : 'pointer'">
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Modales -->
+  <app-create-challenge-modal
+    [show]="showCreateModal"
+    (close)="closeModals()"
+    (created)="onChallengeCreated()">
+  </app-create-challenge-modal>
+
+  <app-edit-challenge-modal
+    [show]="showEditModal"
+    [challenge]="selectedChallenge"
+    (close)="closeModals()"
+    (updated)="onChallengeUpdated()">
+  </app-edit-challenge-modal>
+
+  <app-assign-challenge-modal
+    [show]="showAssignModal"
+    [challenge]="selectedChallenge"
+    (close)="closeModals()"
+    (assigned)="onChallengeUpdated()">
+  </app-assign-challenge-modal>
+
+  <app-confirm-completions-modal
+    [show]="showConfirmModal"
+    [challenge]="selectedChallenge"
+    (close)="closeModals()"
+    (confirmed)="onChallengeUpdated()">
+  </app-confirm-completions-modal>
+
+  <app-assigned-users-modal
+    [show]="showAssignedUsersModal"
+    [challenge]="selectedChallenge"
+    (close)="closeModals()">
+  </app-assigned-users-modal>
+</div>
+

@@ -106,7 +106,7 @@ export class SurveyResponsesComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/admin/surveys']);
+    this.router.navigate(['/panel/encuestas']);
   }
 
   getResponseKeys(): string[] {

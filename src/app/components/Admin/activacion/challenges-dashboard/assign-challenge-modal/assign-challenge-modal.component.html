@@ -1,0 +1,226 @@
+<div
+  *ngIf="show"
+  class="modal d-block"
+  tabindex="-1"
+  role="dialog"
+  style="background-color: rgba(0,0,0,0.5);"
+  (click)="onClose()">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-user-plus me-2" [style.color]="'var(--color-primary)'"></i>
+          Asignar Reto
+        </h5>
+        <button type="button" class="btn-close" (click)="onClose()" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body" *ngIf="challenge">
+        <!-- Error Message -->
+        <div *ngIf="error" class="alert alert-danger" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ error }}
+        </div>
+
+        <!-- Challenge Info -->
+        <div class="challenge-info mb-4 p-3 bg-light rounded">
+          <h6 class="mb-2 fw-bold">{{ challenge.name }}</h6>
+          <p class="mb-0 text-muted small" *ngIf="challenge.description">
+            {{ challenge.description }}
+          </p>
+        </div>
+
+        <!-- Assign Type Selection -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">Tipo de Asignación</label>
+          
+          <div class="btn-group-vertical w-100" role="group">
+            <input
+              type="radio"
+              class="btn-check"
+              id="assign-tree"
+              value="tree"
+              [(ngModel)]="assignType"
+              name="assignType">
+            <label class="btn btn-outline-primary" for="assign-tree">
+              <i class="fas fa-sitemap me-2"></i>
+              Árbol Completo
+            </label>
+
+            <input
+              type="radio"
+              class="btn-check"
+              id="assign-direct"
+              value="direct"
+              [(ngModel)]="assignType"
+              name="assignType">
+            <label class="btn btn-outline-primary" for="assign-direct">
+              <i class="fas fa-users me-2"></i>
+              Referidos Directos
+            </label>
+
+            <input
+              type="radio"
+              class="btn-check"
+              id="assign-user"
+              value="user"
+              [(ngModel)]="assignType"
+              name="assignType">
+            <label class="btn btn-outline-primary" for="assign-user">
+              <i class="fas fa-user me-2"></i>
+              Usuario Específico
+            </label>
+          </div>
+
+          <!-- Description -->
+          <div class="mt-3 p-3 bg-info bg-opacity-10 rounded">
+            <small class="text-muted">
+              <i class="fas fa-info-circle me-2"></i>
+              {{ getAssignTypeDescription() }}
+            </small>
+          </div>
+        </div>
+
+        <!-- Phone Input (only for user assignment) -->
+        <div class="mb-3" *ngIf="assignType === 'user'">
+          <label for="userPhone" class="form-label">
+            Número de Teléfono <span class="text-danger">*</span>
+          </label>
+          <div class="input-group">
+            <input
+              type="tel"
+              class="form-control"
+              id="userPhone"
+              [(ngModel)]="userPhone"
+              placeholder="+573001234567"
+              [class.is-invalid]="assignType === 'user' && !userPhone.trim()">
+            <button
+              class="btn btn-outline-primary"
+              type="button"
+              (click)="openUsersPicker()"
+              [style.border-color]="'var(--color-primary)'"
+              [style.color]="'var(--color-primary)'">
+              <i class="fas fa-search me-2"></i>
+              Elegir usuario
+            </button>
+          </div>
+          <small class="form-text text-muted">
+            Ingresa el número de teléfono del usuario (con código de país)
+          </small>
+
+          <!-- Usuario seleccionado -->
+          <div *ngIf="selectedUser" class="mt-3 p-3 bg-light rounded">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <strong>Seleccionado:</strong>
+                {{ (selectedUser.name || '') + ' ' + (selectedUser.lastname || '') }}
+                <span class="text-muted">({{ selectedUser.phone }})</span>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary" type="button" (click)="selectedUser = null">
+                Quitar
+              </button>
+            </div>
+          </div>
+
+          <!-- Picker inline -->
+          <div *ngIf="showUsersPicker" class="mt-3 border rounded p-3" style="background: #fff;">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <strong>Elegir de usuarios del sistema</strong>
+              <button class="btn btn-sm btn-outline-secondary" type="button" (click)="closeUsersPicker()">
+                Cerrar
+              </button>
+            </div>
+
+            <div class="input-group mb-2">
+              <span class="input-group-text">
+                <i class="fas fa-search"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="userSearch"
+                (ngModelChange)="onUserSearchChange()"
+                placeholder="Buscar por nombre, teléfono, ciudad o estado">
+            </div>
+
+            <div *ngIf="usersError" class="alert alert-danger py-2 mb-2">
+              {{ usersError }}
+            </div>
+
+            <div *ngIf="usersLoading" class="text-center py-2">
+              <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+              <small class="text-muted ms-2">Cargando usuarios...</small>
+            </div>
+
+            <div *ngIf="!usersLoading && getFilteredUsers().length === 0" class="text-center py-3 text-muted">
+              No hay usuarios para mostrar con ese filtro.
+            </div>
+
+            <div *ngIf="!usersLoading && getFilteredUsers().length > 0" class="table-responsive" style="max-height: 260px; overflow: auto;">
+              <table class="table table-sm align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Usuario</th>
+                    <th>Teléfono</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let u of getFilteredUsers() | slice:0:20">
+                    <td>
+                      <div class="fw-bold">{{ (u.name || 'Usuario') + ' ' + (u.lastname || '') }}</div>
+                      <div class="text-muted small">{{ (u.city || 'N/A') + ', ' + (u.state || 'N/A') }}</div>
+                    </td>
+                    <td class="text-muted">{{ u.phone || 'Sin teléfono' }}</td>
+                    <td class="text-end">
+                      <button
+                        class="btn btn-sm btn-primary"
+                        type="button"
+                        (click)="selectUserFromPicker(u)"
+                        [disabled]="!u.phone"
+                        [style.background-color]="'var(--color-primary)'"
+                        [style.border-color]="'var(--color-primary)'">
+                        Seleccionar
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <small class="text-muted">
+                Mostrando hasta 20 resultados (del lote cargado).
+              </small>
+              <button
+                class="btn btn-sm btn-outline-primary"
+                type="button"
+                (click)="loadUsers(false)"
+                [disabled]="usersLoading || !usersHasMore"
+                [style.border-color]="'var(--color-primary)'"
+                [style.color]="'var(--color-primary)'">
+                Cargar más
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()" [disabled]="assigning">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onAssign()"
+          [disabled]="assigning || (assignType === 'user' && !userPhone.trim())"
+          [style.background-color]="'var(--color-primary)'">
+          <span *ngIf="assigning" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          <i *ngIf="!assigning" class="fas fa-check me-2"></i>
+          {{ assigning ? 'Asignando...' : 'Asignar Reto' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

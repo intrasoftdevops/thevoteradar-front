@@ -1,0 +1,25 @@
+<div class="main-layout" [class.sidebar-collapsed]="sidebarCollapsed">
+  <!-- Header -->
+  <app-header 
+    [roleName]="roleName"
+    (toggleSidebar)="toggleSidebar()"
+    (logout)="logout()">
+  </app-header>
+  
+  <!-- Sidebar con menú dinámico -->
+  <app-sidebar [collapsed]="sidebarCollapsed">
+    <app-role-menu [userRole]="userRole"></app-role-menu>
+  </app-sidebar>
+  
+  <!-- Content Area -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <!-- Footer -->
+  <app-footer></app-footer>
+</div>
+
+<!-- Loading Overlay -->
+<app-loading></app-loading>
+

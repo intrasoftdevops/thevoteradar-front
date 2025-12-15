@@ -1,18 +1,13 @@
-<section id="fondo" *ngIf="rol && rol != 0; else other_content">
-  <app-menu-admin *ngIf="rol == 1"></app-menu-admin>
-  <app-menu-gerente *ngIf="rol == 2"></app-menu-gerente>
-  <app-menu-supervisor *ngIf="rol == 3"></app-menu-supervisor>
-  <app-menu-coordinador *ngIf="rol == 4"></app-menu-coordinador>
-  <app-menu-testigo *ngIf="rol == 5"></app-menu-testigo>
-  <app-menu-administrador-impugnaciones *ngIf="rol == 7"></app-menu-administrador-impugnaciones>
-  <app-menu-impugnador *ngIf="rol == 8"></app-menu-impugnador>
-  <router-outlet></router-outlet>
-  <app-footer></app-footer>
-</section>
-<ng-template #other_content>
-  <router-outlet></router-outlet>
-</ng-template>
+<!-- 
+  Layout simplificado:
+  - El routing maneja qué layout usar (AdminLayoutComponent para /inicio y /panel)
+  - Para otras rutas autenticadas, se usa el router-outlet directamente
+  - Público → Sin layout (solo contenido)
+  - TODOS LOS HEADERS LEGACY HAN SIDO ELIMINADOS
+-->
+
+<!-- Router outlet maneja todo el routing -->
+<router-outlet></router-outlet>
+
 <app-loading></app-loading>
-
-
 <app-theme-selector *ngIf="isDevelopmentMode"></app-theme-selector>

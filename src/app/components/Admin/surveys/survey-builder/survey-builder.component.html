@@ -1,4 +1,5 @@
-<div class="container-fluid py-4">
+<div class="min-h-screen" [style.background]="'linear-gradient(to bottom right, rgba(var(--color-primary-rgb), 0.05), white, rgba(var(--color-primary-rgb), 0.05))'">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Cargando...</span>
@@ -74,7 +75,7 @@
     <div class="col-md-8">
       <h4 class="mb-3">Lienzo</h4>
       <p class="text-muted mb-4">
-        Arrastra componentes desde la derecha o haz clic en una pregunta para editarla.
+        Arrastra y suelta para <strong>reordenar</strong> preguntas (drag & drop). Haz clic en una pregunta para editarla.
       </p>
 
       <div class="border border-dashed rounded p-4 min-vh-50" style="min-height: 400px;">
@@ -83,15 +84,29 @@
           <p class="small">Arrastra un componente para comenzar.</p>
         </div>
 
-        <div *ngFor="let question of builderState.questions; let i = index" class="mb-3">
+        <div *ngFor="let question of builderState.questions; let i = index" class="mb-3"
+             (dragover)="onDragOver($event)"
+             (drop)="onDrop(i, $event)">
           <div *ngIf="editingQuestionId !== question.id" 
                class="card"
                (click)="editingQuestionId = question.id"
-               style="cursor: pointer;">
+               style="cursor: pointer;"
+               draggable="true"
+               (dragstart)="onDragStart(i, $event)"
+               (dragend)="onDragEnd()"
+               (dragover)="onDragOver($event)"
+               (drop)="onDrop(i, $event)">
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-start">
                 <div class="flex-grow-1">
-                  <h6 class="card-title mb-1">{{ question.text }}</h6>
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-grip-vertical text-muted" title="Arrastra para reordenar"></i>
+                    <h6 class="card-title mb-1">{{ question.text }}</h6>
+                    <span *ngIf="question.is_demographic" class="badge bg-info text-dark" title="Pregunta demográfica">
+                      <i class="fa-solid fa-user-tag me-1"></i>
+                      Demográfica
+                    </span>
+                  </div>
                   <span class="badge bg-secondary">{{ getQuestionTypeLabel(question.type) }}</span>
                 </div>
                 <button 
@@ -109,6 +124,21 @@
           <div *ngIf="editingQuestionId === question.id" class="card border-primary" [attr.data-question-id]="question.id">
             <div class="card-body">
               <h5 class="card-title mb-3">Editando Pregunta</h5>
+
+              <!-- Builder v2: is_demographic -->
+              <div class="form-check form-switch mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  [checked]="!!question.is_demographic"
+                  (change)="toggleDemographic(question, $any($event.target).checked, $event)"
+                  id="is-demographic-{{question.id}}"
+                />
+                <label class="form-check-label" [attr.for]="'is-demographic-' + question.id">
+                  Pregunta demográfica <span class="text-muted">(Usar para segmentar resultados)</span>
+                </label>
+              </div>
               
               <div class="mb-3">
                 <label class="form-label">Texto de la pregunta <span class="text-danger">*</span></label>
@@ -317,5 +347,6 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 

@@ -48,7 +48,7 @@ export class SurveyAnalyticsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/admin/surveys']);
+    this.router.navigate(['/panel/encuestas']);
   }
 
   getPercentage(count: number, total: number): number {

@@ -1,0 +1,45 @@
+<nav class="role-menu">
+  <!-- Role Header -->
+  <div class="menu-header" *ngIf="roleDisplayName">
+    <span class="role-label">{{ roleDisplayName }}</span>
+  </div>
+  
+  <!-- Menu Items -->
+  <ul class="menu-list">
+    <ng-container *ngFor="let item of menuItems">
+      <!-- Item sin hijos -->
+      <li class="menu-item" *ngIf="!item.children">
+        <a [routerLink]="item.route" 
+           routerLinkActive="active"
+           class="menu-link">
+          <i [class]="item.icon"></i>
+          <span class="menu-label">{{ item.label }}</span>
+          <span class="menu-badge" *ngIf="item.badge" [class]="item.badgeClass">
+            {{ item.badge }}
+          </span>
+        </a>
+      </li>
+      
+      <!-- Item con hijos (submenu) -->
+      <li class="menu-item has-submenu" *ngIf="item.children" [class.expanded]="isExpanded(item.label)">
+        <a class="menu-link" (click)="toggleSubmenu(item.label)">
+          <i [class]="item.icon"></i>
+          <span class="menu-label">{{ item.label }}</span>
+          <i class="fas fa-chevron-down submenu-arrow"></i>
+        </a>
+        
+        <ul class="submenu" *ngIf="isExpanded(item.label)">
+          <li class="submenu-item" *ngFor="let child of item.children">
+            <a [routerLink]="child.route" 
+               routerLinkActive="active"
+               class="submenu-link">
+              <i [class]="child.icon"></i>
+              <span>{{ child.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ng-container>
+  </ul>
+</nav>
+

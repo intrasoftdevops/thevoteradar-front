@@ -1,98 +1,211 @@
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Encuestas</h2>
-    <button class="btn btn-primary" (click)="openCreateModal()">
-      <i class="fa-solid fa-plus me-2"></i>
-      Crear Nueva Encuesta
-    </button>
-  </div>
+<div class="min-h-screen" [style.background]="'linear-gradient(to bottom right, rgba(var(--color-primary-rgb), 0.05), white, rgba(var(--color-primary-rgb), 0.05))'">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Encuestas</h2>
+        <p class="text-gray-600 mt-1">Crea, gestiona y analiza encuestas de tu campaña</p>
+      </div>
+      <button
+        class="inline-flex items-center justify-center px-4 py-2 rounded-full text-white font-semibold shadow-sm transition-all"
+        (click)="openCreateModal()"
+        [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+      >
+        <i class="fa-solid fa-plus me-2"></i>
+        Crear Nueva Encuesta
+      </button>
+    </div>
 
-  <div *ngIf="loading" class="alert alert-info">
-    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-    Cargando encuestas...
-  </div>
+    <!-- Loading -->
+    <div *ngIf="loading" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+      <div class="flex items-center">
+        <div class="animate-spin rounded-full h-5 w-5 border-b-2" [style.border-color]="'var(--color-primary)'"></div>
+        <span class="ml-3 text-gray-600">Cargando encuestas...</span>
+      </div>
+    </div>
 
-  <div *ngIf="error" class="alert alert-danger">
-    {{ error }}
-  </div>
+    <!-- Error -->
+    <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-2xl p-6">
+      <div class="flex items-start">
+        <i class="fa-solid fa-triangle-exclamation text-red-500 mt-1"></i>
+        <div class="ml-3">
+          <div class="font-semibold text-red-800">No se pudieron cargar las encuestas</div>
+          <div class="text-sm text-red-700 mt-1">{{ error }}</div>
+        </div>
+      </div>
+    </div>
 
-  <div *ngIf="!loading && !error && surveys.length === 0" class="alert alert-secondary">
-    Aún no hay encuestas creadas. ¡Crea una nueva!
-  </div>
+    <!-- Empty -->
+    <div *ngIf="!loading && !error && surveys.length === 0" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-10 text-center">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 shadow"
+           [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
+        <i class="fa-solid fa-clipboard-list text-white text-xl"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900">Aún no hay encuestas</h3>
+      <p class="text-gray-600 mt-2">Crea una nueva encuesta para empezar a recolectar intención de voto.</p>
+      <button
+        class="mt-6 inline-flex items-center justify-center px-5 py-2 rounded-full text-white font-semibold shadow-sm transition-all"
+        (click)="openCreateModal()"
+        [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+      >
+        <i class="fa-solid fa-plus me-2"></i>
+        Crear mi primera encuesta
+      </button>
+    </div>
 
-  <div *ngIf="!loading && !error && surveys.length > 0" class="table-responsive">
-    <table class="table table-striped table-hover align-middle">
-      <thead class="table-dark">
-        <tr>
-          <th>Título</th>
-          <th>Descripción</th>
-          <th>Preguntas</th>
-          <th>Estado</th>
-          <th>Creada</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let survey of surveys">
-          <td><strong>{{ survey.title }}</strong></td>
-          <td>{{ survey.description || '-' }}</td>
-          <td>{{ survey.questions_count }}</td>
-          <td>
-            <span [ngClass]="getStatusBadgeClass(survey.status)">
-              {{ getStatusText(survey.status) }}
-            </span>
-          </td>
-          <td>{{ survey.created_at | date: 'short' }}</td>
-          <td>
-            <div class="btn-group" role="group">
-              <button 
-                class="btn btn-sm btn-primary" 
-                (click)="editSurvey(survey.id)"
-                title="Editar encuesta"
+    <!-- Table/Card -->
+    <div *ngIf="!loading && !error && surveys.length > 0" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+      <div class="p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-bold text-gray-900">Listado</h3>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+            <!-- Filtro por estado -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-semibold">Estado</span>
+              <select
+                class="px-3 py-2 rounded-xl border border-gray-200 bg-white/70 text-sm"
+                [style.box-shadow]="'0 0 0 0 rgba(0,0,0,0)'"
+                [(ngModel)]="statusFilter"
+                (ngModelChange)="setStatusFilter($event)"
               >
-                <i class="fa-solid fa-edit"></i>
-              </button>
-              <button 
-                class="btn btn-sm btn-outline-primary" 
-                (click)="openRecipientsModal(survey)"
-                title="Agregar destinatarios"
-              >
-                <i class="fa-solid fa-users me-1"></i>
-                Destinatarios
-              </button>
-              <button 
-                class="btn btn-sm btn-outline-info" 
-                (click)="viewAnalytics(survey.id)"
-                title="Ver analytics"
-              >
-                <i class="fa-solid fa-chart-bar me-1"></i>
-                Analytics
-              </button>
-              <button 
-                class="btn btn-sm btn-outline-success" 
-                (click)="viewResponses(survey.id)"
-                title="Ver respuestas"
-              >
-                <i class="fa-solid fa-list me-1"></i>
-                Respuestas
-              </button>
+                <option value="all">Todos</option>
+                <option value="draft">Borrador</option>
+                <option value="published">Publicada</option>
+                <option value="closed">Cerrada</option>
+              </select>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+            <!-- Orden por fecha -->
+            <button
+              class="inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-semibold border transition-all"
+              type="button"
+              (click)="toggleSortOrder()"
+              [style.border-color]="'rgba(0,0,0,0.15)'"
+              [style.color]="'rgba(0,0,0,0.75)'"
+              [title]="sortOrder === 'desc' ? 'Orden: más recientes primero' : 'Orden: más antiguas primero'"
+            >
+              <i class="fa-solid" [class.fa-arrow-down]="sortOrder === 'desc'" [class.fa-arrow-up]="sortOrder === 'asc'"></i>
+              <span class="ms-2">Fecha</span>
+            </button>
+
+            <div class="text-sm text-gray-500 sm:pl-2">
+              {{ getDisplayedSurveys().length }} {{ getDisplayedSurveys().length === 1 ? 'encuesta' : 'encuestas' }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Encuesta</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Preguntas</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Estado</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Creada</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white">
+            <tr *ngFor="let survey of getDisplayedSurveys()" class="hover:bg-gray-50">
+              <td class="px-6 py-4" style="min-width: 360px; max-width: 620px;">
+                <div class="font-semibold text-gray-900 whitespace-normal break-words">
+                  {{ survey.title }}
+                </div>
+                <div class="text-sm text-gray-600 mt-1 whitespace-normal break-words" *ngIf="survey.description; else noDesc">
+                  {{ survey.description }}
+                </div>
+                <ng-template #noDesc>
+                  <div class="text-sm text-gray-400 mt-1">Sin descripción</div>
+                </ng-template>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-700">{{ survey.questions_count }}</td>
+              <td class="px-6 py-4">
+                <span [class]="getStatusBadgeClass(survey.status)">{{ getStatusText(survey.status) }}</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-600">{{ survey.created_at | date: 'short' }}</td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2 survey-actions" style="position: relative;" (click)="$event.stopPropagation()">
+                  <button
+                    class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold border transition-all"
+                    (click)="editSurvey(survey.id)"
+                    [style.border-color]="'var(--color-primary)'"
+                    [style.color]="'var(--color-primary)'"
+                    title="Editar encuesta"
+                  >
+                    <i class="fa-solid fa-pen-to-square me-2"></i>
+                    Editar
+                  </button>
+
+                  <button
+                    class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold border transition-all"
+                    (click)="toggleActionsMenu(survey.id, $event)"
+                    [style.border-color]="'rgba(0,0,0,0.15)'"
+                    [style.color]="'rgba(0,0,0,0.7)'"
+                    title="Más acciones"
+                    type="button"
+                  >
+                    <i class="fa-solid fa-ellipsis-vertical me-2"></i>
+                    Más
+                  </button>
+
+                  <!-- Dropdown -->
+                  <div
+                    *ngIf="openActionsFor === survey.id"
+                    class="bg-white rounded-xl shadow-lg border border-gray-200"
+                    style="position: absolute; right: 0; top: 44px; width: 220px; z-index: 60;"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <button
+                      class="w-full text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50"
+                      type="button"
+                      (click)="openRecipientsModal(survey); closeActionsMenu()"
+                      [style.color]="'var(--color-primary)'"
+                    >
+                      <i class="fa-solid fa-users me-2"></i>
+                      Destinatarios
+                    </button>
+                    <button
+                      class="w-full text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50"
+                      type="button"
+                      (click)="viewAnalytics(survey.id); closeActionsMenu()"
+                      [style.color]="'var(--color-accent)'"
+                    >
+                      <i class="fa-solid fa-chart-column me-2"></i>
+                      Analytics
+                    </button>
+                    <button
+                      class="w-full text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50"
+                      type="button"
+                      (click)="viewResponses(survey.id); closeActionsMenu()"
+                      [style.color]="'var(--color-secondary)'"
+                    >
+                      <i class="fa-solid fa-list me-2"></i>
+                      Respuestas
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
 
-<div 
-  class="modal fade" 
-  [class.show]="showCreateModal" 
-  [style.display]="showCreateModal ? 'block' : 'none'"
-  tabindex="-1"
+<div
   *ngIf="showCreateModal"
+  class="modal d-block"
+  tabindex="-1"
+  role="dialog"
+  style="background-color: rgba(0,0,0,0.5);"
+  (click)="closeCreateModal()"
 >
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered" role="document" (click)="$event.stopPropagation()">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Crear Nueva Encuesta</h5>
@@ -127,6 +240,8 @@
           class="btn btn-primary" 
           (click)="createSurvey(titleInput.value)"
           [disabled]="creatingSurvey || !titleInput.value?.trim()"
+          [style.background-color]="'var(--color-primary)'"
+          [style.border-color]="'var(--color-primary)'"
         >
           <span *ngIf="creatingSurvey" class="spinner-border spinner-border-sm me-2"></span>
           {{ creatingSurvey ? 'Creando...' : 'Crear y Continuar' }}
@@ -135,14 +250,6 @@
     </div>
   </div>
 </div>
-
-
-<div 
-  class="modal-backdrop fade" 
-  [class.show]="showCreateModal"
-  *ngIf="showCreateModal"
-  (click)="closeCreateModal()"
-></div>
 
 
 <app-recipients-modal

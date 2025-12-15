@@ -1,0 +1,17 @@
+@import '../create-challenge-modal/create-challenge-modal.component.scss';
+
+.challenge-info {
+  border-left: 4px solid var(--color-primary);
+}
+
+.input-group {
+  .input-group-text {
+    background-color: var(--color-background, #f8f9fa);
+    border-color: #dee2e6;
+  }
+}
+
+.summary-box {
+  border-left: 4px solid #28a745;
+}
+
