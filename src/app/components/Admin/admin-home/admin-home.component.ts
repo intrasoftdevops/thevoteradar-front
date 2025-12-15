@@ -118,6 +118,17 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef
   ) {}
 
+  /**
+   * Regla Home: solo mostrar encuestas activas/publicadas en "Últimas 3 encuestas"
+   * Backend legacy puede enviar "active" (equivale a published).
+   */
+  private isSurveyActiveOrPublished(survey: any): boolean {
+    const raw = (survey?.status || '').toString().trim().toLowerCase();
+    if (raw === 'inactive' || raw === 'archived' || raw === 'archivada') return false;
+    if (survey?.is_draft) return false;
+    return raw === 'published' || raw === 'publicada' || raw === 'active' || raw === 'activa' || raw === 'open' || raw === 'opened';
+  }
+
   ngOnInit(): void {
     console.log('🚀 AdminHome - Inicializando componente');
     
@@ -208,7 +219,9 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
       retry(2),
       tap((surveys) => {
         console.log('✅ AdminHome - Encuestas recibidas:', surveys);
-        this.recentSurveys = surveys
+        const activeSurveys = (surveys || []).filter(s => this.isSurveyActiveOrPublished(s));
+
+        this.recentSurveys = activeSurveys
           .sort((a, b) => {
             const dateA = new Date(a.created_at || 0).getTime();
             const dateB = new Date(b.created_at || 0).getTime();

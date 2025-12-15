@@ -589,6 +589,8 @@ export const environment = {
 | | - Persistencia: `PUT /api/v1/builder/{survey_id}/questions/{question_id}` con `{ is_demographic: true/false }` |
 | | - Drag & Drop: reordenamiento visual de preguntas (optimista) y sincronización con `POST /api/v1/builder/{survey_id}/reorder` enviando `{ question_ids: [...] }` |
 | | - Nota: el backend recalcula `order` atómicamente; el frontend solo envía la secuencia final |
+| 2025-12-15 | **HOME**: Intención de voto (Últimas 3 encuestas) |
+| | - Regla: en el widget del Home se muestran **solo encuestas publicadas/activas** (no borradores, no archived, no inactive) |
 | 2024-12-14 | **ARQUITECTURA EVOLUTIVA**: Fases 1-4 completadas |
 | | **Fase 1**: Estructura base |
 | | - Creado `CoreModule` con guards, interceptors y providers |
