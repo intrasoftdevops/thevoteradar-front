@@ -74,7 +74,7 @@ export const THEMES: { [key: string]: Theme } = {
       error: '#ef4444',
     },
     branding: {
-      logo: 'assets/logo.png',
+      logo: 'assets/clients/client1/logo.jpg',
       logoSize: 'small',
       title: 'Reset a la política',
       description: 'Ingresa a tu cuenta de la plataforma electoral',

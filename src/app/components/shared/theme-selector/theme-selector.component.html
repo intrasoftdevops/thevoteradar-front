@@ -16,19 +16,19 @@
         <span class="font-medium">Morado</span>
       </button>
       <button 
-        (click)="changeTheme('client1')" 
+        (click)="changeTheme('daniel-quintero')" 
         class="flex items-center space-x-2 px-4 py-2.5 text-sm rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-all transform hover:scale-105 shadow-md">
         <span class="text-lg">🔵</span>
         <span class="font-medium">Azul</span>
       </button>
       <button 
-        (click)="changeTheme('client2')" 
+        (click)="changeTheme('juan-duque')" 
         class="flex items-center space-x-2 px-4 py-2.5 text-sm rounded-xl bg-green-600 hover:bg-green-700 text-white transition-all transform hover:scale-105 shadow-md">
         <span class="text-lg">🟢</span>
         <span class="font-medium">Verde</span>
       </button>
       <button 
-        (click)="changeTheme('client3')" 
+        (click)="changeTheme('potus-44')" 
         class="flex items-center space-x-2 px-4 py-2.5 text-sm rounded-xl bg-red-600 hover:bg-red-700 text-white transition-all transform hover:scale-105 shadow-md">
         <span class="text-lg">🔴</span>
         <span class="font-medium">Rojo</span>
@@ -40,6 +40,7 @@
   <button 
     (click)="toggleSelector()"
     class="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-accent text-white shadow-2xl hover:shadow-3xl transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center text-2xl border-4 border-white/30"
+    style="background: linear-gradient(to bottom right, var(--color-primary, #64248b), var(--color-accent, #4a1a6b));"
     aria-label="Selector de temas">
     <span *ngIf="!showThemeSelector">🎨</span>
     <span *ngIf="showThemeSelector">✕</span>
