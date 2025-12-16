@@ -3,6 +3,10 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { ThemeService } from '../../../services/theme/theme.service';
 import { Theme } from '../../../core/models/theme.model';
+import { AuthService } from '../../../core/services/auth.service';
+import { ApiService } from '../../../services/api/api.service';
+import { LocalDataService } from '../../../services/localData/local-data.service';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 /**
  * Interfaz para items del menú principal
@@ -44,6 +48,12 @@ export interface SubMenuItem {
 })
 export class SidebarMenuComponent implements OnInit, OnChanges {
   @Input() collapsed: boolean = false;
+  /**
+   * Tipo de menú:
+   * - 'admin': menú completo de backoffice (por defecto)
+   * - 'testigo': menú simplificado para rol Testigo
+   */
+  @Input() menuConfig: 'admin' | 'testigo' = 'admin';
   
   currentTheme: Theme | null = null;
   activeMenuItem: string = '';
@@ -53,73 +63,24 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
   manuallyCollapsedMenus: Set<string> = new Set(); // Menús colapsados manualmente (override contra auto-expansión)
 
   /**
-   * Configuración del menú principal - Rutas actualizadas
+   * Configuración del menú principal
    */
-  menuItems: MainMenuItem[] = [
-    {
-      id: 'inicio',
-      label: 'Inicio',
-      icon: 'fas fa-home',
-      route: '/inicio',
-    },
-    {
-      id: 'estructura',
-      label: 'Estructura',
-      icon: 'fas fa-sitemap',
-      children: [
-        { id: 'usuarios', label: 'Usuarios', icon: 'fas fa-users', route: '/panel/estructura/usuarios' },
-        { id: 'rankings', label: 'Rankings', icon: 'fas fa-trophy', route: '/panel/estructura' },
-      ]
-    },
-    {
-      id: 'activacion',
-      label: 'Activación',
-      icon: 'fas fa-bolt',
-      children: [
-        { id: 'challenges', label: 'Retos', icon: 'fas fa-tasks', route: '/panel/activacion/challenges' },
-        { id: 'whatsapp', label: 'WhatsApp', icon: 'fab fa-whatsapp', route: '/panel/activacion/whatsapp' },
-      ]
-    },
-    {
-      id: 'intencion-voto',
-      label: 'Intención de Voto',
-      icon: 'fas fa-poll',
-      children: [
-        { id: 'encuestas', label: 'Encuestas', icon: 'fas fa-clipboard-list', route: '/panel/encuestas' },
-        { id: 'muestra-opinion', label: 'Muestra (Voto Opinión)', icon: 'fas fa-users', route: '/panel/voto-opinion/muestra' },
-      ]
-    },
-    {
-      id: 'dia-electoral',
-      label: 'Día Electoral',
-      icon: 'fas fa-calendar-check',
-      comingSoon: true,
-      children: [
-        { id: 'gerentes', label: 'Gerentes', icon: 'fas fa-user-tie', route: '/panel/dia-electoral/gerentes' },
-        { id: 'supervisores', label: 'Supervisores', icon: 'fas fa-users-cog', route: '/panel/dia-electoral/supervisores' },
-        { id: 'coordinadores', label: 'Coordinadores', icon: 'fas fa-user-friends', route: '/panel/dia-electoral/coordinadores' },
-        { id: 'testigos', label: 'Testigos', icon: 'fas fa-user-check', route: '/panel/dia-electoral/testigos' },
-        { id: 'reportes', label: 'Reportes', icon: 'fas fa-file-alt', route: '/panel/dia-electoral/reportes' },
-        { id: 'mapa', label: 'Mapa en Vivo', icon: 'fas fa-map-marked-alt', route: '/panel/dia-electoral/mapa' },
-      ]
-    },
-    {
-      id: 'configuracion',
-      label: 'Configuración',
-      icon: 'fas fa-cog',
-      children: [
-        { id: 'perfil', label: 'Mi Perfil', icon: 'fas fa-user-edit', route: '/panel/configuracion/perfil' },
-      ]
-    },
-  ];
+  menuItems: MainMenuItem[] = [];
 
   constructor(
     private router: Router,
     private themeService: ThemeService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private apiService: ApiService,
+    private localData: LocalDataService,
+    private permissionsService: NgxPermissionsService,
   ) {}
 
   ngOnInit(): void {
+    // Construir menú según configuración
+    this.buildMenuItems();
+
     // Suscribirse al tema actual
     this.themeService.getCurrentTheme().subscribe(theme => {
       this.currentTheme = theme;
@@ -144,6 +105,9 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['menuConfig'] && !changes['menuConfig'].firstChange) {
+      this.buildMenuItems();
+    }
     // Cuando cambia el estado de collapsed
     if (changes['collapsed']) {
       console.log('🔄 SidebarMenu - Estado collapsed cambió a:', this.collapsed);
@@ -167,6 +131,93 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
       setTimeout(() => {
         this.cdr.detectChanges();
       }, 0);
+    }
+  }
+
+  /**
+   * Construye el menú según el tipo configurado
+   */
+  private buildMenuItems(): void {
+    if (this.menuConfig === 'testigo') {
+      this.menuItems = [
+        {
+          id: 'testigo-dashboard',
+          label: 'Dashboard',
+          icon: 'fas fa-home',
+          route: '/testigoHome',
+        },
+        {
+          id: 'testigo-reportar-votos',
+          label: 'Reportar Votos',
+          icon: 'fas fa-clipboard-check',
+          route: '/reporteVotosTestigo',
+        },
+        {
+          id: 'testigo-reportar-incidencia',
+          label: 'Reportar Incidencia',
+          icon: 'fas fa-exclamation-triangle',
+          route: '/reporteIncidencias',
+        },
+      ];
+    } else {
+      // Menú original de admin
+      this.menuItems = [
+        {
+          id: 'inicio',
+          label: 'Inicio',
+          icon: 'fas fa-home',
+          route: '/inicio',
+        },
+        {
+          id: 'estructura',
+          label: 'Estructura',
+          icon: 'fas fa-sitemap',
+          children: [
+            { id: 'usuarios', label: 'Usuarios', icon: 'fas fa-users', route: '/panel/estructura/usuarios' },
+            { id: 'rankings', label: 'Rankings', icon: 'fas fa-trophy', route: '/panel/estructura' },
+          ]
+        },
+        {
+          id: 'activacion',
+          label: 'Activación',
+          icon: 'fas fa-bolt',
+          children: [
+            { id: 'challenges', label: 'Retos', icon: 'fas fa-tasks', route: '/panel/activacion/challenges' },
+            { id: 'whatsapp', label: 'WhatsApp', icon: 'fab fa-whatsapp', route: '/panel/activacion/whatsapp' },
+          ]
+        },
+        {
+          id: 'intencion-voto',
+          label: 'Intención de Voto',
+          icon: 'fas fa-poll',
+          children: [
+            { id: 'encuestas', label: 'Encuestas', icon: 'fas fa-clipboard-list', route: '/panel/encuestas' },
+            { id: 'muestra-opinion', label: 'Muestra (Voto Opinión)', icon: 'fas fa-users', route: '/panel/voto-opinion/muestra' },
+          ]
+        },
+        {
+          id: 'dia-electoral',
+          label: 'Día Electoral',
+          icon: 'fas fa-calendar-check',
+          comingSoon: true,
+          children: [
+            { id: 'gerentes', label: 'Gerentes', icon: 'fas fa-user-tie', route: '/panel/dia-electoral/gerentes' },
+            { id: 'supervisores', label: 'Supervisores', icon: 'fas fa-users-cog', route: '/panel/dia-electoral/supervisores' },
+            { id: 'coordinadores', label: 'Coordinadores', icon: 'fas fa-user-friends', route: '/panel/dia-electoral/coordinadores' },
+            { id: 'testigos', label: 'Testigos', icon: 'fas fa-user-check', route: '/panel/dia-electoral/testigos' },
+            { id: 'reportes', label: 'Reportes', icon: 'fas fa-file-alt', route: '/panel/dia-electoral/reportes' },
+            { id: 'mapa', label: 'Mapa en Vivo', icon: 'fas fa-map-marked-alt', route: '/panel/dia-electoral/mapa' },
+          ]
+        },
+        {
+          id: 'configuracion',
+          label: 'Configuración',
+          icon: 'fas fa-cog',
+          children: [
+            { id: 'perfil', label: 'Mi Perfil', icon: 'fas fa-user-edit', route: '/panel/configuracion/perfil' },
+          ]
+        },
+      ];
     }
   }
 
@@ -322,6 +373,27 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
       }
     ).catch((error) => {
       console.error('❌ SidebarMenu - Error en navegación:', error);
+    });
+  }
+
+  /**
+   * Cerrar sesión del usuario
+   */
+  logout(): void {
+    // Reutilizar la lógica de logout usada en el menú de usuario legacy
+    this.apiService.logout().subscribe({
+      next: () => {
+        this.localData.deleteCookies();
+        this.permissionsService.addPermission(['0']);
+        this.authService.clearAll();
+        this.router.navigate(['']);
+      },
+      error: () => {
+        this.localData.deleteCookies();
+        this.permissionsService.addPermission(['0']);
+        this.authService.clearAll();
+        this.router.navigate(['']);
+      },
     });
   }
 }

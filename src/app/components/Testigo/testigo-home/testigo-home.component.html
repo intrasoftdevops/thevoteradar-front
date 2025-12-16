@@ -1,41 +1,91 @@
-<div class="container py-4">
-  <div class="row gy-4">
-    <div class="col-lg-6 align-items-stretch">
-      <div class="card text-dark w-100">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4 _ngcontent-utf-c133="" class="m-0">Bienvenido testigo</h4>
-        </div>
-        <div class="card-body">
-          <div class="m-4">
-            <p>
-              <span class="fw-bolder">Departamento: </span
-              ><span> {{departamento_asignado}}</span>
+<div class="testigo-home">
+  <!-- Banner de bienvenida (mismo estilo que admin) -->
+  <div class="welcome-banner mb-4">
+    <div class="card border-0 shadow-sm">
+      <div
+        class="card-body p-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h2 class="text-white mb-2 fw-bold">Bienvenido testigo</h2>
+            <p class="text-white-50 mb-0">
+              Puesto: <strong>{{ puesto_asignado }}</strong> · Mesas asignadas:
+              <strong>{{ mesas_asignadas }}</strong>
             </p>
-            <p>
-              <span class="fw-bolder">Municipio: </span><span> {{municipio_asignado}}</span>
-            </p>
-            <p><span class="fw-bolder">Zona: </span><span> {{zona_asignada}}</span></p>
-            <p><span class="fw-bolder">Puesto: </span><span> {{ puesto_asignado }}</span></p>
-            <p><span class="fw-bolder">Mesas: </span><span> {{ mesas_asignadas }}</span></p>
+          </div>
+          <div class="d-none d-md-block">
+            <i class="fas fa-vote-yea fa-3x text-white opacity-50"></i>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-lg-6 align-items-stretch">
-      <div class="pb-2 flex-column" *ngFor="let video of sanitizedVideos">
-        <div class="ratio ratio-16x9">
-          <iframe [src]="video" frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="container-fluid">
+    <div class="row gy-4">
+      <!-- Tarjeta con información de asignación -->
+      <div class="col-lg-6 align-items-stretch">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">
+              <i class="fas fa-map-marker-alt me-2" [style.color]="'var(--color-primary)'"></i>
+              Tu asignación
+            </h5>
+            <div class="m-1">
+              <p>
+                <span class="fw-bolder">Departamento: </span>
+                <span>{{ departamento_asignado }}</span>
+              </p>
+              <p>
+                <span class="fw-bolder">Municipio: </span>
+                <span>{{ municipio_asignado }}</span>
+              </p>
+              <p>
+                <span class="fw-bolder">Zona: </span>
+                <span>{{ zona_asignada }}</span>
+              </p>
+              <p>
+                <span class="fw-bolder">Puesto: </span>
+                <span>{{ puesto_asignado }}</span>
+              </p>
+              <p>
+                <span class="fw-bolder">Mesas: </span>
+                <span>{{ mesas_asignadas }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Videos de capacitación / mensajes -->
+      <div class="col-lg-6 align-items-stretch">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">
+              <i class="fas fa-play-circle me-2" [style.color]="'var(--color-accent)'"></i>
+              Material de apoyo
+            </h5>
+            <div class="pb-2 d-flex flex-column gap-3" *ngFor="let video of sanitizedVideos">
+              <div class="ratio ratio-16x9">
+                <iframe [src]="video" frameborder="0" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<div class="toast-container">
-  <ngb-toast
-    class="welcomeBanner d-flex align-items-center bg-white"
-    [delay]="2000"
-    [animation]="true"
-  >
-    <h3 class="mb-0 fw-bolder text-dark">Bienvenido testigo</h3>
-  </ngb-toast>
+
+  <!-- Toast de bienvenida -->
+  <div class="toast-container">
+    <ngb-toast
+      class="welcomeBanner d-flex align-items-center bg-white"
+      [delay]="2000"
+      [animation]="true"
+    >
+      <h3 class="mb-0 fw-bolder text-dark">Bienvenido testigo</h3>
+    </ngb-toast>
+  </div>
 </div>

@@ -5,7 +5,7 @@
       <i class="fas fa-bars"></i>
     </button>
     
-    <!-- Logo/Branding -->
+    <!-- Logo (sin texto de marca) -->
     <div class="branding" *ngIf="currentTheme">
       <img 
         [src]="currentTheme.branding.logo" 
@@ -14,7 +14,6 @@
         [class.logo-small]="currentTheme.branding.logoSize === 'small'"
         [class.logo-medium]="currentTheme.branding.logoSize === 'medium'"
         [class.logo-large]="currentTheme.branding.logoSize === 'large'">
-      <span class="brand-title">{{ currentTheme.branding.title }}</span>
     </div>
   </div>
   

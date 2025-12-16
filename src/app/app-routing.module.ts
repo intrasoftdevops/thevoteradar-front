@@ -82,6 +82,7 @@ import { ShortLinkRedirectComponent } from './components/public/short-link-redir
 
 // Layout
 import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 
 // Guards
 import { AuthGuard } from './guards/AuthGuard/auth.guard';
@@ -197,6 +198,22 @@ const routes: Routes = [
   { path: 'editarPerfil', redirectTo: 'panel/configuracion/perfil', pathMatch: 'full' },
 
   // ============================================
+  // LAYOUT PRINCIPAL PARA ROLES (MainLayout)
+  // Actualmente aplicado al rol TESTIGO
+  // ============================================
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      // TESTIGO
+      { path: 'testigoHome', component: TestigoHomeComponent, data: { rol: [5] } },
+      { path: 'reporteIncidencias', component: ReporteIncidenciasComponent, data: { rol: [5] } },
+      { path: 'reporteVotosTestigo', component: ReporteVotosTestigoComponent, data: { rol: [5] } },
+    ]
+  },
+
+  // ============================================
   // GERENTE - LAYOUT LEGACY
   // ============================================
   { path: 'gerenteHome', component: GerenteHomeComponent, canActivate: [AuthGuard], data: { rol: [2] } },
@@ -230,13 +247,6 @@ const routes: Routes = [
   { path: 'consultarTestigo', component: ConsultarTestigoComponent, canActivate: [AuthGuard], data: { rol: [1, 2, 3, 4] } },
   { path: 'reporteVotosCoordinador', component: ReporteVotosCoordinadorComponent, canActivate: [AuthGuard], data: { rol: [4] } },
   { path: 'reporteIncidenciasCoordinador', component: ReporteIncidenciasCoordinadorComponent, canActivate: [AuthGuard], data: { rol: [4] } },
-
-  // ============================================
-  // TESTIGO - LAYOUT LEGACY
-  // ============================================
-  { path: 'testigoHome', component: TestigoHomeComponent, canActivate: [AuthGuard], data: { rol: [5] } },
-  { path: 'reporteIncidencias', component: ReporteIncidenciasComponent, canActivate: [AuthGuard], data: { rol: [5] } },
-  { path: 'reporteVotosTestigo', component: ReporteVotosTestigoComponent, canActivate: [AuthGuard], data: { rol: [5] } },
 
   // ============================================
   // IMPUGNADOR - LAYOUT LEGACY

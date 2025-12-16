@@ -1,19 +1,20 @@
 <div class="main-layout" [class.sidebar-collapsed]="sidebarCollapsed">
-  <!-- Header -->
-  <app-header 
-    [roleName]="roleName"
-    (toggleSidebar)="toggleSidebar()"
-    (logout)="logout()">
-  </app-header>
+  <!-- Sidebar con menú moderno reutilizando el mismo componente que admin -->
+  <app-sidebar-menu [collapsed]="sidebarCollapsed" menuConfig="testigo"></app-sidebar-menu>
   
-  <!-- Sidebar con menú dinámico -->
-  <app-sidebar [collapsed]="sidebarCollapsed">
-    <app-role-menu [userRole]="userRole"></app-role-menu>
-  </app-sidebar>
+  <!-- Botón flotante para contraer/expandir sidebar (igual que admin) -->
+  <button 
+    class="btn-toggle-sidebar" 
+    (click)="toggleSidebar()"
+    [title]="sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'">
+    <i class="fas" [class.fa-chevron-right]="sidebarCollapsed" [class.fa-chevron-left]="!sidebarCollapsed"></i>
+  </button>
   
   <!-- Content Area -->
   <main class="main-content">
-    <router-outlet></router-outlet>
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
   </main>
   
   <!-- Footer -->
