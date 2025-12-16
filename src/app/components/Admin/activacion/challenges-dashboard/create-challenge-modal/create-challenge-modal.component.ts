@@ -29,7 +29,7 @@ export class CreateChallengeModalComponent {
       puntos: [0, [Validators.required, Validators.min(1)]],
       max_users: [0, [Validators.required, Validators.min(1)]],
       max_date: ['', [Validators.required]],
-      max_limit: [null],
+      max_limit: [0, [Validators.required, Validators.min(0)]],
       reward_id: ['']
     });
   }
@@ -62,7 +62,7 @@ export class CreateChallengeModalComponent {
       puntos: formValue.puntos,
       max_users: formValue.max_users,
       max_date: new Date(formValue.max_date).toISOString(),
-      max_limit: formValue.max_limit || undefined,
+      max_limit: formValue.max_limit ?? 0, // Requerido por el backend, usar 0 como valor por defecto si no se especifica
       reward_id: formValue.reward_id || undefined
     };
 

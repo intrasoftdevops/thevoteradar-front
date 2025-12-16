@@ -29,7 +29,7 @@ export interface ChallengeApiResponse {
 export interface CreateChallengeRequest {
   name: string;
   description: string;
-  max_limit?: number;
+  max_limit: number;
   reward_id?: string;
   max_users: number;
   max_date: string;
@@ -133,7 +133,7 @@ export interface ConfirmCompletionsRequest {
 })
 export class ChallengeService {
 
-  private apiBaseUrl = environment.apiURL || '';
+  private apiBaseUrl = environment.backofficeApiURL || '';
 
   constructor(
     private http: HttpClient,
@@ -176,7 +176,9 @@ export class ChallengeService {
     console.log('🔍 ChallengeService.getMyChallenges:', {
       url,
       apiBaseUrl: this.apiBaseUrl,
-      hasToken: !!headers.get('Authorization')
+      backofficeApiURL: environment.backofficeApiURL,
+      hasToken: !!headers.get('Authorization'),
+      fullUrl: url
     });
 
     return this.http.get<ChallengeApiResponse[]>(url, { headers })

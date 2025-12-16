@@ -318,7 +318,8 @@ export class ApiService {
    * Si no hay challenges, retorna un array vacío
    */
   getMyChallenges(): Observable<ChallengeApiResponse[]> {
-    return this.http.get<ChallengeApiResponse[]>(this._URL + "/challenges/my-challenges", { headers: this.getHeaders() });
+    const backofficeUrl = environment.backofficeApiURL || '';
+    return this.http.get<ChallengeApiResponse[]>(backofficeUrl + "/challenges/my-challenges", { headers: this.getHeaders() });
   }
 
 }
