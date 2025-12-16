@@ -80,10 +80,12 @@
         <i class="fas fa-user-circle"></i>
       </div>
       <div class="user-details">
-        <span class="user-role">Administrador</span>
+        <span class="user-role">
+          {{ menuConfig === 'testigo' ? 'Testigo' : 'Administrador' }}
+        </span>
       </div>
     </div>
-    <button class="btn-logout" routerLink="/" title="Cerrar sesión">
+    <button class="btn-logout" (click)="logout()" title="Cerrar sesión">
       <i class="fas fa-sign-out-alt"></i>
     </button>
   </div>
