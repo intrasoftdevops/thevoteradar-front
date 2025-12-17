@@ -1,0 +1,103 @@
+<div
+  *ngIf="show"
+  class="modal d-block"
+  tabindex="-1"
+  role="dialog"
+  style="background-color: rgba(0,0,0,0.5);"
+  (click)="onClose()">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-users me-2" [style.color]="'var(--color-primary)'"></i>
+          Usuarios Asignados
+        </h5>
+        <button type="button" class="btn-close" (click)="onClose()" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body" *ngIf="challenge">
+        <!-- Challenge Info -->
+        <div class="challenge-info mb-4 p-3 bg-light rounded">
+          <h6 class="mb-2 fw-bold">{{ challenge.name }}</h6>
+          <p class="mb-0 text-muted small" *ngIf="challenge.description">
+            {{ challenge.description }}
+          </p>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-3 text-muted">Cargando usuarios asignados...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error && !loading" class="alert alert-danger" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ error }}
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && !error && assignedUsers.length === 0" class="empty-state text-center py-5">
+          <div class="empty-icon mb-3">
+            <i class="fas fa-users fa-4x text-muted opacity-50"></i>
+          </div>
+          <h5 class="text-muted mb-2">No hay usuarios asignados</h5>
+          <p class="text-muted">
+            Aún no se han asignado usuarios a este reto. Usa el botón "Asignar" para asignar usuarios.
+          </p>
+        </div>
+
+        <!-- Users List -->
+        <div *ngIf="!loading && !error && assignedUsers.length > 0" class="users-list">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Teléfono</th>
+                  <th>Estado</th>
+                  <th>Fecha de Completación</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of assignedUsers">
+                  <td>
+                    <strong>{{ user.name || 'Usuario' }}</strong>
+                  </td>
+                  <td>
+                    <i class="fas fa-phone me-2 text-muted"></i>
+                    {{ user.phone || 'N/A' }}
+                  </td>
+                  <td>
+                    <span [class]="getStatusBadgeClass(user.status)">
+                      {{ user.status || 'Pendiente' }}
+                    </span>
+                  </td>
+                  <td>
+                    <small class="text-muted">
+                      {{ formatDate(user.completion_date) }}
+                    </small>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Summary -->
+          <div class="summary-box mt-3 p-3 bg-light rounded">
+            <strong>Total:</strong> {{ assignedUsers.length }} 
+            {{ assignedUsers.length === 1 ? 'usuario asignado' : 'usuarios asignados' }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

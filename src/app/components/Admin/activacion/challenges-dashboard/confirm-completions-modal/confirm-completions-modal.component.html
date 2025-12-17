@@ -1,0 +1,101 @@
+<div
+  *ngIf="show"
+  class="modal d-block"
+  tabindex="-1"
+  role="dialog"
+  style="background-color: rgba(0,0,0,0.5);"
+  (click)="onClose()">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-check-circle me-2" [style.color]="'var(--color-primary)'"></i>
+          Confirmar Completaciones
+        </h5>
+        <button type="button" class="btn-close" (click)="onClose()" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body" *ngIf="challenge">
+        <!-- Error Message -->
+        <div *ngIf="error" class="alert alert-danger" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ error }}
+        </div>
+
+        <!-- Challenge Info -->
+        <div class="challenge-info mb-4 p-3 bg-light rounded">
+          <h6 class="mb-2 fw-bold">{{ challenge.name }}</h6>
+          <p class="mb-0 text-muted small" *ngIf="challenge.description">
+            {{ challenge.description }}
+          </p>
+        </div>
+
+        <!-- Info Alert -->
+        <div class="alert alert-info mb-4" role="alert">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>Retos Presenciales:</strong> Confirma la asistencia o completación de usuarios ingresando sus números de teléfono.
+        </div>
+
+        <!-- Phones List -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">
+            Números de Teléfono <span class="text-danger">*</span>
+          </label>
+          
+          <div *ngFor="let phone of phones; let i = index" class="input-group mb-2">
+            <span class="input-group-text">
+              <i class="fas fa-phone"></i>
+            </span>
+            <input
+              type="tel"
+              class="form-control"
+              [(ngModel)]="phones[i]"
+              [placeholder]="'Teléfono ' + (i + 1) + ' (ej: +573001234567)'"
+              [class.is-invalid]="phones[i] && !phones[i].trim()">
+            <button
+              *ngIf="phones.length > 1"
+              class="btn btn-outline-danger"
+              type="button"
+              (click)="removePhoneField(i)"
+              title="Eliminar">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            (click)="addPhoneField()">
+            <i class="fas fa-plus me-2"></i>
+            Agregar Otro Teléfono
+          </button>
+
+          <small class="form-text text-muted d-block mt-2">
+            Ingresa los números de teléfono de los usuarios que completaron el reto (con código de país)
+          </small>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-box p-3 bg-light rounded" *ngIf="getValidPhones().length > 0">
+          <strong>Resumen:</strong> Se confirmarán {{ getValidPhones().length }} 
+          {{ getValidPhones().length === 1 ? 'completación' : 'completaciones' }}
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()" [disabled]="confirming">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="onConfirm()"
+          [disabled]="confirming || getValidPhones().length === 0">
+          <span *ngIf="confirming" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          <i *ngIf="!confirming" class="fas fa-check me-2"></i>
+          {{ confirming ? 'Confirmando...' : 'Confirmar Completaciones' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

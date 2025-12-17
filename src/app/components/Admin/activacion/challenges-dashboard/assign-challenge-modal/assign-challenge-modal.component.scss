@@ -1,0 +1,26 @@
+@import '../create-challenge-modal/create-challenge-modal.component.scss';
+
+.challenge-info {
+  border-left: 4px solid var(--color-primary);
+}
+
+.btn-group-vertical {
+  .btn {
+    text-align: left;
+    margin-bottom: 0.5rem;
+    border-radius: 8px !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateX(4px);
+    }
+
+    &.active,
+    &:has(input:checked) {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+    }
+  }
+}
+

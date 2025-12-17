@@ -227,6 +227,18 @@ export class BackofficeAdminService {
     );
   }
 
+  /**
+   * Statistics API method (SILENT)
+   * No toca `loading$`/`error$` globales para evitar conflictos cuando se embebe el dashboard
+   * junto con otras vistas (ej: Estructura > Usuarios).
+   */
+  getUserStatisticsSilent(): Observable<UserStatistics> {
+    return this.http.get<UserStatistics>(
+      `${this.backofficeUrl}/super-admin/statistics/users`,
+      { headers: this.getHeaders() }
+    );
+  }
+
   // State management methods for users
   fetchUsers(params: UsersQueryParams = {}, reset: boolean = true): void {
     this.loadingSubject.next(true);

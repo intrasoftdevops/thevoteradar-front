@@ -1,0 +1,23 @@
+<div class="admin-layout" [class.sidebar-collapsed]="sidebarCollapsed">
+  <!-- Sidebar Menu -->
+  <app-sidebar-menu [collapsed]="sidebarCollapsed"></app-sidebar-menu>
+  
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <!-- Toggle Button (flotante) -->
+    <button 
+      class="btn-toggle-sidebar" 
+      (click)="toggleSidebar()"
+      [title]="sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'">
+      <i class="fas" [class.fa-chevron-right]="sidebarCollapsed" [class.fa-chevron-left]="!sidebarCollapsed"></i>
+    </button>
+    
+    <!-- Content -->
+    <div class="content-wrapper">
+      <!-- Router outlet para rutas children (ej: /panel/*) -->
+      <router-outlet></router-outlet>
+      <!-- Ng-content para contenido proyectado (cuando se usa directamente) -->
+      <ng-content></ng-content>
+    </div>
+  </main>
+</div>

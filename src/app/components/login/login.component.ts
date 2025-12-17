@@ -8,7 +8,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators }
 import { NgxPermissionsService } from 'ngx-permissions';
 import { environment } from '../../../environments/environment';
 import { ThemeService } from '../../services/theme/theme.service';
-import { Theme } from '../../models/theme.model';
+import { Theme } from '../../core/models/theme.model';
 import { BackofficeAuthService } from '../../services/backoffice-auth/backoffice-auth.service';
 
 @Component({
@@ -25,7 +25,8 @@ export class LoginComponent implements OnInit {
   });
 
   
-  private readonly TENANT_CODE = '473173';
+  // Tenant detectado dinámicamente desde el dominio
+  private detectedTenantCode: string | null = null;
 
   
   public showOtpInput: boolean = false;
@@ -104,6 +105,27 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.detectTenantFromDomain();
+  }
+
+  /**
+   * Detectar tenant_id desde el dominio y aplicar tema
+   */
+  private detectTenantFromDomain(): void {
+    const tenantId = this.themeService.detectAndApplyThemeFromDomain();
+    
+    if (tenantId) {
+      this.detectedTenantCode = tenantId;
+      console.log('🔍 Tenant detectado desde dominio:', tenantId);
+      console.log('🌐 Hostname:', window.location.hostname);
+    } else {
+      this.detectedTenantCode = environment.defaultTenantId || null;
+      if (this.detectedTenantCode) {
+        console.log('⚠️ No se detectó tenant desde dominio, usando environment.defaultTenantId:', this.detectedTenantCode);
+      } else {
+        console.warn('⚠️ No se detectó tenant desde dominio y no hay defaultTenantId configurado');
+      }
+    }
   }
 
   get createFormControl() {
@@ -151,10 +173,16 @@ export class LoginComponent implements OnInit {
         }
       }
 
-      
+      // Validar que se haya detectado un tenant
+      const tenantCode = this.detectedTenantCode || environment.defaultTenantId;
+      if (!tenantCode) {
+        this.isLoading = false;
+        this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant. Por favor, accede desde un dominio válido.');
+        return;
+      }
       
       const loginData: any = {
-        tenant_code: this.TENANT_CODE,
+        tenant_code: tenantCode,
         telefono: this.loginForm.value.telefono,
         otp: this.loginForm.value.otp || null
       };
@@ -231,9 +259,16 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+    // Validar que se haya detectado un tenant
+    const tenantCode = this.detectedTenantCode || environment.defaultTenantId;
+    if (!tenantCode) {
+      this.isLoading = false;
+      this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant. Por favor, accede desde un dominio válido.');
+      return;
+    }
     
     const loginData = {
-      tenant_code: this.TENANT_CODE,
+      tenant_code: tenantCode,
       telefono: this.loginForm.value.telefono,
       otp: this.loginForm.value.otp
     };
@@ -310,9 +345,16 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+    // Validar que se haya detectado un tenant
+    const tenantCode = this.detectedTenantCode || environment.defaultTenantId;
+    if (!tenantCode) {
+      this.isLoading = false;
+      this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant. Por favor, accede desde un dominio válido.');
+      return;
+    }
     
     const profileData: any = {
-      tenant_code: this.TENANT_CODE,
+      tenant_code: tenantCode,
       telefono: (this.loginForm.value.telefono || '').toString().trim(),
       otp: (otp || '').toString().trim(),
       nombres: (this.profileForm.value.nombres || '').toString().trim(),
@@ -486,8 +528,15 @@ export class LoginComponent implements OnInit {
   }
 
   resendOtp() {
+    // Validar que se haya detectado un tenant
+    const tenantCode = this.detectedTenantCode || environment.defaultTenantId;
+    if (!tenantCode) {
+      this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant. Por favor, accede desde un dominio válido.');
+      return;
+    }
+    
     const otpData = {
-      tenant_code: this.TENANT_CODE,
+      tenant_code: tenantCode,
       telefono: this.loginForm.value.telefono,
       user_data: this.remoteUser || {}
     };
@@ -534,13 +583,24 @@ export class LoginComponent implements OnInit {
   }
 
   handleAdminLogin(email: string, password: string) {
-    // El interceptor agregará automáticamente X-Tenant-ID usando environment.defaultTenantId
+    const tenantIdToUse = this.detectedTenantCode || environment.defaultTenantId;
+    
+    if (!tenantIdToUse) {
+      console.error('❌ No se pudo determinar el tenant_id para el login');
+      this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant');
+      this.isLoading = false;
+      return;
+    }
+    
+    localStorage.setItem('temp_tenant_id_for_login', tenantIdToUse);
+    
     this.backofficeAuth.login(email, password).subscribe({
       next: (response) => {
         this.isLoading = false;
         
         if (!this.backofficeAuth.isAdmin(response)) {
           console.warn('LoginComponent - Usuario no es admin, abortando');
+          localStorage.removeItem('temp_tenant_id_for_login');
           return;
         }
 
@@ -551,9 +611,14 @@ export class LoginComponent implements OnInit {
         this.localData.setRol(1);
         this.localData.setId(response.user.email);
         
-        // Guardar tenant_id del usuario o usar el default del environment
-        const tenantIdToStore = response.user.tenant_id || environment.defaultTenantId || this.TENANT_CODE;
+        // Usar el tenant_id del usuario si viene en la respuesta, 
+        // sino usar el detectado del dominio o el del environment
+        const tenantIdToStore = response.user.tenant_id || 
+                                   this.detectedTenantCode || 
+                                   environment.defaultTenantId;
         localStorage.setItem('tenant_id', tenantIdToStore);
+        
+        localStorage.removeItem('temp_tenant_id_for_login');
         
         // Aplicar tema basado en tenant_id
         this.themeService.loadThemeFromTenantId();
@@ -569,6 +634,7 @@ export class LoginComponent implements OnInit {
         this.alertService.successAlert('Bienvenido, administrador');
       },
       error: (error) => {
+        localStorage.removeItem('temp_tenant_id_for_login');
         console.error('LoginComponent - Error en login:', error);
         this.isLoading = false;
         const errorMessage = error.error?.detail || error.error?.message || 'Error al iniciar sesión';

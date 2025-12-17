@@ -1,2 +1,192 @@
-$primary: #64248b;
-$dark: #000;
+.admin-home {
+  padding: 0; // El padding ya lo maneja el content-wrapper
+  min-height: 100vh;
+}
+
+.welcome-banner {
+  .card {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}
+
+// Estadísticas
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+// Rankings
+.ranking-list {
+  .ranking-item {
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-width: 2px !important;
+    }
+  }
+
+  .position-badge {
+    .badge {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// Líderes
+.leaders-list {
+  .leader-item {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: translateX(5px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .position-badge {
+    .badge {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// Challenges
+.challenges-list {
+  .challenge-item {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Encuestas (versión compacta)
+.surveys-list-compact {
+  .survey-item-compact {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transform: translateY(-1px);
+      border-color: var(--color-primary) !important;
+    }
+  }
+}
+
+// Empty states
+.empty-state {
+  .empty-icon {
+    opacity: 0.5;
+  }
+}
+
+// Pie Chart (DESTACADO - más grande)
+.pie-chart-large {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.pie-legend {
+  .legend-item {
+    padding: 10px 8px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: rgba(var(--color-primary-rgb), 0.05);
+      border-radius: 8px;
+      transform: translateX(4px);
+    }
+  }
+
+  .legend-color-large {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .legend-label {
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  .legend-value {
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+}
+
+// Modal
+.modal {
+  &.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-dialog {
+    margin: 0;
+  }
+}
+
+// Tailwind utilities para compatibilidad
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .admin-home {
+    padding: 0;
+  }
+
+  .welcome-banner {
+    .card-body {
+      padding: 1.5rem !important;
+    }
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .pie-chart-large {
+    width: 180px;
+    height: 180px;
+  }
+}

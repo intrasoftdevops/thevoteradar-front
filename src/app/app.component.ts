@@ -3,7 +3,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { filter, Subscription } from 'rxjs';
 import { LocalDataService } from './services/localData/local-data.service';
-import { ApiService } from './services/api/api.service';
 import { environment } from '../environments/environment';
 
 @Component({
@@ -24,10 +23,12 @@ export class AppComponent {
 
   ngOnInit() {
     this.permissionsService.addPermission([this.getRol()]);
+    
     this.subscriber = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(({ urlAfterRedirects }: any) => {
         this.permissionsService.addPermission([this.getRol()]);
+        
         if (urlAfterRedirects != '/forbidden') {
           localStorage.setItem('previosUrl', urlAfterRedirects);
         }

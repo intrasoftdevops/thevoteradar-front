@@ -1,18 +1,33 @@
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Analytics de Encuesta</h2>
-    <button class="btn btn-secondary" (click)="goBack()">Volver</button>
-  </div>
+<div class="min-h-screen" [style.background]="'linear-gradient(to bottom right, rgba(var(--color-primary-rgb), 0.05), white, rgba(var(--color-primary-rgb), 0.05))'">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Analytics</h2>
+        <p class="text-gray-600 mt-1">Resumen de resultados por pregunta</p>
+      </div>
+      <button
+        class="inline-flex items-center px-4 py-2 rounded-full text-white font-semibold shadow-sm"
+        (click)="goBack()"
+        [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+      >
+        <i class="fa-solid fa-arrow-left me-2"></i>
+        Volver
+      </button>
+    </div>
 
-  <div *ngIf="loading" class="alert alert-info">
-    Cargando estadísticas...
-  </div>
+    <div *ngIf="loading" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+      <div class="flex items-center">
+        <div class="animate-spin rounded-full h-5 w-5 border-b-2" [style.border-color]="'var(--color-primary)'"></div>
+        <span class="ml-3 text-gray-600">Cargando estadísticas...</span>
+      </div>
+    </div>
 
-  <div *ngIf="error" class="alert alert-danger">
-    {{ error }}
-  </div>
+    <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-2xl p-6">
+      <div class="text-red-800 font-semibold">Error</div>
+      <div class="text-red-700 text-sm mt-1">{{ error }}</div>
+    </div>
 
-  <div *ngIf="!loading && !error && analytics" class="row">
+    <div *ngIf="!loading && !error && analytics" class="space-y-6">
     <div class="col-12 mb-4">
       <div class="card">
         <div class="card-body">
@@ -80,6 +95,7 @@
       <div class="alert alert-secondary">
         Aún no hay respuestas para esta encuesta.
       </div>
+    </div>
     </div>
   </div>
 </div>

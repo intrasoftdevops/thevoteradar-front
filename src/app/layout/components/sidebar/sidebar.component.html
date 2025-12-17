@@ -1,0 +1,13 @@
+<aside class="sidebar" [class.collapsed]="collapsed">
+  <div class="sidebar-content">
+    <!-- El menú dinámico se inyecta aquí -->
+    <ng-content></ng-content>
+  </div>
+  <!-- Footer simple con botón de logout para roles (por ahora se usa en Testigo) -->
+  <div class="sidebar-footer">
+    <button class="btn-logout" (click)="logout()" title="Cerrar sesión">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+</aside>
+

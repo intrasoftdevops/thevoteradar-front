@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ThemeService } from '../../../services/theme/theme.service';
-import { Theme } from '../../../models/theme.model';
+import { Theme } from '../../../core/models/theme.model';
 
 @Component({
   selector: 'app-menu-admin',

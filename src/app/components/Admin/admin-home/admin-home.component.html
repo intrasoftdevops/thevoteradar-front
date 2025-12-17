@@ -1,30 +1,488 @@
-<div class="container py-4">
-  <div class="row gy-4">
-    <div class="col-lg-6 d-flex align-items-stretch">
-      <div class="card text-dark w-100">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4 _ngcontent-utf-c133="" class="m-0">Bienvenido administrador</h4>
-        </div>
-        <div class="card-body">
-          <div class="m-4">
-            <p><span class="fw-bolder">Departamento: </span><span>Antioquia</span></p>
+<div class="admin-home">
+  <!-- Banner de Bienvenida -->
+  <div class="welcome-banner mb-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4" [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h2 class="text-white mb-2 fw-bold">Bienvenido administrador</h2>
+            <p class="text-white-50 mb-0">Panel de control y gestión</p>
+          </div>
+          <div class="d-none d-md-block">
+            <i class="fas fa-chart-line fa-3x text-white opacity-50"></i>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-lg-6 d-flex align-items-stretch">
-      <div class="ratio ratio-16x9">
-        <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <!-- Estadísticas Generales -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+              <div class="stat-icon" [style.background]="'var(--color-primary)'">
+                <i class="fas fa-users text-white"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <div class="text-muted small">Total Usuarios</div>
+              <div class="h4 mb-0 fw-bold">{{ stats.totalUsers | number }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+              <div class="stat-icon" [style.background]="'var(--color-secondary)'">
+                <i class="fas fa-star text-white"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <div class="text-muted small">Total Puntos</div>
+              <div class="h4 mb-0 fw-bold">{{ stats.totalPoints | number }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+              <div class="stat-icon" [style.background]="'var(--color-accent)'">
+                <i class="fas fa-bolt text-white"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <div class="text-muted small">Retos Activos</div>
+              <div class="h4 mb-0 fw-bold">{{ stats.activeChallenges }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+              <div class="stat-icon" [style.background]="'var(--color-primary)'">
+                <i class="fas fa-clipboard-list text-white"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <div class="text-muted small">Encuestas</div>
+              <div class="h4 mb-0 fw-bold">{{ stats.totalSurveys }}</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class="toast-container">
-  <ngb-toast
-    class="welcomeBanner d-flex align-items-center bg-white"
-    [delay]="2000"
-    [animation]="true"
-  >
-    <h3 class="mb-0 fw-bolder text-dark">Bienvenido administrador</h3>
-  </ngb-toast>
+
+  <!-- Grid Principal -->
+  <div class="row g-4">
+    <!-- Columna Izquierda (Rankings + Líderes) -->
+    <div class="col-lg-8">
+      <!-- Rankings Interactivo -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <h5 class="mb-1 fw-bold">
+                <i class="fas fa-trophy me-2" [style.color]="'var(--color-secondary)'"></i>
+                {{ getRankingTitle() }}
+              </h5>
+              <p class="text-muted small mb-0">Top 10 del ranking</p>
+            </div>
+            <button 
+              class="btn btn-sm btn-link text-decoration-none p-0"
+              (click)="goToRankings()">
+              Ver todos <i class="fas fa-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtros de Ranking -->
+        <div class="card-body px-4 pb-2" *ngIf="locations">
+          <div class="row g-2 mb-3">
+            <div class="col-md-4">
+              <select
+                [(ngModel)]="selectedState"
+                class="form-select form-select-sm"
+                [style.border-color]="'var(--color-primary)'">
+                <option value="">Todos los estados</option>
+                <option *ngFor="let state of locations.states" [value]="state">{{ state }}</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select
+                [(ngModel)]="selectedCity"
+                class="form-select form-select-sm"
+                [style.border-color]="'var(--color-primary)'">
+                <option value="">Todas las ciudades</option>
+                <option *ngFor="let city of locations.cities" [value]="city">{{ city }}</option>
+              </select>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+              <button 
+                (click)="handleStateRanking()" 
+                [disabled]="!selectedState || rankingLoading"
+                class="btn btn-sm flex-1"
+                [style.background]="'var(--color-primary)'"
+                [style.color]="'white'">
+                <i class="fas fa-map-marker-alt me-1"></i>
+                Estado
+              </button>
+              <button 
+                (click)="handleCityRanking()" 
+                [disabled]="!selectedCity || rankingLoading"
+                class="btn btn-sm flex-1"
+                [style.background]="'var(--color-accent)'"
+                [style.color]="'white'">
+                <i class="fas fa-map-marker-alt me-1"></i>
+                Ciudad
+              </button>
+              <button 
+                (click)="handleClearRankingFilters()" 
+                [disabled]="rankingLoading"
+                class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de Rankings -->
+        <div class="card-body px-4 pb-4">
+          <div *ngIf="rankingLoading" class="text-center py-5">
+            <div class="spinner-border" [style.color]="'var(--color-primary)'" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+          
+          <div *ngIf="!rankingLoading && rankingError" class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ rankingError }}
+          </div>
+
+          <div *ngIf="!rankingLoading && !rankingError && getCurrentRanking().length > 0" class="ranking-list">
+            <div 
+              *ngFor="let user of getCurrentRanking(); let i = index" 
+              class="ranking-item d-flex align-items-center p-3 mb-2 rounded border cursor-pointer"
+              (click)="openUserDetails(user)"
+              [style.border-color]="i < 3 ? 'var(--color-primary)' : '#e0e0e0'">
+              <div class="position-badge me-3">
+                <span 
+                  class="badge rounded-circle d-flex align-items-center justify-content-center"
+                  [class]="getPositionColor(user.rank)"
+                  [ngStyle]="getPositionStyle(user.rank)"
+                  [style.width]="'40px'"
+                  [style.height]="'40px'">
+                  #{{ user.rank }}
+                </span>
+              </div>
+              <div class="flex-grow-1">
+                <h6 class="mb-0 fw-semibold">{{ user.name }} {{ user.lastname }}</h6>
+                <small class="text-muted">
+                  <i class="fas fa-star me-1" [style.color]="'var(--color-secondary)'"></i>
+                  {{ user.points | number }} puntos
+                </small>
+                <div class="text-muted small mt-1">
+                  <i class="fas fa-map-marker-alt me-1"></i>
+                  {{ toTitleCase(user.city) }}, {{ toTitleCase(user.state) }}
+                </div>
+              </div>
+              <div>
+                <i class="fas fa-chevron-right text-muted"></i>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!rankingLoading && !rankingError && getCurrentRanking().length === 0" class="text-center py-4">
+            <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No hay datos de ranking disponibles</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Challenges/Retos -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <h5 class="mb-1 fw-bold">
+                <i class="fas fa-bolt me-2" [style.color]="'var(--color-primary)'"></i>
+                Retos Activos
+              </h5>
+              <p class="text-muted small mb-0">Challenges en curso</p>
+            </div>
+            <button 
+              class="btn btn-sm btn-link text-decoration-none p-0"
+              (click)="goToChallenges()"
+              *ngIf="challenges.length > 0">
+              Ver todos <i class="fas fa-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body px-4 pb-4">
+          <div *ngIf="challengesLoading" class="text-center py-5">
+            <div class="spinner-border" [style.color]="'var(--color-primary)'" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!challengesLoading && challengesError" class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ challengesError }}
+          </div>
+
+          <div *ngIf="!challengesLoading && !challengesError && challenges.length > 0" class="challenges-list">
+            <div 
+              *ngFor="let challenge of challenges" 
+              class="challenge-item p-3 mb-3 rounded border"
+              [style.border-color]="'var(--color-primary)'">
+              <div class="d-flex align-items-start justify-content-between">
+                <div class="flex-grow-1">
+                  <h6 class="mb-1 fw-semibold">{{ challenge.title }}</h6>
+                  <p class="text-muted small mb-2" *ngIf="challenge.description">
+                    {{ challenge.description | truncate: 80 }}
+                  </p>
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="badge" [style.background]="'var(--color-primary)'">
+                      <i class="fas fa-users me-1"></i>
+                      {{ challenge.max_users || challenge.participants }} participantes
+                    </span>
+                    <span class="badge" [style.background]="'var(--color-secondary)'" *ngIf="challenge.puntos">
+                      <i class="fas fa-star me-1"></i>
+                      {{ challenge.puntos }} pts
+                    </span>
+                    <span class="badge bg-success" *ngIf="challenge.status === 'active'">
+                      <i class="fas fa-circle me-1"></i>
+                      Activo
+                    </span>
+                  </div>
+                  <small class="text-muted d-block mt-2" *ngIf="challenge.endDate">
+                    <i class="far fa-calendar me-1"></i>
+                    Finaliza: {{ challenge.endDate | date: 'short' }}
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!challengesLoading && !challengesError && challenges.length === 0" class="empty-state text-center py-5">
+            <i class="fas fa-bolt fa-3x text-muted mb-3"></i>
+            <h6 class="fw-semibold mb-2">No hay retos activos</h6>
+            <p class="text-muted small mb-3">Los challenges aparecerán aquí cuando estén disponibles</p>
+            <button 
+              class="btn btn-sm"
+              [style.background]="'var(--color-primary)'"
+              [style.color]="'white'"
+              (click)="goToChallenges()">
+              <i class="fas fa-plus me-2"></i>
+              Crear Reto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Derecha (Pie Chart + Encuestas + Banner) -->
+    <div class="col-lg-4">
+      <!-- Pie Chart - Usuarios por Ciudad (DESTACADO - PRIMERO) -->
+      <div class="card border-0 shadow-lg mb-4" style="border: 2px solid var(--color-primary) !important;">
+        <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
+          <div>
+            <h4 class="mb-1 fw-bold">
+              <i class="fas fa-map-marked-alt me-2" [style.color]="'var(--color-primary)'"></i>
+              Usuarios por Ciudad
+            </h4>
+            <p class="text-muted mb-0">Distribución geográfica - Top 6</p>
+          </div>
+        </div>
+        <div class="card-body px-4 pb-4">
+          <div *ngIf="statsLoading" class="text-center py-5">
+            <div class="spinner-border" [style.color]="'var(--color-primary)'" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!statsLoading && cityChartData.length > 0">
+            <!-- Pie Chart -->
+            <div class="d-flex justify-content-center mb-4">
+              <div class="pie-chart-large" [style.background]="getPieChartGradient()"></div>
+            </div>
+
+            <!-- Leyenda -->
+            <div class="pie-legend">
+              <div 
+                *ngFor="let data of cityChartData" 
+                class="legend-item d-flex align-items-center justify-content-between mb-2 p-2 rounded">
+                <div class="d-flex align-items-center">
+                  <span 
+                    class="legend-color-large" 
+                    [style.background-color]="data.color"></span>
+                  <span class="legend-label fw-medium">{{ data.city }}</span>
+                </div>
+                <div class="legend-value">
+                  <span class="fw-bold" [style.color]="'var(--color-primary)'">{{ data.count }}</span>
+                  <span class="text-muted ms-1">({{ data.percentage | number:'1.0-1' }}%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!statsLoading && cityChartData.length === 0" class="text-center py-5">
+            <i class="fas fa-map-marked-alt fa-4x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+            <p class="text-muted">No hay datos de ciudades disponibles</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Encuestas Recientes (Secundario - Compacto) -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 pb-0 pt-3 px-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <h6 class="mb-1 fw-bold">
+                <i class="fas fa-clipboard-list me-2" [style.color]="'var(--color-primary)'"></i>
+                Intención de voto
+              </h6>
+              <p class="text-muted small mb-0">Últimas 3 encuestas</p>
+            </div>
+            <button 
+              class="btn btn-sm btn-link text-decoration-none p-0"
+              (click)="goToSurveys()"
+              *ngIf="recentSurveys.length > 0">
+              Ver todas <i class="fas fa-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body px-4 pb-4 pt-3">
+          <div *ngIf="surveysLoading" class="text-center py-4">
+            <div class="spinner-border spinner-border-sm" [style.color]="'var(--color-primary)'" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!surveysLoading && surveysError" class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ surveysError }}
+          </div>
+
+          <div *ngIf="!surveysLoading && !surveysError && recentSurveys.length > 0" class="surveys-list-compact">
+            <div 
+              *ngFor="let survey of recentSurveys" 
+              class="survey-item-compact p-2 mb-2 rounded border cursor-pointer"
+              [style.border-color]="'#e0e0e0'"
+              (click)="viewSurvey(survey.id)"
+              style="cursor: pointer; transition: all 0.2s;">
+              <h6 class="mb-1 fw-semibold small">{{ survey.title }}</h6>
+              <div class="d-flex align-items-center justify-content-between">
+                <small class="text-muted" style="font-size: 0.75rem;">
+                  <i class="far fa-calendar me-1"></i>
+                  {{ survey.createdAt | date: 'short' }}
+                </small>
+                <span class="badge badge-sm" [style.background]="'var(--color-accent)'" style="font-size: 0.7rem;">
+                  {{ survey.responsesCount }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State para Encuestas -->
+          <div *ngIf="!surveysLoading && !surveysError && recentSurveys.length === 0" class="empty-state text-center py-4">
+            <i class="fas fa-clipboard-list fa-3x mb-2" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+            <p class="text-muted small mb-3">No hay encuestas aún</p>
+            <button 
+              class="btn btn-sm w-100"
+              [style.background]="'var(--color-primary)'"
+              [style.color]="'white'"
+              (click)="createSurvey()">
+              <i class="fas fa-plus me-2"></i>
+              Crear Encuesta
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- Cierre col-lg-4 -->
+  </div> <!-- Cierre row g-4 -->
+
+  <!-- Modal de detalles de usuario -->
+  <div *ngIf="selectedUser" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" (click)="closeUserDetails()">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
+          <h5 class="modal-title text-white">
+            <i class="fas fa-user-circle me-2"></i>
+            Detalles del Usuario
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeUserDetails()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="text-muted small fw-semibold">Posición en Ranking</label>
+            <div class="mt-1">
+              <span 
+                class="badge"
+                [class]="getPositionColor(selectedUser.rank)"
+                [ngStyle]="getPositionStyle(selectedUser.rank)"
+                style="font-size: 1.1rem; padding: 0.5rem 1rem;">
+                #{{ selectedUser.rank }}
+              </span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted small fw-semibold">Nombre Completo</label>
+            <p class="mb-0 fw-medium">{{ selectedUser.name }} {{ selectedUser.lastname }}</p>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted small fw-semibold">Puntos</label>
+            <p class="mb-0 text-success fw-bold">
+              <i class="fas fa-star me-1"></i>
+              {{ selectedUser.points | number }} puntos
+            </p>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted small fw-semibold">Teléfono</label>
+            <p class="mb-0">{{ selectedUser.phone || 'Sin teléfono' }}</p>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted small fw-semibold">Ubicación</label>
+            <p class="mb-0">
+              <i class="fas fa-map-marker-alt me-1"></i>
+              {{ toTitleCase(selectedUser.city) }}, {{ toTitleCase(selectedUser.state) }}
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button 
+            *ngIf="selectedUser.phone"
+            (click)="handleWhatsAppContact(selectedUser.phone)"
+            class="btn btn-success">
+            <i class="fab fa-whatsapp me-2"></i>
+            Contactar
+          </button>
+          <button 
+            (click)="closeUserDetails()"
+            class="btn btn-secondary">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

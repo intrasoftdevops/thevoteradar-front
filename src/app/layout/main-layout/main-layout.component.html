@@ -1,0 +1,26 @@
+<div class="main-layout" [class.sidebar-collapsed]="sidebarCollapsed">
+  <!-- Sidebar con menú moderno reutilizando el mismo componente que admin -->
+  <app-sidebar-menu [collapsed]="sidebarCollapsed" menuConfig="testigo"></app-sidebar-menu>
+  
+  <!-- Botón flotante para contraer/expandir sidebar (igual que admin) -->
+  <button 
+    class="btn-toggle-sidebar" 
+    (click)="toggleSidebar()"
+    [title]="sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'">
+    <i class="fas" [class.fa-chevron-right]="sidebarCollapsed" [class.fa-chevron-left]="!sidebarCollapsed"></i>
+  </button>
+  
+  <!-- Content Area -->
+  <main class="main-content">
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <app-footer></app-footer>
+</div>
+
+<!-- Loading Overlay -->
+<app-loading></app-loading>
+

@@ -40,6 +40,10 @@ export interface Question {
   text: string;
   type: QuestionType;
   options?: QuestionOptions;
+  // Builder v2
+  order?: number;
+  required?: boolean;
+  is_demographic?: boolean;
 }
 
 export interface BuilderState {
@@ -61,13 +65,29 @@ export interface RecipientImportItem {
   email?: string;
 }
 
+export interface RespondentsQueryParams {
+  limit?: number;
+  offset?: number;
+}
+
+export interface Respondent {
+  id: string;
+  tenant_id: string;
+  phone_number: string;
+  opt_out: boolean;
+  demographics: Record<string, any>;
+  history: string[];
+  created_at: string;
+  updated_at: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SurveyService {
 
   private surveyApiUrl = environment.surveyApiURL || '';
-  private apiBaseUrl = `${this.surveyApiUrl}/api/v1`;
+  private apiBaseUrl = this.surveyApiUrl ? `${this.surveyApiUrl}/api/v1` : '';
 
   constructor(
     private http: HttpClient,
@@ -87,18 +107,73 @@ export class SurveyService {
   }
 
   getSurveys(): Observable<Survey[]> {
+    // Validar que la URL del API esté configurada
+    if (!this.surveyApiUrl || !this.apiBaseUrl) {
+      console.error('❌ SurveyService.getSurveys: No hay URL del API de encuestas configurada');
+      console.error('   surveyApiURL en environment:', environment.surveyApiURL);
+      return throwError(() => new Error('El servicio de encuestas no está configurado. Verifica environment.surveyApiURL'));
+    }
+    
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('No se puede obtener encuestas: no hay token de autenticación');
+      console.error('❌ SurveyService.getSurveys: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
-    return this.http.get<Survey[]>(`${this.apiBaseUrl}/surveys`, { headers })
+    
+    const url = `${this.apiBaseUrl}/surveys`;
+    console.log('🔍 SurveyService.getSurveys:', {
+      url,
+      surveyApiUrl: this.surveyApiUrl,
+      apiBaseUrl: this.apiBaseUrl,
+      hasToken: !!headers.get('Authorization'),
+      tokenPreview: headers.get('Authorization')?.substring(0, 20) + '...'
+    });
+    
+    return this.http.get<Survey[]>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener encuestas:', error);
+          console.error('❌ SurveyService.getSurveys - Error completo:', {
+            error,
+            status: error?.status,
+            statusText: error?.statusText,
+            message: error?.message,
+            url: error?.url,
+            errorBody: error?.error,
+            headers: error?.headers
+          });
+          
+          // Mensaje más descriptivo según el tipo de error
+          if (error?.status === 0 || error?.status === undefined) {
+            console.error('   ⚠️ Posible problema: El backend no está disponible o hay un problema de CORS');
+            console.error('   💡 Verifica que el backend de encuestas esté corriendo en:', this.surveyApiUrl);
+          }
+          
           return throwError(() => error);
         })
       );
+  }
+
+  /**
+   * Respondents (Directorio central por tenant)
+   * Endpoint: GET /api/v1/respondents
+   */
+  getRespondents(params: RespondentsQueryParams = {}): Observable<Respondent[] | any> {
+    if (!this.surveyApiUrl || !this.apiBaseUrl) {
+      return throwError(() => new Error('El servicio de encuestas no está configurado. Verifica environment.surveyApiURL'));
+    }
+
+    const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
+
+    const limit = params.limit ?? 1000;
+    const offset = params.offset ?? 0;
+    const url = `${this.apiBaseUrl}/respondents?limit=${encodeURIComponent(limit)}&offset=${encodeURIComponent(offset)}`;
+
+    return this.http.get<Respondent[] | any>(url, { headers }).pipe(
+      catchError((error) => throwError(() => error))
+    );
   }
 
   createSurveyDraft(title: string, description: string = ''): Observable<BuilderState> {
@@ -140,7 +215,8 @@ export class SurveyService {
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
     const body = {
-      question_orders: questionIds.map((id, index) => ({ id, order: index }))
+      // Backend v2: el frontend solo envía la secuencia final de IDs
+      question_ids: questionIds
     };
     return this.http.post<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/reorder`, body, { headers })
       .pipe(
@@ -156,9 +232,10 @@ export class SurveyService {
     if (!headers) {
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
-    const body: { type: string; text: string; options?: any } = {
+    const body: { type: string; text: string; options?: any; is_demographic?: boolean } = {
       type: questionType,
-      text: `Nueva pregunta (${questionType})`
+      text: `Nueva pregunta (${questionType})`,
+      is_demographic: false
     };
 
     switch (questionType) {

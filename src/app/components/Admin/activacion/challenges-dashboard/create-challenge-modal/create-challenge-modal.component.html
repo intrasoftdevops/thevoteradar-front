@@ -1,0 +1,163 @@
+<div 
+  *ngIf="show"
+  class="modal d-block" 
+  tabindex="-1" 
+  role="dialog"
+  style="background-color: rgba(0,0,0,0.5);"
+  (click)="onClose()">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-plus-circle me-2" [style.color]="'var(--color-primary)'"></i>
+          Crear Nuevo Reto
+        </h5>
+        <button type="button" class="btn-close" (click)="onClose()" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Error Message -->
+        <div *ngIf="error" class="alert alert-danger" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ error }}
+        </div>
+
+        <form [formGroup]="challengeForm">
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label for="name" class="form-label">
+              Nombre del Reto <span class="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="hasFieldError('name')"
+              id="name"
+              formControlName="name"
+              placeholder="Ej: Defensor del voto informado">
+            <div *ngIf="hasFieldError('name')" class="invalid-feedback">
+              {{ getFieldError('name') }}
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="mb-3">
+            <label for="description" class="form-label">Descripción</label>
+            <textarea
+              class="form-control"
+              [class.is-invalid]="hasFieldError('description')"
+              id="description"
+              formControlName="description"
+              rows="4"
+              placeholder="Describe el reto y sus objetivos..."></textarea>
+            <div *ngIf="hasFieldError('description')" class="invalid-feedback">
+              {{ getFieldError('description') }}
+            </div>
+            <small class="form-text text-muted">
+              Máximo 500 caracteres
+            </small>
+          </div>
+
+          <!-- Puntos y Usuarios Máximos -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="puntos" class="form-label">
+                Puntos de Recompensa <span class="text-danger">*</span>
+              </label>
+              <input
+                type="number"
+                class="form-control"
+                [class.is-invalid]="hasFieldError('puntos')"
+                id="puntos"
+                formControlName="puntos"
+                min="1"
+                placeholder="150">
+              <div *ngIf="hasFieldError('puntos')" class="invalid-feedback">
+                {{ getFieldError('puntos') }}
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="max_users" class="form-label">
+                Usuarios Máximos <span class="text-danger">*</span>
+              </label>
+              <input
+                type="number"
+                class="form-control"
+                [class.is-invalid]="hasFieldError('max_users')"
+                id="max_users"
+                formControlName="max_users"
+                min="1"
+                placeholder="10000">
+              <div *ngIf="hasFieldError('max_users')" class="invalid-feedback">
+                {{ getFieldError('max_users') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Fecha Máxima -->
+          <div class="mb-3">
+            <label for="max_date" class="form-label">
+              Fecha de Finalización <span class="text-danger">*</span>
+            </label>
+            <input
+              type="datetime-local"
+              class="form-control"
+              [class.is-invalid]="hasFieldError('max_date')"
+              id="max_date"
+              formControlName="max_date">
+            <div *ngIf="hasFieldError('max_date')" class="invalid-feedback">
+              {{ getFieldError('max_date') }}
+            </div>
+          </div>
+
+          <!-- Límite Máximo y Reward ID (Opcionales) -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="max_limit" class="form-label">Límite Máximo (Opcional)</label>
+              <input
+                type="number"
+                class="form-control"
+                id="max_limit"
+                formControlName="max_limit"
+                min="1"
+                placeholder="5">
+              <small class="form-text text-muted">
+                Número máximo de veces que se puede completar
+              </small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="reward_id" class="form-label">ID de Recompensa (Opcional)</label>
+              <input
+                type="text"
+                class="form-control"
+                id="reward_id"
+                formControlName="reward_id"
+                placeholder="badge_voto_informado">
+              <small class="form-text text-muted">
+                Identificador de la recompensa asociada
+              </small>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()" [disabled]="creating">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onCreate()"
+          [disabled]="creating || challengeForm.invalid"
+          [style.background-color]="'var(--color-primary)'">
+          <span *ngIf="creating" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          <i *ngIf="!creating" class="fas fa-check me-2"></i>
+          {{ creating ? 'Creando...' : 'Crear Reto' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

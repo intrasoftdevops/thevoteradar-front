@@ -16,6 +16,7 @@ export class SurveyBuilderComponent implements OnInit {
   editingTitle = false;
   surveyStatus: 'draft' | 'active' | 'closed' | 'paused' | 'archived' = 'draft';
   private lastAddedChoiceInfo: { questionId: string; index: number } | null = null;
+  private dragSourceIndex: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -100,7 +101,8 @@ export class SurveyBuilderComponent implements OnInit {
 
     this.surveyService.updateQuestion(this.surveyId, question.id, {
       text: question.text.trim(),
-      options: question.options
+      options: question.options,
+      is_demographic: !!question.is_demographic
     }).subscribe({
       next: (updatedState) => {
         this.builderState = updatedState;
@@ -112,6 +114,93 @@ export class SurveyBuilderComponent implements OnInit {
         this.error = error.error?.detail || error.message || 'Error al guardar pregunta';
       }
     });
+  }
+
+  /**
+   * Toggle demográfico (Builder v2)
+   * Se persiste inmediatamente para que la bandera quede guardada aunque no presione "Guardar".
+   */
+  toggleDemographic(question: Question, value: boolean, event?: Event): void {
+    if (event) event.stopPropagation();
+    if (!this.surveyId) return;
+
+    const prev = !!question.is_demographic;
+    question.is_demographic = value;
+
+    this.surveyService.updateQuestion(this.surveyId, question.id, { is_demographic: value }).subscribe({
+      next: (updatedState) => {
+        this.builderState = updatedState;
+        this.error = null;
+      },
+      error: (error) => {
+        console.error('Error al actualizar is_demographic:', error);
+        // rollback
+        question.is_demographic = prev;
+        this.error = 'No se pudo guardar el estado demográfico.';
+      }
+    });
+  }
+
+  // =========================
+  // Drag & Drop (HTML5) para reordenar preguntas
+  // =========================
+
+  onDragStart(index: number, event: DragEvent): void {
+    this.dragSourceIndex = index;
+    try {
+      if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = 'move';
+      }
+      event.dataTransfer?.setData('text/plain', String(index));
+    } catch {
+      // noop
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onDrop(targetIndex: number, event: DragEvent): void {
+    event.preventDefault();
+    if (!this.builderState || !this.surveyId) return;
+
+    const from = this.dragSourceIndex ?? Number(event.dataTransfer?.getData('text/plain'));
+    const to = targetIndex;
+    if (Number.isNaN(from) || from === null || from === undefined) return;
+    if (from === to) return;
+    if (from < 0 || from >= this.builderState.questions.length) return;
+    if (to < 0 || to >= this.builderState.questions.length) return;
+
+    const prevOrder = [...this.builderState.questions];
+
+    // Optimista: reordenar local
+    const moved = this.builderState.questions.splice(from, 1)[0];
+    this.builderState.questions.splice(to, 0, moved);
+
+    // Persistir en backend
+    const questionIds = this.builderState.questions.map(q => q.id);
+    this.surveyService.reorderQuestions(this.surveyId, questionIds).subscribe({
+      next: (updatedState) => {
+        this.builderState = updatedState;
+        this.error = null;
+      },
+      error: (err) => {
+        console.error('Error al reordenar preguntas:', err);
+        // rollback
+        if (this.builderState) {
+          this.builderState.questions = prevOrder;
+        }
+        this.error = 'No se pudo reordenar. Inténtalo de nuevo.';
+      }
+    });
+  }
+
+  onDragEnd(): void {
+    this.dragSourceIndex = null;
   }
 
   deleteQuestion(questionId: string): void {
@@ -234,7 +323,7 @@ export class SurveyBuilderComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/admin/surveys']);
+    this.router.navigate(['/panel/encuestas']);
   }
 
   getQuestionTypeLabel(type: QuestionType): string {

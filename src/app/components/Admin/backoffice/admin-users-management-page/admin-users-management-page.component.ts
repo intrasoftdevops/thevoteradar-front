@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { BackofficeAdminService } from '../../../../services/backoffice-admin/backoffice-admin.service';
 import { User, LocationsResponse } from '../../../../services/backoffice-admin/backoffice-admin.types';
@@ -25,9 +26,16 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
   filterCursor: string | undefined;
   activeFilter: { type: 'city' | 'state', value: string } | null = null;
 
+  // Selección múltiple para envío masivo
+  selectedUsers: Set<string> = new Set(); // Set de phone numbers
+  showSendTemplateModal = false;
+
   private subscriptions: Subscription[] = [];
 
-  constructor(private adminService: BackofficeAdminService) { }
+  constructor(
+    private adminService: BackofficeAdminService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     // Subscribe to users
@@ -175,6 +183,28 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
     this.selectedUser = null;
   }
 
+  /**
+   * Contactar usuario por WhatsApp
+   * Abre wa.me con el número del usuario en formato correcto
+   */
+  contactViaWhatsApp(phone: string | null): void {
+    if (!phone) {
+      console.warn('No hay número de teléfono para contactar');
+      return;
+    }
+
+    // Limpiar el número: solo dígitos y el signo +
+    const cleanPhone = phone.replace(/[^\d+]/g, '');
+    
+    // Construir URL de WhatsApp
+    const whatsappUrl = `https://wa.me/${cleanPhone}`;
+    
+    console.log('📱 Abriendo WhatsApp:', whatsappUrl);
+    
+    // Abrir en nueva pestaña
+    window.open(whatsappUrl, '_blank');
+  }
+
   formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('es-ES');
   }
@@ -224,6 +254,110 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
       target.style.borderColor = '';
       target.style.boxShadow = '';
     }
+  }
+
+  // ========================================
+  // MÉTODOS PARA SELECCIÓN MÚLTIPLE
+  // ========================================
+
+  /**
+   * Toggle selección de un usuario
+   */
+  toggleUserSelection(phone: string | null): void {
+    if (!phone) return; // Si no hay teléfono, no hacer nada
+    
+    if (this.selectedUsers.has(phone)) {
+      this.selectedUsers.delete(phone);
+    } else {
+      this.selectedUsers.add(phone);
+    }
+    console.log('📋 Usuarios seleccionados:', this.selectedUsers.size);
+  }
+
+  /**
+   * Verificar si un usuario está seleccionado
+   */
+  isUserSelected(phone: string): boolean {
+    return this.selectedUsers.has(phone);
+  }
+
+  /**
+   * Seleccionar todos los usuarios visibles
+   */
+  selectAllUsers(): void {
+    const currentUsers = this.getCurrentUsers();
+    currentUsers.forEach(user => {
+      if (user.phone) {
+        this.selectedUsers.add(user.phone);
+      }
+    });
+    console.log('✅ Seleccionados todos los usuarios:', this.selectedUsers.size);
+  }
+
+  /**
+   * Deseleccionar todos los usuarios
+   */
+  deselectAllUsers(): void {
+    this.selectedUsers.clear();
+    console.log('❌ Deseleccionados todos los usuarios');
+  }
+
+  /**
+   * Obtener array de usuarios seleccionados
+   */
+  getSelectedUsersArray(): User[] {
+    const currentUsers = this.getCurrentUsers();
+    return currentUsers.filter(user => user.phone && this.selectedUsers.has(user.phone));
+  }
+
+  /**
+   * Abrir modal para enviar template a usuarios seleccionados
+   */
+  openSendTemplateModal(): void {
+    if (this.selectedUsers.size === 0) {
+      alert('Selecciona al menos un usuario para enviar el template');
+      return;
+    }
+    this.showSendTemplateModal = true;
+    console.log('📧 Abriendo modal para enviar template a:', this.selectedUsers.size, 'usuarios');
+  }
+
+  /**
+   * Cerrar modal de envío de template
+   */
+  closeSendTemplateModal(): void {
+    this.showSendTemplateModal = false;
+  }
+
+  /**
+   * Callback cuando se envía el template exitosamente
+   */
+  onTemplateSent(): void {
+    this.deselectAllUsers();
+    this.showSendTemplateModal = false;
+  }
+
+  /**
+   * Navegar a WhatsApp con usuarios preseleccionados
+   * Guarda los usuarios en localStorage y navega
+   */
+  goToWhatsAppWithSelectedUsers(): void {
+    const selectedUsersData = this.getSelectedUsersArray().map(user => ({
+      phone: user.phone,
+      name: `${user.name || ''} ${user.lastname || ''}`.trim(),
+      email: user.email
+    }));
+
+    // Guardar en localStorage para que el componente de WhatsApp los use
+    localStorage.setItem('preselectedWhatsAppRecipients', JSON.stringify(selectedUsersData));
+    
+    console.log('📧 Navegando a WhatsApp con usuarios preseleccionados:', selectedUsersData.length);
+    
+    // Navegar a WhatsApp
+    this.router.navigate(['/panel/activacion/whatsapp']);
+    
+    // Cerrar modal
+    this.closeSendTemplateModal();
   }
 }
 

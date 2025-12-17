@@ -1,0 +1,42 @@
+@import '../create-challenge-modal/create-challenge-modal.component.scss';
+
+.challenge-info {
+  border-left: 4px solid var(--color-primary);
+}
+
+.users-list {
+  .table {
+    margin-bottom: 0;
+
+    thead {
+      background-color: var(--color-background, #f8f9fa);
+      
+      th {
+        font-weight: 600;
+        color: var(--color-text-primary, #2c3e50);
+        border-bottom: 2px solid var(--color-primary);
+      }
+    }
+
+    tbody {
+      tr {
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: rgba(var(--color-primary-rgb, 0, 123, 255), 0.05);
+        }
+      }
+    }
+  }
+}
+
+.summary-box {
+  border-left: 4px solid var(--color-primary);
+}
+
+.empty-state {
+  .empty-icon {
+    opacity: 0.5;
+  }
+}
+
