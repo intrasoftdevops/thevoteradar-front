@@ -322,10 +322,11 @@ export class LoginComponent implements OnInit {
       this.initProfileForm();
     }
 
-    if (!this.profileForm?.valid) {
-      this.alertService.errorAlert("Por favor completa todos los campos requeridos");
-      this.isLoading = false;
-      return;
+    // Marcar todos los campos como touched para que las validaciones se ejecuten correctamente
+    if (this.profileForm) {
+      Object.keys(this.profileForm.controls).forEach(key => {
+        this.profileForm!.get(key)?.markAsTouched();
+      });
     }
 
     
@@ -339,8 +340,34 @@ export class LoginComponent implements OnInit {
     }
 
     
-    if (this.profileForm.value.password !== this.profileForm.value.password_confirmation) {
+    if (this.profileForm?.value.password !== this.profileForm?.value.password_confirmation) {
       this.alertService.errorAlert("Las contraseñas no coinciden");
+      this.isLoading = false;
+      return;
+    }
+
+    // Validar campos requeridos individualmente para dar un mensaje más específico
+    if (!this.profileForm?.valid) {
+      const missingFields: string[] = [];
+      if (!this.profileForm!.get('nombres')?.value?.trim()) missingFields.push('Nombres');
+      if (!this.profileForm!.get('apellidos')?.value?.trim()) missingFields.push('Apellidos');
+      if (!this.profileForm!.get('numero_documento')?.value?.trim()) missingFields.push('Número de Documento');
+      if (!this.profileForm!.get('password')?.value?.trim()) missingFields.push('Contraseña');
+      if (!this.profileForm!.get('password_confirmation')?.value?.trim()) missingFields.push('Confirmar Contraseña');
+      
+      // Validar longitud mínima de contraseña
+      const passwordValue = this.profileForm!.get('password')?.value?.trim();
+      if (passwordValue && passwordValue.length < 6) {
+        this.alertService.errorAlert("La contraseña debe tener al menos 6 caracteres");
+        this.isLoading = false;
+        return;
+      }
+      
+      if (missingFields.length > 0) {
+        this.alertService.errorAlert(`Por favor completa los siguientes campos: ${missingFields.join(', ')}`);
+      } else {
+        this.alertService.errorAlert("Por favor completa todos los campos requeridos");
+      }
       this.isLoading = false;
       return;
     }
