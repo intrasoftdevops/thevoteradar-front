@@ -349,14 +349,14 @@ export class LoginComponent implements OnInit {
     // Validar campos requeridos individualmente para dar un mensaje más específico
     if (!this.profileForm?.valid) {
       const missingFields: string[] = [];
-      if (!this.profileForm.get('nombres')?.value?.trim()) missingFields.push('Nombres');
-      if (!this.profileForm.get('apellidos')?.value?.trim()) missingFields.push('Apellidos');
-      if (!this.profileForm.get('numero_documento')?.value?.trim()) missingFields.push('Número de Documento');
-      if (!this.profileForm.get('password')?.value?.trim()) missingFields.push('Contraseña');
-      if (!this.profileForm.get('password_confirmation')?.value?.trim()) missingFields.push('Confirmar Contraseña');
+      if (!this.profileForm!.get('nombres')?.value?.trim()) missingFields.push('Nombres');
+      if (!this.profileForm!.get('apellidos')?.value?.trim()) missingFields.push('Apellidos');
+      if (!this.profileForm!.get('numero_documento')?.value?.trim()) missingFields.push('Número de Documento');
+      if (!this.profileForm!.get('password')?.value?.trim()) missingFields.push('Contraseña');
+      if (!this.profileForm!.get('password_confirmation')?.value?.trim()) missingFields.push('Confirmar Contraseña');
       
       // Validar longitud mínima de contraseña
-      const passwordValue = this.profileForm.get('password')?.value?.trim();
+      const passwordValue = this.profileForm!.get('password')?.value?.trim();
       if (passwordValue && passwordValue.length < 6) {
         this.alertService.errorAlert("La contraseña debe tener al menos 6 caracteres");
         this.isLoading = false;
