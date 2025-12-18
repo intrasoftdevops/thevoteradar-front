@@ -184,13 +184,9 @@ export class LoginComponent implements OnInit {
       const loginData: any = {
         tenant_code: tenantCode,
         telefono: this.loginForm.value.telefono,
+        password: this.loginForm.value.password || '', // Password siempre requerido
         otp: this.loginForm.value.otp || null
       };
-
-      
-      if (this.loginForm.value.password) {
-        loginData.password = this.loginForm.value.password;
-      }
 
       this.apiService.tenantLogin(loginData).subscribe({
         next: (resp: any) => {
@@ -270,6 +266,7 @@ export class LoginComponent implements OnInit {
     const loginData = {
       tenant_code: tenantCode,
       telefono: this.loginForm.value.telefono,
+      password: this.loginForm.value.password || '', // Mantener password para verificación
       otp: this.loginForm.value.otp
     };
 
