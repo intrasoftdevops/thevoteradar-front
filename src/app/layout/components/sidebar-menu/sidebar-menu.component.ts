@@ -52,8 +52,13 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
    * Tipo de menú:
    * - 'admin': menú completo de backoffice (por defecto)
    * - 'testigo': menú simplificado para rol Testigo
+   * - 'coordinador': menú para rol Coordinador
+   * - 'supervisor': menú para rol Supervisor
+   * - 'gerente': menú para rol Gerente
+   * - 'admin-impugnaciones': menú para rol Admin. Impugnaciones
+   * - 'impugnador': menú para rol Impugnador
    */
-  @Input() menuConfig: 'admin' | 'testigo' = 'admin';
+  @Input() menuConfig: 'admin' | 'testigo' | 'coordinador' | 'supervisor' | 'gerente' | 'admin-impugnaciones' | 'impugnador' = 'admin';
   
   currentTheme: Theme | null = null;
   activeMenuItem: string = '';
@@ -157,6 +162,154 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
           label: 'Reportar Incidencia',
           icon: 'fas fa-exclamation-triangle',
           route: '/reporteIncidencias',
+        },
+      ];
+    } else if (this.menuConfig === 'coordinador') {
+      this.menuItems = [
+        {
+          id: 'coordinador-dashboard',
+          label: 'Dashboard',
+          icon: 'fas fa-home',
+          route: '/coordinadorHome',
+        },
+        {
+          id: 'coordinador-testigos',
+          label: 'Testigos',
+          icon: 'fas fa-users',
+          children: [
+            { id: 'consultar-testigos', label: 'Consultar Testigos', icon: 'fas fa-search', route: '/consultarTestigo' },
+            { id: 'crear-testigo', label: 'Crear Testigo', icon: 'fas fa-user-plus', route: '/crearTestigo' },
+          ],
+        },
+        {
+          id: 'coordinador-reportes',
+          label: 'Reportes',
+          icon: 'fas fa-file-alt',
+          children: [
+            { id: 'reporte-votos', label: 'Reporte de Votos', icon: 'fas fa-vote-yea', route: '/reporteVotosCoordinador' },
+            { id: 'incidencias', label: 'Incidencias', icon: 'fas fa-exclamation-triangle', route: '/reporteIncidenciasCoordinador' },
+          ],
+        },
+        {
+          id: 'coordinador-estadisticas',
+          label: 'Estadísticas',
+          icon: 'fas fa-chart-bar',
+          children: [
+            { id: 'ver-equipo', label: 'Ver Equipo', icon: 'fas fa-users', route: '/consultarEquipoCoordinador' },
+            { id: 'estadisticas-equipo', label: 'Estadísticas', icon: 'fas fa-chart-pie', route: '/estadisticasEquipoCoordinador' },
+          ],
+        },
+      ];
+    } else if (this.menuConfig === 'supervisor') {
+      this.menuItems = [
+        {
+          id: 'supervisor-dashboard',
+          label: 'Dashboard',
+          icon: 'fas fa-home',
+          route: '/supervisorHome',
+        },
+        {
+          id: 'supervisor-coordinadores',
+          label: 'Coordinadores',
+          icon: 'fas fa-user-friends',
+          children: [
+            { id: 'consultar-coordinadores', label: 'Consultar Coordinadores', icon: 'fas fa-search', route: '/consultarCoordinador' },
+            { id: 'crear-coordinador', label: 'Crear Coordinador', icon: 'fas fa-user-plus', route: '/crearCoordinador' },
+          ],
+        },
+        {
+          id: 'supervisor-testigos',
+          label: 'Testigos',
+          icon: 'fas fa-users',
+          children: [
+            { id: 'crear-testigo-supervisor', label: 'Crear Testigo', icon: 'fas fa-user-plus', route: '/crearTestigoSupervisor' },
+          ],
+        },
+        {
+          id: 'supervisor-estadisticas',
+          label: 'Estadísticas',
+          icon: 'fas fa-chart-bar',
+          children: [
+            { id: 'ver-equipo-supervisor', label: 'Ver Equipo', icon: 'fas fa-users', route: '/consultarEquipoSupervisor' },
+            { id: 'estadisticas-equipo-supervisor', label: 'Estadísticas', icon: 'fas fa-chart-pie', route: '/estadisticasEquipoSupervisor' },
+          ],
+        },
+      ];
+    } else if (this.menuConfig === 'gerente') {
+      this.menuItems = [
+        {
+          id: 'gerente-dashboard',
+          label: 'Dashboard',
+          icon: 'fas fa-home',
+          route: '/gerenteHome',
+        },
+        {
+          id: 'gerente-supervisores',
+          label: 'Supervisores',
+          icon: 'fas fa-user-shield',
+          children: [
+            { id: 'consultar-supervisores', label: 'Consultar Supervisores', icon: 'fas fa-search', route: '/consultarSupervisor' },
+            { id: 'crear-supervisor', label: 'Crear Supervisor', icon: 'fas fa-user-plus', route: '/crearSupervisor' },
+          ],
+        },
+        {
+          id: 'gerente-coordinadores',
+          label: 'Coordinadores',
+          icon: 'fas fa-user-friends',
+          children: [
+            { id: 'crear-coordinador-gerente', label: 'Crear Coordinador', icon: 'fas fa-user-plus', route: '/crearCoordinadorGerente' },
+          ],
+        },
+        {
+          id: 'gerente-testigos',
+          label: 'Testigos',
+          icon: 'fas fa-users',
+          children: [
+            { id: 'crear-testigo-gerente', label: 'Crear Testigo', icon: 'fas fa-user-plus', route: '/crearTestigoGerente' },
+          ],
+        },
+        {
+          id: 'gerente-estadisticas',
+          label: 'Estadísticas',
+          icon: 'fas fa-chart-bar',
+          children: [
+            { id: 'ver-equipo-gerente', label: 'Ver Equipo', icon: 'fas fa-users', route: '/consultarEquipoGerente' },
+            { id: 'estadisticas-equipo-gerente', label: 'Estadísticas', icon: 'fas fa-chart-pie', route: '/estadisticasEquipoGerente' },
+          ],
+        },
+      ];
+    } else if (this.menuConfig === 'admin-impugnaciones') {
+      this.menuItems = [
+        {
+          id: 'admin-impugnaciones-dashboard',
+          label: 'Dashboard',
+          icon: 'fas fa-home',
+          route: '/menu-admin-impugnaciones',
+        },
+        {
+          id: 'admin-impugnaciones-gestion',
+          label: 'Gestión',
+          icon: 'fas fa-file-signature',
+          children: [
+            { id: 'administrar-impugnaciones', label: 'Administrar Impugnaciones', icon: 'fas fa-list', route: '/administrar-impugnaciones' },
+          ],
+        },
+      ];
+    } else if (this.menuConfig === 'impugnador') {
+      this.menuItems = [
+        {
+          id: 'impugnador-dashboard',
+          label: 'Dashboard',
+          icon: 'fas fa-home',
+          route: '/impugnadorHome',
+        },
+        {
+          id: 'impugnador-acciones',
+          label: 'Acciones',
+          icon: 'fas fa-file-signature',
+          children: [
+            { id: 'impugnar', label: 'Impugnar', icon: 'fas fa-exclamation-triangle', route: '/impugnar' },
+          ],
         },
       ];
     } else {
@@ -377,21 +530,47 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
   }
 
   /**
+   * Obtiene el nombre a mostrar del rol según la configuración del menú
+   */
+  getRoleDisplayName(): string {
+    switch (this.menuConfig) {
+      case 'testigo':
+        return 'Testigo';
+      case 'coordinador':
+        return 'Coordinador';
+      case 'supervisor':
+        return 'Supervisor';
+      case 'gerente':
+        return 'Gerente';
+      case 'admin-impugnaciones':
+        return 'Admin. Impugnaciones';
+      case 'impugnador':
+        return 'Impugnador';
+      case 'admin':
+      default:
+        return 'Administrador';
+    }
+  }
+
+  /**
    * Cerrar sesión del usuario
    */
   logout(): void {
-    // Reutilizar la lógica de logout usada en el menú de usuario legacy
+    // Limpiar datos localmente primero
+    this.localData.deleteCookies();
+    this.permissionsService.addPermission(['0']);
+    this.authService.clearAll();
+    
+    // Intentar logout en el backend, pero ignorar errores silenciosamente
+    // (el token puede estar expirado o el servidor puede no estar disponible)
     this.apiService.logout().subscribe({
       next: () => {
-        this.localData.deleteCookies();
-        this.permissionsService.addPermission(['0']);
-        this.authService.clearAll();
+        // Logout exitoso, navegar al login
         this.router.navigate(['']);
       },
       error: () => {
-        this.localData.deleteCookies();
-        this.permissionsService.addPermission(['0']);
-        this.authService.clearAll();
+        // Ignorar errores silenciosamente - ya limpiamos todo localmente
+        // Navegar al login de todas formas
         this.router.navigate(['']);
       },
     });

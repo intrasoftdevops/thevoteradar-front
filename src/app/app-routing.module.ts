@@ -199,7 +199,7 @@ const routes: Routes = [
 
   // ============================================
   // LAYOUT PRINCIPAL PARA ROLES (MainLayout)
-  // Actualmente aplicado al rol TESTIGO
+  // Aplicado a TESTIGO y COORDINADOR
   // ============================================
   {
     path: '',
@@ -210,51 +210,61 @@ const routes: Routes = [
       { path: 'testigoHome', component: TestigoHomeComponent, data: { rol: [5] } },
       { path: 'reporteIncidencias', component: ReporteIncidenciasComponent, data: { rol: [5] } },
       { path: 'reporteVotosTestigo', component: ReporteVotosTestigoComponent, data: { rol: [5] } },
+      
+      // COORDINADOR
+      { path: 'coordinadorHome', component: CoordinadorHomeComponent, data: { rol: [4] } },
+      { path: 'crearTestigo', component: CrearTestigoComponent, data: { rol: [4] } },
+      { path: 'consultarEquipoCoordinador', component: VerEquipoCoordinadorComponent, data: { rol: [4] } },
+      { path: 'estadisticasEquipoCoordinador', component: VerPuestoCoordinadorComponent, data: { rol: [4] } },
+      { path: 'editarTestigo/:id', component: EditarTestigoComponent, data: { rol: [4] } },
+      { path: 'consultarTestigo', component: ConsultarTestigoComponent, data: { rol: [1, 2, 3, 4] } },
+      { path: 'reporteVotosCoordinador', component: ReporteVotosCoordinadorComponent, data: { rol: [4] } },
+      { path: 'reporteIncidenciasCoordinador', component: ReporteIncidenciasCoordinadorComponent, data: { rol: [4] } },
+      
+      // SUPERVISOR
+      { path: 'supervisorHome', component: SupervisorHomeComponent, data: { rol: [3] } },
+      { path: 'crearCoordinador', component: CrearCoordinadorComponent, data: { rol: [3] } },
+      { path: 'consultarEquipoSupervisor', component: VerEquipoSupervisorComponent, data: { rol: [3] } },
+      { path: 'estadisticasEquipoSupervisor', component: VerPuestoSupervisorComponent, data: { rol: [3] } },
+      { path: 'editarCoordinador/:id', component: EditarCoordinadorComponent, data: { rol: [3] } },
+      { path: 'consultarCoordinador', component: ConsultarCoordinadorComponent, data: { rol: [1, 2, 3] } },
+      { path: 'crearTestigoSupervisor', component: CrearTestigoSupervisorComponent, data: { rol: [3] } },
+      
+      // GERENTE
+      { path: 'gerenteHome', component: GerenteHomeComponent, data: { rol: [2] } },
+      { path: 'crearSupervisor', component: CrearSupervisorComponent, data: { rol: [2] } },
+      { path: 'consultarEquipoGerente', component: VerEquipoGerenteComponent, data: { rol: [2] } },
+      { path: 'estadisticasEquipoGerente', component: VerPuestoGerenteComponent, data: { rol: [2] } },
+      { path: 'editarSupervisor/:id', component: EditarSupervisorComponent, data: { rol: [2] } },
+      { path: 'consultarSupervisor', component: ConsultarSupervisorComponent, data: { rol: [1, 2] } },
+      { path: 'crearCoordinadorGerente', component: CrearCoordinadorGerenteComponent, data: { rol: [2] } },
+      { path: 'crearTestigoGerente', component: CrearTestigoGerenteComponent, data: { rol: [2] } },
+      
+      // ADMIN_IMPUGNACIONES
+      { path: 'menu-admin-impugnaciones', component: MenuAdministradorImpugnacionesComponent, data: { rol: [7] } },
+      { path: 'administrar-impugnaciones', component: ImpugnacionesComponent, data: { rol: [7] } },
+      
+      // IMPUGNADOR
+      { path: 'impugnadorHome', component: ImpugnadorHomeComponent, data: { rol: [8] } },
+      { path: 'impugnar', component: ImpugnarComponent, data: { rol: [8] } },
     ]
   },
 
   // ============================================
-  // GERENTE - LAYOUT LEGACY
+  // GERENTE - MOVIDO A MainLayoutComponent (arriba)
   // ============================================
-  { path: 'gerenteHome', component: GerenteHomeComponent, canActivate: [AuthGuard], data: { rol: [2] } },
-  { path: 'crearSupervisor', component: CrearSupervisorComponent, canActivate: [AuthGuard], data: { rol: [2] } },
-  { path: 'consultarEquipoGerente', component: VerEquipoGerenteComponent, canActivate: [AuthGuard], data: { rol: [2] } },
-  { path: 'estadisticasEquipoGerente', component: VerPuestoGerenteComponent, canActivate: [AuthGuard], data: { rol: [2] } },
-  { path: 'editarSupervisor/:id', component: EditarSupervisorComponent, canActivate: [AuthGuard], data: { rol: [2] } },
-  { path: 'consultarSupervisor', component: ConsultarSupervisorComponent, canActivate: [AuthGuard], data: { rol: [1, 2] } },
-  { path: 'crearCoordinadorGerente', component: CrearCoordinadorGerenteComponent, canActivate: [AuthGuard], data: { rol: [2] } },
-  { path: 'crearTestigoGerente', component: CrearTestigoGerenteComponent, canActivate: [AuthGuard], data: { rol: [2] } },
 
   // ============================================
-  // SUPERVISOR - LAYOUT LEGACY
+  // SUPERVISOR - MOVIDO A MainLayoutComponent (arriba)
   // ============================================
-  { path: 'supervisorHome', component: SupervisorHomeComponent, canActivate: [AuthGuard], data: { rol: [3] } },
-  { path: 'crearCoordinador', component: CrearCoordinadorComponent, canActivate: [AuthGuard], data: { rol: [3] } },
-  { path: 'consultarEquipoSupervisor', component: VerEquipoSupervisorComponent, canActivate: [AuthGuard], data: { rol: [3] } },
-  { path: 'estadisticasEquipoSupervisor', component: VerPuestoSupervisorComponent, canActivate: [AuthGuard], data: { rol: [3] } },
-  { path: 'editarCoordinador/:id', component: EditarCoordinadorComponent, canActivate: [AuthGuard], data: { rol: [3] } },
-  { path: 'consultarCoordinador', component: ConsultarCoordinadorComponent, canActivate: [AuthGuard], data: { rol: [1, 2, 3] } },
-  { path: 'crearTestigoSupervisor', component: CrearTestigoSupervisorComponent, canActivate: [AuthGuard], data: { rol: [3] } },
 
   // ============================================
-  // COORDINADOR - LAYOUT LEGACY
+  // COORDINADOR - MOVIDO A MainLayoutComponent (arriba)
   // ============================================
-  { path: 'coordinadorHome', component: CoordinadorHomeComponent, canActivate: [AuthGuard], data: { rol: [4] } },
-  { path: 'crearTestigo', component: CrearTestigoComponent, canActivate: [AuthGuard], data: { rol: [4] } },
-  { path: 'consultarEquipoCoordinador', component: VerEquipoCoordinadorComponent, canActivate: [AuthGuard], data: { rol: [4] } },
-  { path: 'estadisticasEquipoCoordinador', component: VerPuestoCoordinadorComponent, canActivate: [AuthGuard], data: { rol: [4] } },
-  { path: 'editarTestigo/:id', component: EditarTestigoComponent, canActivate: [AuthGuard], data: { rol: [4] } },
-  { path: 'consultarTestigo', component: ConsultarTestigoComponent, canActivate: [AuthGuard], data: { rol: [1, 2, 3, 4] } },
-  { path: 'reporteVotosCoordinador', component: ReporteVotosCoordinadorComponent, canActivate: [AuthGuard], data: { rol: [4] } },
-  { path: 'reporteIncidenciasCoordinador', component: ReporteIncidenciasCoordinadorComponent, canActivate: [AuthGuard], data: { rol: [4] } },
 
   // ============================================
-  // IMPUGNADOR - LAYOUT LEGACY
+  // IMPUGNADOR y ADMIN_IMPUGNACIONES - MOVIDOS A MainLayoutComponent (arriba)
   // ============================================
-  { path: 'impugnar', component: ImpugnarComponent, canActivate: [AuthGuard], data: { rol: [8] } },
-  { path: 'impugnadorHome', component: ImpugnadorHomeComponent, canActivate: [AuthGuard], data: { rol: [8] } },
-  { path: 'administrar-impugnaciones', component: ImpugnacionesComponent, canActivate: [AuthGuard], data: { rol: [7] } },
-  { path: 'menu-admin-impugnaciones', component: MenuAdministradorImpugnacionesComponent, canActivate: [AuthGuard], data: { rol: [7] } },
 
   // ============================================
   // WILDCARDS

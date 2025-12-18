@@ -1,14 +1,85 @@
-<div class="container py-4">
-  <div class="ratio mt-4" style="--bs-aspect-ratio: 50%">
-    <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
+<div class="impugnador-home">
+  <!-- Banner de bienvenida (mismo estilo que testigo y admin) -->
+  <div class="welcome-banner mb-4">
+    <div class="card border-0 shadow-sm">
+      <div
+        class="card-body p-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h2 class="text-white mb-2 fw-bold">Bienvenido impugnador</h2>
+            <p class="text-white-50 mb-0">
+              Sistema de gestión de impugnaciones
+            </p>
+          </div>
+          <div class="d-none d-md-block">
+            <i class="fas fa-file-signature fa-3x text-white opacity-50"></i>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<div class="toast-container">
-  <ngb-toast
-    class="welcomeBanner d-flex align-items-center bg-white"
-    [delay]="2000"
-    [animation]="true"
-  >
-    <h3 class="mb-0 fw-bolder text-dark">Bienvenido impugnador</h3>
-  </ngb-toast>
+
+  <!-- Contenido principal -->
+  <div class="container-fluid">
+    <div class="row gy-4">
+      <!-- Tarjeta con información -->
+      <div class="col-lg-12 align-items-stretch">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">
+              <i class="fas fa-info-circle me-2" [style.color]="'var(--color-primary)'"></i>
+              Información
+            </h5>
+            <p class="text-muted">
+              Desde aquí puedes gestionar tus impugnaciones y acceder a las herramientas necesarias para proteger los votos.
+            </p>
+            <div class="mt-4">
+              <a 
+                routerLink="/impugnar" 
+                class="btn"
+                [style.background]="'var(--color-primary)'"
+                [style.color]="'white'"
+                [style.border]="'none'"
+              >
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Crear Impugnación
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Videos de capacitación / mensajes -->
+      <div class="col-lg-12 align-items-stretch">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">
+              <i class="fas fa-play-circle me-2" [style.color]="'var(--color-accent)'"></i>
+              Material de apoyo
+            </h5>
+            <div class="ratio ratio-16x9" *ngIf="safeURL">
+              <iframe [src]="safeURL" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div *ngIf="!safeURL" class="text-center py-5">
+              <i class="fas fa-video fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+              <p class="text-muted">No hay videos disponibles</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de bienvenida -->
+  <div class="toast-container">
+    <ngb-toast
+      class="welcomeBanner d-flex align-items-center bg-white"
+      [delay]="2000"
+      [animation]="true"
+    >
+      <h3 class="mb-0 fw-bolder text-dark">Bienvenido impugnador</h3>
+    </ngb-toast>
+  </div>
 </div>

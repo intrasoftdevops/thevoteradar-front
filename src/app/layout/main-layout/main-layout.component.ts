@@ -27,6 +27,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   userRole: UserRole | null = null;
   roleName: string = '';
   sidebarCollapsed = false;
+  menuConfig: 'admin' | 'testigo' | 'coordinador' | 'supervisor' | 'gerente' | 'admin-impugnaciones' | 'impugnador' = 'testigo';
   
   private subscriptions = new Subscription();
 
@@ -49,6 +50,23 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       this.userRole = rolNumber as UserRole;
       const roleConfig = ROLE_CONFIG[rolNumber];
       this.roleName = roleConfig?.displayName || '';
+      
+      // Configurar el menú según el rol
+      if (rolNumber === UserRole.TESTIGO) {
+        this.menuConfig = 'testigo';
+      } else if (rolNumber === UserRole.COORDINADOR) {
+        this.menuConfig = 'coordinador';
+      } else if (rolNumber === UserRole.SUPERVISOR) {
+        this.menuConfig = 'supervisor';
+      } else if (rolNumber === UserRole.GERENTE) {
+        this.menuConfig = 'gerente';
+      } else if (rolNumber === UserRole.ADMIN_IMPUGNACIONES) {
+        this.menuConfig = 'admin-impugnaciones';
+      } else if (rolNumber === UserRole.IMPUGNADOR) {
+        this.menuConfig = 'impugnador';
+      } else {
+        this.menuConfig = 'admin';
+      }
     }
   }
 

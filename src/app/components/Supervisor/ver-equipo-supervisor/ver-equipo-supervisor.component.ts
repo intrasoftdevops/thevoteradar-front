@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Filtro } from 'src/app/models/filtro';
 import { environment } from 'src/environments/environment';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-ver-equipo-supervisor',
   templateUrl: './ver-equipo-supervisor.component.html',
   styleUrls: ['./ver-equipo-supervisor.component.scss'],
 })
-export class VerEquipoSupervisorComponent implements OnInit {
+export class VerEquipoSupervisorComponent implements OnInit, OnDestroy {
   tabla: string = 'ninguna';
   dataZones: any = [];
   dataStations: any = [];
@@ -26,6 +28,11 @@ export class VerEquipoSupervisorComponent implements OnInit {
     mesas: [null],
   });
   dataGraphics: any = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions: DataTables.Settings = {};
+  @ViewChild(DataTableDirective)
+  dtElement!: any;
+  notFirstTime = false;
 
   constructor(
     private apiService: ApiService,
@@ -36,6 +43,16 @@ export class VerEquipoSupervisorComponent implements OnInit {
   ngOnInit(): void {
     this.getZonas();
     this.getDataGraphics();
+    this.dtOptions = {
+      destroy: true,
+      processing: true,
+      pageLength: 20,
+      language: { url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json' }
+    };
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
   }
 
   get searchFormControl() {
@@ -133,6 +150,8 @@ export class VerEquipoSupervisorComponent implements OnInit {
       const { mesas, coordinadores } = resp;
       this.dataTables = mesas;
       this.listCoordinadores = coordinadores;
+      this.renderer();
+      this.notFirstTime = true;
     });
   }
 
@@ -140,6 +159,20 @@ export class VerEquipoSupervisorComponent implements OnInit {
     this.apiService.getTestigoMesa(data).subscribe((resp: any) => {
       const { testigos } = resp;
       this.listTestigos = testigos;
+      this.renderer();
+      this.notFirstTime = true;
+    });
+  }
+
+  renderer() {
+    if (this.notFirstTime) {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.draw();
+        dtInstance.destroy();
+      });
+    }
+    setTimeout(() => {
+      this.dtTrigger.next(void 0);
     });
   }
 

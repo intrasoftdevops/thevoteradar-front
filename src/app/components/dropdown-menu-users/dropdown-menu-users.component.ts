@@ -33,16 +33,21 @@ export class DropdownMenuUsersComponent implements OnInit {
   }
 
   logout() {
+    // Limpiar datos localmente primero
+    this.localData.deleteCookies();
+    this.permissionsService.addPermission(['0']);
+    
+    // Intentar logout en el backend, pero ignorar errores silenciosamente
+    // (el token puede estar expirado o el servidor puede no estar disponible)
     this.apiService.logout().subscribe({
       next: () => {
-        this.localData.deleteCookies();
+        // Logout exitoso, navegar al login
         this.router.navigate(['']);
-        this.permissionsService.addPermission(['0']);
       },
       error: () => {
-        this.localData.deleteCookies();
+        // Ignorar errores silenciosamente - ya limpiamos todo localmente
+        // Navegar al login de todas formas
         this.router.navigate(['']);
-        this.permissionsService.addPermission(['0']);
       },
     });
   }

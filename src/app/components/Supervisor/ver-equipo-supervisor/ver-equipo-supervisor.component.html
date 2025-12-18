@@ -1,151 +1,256 @@
 <div class="container py-5">
-  <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
-    <h4>Mi equipo de trabajo</h4>
-    <!--<button class="btn btn-sm btn-info position-relative" data-bs-toggle="tooltip" data-bs-placement="top"
-      title="{{(showMap)?'Ver lista':'Ver mapa'}}" (click)="showIframe()">
-      <i class="fa-solid fa-map fa-lg text-white" *ngIf="!showMap;else list_content"></i>
-      <ng-template #list_content>
-        <i class="fa-solid fa-list fa-lg text-white"></i>
-      </ng-template>
-      <span
-        class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1">
-        <i class="fa-solid fa-repeat fa-sm"></i>
-      </span>
-    </button>-->
+  <!-- Banner de bienvenida (mismo estilo que testigo y admin) -->
+  <div class="welcome-banner mb-4">
+    <div class="card border-0 shadow-sm">
+      <div
+        class="card-body p-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h2 class="text-white mb-2 fw-bold">Mi equipo de trabajo</h2>
+            <p class="text-white-50 mb-0">Gestiona y visualiza los coordinadores y testigos asignados</p>
+          </div>
+          <div class="d-none d-md-block">
+            <i class="fas fa-users fa-3x text-white opacity-50"></i>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe; else content_map">
+
+  <!-- Mapa (opcional, comentado por ahora) -->
+  <div class="ratio ratio-16x9 mb-4" *ngIf="showMap && urlSafe; else content_map">
     <iframe [src]="urlSafe" frameborder="0" allowFullScreen="true"></iframe>
   </div>
   <ng-template #content_map>
-    <div class="card mt-5">
-      <div class="card-body">
+    <!-- Card de filtros -->
+    <div class="card border-0 shadow-sm">
+      <div
+        class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h5 class="mb-1 fw-bold text-white">
+              <i class="fas fa-filter me-2"></i>
+              Filtros de búsqueda
+            </h5>
+            <p class="text-white-50 small mb-0">Selecciona una zona, puesto o mesa para ver los miembros del equipo</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-4">
         <form
-          class="row m-4 d-flex justify-content-center"
+          class="row d-flex justify-content-center"
           [formGroup]="searchForm"
         >
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Equipo por zona</label>
+          <div class="form-group col-md-6 col-lg-4">
+            <label class="fw-bold form-label mb-2">
+              <i class="fas fa-map-marker-alt me-2" [style.color]="'var(--color-primary)'"></i>
+              Equipo por zona
+            </label>
             <ng-select
               [items]="dataZones"
+              [searchable]="true"
               class="custom-select rounded"
               bindLabel="nombre"
-              bindValue="codigo_unico"
               (change)="getSelectedZone($event)"
+              bindValue="codigo_unico"
               información="No hay información disponible"
               placeholder="Seleccione zona"
               formControlName="zonas"
               [clearAllText]="'Borrar todo'"
+              [style.border-color]="'var(--color-primary)'"
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Coordinadores por puesto</label>
+          <div class="form-group col-md-6 col-lg-4">
+            <label class="fw-bold form-label mb-2">
+              <i class="fas fa-building me-2" [style.color]="'var(--color-primary)'"></i>
+              Coordinadores por puesto
+            </label>
             <ng-select
               [items]="dataStations"
+              [searchable]="true"
               class="custom-select rounded"
               bindLabel="nombre"
-              bindValue="codigo_unico"
               (change)="getSelectedStation($event)"
+              bindValue="codigo_unico"
               información="No hay información disponible"
               placeholder="Seleccione puesto"
               formControlName="puestos"
               [clearAllText]="'Borrar todo'"
+              [style.border-color]="'var(--color-primary)'"
             >
             </ng-select>
           </div>
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Testigos por mesa</label>
+          <div class="form-group col-md-6 col-lg-4">
+            <label class="fw-bold form-label mb-2">
+              <i class="fas fa-table me-2" [style.color]="'var(--color-primary)'"></i>
+              Testigos por mesa
+            </label>
             <ng-select
               [items]="dataTables"
+              [searchable]="true"
               class="custom-select rounded"
               bindLabel="numero_mesa"
-              bindValue="codigo_unico"
               (change)="getSelectedTable($event)"
+              bindValue="codigo_unico"
               información="No hay información disponible"
               placeholder="Seleccione mesa"
               formControlName="mesas"
               [clearAllText]="'Borrar todo'"
+              [style.border-color]="'var(--color-primary)'"
             >
             </ng-select>
           </div>
         </form>
       </div>
     </div>
+
+    <!-- Card de resultados -->
     <ng-container [ngSwitch]="tabla">
-      <div class="card mt-5" *ngSwitchCase="'coordinador'">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4>Coordinadores</h4>
+      <!-- Tabla de coordinadores -->
+      <div class="card border-0 shadow-sm mt-4" *ngSwitchCase="'coordinador'">
+        <div
+          class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+          [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+        >
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <h5 class="mb-1 fw-bold text-white">
+                <i class="fas fa-user-friends me-2"></i>
+                Coordinadores
+              </h5>
+              <p class="text-white-50 small mb-0">Lista de coordinadores asignados al puesto seleccionado</p>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
+        <div class="card-body p-4">
           <div
             class="table-responsive"
             *ngIf="listCoordinadores.length > 0; else other_content"
           >
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="table text-center align-middle w-100 table-hover"
+            >
+              <thead class="text-dark align-middle" [style.background]="'var(--color-primary)'" style="color: white;">
                 <tr>
-                  <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col" class="d-none d-md-table-cell">
+                  <th scope="col" class="text-white">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell text-white">
                     CORREO ELECTRÓNICO
                   </th>
-                  <th scope="col">TELÉFONO</th>
+                  <th scope="col" class="text-white">TELÉFONO</th>
                 </tr>
               </thead>
               <tbody>
                 <tr
                   *ngFor="let coordinador of listCoordinadores"
                   class="bg-white"
+                  style="border-bottom: 1px solid #e0e0e0;"
                 >
-                  <td scope="row">
+                  <td class="fw-semibold">
+                    <i class="fas fa-user me-2" [style.color]="'var(--color-primary)'"></i>
                     {{ coordinador.nombres }} {{ coordinador.apellidos }}
                   </td>
                   <td class="d-none d-md-table-cell">
+                    <i class="fas fa-envelope me-2 text-muted"></i>
                     {{ coordinador.email }}
                   </td>
-                  <td>{{ coordinador.telefono }}</td>
+                  <td>
+                    <i class="fas fa-phone me-2 text-muted"></i>
+                    {{ coordinador.telefono }}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <ng-template #other_content>
-            <p class="text-center">
-              No hay coordinador asignado para este puesto.
-            </p>
+            <div class="text-center py-5">
+              <i class="fas fa-user-friends fa-4x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+              <p class="text-muted mb-0 fw-semibold">
+                No hay coordinador asignado para este puesto.
+              </p>
+              <p class="text-muted small mt-2">
+                Selecciona otro puesto o asigna coordinadores a este puesto.
+              </p>
+            </div>
           </ng-template>
         </div>
       </div>
-      <div class="card mt-5" *ngSwitchCase="'testigo'">
-        <div class="bg-primary py-3 px-5 text-white">
-          <h4>Testigos</h4>
+
+      <!-- Tabla de testigos -->
+      <div class="card border-0 shadow-sm mt-4" *ngSwitchCase="'testigo'">
+        <div
+          class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+          [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+        >
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <h5 class="mb-1 fw-bold text-white">
+                <i class="fas fa-users me-2"></i>
+                Testigos
+              </h5>
+              <p class="text-white-50 small mb-0">Lista de testigos asignados a la mesa seleccionada</p>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
+        <div class="card-body p-4">
           <div
             class="table-responsive"
             *ngIf="listTestigos.length > 0; else other_content"
           >
-            <table class="table table-curved text-center">
-              <thead class="text-dark">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="table text-center align-middle w-100 table-hover"
+            >
+              <thead class="text-dark align-middle" [style.background]="'var(--color-primary)'" style="color: white;">
                 <tr>
-                  <th scope="col">NOMBRE COMPLETO</th>
-                  <th scope="col" class="d-none d-md-table-cell">
+                  <th scope="col" class="text-white">NOMBRE COMPLETO</th>
+                  <th scope="col" class="d-none d-md-table-cell text-white">
                     CORREO ELECTRÓNICO
                   </th>
-                  <th scope="col">TELÉFONO</th>
+                  <th scope="col" class="text-white">TELÉFONO</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let testigo of listTestigos" class="bg-white">
-                  <td scope="row">
+                <tr
+                  *ngFor="let testigo of listTestigos"
+                  class="bg-white"
+                  style="border-bottom: 1px solid #e0e0e0;"
+                >
+                  <td class="fw-semibold">
+                    <i class="fas fa-user me-2" [style.color]="'var(--color-primary)'"></i>
                     {{ testigo.nombres }} {{ testigo.apellidos }}
                   </td>
-                  <td class="d-none d-md-table-cell">{{ testigo.email }}</td>
-                  <td>{{ testigo.telefono }}</td>
+                  <td class="d-none d-md-table-cell">
+                    <i class="fas fa-envelope me-2 text-muted"></i>
+                    {{ testigo.email }}
+                  </td>
+                  <td>
+                    <i class="fas fa-phone me-2 text-muted"></i>
+                    {{ testigo.telefono }}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <ng-template #other_content>
-            <p class="text-center">No hay testigo asignado para esta mesa.</p>
+            <div class="text-center py-5">
+              <i class="fas fa-users fa-4x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+              <p class="text-muted mb-0 fw-semibold">
+                No hay testigo asignado para esta mesa.
+              </p>
+              <p class="text-muted small mt-2">
+                Selecciona otra mesa o asigna testigos a esta mesa.
+              </p>
+            </div>
           </ng-template>
         </div>
       </div>
