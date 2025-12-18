@@ -1,33 +1,58 @@
 <div class="container py-5">
-  <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
-    <h4>Mi equipo de trabajo</h4>
-    <!--<button class="btn btn-sm btn-info position-relative" data-bs-toggle="tooltip" data-bs-placement="top"
-      title="{{(showMap)?'Ver lista':'Ver mapa'}}" (click)="showIframe()">
-      <i class="fa-solid fa-map fa-lg text-white" *ngIf="!showMap;else list_content"></i>
-      <ng-template #list_content>
-        <i class="fa-solid fa-list fa-lg text-white"></i>
-      </ng-template>
-      <span
-        class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1">
-        <i class="fa-solid fa-repeat fa-sm"></i>
-      </span>
-    </button>-->
+  <!-- Banner de bienvenida (mismo estilo que testigo y admin) -->
+  <div class="welcome-banner mb-4">
+    <div class="card border-0 shadow-sm">
+      <div
+        class="card-body p-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h2 class="text-white mb-2 fw-bold">Mi equipo de trabajo</h2>
+            <p class="text-white-50 mb-0">Gestiona y visualiza los testigos asignados a tus puestos</p>
+          </div>
+          <div class="d-none d-md-block">
+            <i class="fas fa-users fa-3x text-white opacity-50"></i>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="ratio ratio-16x9" *ngIf="showMap && urlSafe; else content_map">
+
+  <!-- Mapa (opcional, comentado por ahora) -->
+  <div class="ratio ratio-16x9 mb-4" *ngIf="showMap && urlSafe; else content_map">
     <iframe [src]="urlSafe" frameborder="0" allowFullScreen="true"></iframe>
   </div>
   <ng-template #content_map>
-    <div class="card mt-5">
-      <div class="card-body">
+    <!-- Card de filtros -->
+    <div class="card border-0 shadow-sm">
+      <div
+        class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h5 class="mb-1 fw-bold text-white">
+              <i class="fas fa-filter me-2"></i>
+              Filtros de búsqueda
+            </h5>
+            <p class="text-white-50 small mb-0">Selecciona un puesto para ver los testigos asignados</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-4">
         <form
-          class="row m-4 d-flex justify-content-center"
+          class="row d-flex justify-content-center"
           [formGroup]="searchForm"
         >
-          <div class="form-group col-md-6 col-lg-4 pt-2">
-            <label class="fw-bold form-label">Testigos por puesto</label>
+          <div class="form-group col-md-8 col-lg-6">
+            <label class="fw-bold form-label mb-2">
+              <i class="fas fa-map-marker-alt me-2" [style.color]="'var(--color-primary)'"></i>
+              Testigos por puesto
+            </label>
             <ng-select
               [items]="dataStations"
-              [searchable]="false"
+              [searchable]="true"
               class="custom-select rounded"
               bindLabel="nombre"
               (change)="getSelectedStation($event)"
@@ -36,43 +61,66 @@
               placeholder="Seleccione puesto"
               formControlName="puestos"
               [clearAllText]="'Borrar todo'"
+              [style.border-color]="'var(--color-primary)'"
             >
             </ng-select>
           </div>
         </form>
       </div>
     </div>
-    <div class="card mt-5" *ngIf="tabla">
-      <div class="bg-primary py-3 px-5 text-white">
-        <h4>Testigos</h4>
+
+    <!-- Card de resultados -->
+    <div class="card border-0 shadow-sm mt-4" *ngIf="tabla">
+      <div
+        class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h5 class="mb-1 fw-bold text-white">
+              <i class="fas fa-users me-2"></i>
+              Testigos
+            </h5>
+            <p class="text-white-50 small mb-0">Lista de testigos asignados al puesto seleccionado</p>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
+      <div class="card-body p-4">
         <div class="table-responsive">
           <table
             datatable
             [dtOptions]="dtOptions"
             [dtTrigger]="dtTrigger"
-            class="table text-center align-middle w-100"
+            class="table text-center align-middle w-100 table-hover"
           >
-            <thead class="text-dark align-middle">
+            <thead class="text-dark align-middle" [style.background]="'var(--color-primary)'" style="color: white;">
               <tr>
-                <th scope="col">NOMBRE COMPLETO</th>
-                <th scope="col" class="d-none d-md-table-cell">
+                <th scope="col" class="text-white">NOMBRE COMPLETO</th>
+                <th scope="col" class="d-none d-md-table-cell text-white">
                   CORREO ELECTRÓNICO
                 </th>
-                <th scope="col">IDENTIFICACIÓN</th>
-
-                <th scope="col">MESA</th>
+                <th scope="col" class="text-white">IDENTIFICACIÓN</th>
+                <th scope="col" class="text-white">MESA</th>
               </tr>
             </thead>
             <tbody>
               <tr
                 class="bg-white"
                 *ngFor="let testigo of listTestigoAsignados; let index = index"
+                style="border-bottom: 1px solid #e0e0e0;"
               >
-                <td>{{ testigo.nombres }} {{ testigo.apellidos }}</td>
-                <td>{{ testigo.email }}</td>
-                <td>{{ testigo.numero_documento }}</td>
+                <td class="fw-semibold">
+                  <i class="fas fa-user me-2" [style.color]="'var(--color-primary)'"></i>
+                  {{ testigo.nombres }} {{ testigo.apellidos }}
+                </td>
+                <td class="d-none d-md-table-cell">
+                  <i class="fas fa-envelope me-2 text-muted"></i>
+                  {{ testigo.email }}
+                </td>
+                <td>
+                  <i class="fas fa-id-card me-2 text-muted"></i>
+                  {{ testigo.numero_documento }}
+                </td>
                 <td>
                   <span
                     *ngFor="
@@ -80,6 +128,9 @@
                       let i = index;
                       let last = last
                     "
+                    class="badge"
+                    [style.background]="'var(--color-primary)'"
+                    style="color: white; margin-right: 4px;"
                   >
                     {{ mesa.numero_mesa
                     }}{{ i < testigo.mesas.length - 1 ? ", " : "" }}
@@ -90,7 +141,11 @@
           </table>
         </div>
         <ng-template #other_content>
-          <p class="text-center">No hay Testigo asignado para esta mesa.</p>
+          <div class="text-center py-5">
+            <i class="fas fa-users fa-4x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+            <p class="text-muted mb-0 fw-semibold">No hay testigo asignado para esta mesa.</p>
+            <p class="text-muted small mt-2">Selecciona otro puesto o asigna testigos a este puesto.</p>
+          </div>
         </ng-template>
       </div>
     </div>

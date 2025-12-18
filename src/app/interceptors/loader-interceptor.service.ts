@@ -61,12 +61,18 @@ export class LoaderInterceptor implements HttpInterceptor {
           const isSurveyApi = url.includes('localhost:8001') || url.includes('/api/v1/');
           const isLaravelApi = url.includes('localhost:8000') || url.includes(environment.apiURL);
           const isConnectionRefused = err.status === 0 || err.statusText === 'Unknown Error';
+          const isLogoutRequest = url.includes('/logout');
           
           
           
           
-          if ((isConnectionRefused && isLaravelApi) || url.includes('contactos-usuario')) {
-            console.warn('LoaderInterceptor - Servidor Laravel no disponible o petición de contactos, omitiendo alerta de error');
+          // No mostrar error para logout, contactos-usuario, o cuando el servidor no está disponible
+          if ((isConnectionRefused && isLaravelApi) || url.includes('contactos-usuario') || isLogoutRequest) {
+            if (isLogoutRequest) {
+              console.log('LoaderInterceptor - Logout request, omitiendo alerta de error');
+            } else {
+              console.warn('LoaderInterceptor - Servidor Laravel no disponible o petición de contactos, omitiendo alerta de error');
+            }
             this.removeRequest(req);
             observer.error(err);
             return;

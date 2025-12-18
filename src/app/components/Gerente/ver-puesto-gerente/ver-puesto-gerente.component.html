@@ -1,21 +1,58 @@
 <div class="container py-5">
-  <div class="d-grid d-flex justify-content-end">
+  <!-- Banner de bienvenida (mismo estilo que testigo y admin) -->
+  <div class="welcome-banner mb-4">
+    <div class="card border-0 shadow-sm">
+      <div
+        class="card-body p-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h2 class="text-white mb-2 fw-bold">Estadísticas de equipo</h2>
+            <p class="text-white-50 mb-0">Visualiza el estado de supervisores, coordinadores y testigos por municipio, zona y puesto</p>
+          </div>
+          <div class="d-none d-md-block">
+            <i class="fas fa-chart-bar fa-3x text-white opacity-50"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leyenda de colores -->
+  <div class="d-grid d-flex justify-content-end mb-4">
     <button class="btn btn-sm btn-danger disabled">- 50% Requerido</button>
     <button class="btn btn-sm btn-warning disabled">+ 50% Requerido</button>
     <button class="btn btn-sm btn-success disabled">100% Requerido</button>
     <button class="btn btn-sm btn-primary disabled">+ 100% Requerido</button>
   </div>
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white">
-      <h4>Estadísticas de equipo</h4>
+
+  <!-- Card de filtros -->
+  <div class="card border-0 shadow-sm">
+    <div
+      class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+      [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+    >
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <h5 class="mb-1 fw-bold text-white">
+            <i class="fas fa-filter me-2"></i>
+            Filtros de búsqueda
+          </h5>
+          <p class="text-white-50 small mb-0">Selecciona un municipio, zona o puesto para ver las estadísticas</p>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
+    <div class="card-body p-4">
       <form
-        class="row m-4 d-flex justify-content-center align-items-center align-items-center"
+        class="row d-flex justify-content-center align-items-center"
         [formGroup]="searchForm"
       >
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Estado por municipio</label>
+        <div class="form-group col-md-6 col-lg-4">
+          <label class="fw-bold form-label mb-2">
+            <i class="fas fa-map-marker-alt me-2" [style.color]="'var(--color-primary)'"></i>
+            Estado por municipio
+          </label>
           <ng-select
             [items]="dataMunicipals"
             [searchable]="false"
@@ -27,11 +64,15 @@
             información="No hay información disponible"
             formControlName="municipios"
             [clearAllText]="'Borrar todo'"
+            [style.border-color]="'var(--color-primary)'"
           >
           </ng-select>
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Estado por zona</label>
+        <div class="form-group col-md-6 col-lg-4">
+          <label class="fw-bold form-label mb-2">
+            <i class="fas fa-map-marker-alt me-2" [style.color]="'var(--color-primary)'"></i>
+            Estado por zona
+          </label>
           <ng-select
             [items]="dataZones"
             class="custom-select rounded"
@@ -42,11 +83,15 @@
             [clearAllText]="'Borrar todo'"
             información="No hay información disponible"
             formControlName="zonas"
+            [style.border-color]="'var(--color-primary)'"
           >
           </ng-select>
         </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Estado por puesto</label>
+        <div class="form-group col-md-6 col-lg-4">
+          <label class="fw-bold form-label mb-2">
+            <i class="fas fa-building me-2" [style.color]="'var(--color-primary)'"></i>
+            Estado por puesto
+          </label>
           <ng-select
             [items]="dataStations"
             class="custom-select rounded"
@@ -57,35 +102,52 @@
             placeholder="Seleccione puesto"
             formControlName="puestos"
             [clearAllText]="'Borrar todo'"
+            [style.border-color]="'var(--color-primary)'"
           >
           </ng-select>
         </div>
       </form>
     </div>
   </div>
+
+  <!-- Card de resultados -->
   <ng-container [ngSwitch]="tabla">
-    <div class="card mt-5" *ngSwitchCase="'supervisor'">
-      <div class="card-body">
+    <div class="card border-0 shadow-sm mt-4" *ngSwitchCase="'supervisor'">
+      <div
+        class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h5 class="mb-1 fw-bold text-white">
+              <i class="fas fa-user-shield me-2"></i>
+              Supervisores, Coordinadores y Testigos por Municipio
+            </h5>
+            <p class="text-white-50 small mb-0">Estado de asignaciones por municipio seleccionado</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-4">
         <div
           class="table-responsive"
           *ngIf="dataStateMunicipal.length > 0; else content_equipo"
         >
-          <table class="table text-center align-middle">
-            <thead class="text-dark align-middle">
+          <table class="table text-center align-middle table-hover w-100">
+            <thead class="text-dark align-middle" [style.background]="'var(--color-primary)'" style="color: white;">
               <tr>
-                <th scope="col">SUPERVISORES</th>
-                <th scope="col">POR ASIGNAR</th>
-                <th scope="col" class="d-none d-md-table-cell">
+                <th scope="col" class="text-white">SUPERVISORES</th>
+                <th scope="col" class="text-white">POR ASIGNAR</th>
+                <th scope="col" class="d-none d-md-table-cell text-white">
                   COORDINADORES
                 </th>
-                <th scope="col" class="d-none d-md-table-cell">POR ASIGNAR</th>
-                <th scope="col" class="d-none d-lg-table-cell">TESTIGOS</th>
-                <th scope="col" class="d-none d-lg-table-cell">POR ASIGNAR</th>
-                <th scope="col"></th>
+                <th scope="col" class="d-none d-md-table-cell text-white">POR ASIGNAR</th>
+                <th scope="col" class="d-none d-lg-table-cell text-white">TESTIGOS</th>
+                <th scope="col" class="d-none d-lg-table-cell text-white">POR ASIGNAR</th>
+                <th scope="col" class="text-white">ACCIÓN</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="bg-white" *ngFor="let state of dataStateMunicipal">
+              <tr class="bg-white" *ngFor="let state of dataStateMunicipal" style="border-bottom: 1px solid #e0e0e0;">
                 <td
                   [ngClass]="
                     textColor(
@@ -153,14 +215,18 @@
                 </td>
                 <td>
                   <button
-                    class="btn align-middle mx-1"
+                    class="btn btn-sm align-middle mx-1"
+                    [style.background]="'var(--color-primary)'"
+                    [style.color]="'white'"
+                    [style.border]="'none'"
                     data-bs-toggle="modal"
                     data-bs-target="#state"
                     (click)="stateSeleccionado(state)"
                     data-bs-placement="top"
-                    title="Ver más"
+                    title="Ver más detalles"
                   >
-                    <i class="fa-solid fa-eye text-primary"></i>
+                    <i class="fa-solid fa-eye me-1"></i>
+                    Ver más
                   </button>
                 </td>
               </tr>
@@ -168,30 +234,50 @@
           </table>
         </div>
         <ng-template #content_equipo>
-          <p class="text-center mb-0">
-            No hay estadísticas de equipo actualmente.
-          </p>
+          <div class="text-center py-5">
+            <i class="fas fa-chart-bar fa-4x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+            <p class="text-muted mb-0 fw-semibold">
+              No hay estadísticas de equipo actualmente.
+            </p>
+            <p class="text-muted small mt-2">
+              Selecciona un municipio para ver las estadísticas.
+            </p>
+          </div>
         </ng-template>
       </div>
     </div>
-    <div class="card mt-5" *ngSwitchCase="'coordinador'">
-      <div class="card-body">
+    <div class="card border-0 shadow-sm mt-4" *ngSwitchCase="'coordinador'">
+      <div
+        class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h5 class="mb-1 fw-bold text-white">
+              <i class="fas fa-user-friends me-2"></i>
+              Coordinadores y Testigos por Zona
+            </h5>
+            <p class="text-white-50 small mb-0">Estado de asignaciones por zona seleccionada</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-4">
         <div
           class="table-responsive"
           *ngIf="dataStateZone.length > 0; else content_equipo"
         >
-          <table class="table text-center align-middle">
-            <thead class="text-dark align-middle">
+          <table class="table text-center align-middle table-hover w-100">
+            <thead class="text-dark align-middle" [style.background]="'var(--color-primary)'" style="color: white;">
               <tr>
-                <th scope="col">COORDINADORES</th>
-                <th scope="col">POR ASIGNAR</th>
-                <th scope="col" class="d-none d-lg-table-cell">TESTIGOS</th>
-                <th scope="col" class="d-none d-lg-table-cell">POR ASIGNAR</th>
-                <th scope="col"></th>
+                <th scope="col" class="text-white">COORDINADORES</th>
+                <th scope="col" class="text-white">POR ASIGNAR</th>
+                <th scope="col" class="d-none d-lg-table-cell text-white">TESTIGOS</th>
+                <th scope="col" class="d-none d-lg-table-cell text-white">POR ASIGNAR</th>
+                <th scope="col" class="text-white">ACCIÓN</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="bg-white" *ngFor="let state of dataStateZone">
+              <tr class="bg-white" *ngFor="let state of dataStateZone" style="border-bottom: 1px solid #e0e0e0;">
                 <td
                   [ngClass]="
                     textColor(
@@ -237,14 +323,18 @@
                 </td>
                 <td>
                   <button
-                    class="btn align-middle mx-1"
+                    class="btn btn-sm align-middle mx-1"
+                    [style.background]="'var(--color-primary)'"
+                    [style.color]="'white'"
+                    [style.border]="'none'"
                     data-bs-toggle="modal"
                     data-bs-target="#state"
                     (click)="stateSeleccionado(state)"
                     data-bs-placement="top"
-                    title="Ver más"
+                    title="Ver más detalles"
                   >
-                    <i class="fa-solid fa-eye text-primary"></i>
+                    <i class="fa-solid fa-eye me-1"></i>
+                    Ver más
                   </button>
                 </td>
               </tr>
@@ -252,28 +342,48 @@
           </table>
         </div>
         <ng-template #content_equipo>
-          <p class="text-center mb-0">
-            No hay estadísticas de equipo actualmente.
-          </p>
+          <div class="text-center py-5">
+            <i class="fas fa-chart-bar fa-4x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+            <p class="text-muted mb-0 fw-semibold">
+              No hay estadísticas de equipo actualmente.
+            </p>
+            <p class="text-muted small mt-2">
+              Selecciona una zona para ver las estadísticas.
+            </p>
+          </div>
         </ng-template>
       </div>
     </div>
-    <div class="card mt-5" *ngSwitchCase="'testigo'">
-      <div class="card-body">
+    <div class="card border-0 shadow-sm mt-4" *ngSwitchCase="'testigo'">
+      <div
+        class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h5 class="mb-1 fw-bold text-white">
+              <i class="fas fa-users me-2"></i>
+              Testigos por Puesto
+            </h5>
+            <p class="text-white-50 small mb-0">Estado de testigos asignados al puesto seleccionado</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-4">
         <div
           class="table-responsive"
           *ngIf="dataStateStation.length > 0; else content_equipo"
         >
-          <table class="table text-center align-middle">
-            <thead class="text-dark align-middle">
+          <table class="table text-center align-middle table-hover w-100">
+            <thead class="text-dark align-middle" [style.background]="'var(--color-primary)'" style="color: white;">
               <tr>
-                <th scope="col">TESTIGOS</th>
-                <th scope="col">POR ASIGNAR</th>
-                <th scope="col"></th>
+                <th scope="col" class="text-white">TESTIGOS</th>
+                <th scope="col" class="text-white">POR ASIGNAR</th>
+                <th scope="col" class="text-white">ACCIÓN</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="bg-white" *ngFor="let state of dataStateStation">
+              <tr class="bg-white" *ngFor="let state of dataStateStation" style="border-bottom: 1px solid #e0e0e0;">
                 <td
                   [ngClass]="
                     textColor(
@@ -297,14 +407,18 @@
                 </td>
                 <td>
                   <button
-                    class="btn align-middle mx-1"
+                    class="btn btn-sm align-middle mx-1"
+                    [style.background]="'var(--color-primary)'"
+                    [style.color]="'white'"
+                    [style.border]="'none'"
                     data-bs-toggle="modal"
                     data-bs-target="#state"
                     (click)="stateSeleccionado(state)"
                     data-bs-placement="top"
-                    title="Ver más"
+                    title="Ver más detalles"
                   >
-                    <i class="fa-solid fa-eye text-primary"></i>
+                    <i class="fa-solid fa-eye me-1"></i>
+                    Ver más
                   </button>
                 </td>
               </tr>
@@ -312,15 +426,22 @@
           </table>
         </div>
         <ng-template #content_equipo>
-          <p class="text-center mb-0">
-            No hay estadísticas de equipo actualmente.
-          </p>
+          <div class="text-center py-5">
+            <i class="fas fa-chart-bar fa-4x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+            <p class="text-muted mb-0 fw-semibold">
+              No hay estadísticas de equipo actualmente.
+            </p>
+            <p class="text-muted small mt-2">
+              Selecciona un puesto para ver las estadísticas de testigos.
+            </p>
+          </div>
         </ng-template>
       </div>
     </div>
   </ng-container>
 </div>
 
+<!-- Modal de detalles -->
 <div
   class="modal fade"
   id="state"
@@ -329,19 +450,21 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">
+    <div class="modal-content border-0 shadow-lg">
+      <div
+        class="modal-header border-0 text-white"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <h5 class="modal-title fw-bold" id="exampleModalLabel">
+          <i class="fas fa-info-circle me-2"></i>
           Estadísticas de equipo
         </h5>
         <button
           type="button"
-          class="btn"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"
-        >
-          <i class="fa-solid fa-xmark text-white"></i>
-        </button>
+        ></button>
       </div>
       <div class="modal-body" *ngIf="stateActual.supervisores">
         <h4 class="fw-bolder">Información de supervisores</h4>

@@ -27,16 +27,52 @@ export class CoordinadorHomeComponent implements OnInit {
 
   getCoordinador(){
     this.apiService.getCoordinador(this.localData.getId()).subscribe((resp: any) => {
+      // Manejar puestos asignados (el backend devuelve un array)
+      if (resp.puestos_asignados && Array.isArray(resp.puestos_asignados)) {
+        this.puestos_asignados = resp.puestos_asignados.map((puesto: any) => puesto.nombre || puesto);
+      } else {
+        this.puestos_asignados = [];
+      }
 
+      // Manejar zonas asignadas (el backend devuelve un array)
+      if (resp.zonas_asignadas && Array.isArray(resp.zonas_asignadas) && resp.zonas_asignadas.length > 0) {
+        // Tomar la primera zona asignada
+        const primeraZona = resp.zonas_asignadas[0];
+        this.zona_asignada = primeraZona.nombre || primeraZona.nombre_zona_votacion || '';
+        
+        // Intentar obtener municipio y departamento desde la zona
+        if (primeraZona.codigo_municipio_votacion) {
+          // El municipio y departamento no vienen directamente en la respuesta
+          // Se pueden obtener desde la zona si está disponible
+          this.municipio_asignado = primeraZona.municipio?.nombre || primeraZona.nombre_municipio || '';
+          this.departamento_asignado = primeraZona.departamento?.nombre_departamento_votacion || primeraZona.nombre_departamento || '';
+        }
+      } else {
+        this.zona_asignada = '';
+      }
 
-      this.puestos_asignados = resp.puestos_asignados.map((puestos: any) => " " + puestos.nombre);
+      // Si no se obtuvieron municipio y departamento desde la zona, intentar desde la respuesta directa
+      if (!this.municipio_asignado && resp.municipio) {
+        this.municipio_asignado = resp.municipio.nombre || resp.municipio.nombre_municipio_votacion || '';
+      }
 
-      this.zona_asignada = resp.zonas_asignadas.nombre
+      if (!this.departamento_asignado && resp.departamento) {
+        this.departamento_asignado = resp.departamento.nombre_departamento_votacion || resp.departamento.nombre || '';
+      }
 
-      this.municipio_asignado = resp.municipio.nombre
-
-      this.departamento_asignado = resp.departamento.nombre_departamento_votacion
-
+      // Si aún no hay datos, dejar vacío (se mostrará como string vacío en el template)
+      if (!this.municipio_asignado) {
+        this.municipio_asignado = '';
+      }
+      if (!this.departamento_asignado) {
+        this.departamento_asignado = '';
+      }
+    }, (error) => {
+      console.error('Error al obtener datos del coordinador:', error);
+      this.zona_asignada = '';
+      this.municipio_asignado = '';
+      this.departamento_asignado = '';
+      this.puestos_asignados = [];
     })
   }
 

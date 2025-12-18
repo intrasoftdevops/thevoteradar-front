@@ -1,6 +1,6 @@
 <div class="main-layout" [class.sidebar-collapsed]="sidebarCollapsed">
   <!-- Sidebar con menú moderno reutilizando el mismo componente que admin -->
-  <app-sidebar-menu [collapsed]="sidebarCollapsed" menuConfig="testigo"></app-sidebar-menu>
+  <app-sidebar-menu [collapsed]="sidebarCollapsed" [menuConfig]="menuConfig"></app-sidebar-menu>
   
   <!-- Botón flotante para contraer/expandir sidebar (igual que admin) -->
   <button 

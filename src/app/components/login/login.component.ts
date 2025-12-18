@@ -696,11 +696,11 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['adminHome']);
     }
     else if (rol == 7) {
-      this.router.navigate(['administrar-impugnaciones']);
+      this.router.navigate(['menu-admin-impugnaciones']);
     }
     else if (rol == 8) {
       localStorage.setItem('login', 'true');
-      this.router.navigate(['impugnar']);
+      this.router.navigate(['impugnadorHome']);
     }
     else if (rol == 9) {
       this.router.navigate(['adminHome']);

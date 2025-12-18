@@ -1,24 +1,61 @@
 <div class="container py-5">
-  <div class="d-grid d-flex justify-content-end">
+  <!-- Banner de bienvenida (mismo estilo que testigo y admin) -->
+  <div class="welcome-banner mb-4">
+    <div class="card border-0 shadow-sm">
+      <div
+        class="card-body p-4"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h2 class="text-white mb-2 fw-bold">Estadísticas de equipo</h2>
+            <p class="text-white-50 mb-0">Visualiza el estado de los testigos por puesto</p>
+          </div>
+          <div class="d-none d-md-block">
+            <i class="fas fa-chart-bar fa-3x text-white opacity-50"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leyenda de colores -->
+  <div class="d-grid d-flex justify-content-end mb-4">
     <button class="btn btn-sm btn-danger disabled">- 50% Requerido</button>
     <button class="btn btn-sm btn-warning disabled">+ 50% Requerido</button>
     <button class="btn btn-sm btn-success disabled">100% Requerido</button>
     <button class="btn btn-sm btn-primary disabled">+ 100% Requerido</button>
   </div>
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white d-flex justify-content-between">
-      <h4>Estadísticas de equipo</h4>
+
+  <!-- Card de filtros -->
+  <div class="card border-0 shadow-sm">
+    <div
+      class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+      [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+    >
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <h5 class="mb-1 fw-bold text-white">
+            <i class="fas fa-filter me-2"></i>
+            Filtros de búsqueda
+          </h5>
+          <p class="text-white-50 small mb-0">Selecciona un puesto para ver las estadísticas</p>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
+    <div class="card-body p-4">
       <form
-        class="row m-4 d-flex justify-content-center align-items-center align-items-center"
+        class="row d-flex justify-content-center align-items-center"
         [formGroup]="searchForm"
       >
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Estado por puesto</label>
+        <div class="form-group col-md-8 col-lg-6">
+          <label class="fw-bold form-label mb-2">
+            <i class="fas fa-map-marker-alt me-2" [style.color]="'var(--color-primary)'"></i>
+            Estado por puesto
+          </label>
           <ng-select
             [items]="dataStations"
-            [searchable]="false"
+            [searchable]="true"
             class="custom-select rounded"
             bindLabel="nombre"
             (change)="getSelectedStation($event)"
@@ -27,28 +64,45 @@
             placeholder="Seleccione puesto"
             formControlName="puestos"
             [clearAllText]="'Borrar todo'"
+            [style.border-color]="'var(--color-primary)'"
           >
           </ng-select>
         </div>
       </form>
     </div>
   </div>
-  <div class="card mt-5" *ngIf="tabla">
-    <div class="card-body">
+
+  <!-- Card de resultados -->
+  <div class="card border-0 shadow-sm mt-4" *ngIf="tabla">
+    <div
+      class="card-header bg-transparent border-0 pb-0 pt-4 px-4"
+      [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+    >
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <h5 class="mb-1 fw-bold text-white">
+            <i class="fas fa-table me-2"></i>
+            Resultados
+          </h5>
+          <p class="text-white-50 small mb-0">Estado de testigos por puesto seleccionado</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-4">
       <div
         class="table-responsive"
         *ngIf="dataStateStation.length > 0; else content_equipo"
       >
-        <table class="table text-center align-middle">
-          <thead class="text-dark align-middle">
+        <table class="table text-center align-middle table-hover">
+          <thead class="text-dark align-middle" [style.background]="'var(--color-primary)'" style="color: white;">
             <tr>
-              <th scope="col">TESTIGOS</th>
-              <th scope="col">POR ASIGNAR</th>
-              <th scope="col"></th>
+              <th scope="col" class="text-white">TESTIGOS</th>
+              <th scope="col" class="text-white">POR ASIGNAR</th>
+              <th scope="col" class="text-white">ACCIÓN</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="bg-white" *ngFor="let state of dataStateStation">
+            <tr class="bg-white" *ngFor="let state of dataStateStation" style="border-bottom: 1px solid #e0e0e0;">
               <td
                 *ngIf="state.nombre"
                 [ngClass]="
@@ -57,7 +111,9 @@
                     state.testigos.cantidad_testigos_necesitados
                   )
                 "
+                class="fw-semibold"
               >
+                <i class="fas fa-building me-2" [style.color]="'var(--color-primary)'"></i>
                 {{ state.nombre }}
               </td>
 
@@ -68,6 +124,7 @@
                     state.testigos.cantidad_testigos_necesitados
                   )
                 "
+                class="fw-semibold"
               >
                 {{ state.testigos.testigos_con_mesa }}/{{
                   state.testigos.cantidad_testigos_necesitados
@@ -79,19 +136,23 @@
                   )
                 }}
               </td>
-              <td>
+              <td class="fw-semibold">
                 {{ state.testigos.testigos_sin_mesa }}
               </td>
               <td>
                 <button
-                  class="btn align-middle mx-1"
+                  class="btn btn-sm align-middle mx-1"
+                  [style.background]="'var(--color-primary)'"
+                  [style.color]="'white'"
+                  [style.border]="'none'"
                   data-bs-toggle="modal"
                   data-bs-target="#state"
                   (click)="stateSeleccionado(state)"
                   data-bs-placement="top"
-                  title="Ver más"
+                  title="Ver más detalles"
                 >
-                  <i class="fa-solid fa-eye text-primary"></i>
+                  <i class="fa-solid fa-eye me-1"></i>
+                  Ver más
                 </button>
               </td>
             </tr>
@@ -99,9 +160,15 @@
         </table>
       </div>
       <ng-template #content_equipo>
-        <p class="text-center mb-0">
-          No hay estadísticas de equipo actualmente.
-        </p>
+        <div class="text-center py-5">
+          <i class="fas fa-chart-bar fa-4x mb-3" [style.color]="'var(--color-primary)'" style="opacity: 0.3;"></i>
+          <p class="text-muted mb-0 fw-semibold">
+            No hay estadísticas de equipo actualmente.
+          </p>
+          <p class="text-muted small mt-2">
+            Selecciona un puesto para ver las estadísticas de testigos.
+          </p>
+        </div>
       </ng-template>
     </div>
   </div>
@@ -115,42 +182,80 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">
+    <div class="modal-content border-0 shadow-lg">
+      <div
+        class="modal-header border-0 text-white"
+        [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
+      >
+        <h5 class="modal-title fw-bold" id="exampleModalLabel">
+          <i class="fas fa-info-circle me-2"></i>
           Estadísticas de equipo
         </h5>
         <button
           type="button"
-          class="btn"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"
-        >
-          <i class="fa-solid fa-xmark text-white"></i>
-        </button>
+        ></button>
       </div>
-      <div class="modal-body" *ngIf="stateActual.testigos">
-        <h4 class="fw-bolder">Información de testigos</h4>
-        <div class="row mt-3">
-          <div class="col-6">
-            <p>
-              <span class="fw-bolder">Con mesa: </span
-              ><span> {{ stateActual.testigos.testigos_con_mesa }}</span>
-            </p>
+      <div class="modal-body p-4" *ngIf="stateActual.testigos">
+        <h5 class="fw-bold mb-4">
+          <i class="fas fa-users me-2" [style.color]="'var(--color-primary)'"></i>
+          Información de testigos
+        </h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100" [style.border-left]="'4px solid var(--color-success)'">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <div class="stat-icon" [style.background]="'var(--color-success)'">
+                      <i class="fas fa-check-circle text-white"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <div class="text-muted small">Con mesa asignada</div>
+                    <div class="h4 mb-0 fw-bold text-success">{{ stateActual.testigos.testigos_con_mesa }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="col-6">
-            <p>
-              <span class="fw-bolder">Sin mesa: </span
-              ><span> {{ stateActual.testigos.testigos_sin_mesa }}</span>
-            </p>
+          <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100" [style.border-left]="'4px solid var(--color-warning)'">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <div class="stat-icon" [style.background]="'var(--color-warning)'">
+                      <i class="fas fa-exclamation-circle text-white"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <div class="text-muted small">Sin mesa asignada</div>
+                    <div class="h4 mb-0 fw-bold text-warning">{{ stateActual.testigos.testigos_sin_mesa }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="col-6">
-            <p>
-              <span class="fw-bolder">Necesarios: </span
-              ><span>
-                {{ stateActual.testigos.cantidad_testigos_necesitados }}</span
-              >
-            </p>
+          <div class="col-md-12">
+            <div class="card border-0 shadow-sm" [style.border-left]="'4px solid var(--color-primary)'">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <div class="stat-icon" [style.background]="'var(--color-primary)'">
+                      <i class="fas fa-users text-white"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <div class="text-muted small">Total necesarios</div>
+                    <div class="h4 mb-0 fw-bold" [style.color]="'var(--color-primary)'">
+                      {{ stateActual.testigos.cantidad_testigos_necesitados }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

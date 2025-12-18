@@ -1,0 +1,65 @@
+.ver-equipo-coordinador {
+  padding: 0;
+  min-height: 100vh;
+}
+
+.welcome-banner {
+  .card {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}
+
+// Cards con sombras y bordes
+.card {
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+// Tabla mejorada
+.table {
+  thead {
+    th {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+  }
+  
+  tbody {
+    tr {
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: rgba(var(--color-primary-rgb, 0, 123, 255), 0.05) !important;
+        transform: translateX(2px);
+      }
+    }
+  }
+}
+
+// Badges mejorados
+.badge {
+  border-radius: 6px;
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .welcome-banner {
+    .card-body {
+      padding: 1.5rem !important;
+    }
+  }
+  
+  .table {
+    font-size: 0.9rem;
+  }
+}
+
