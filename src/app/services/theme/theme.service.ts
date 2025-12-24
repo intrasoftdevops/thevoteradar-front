@@ -173,7 +173,7 @@ export class ThemeService {
 		'daniel-quintero.com': '475711',
 		
 		// ===== JUAN DUQUE (475757) =====
-		'juan-duque': '475757',
+		'juan-duque': '1062885',
 		'juan-duque.localhost': '475757',
 		// Dominios de producción
 		'juan-duque.com': '475757',
