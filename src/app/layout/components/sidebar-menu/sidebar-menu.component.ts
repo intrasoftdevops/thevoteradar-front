@@ -94,7 +94,6 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
 
     // Detectar ruta activa
     this.currentRoute = this.router.url;
-    console.log('🔄 SidebarMenu - Ruta inicial:', this.currentRoute);
     this.detectActiveMenu();
 
     // Escuchar cambios de ruta
@@ -102,9 +101,7 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.currentRoute = event.urlAfterRedirects || event.url;
-      console.log('🔄 SidebarMenu - Ruta cambiada:', this.currentRoute);
       this.detectActiveMenu();
-      console.log('🔄 SidebarMenu - Menús expandidos después de detectar:', Array.from(this.expandedMenus));
       this.cdr.detectChanges();
     });
   }
@@ -115,20 +112,13 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
     }
     // Cuando cambia el estado de collapsed
     if (changes['collapsed']) {
-      console.log('🔄 SidebarMenu - Estado collapsed cambió a:', this.collapsed);
-      console.log('🔄 SidebarMenu - Valor anterior:', changes['collapsed'].previousValue);
-      console.log('🔄 SidebarMenu - Valor actual:', changes['collapsed'].currentValue);
-      
       // Si el sidebar se colapsa, NO limpiamos los menús expandidos
       // Simplemente dejamos que el CSS los oculte con el *ngIf="!collapsed"
       // De esta forma, cuando se expanda de nuevo, los menús volverán a su estado anterior
       
       // Si el sidebar se expande, detectar la ruta activa para expandir el menú correcto
       if (!this.collapsed) {
-        console.log('🔄 SidebarMenu - Sidebar expandido, detectando ruta activa');
         this.detectActiveMenu();
-      } else {
-        console.log('🔄 SidebarMenu - Sidebar colapsado, los menús se ocultarán con CSS');
       }
       
       // Forzar múltiples ciclos de detección para asegurar que el cambio se aplique
@@ -326,8 +316,42 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
           label: 'Estructura',
           icon: 'fas fa-sitemap',
           children: [
+            { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', route: '/panel/estructura/dashboard' },
             { id: 'usuarios', label: 'Usuarios', icon: 'fas fa-users', route: '/panel/estructura/usuarios' },
             { id: 'rankings', label: 'Rankings', icon: 'fas fa-trophy', route: '/panel/estructura' },
+            { id: 'equipo', label: 'Ver Equipo', icon: 'fas fa-users-cog', route: '/panel/estructura/equipo' },
+            { id: 'estadisticas', label: 'Estadísticas', icon: 'fas fa-chart-pie', route: '/panel/estructura/estadisticas' },
+          ]
+        },
+        {
+          id: 'gestion-usuarios',
+          label: 'Gestión de Usuarios',
+          icon: 'fas fa-user-cog',
+          children: [
+            {
+              id: 'gerentes',
+              label: 'Gerentes',
+              icon: 'fas fa-user-tie',
+              route: '/panel/usuarios/gerentes'
+            },
+            {
+              id: 'supervisores',
+              label: 'Supervisores',
+              icon: 'fas fa-users-cog',
+              route: '/panel/usuarios/supervisores'
+            },
+            {
+              id: 'coordinadores',
+              label: 'Coordinadores',
+              icon: 'fas fa-user-friends',
+              route: '/panel/usuarios/coordinadores'
+            },
+            {
+              id: 'testigos',
+              label: 'Testigos',
+              icon: 'fas fa-user-check',
+              route: '/panel/usuarios/testigos'
+            },
           ]
         },
         {
@@ -394,7 +418,6 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
         this.activeMenuItem = item.id;
         // Restaurar menús expandidos manualmente
         manuallyExpanded.forEach(menuId => this.expandedMenus.add(menuId));
-        console.log('✅ SidebarMenu - Ruta directa encontrada:', item.id, 'Menús expandidos:', Array.from(this.expandedMenus));
         return;
       }
       
@@ -411,7 +434,6 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
             if (routeMatches) {
               this.activeMenuItem = child.id;
               parentMenuToExpand = item.id;
-              console.log('✅ SidebarMenu - Ruta hija encontrada:', child.id, 'Padre a expandir:', item.id);
               break; // Salir del loop de children
             }
           }
@@ -424,9 +446,6 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
       // Respetar colapso manual: si el usuario cerró este menú, no lo reabrimos automáticamente
       if (!this.manuallyCollapsedMenus.has(parentMenuToExpand)) {
         this.expandedMenus.add(parentMenuToExpand);
-        console.log('✅ SidebarMenu - Menú padre expandido por ruta activa:', parentMenuToExpand);
-      } else {
-        console.log('🧠 SidebarMenu - Menú padre NO expandido (colapsado manualmente):', parentMenuToExpand);
       }
     }
     
@@ -436,8 +455,6 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
         this.expandedMenus.add(menuId);
       }
     });
-    
-    console.log('🔄 SidebarMenu - Estado final - Ruta:', this.currentRoute, 'Activo:', this.activeMenuItem, 'Expandidos:', Array.from(this.expandedMenus));
   }
 
   /**
@@ -466,16 +483,6 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
     
     // Forzar detección de cambios para asegurar que la UI se actualice
     this.cdr.detectChanges();
-    
-    console.log('🔄 toggleMenu:', {
-      menuId,
-      wasExpanded,
-      isExpanded: this.expandedMenus.has(menuId),
-      expandedMenus: Array.from(this.expandedMenus),
-      manuallyExpanded: Array.from(this.manuallyExpandedMenus),
-      manuallyCollapsed: Array.from(this.manuallyCollapsedMenus),
-      currentRoute: this.currentRoute
-    });
   }
 
   /**
@@ -515,12 +522,9 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
    * Navega al home
    */
   goToHome(): void {
-    console.log('🏠 SidebarMenu - Navegando al home...');
     this.router.navigate(['/inicio']).then(
       (success) => {
-        if (success) {
-          console.log('✅ SidebarMenu - Navegación exitosa a /inicio');
-        } else {
+        if (!success) {
           console.error('❌ SidebarMenu - Navegación falló');
         }
       }

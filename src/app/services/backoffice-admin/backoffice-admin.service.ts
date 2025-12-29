@@ -85,7 +85,8 @@ export class BackofficeAdminService {
   ) { }
 
   private getHeaders(): HttpHeaders {
-    const token = this.localData.getToken() || localStorage.getItem('access_token');
+    // Usar el token de backoffice si está disponible, sino el token regular
+    const token = this.localData.getBackofficeToken() || this.localData.getToken() || localStorage.getItem('access_token');
     // Para peticiones protegidas: solo se envía el token
     // El tenant_id viene dentro del token JWT, no se necesita X-Tenant-ID
     return new HttpHeaders({
@@ -444,6 +445,234 @@ export class BackofficeAdminService {
 
   get statistics(): UserStatistics | null {
     return this.statisticsSubject.value;
+  }
+
+  // ==========================================
+  // ADMIN METHODS - Migrated from voteradar-back
+  // ==========================================
+
+  /**
+   * Crea un nuevo gerente
+   * POST /admin/crear-gerente
+   */
+  createGerente(data: {
+    nombres: string;
+    apellidos: string;
+    genero_id?: number;
+    tipo_documento_id?: number;
+    numero_documento: string;
+    telefono: string;
+    email: string;
+    departamento?: string | null;
+    municipios?: string[] | null;
+    cliente_id?: number;
+  }): Observable<any> {
+    return this.http.post(
+      `${this.backofficeUrl}/admin/crear-gerente`,
+      data,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  createSupervisor(data: {
+    nombres: string;
+    apellidos: string;
+    genero_id?: number;
+    tipo_documento_id?: number;
+    numero_documento: string;
+    telefono: string;
+    email: string;
+    municipio?: string | null;
+    zonas?: string[] | null;
+    cliente_id?: number;
+  }): Observable<any> {
+    return this.http.post(
+      `${this.backofficeUrl}/admin/crear-supervisor`,
+      data,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  createCoordinador(data: {
+    nombres: string;
+    apellidos: string;
+    genero_id?: number;
+    tipo_documento_id?: number;
+    numero_documento: string;
+    telefono: string;
+    email: string;
+    zona?: string | null;
+    puestos?: string[] | null;
+    cliente_id?: number;
+  }): Observable<any> {
+    return this.http.post(
+      `${this.backofficeUrl}/admin/crear-coordinador`,
+      data,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  createTestigo(data: {
+    nombres: string;
+    apellidos: string;
+    genero_id?: number;
+    tipo_documento_id?: number;
+    numero_documento: string;
+    telefono: string;
+    email: string;
+    puesto?: string | null;
+    mesas?: string[] | null;
+    cliente_id?: number;
+  }): Observable<any> {
+    return this.http.post(
+      `${this.backofficeUrl}/admin/crear-testigo`,
+      data,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene las zonas de votación de un municipio
+   * GET /admin/zonas?codigo_municipio=<codigo>
+   */
+  getZonasPorMunicipio(codigoMunicipio: string): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/zonas?codigo_municipio=${codigoMunicipio}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene los puestos de votación de una zona
+   * GET /admin/puestos?codigo_zona=<codigo>
+   */
+  getPuestosPorZona(codigoZona: string): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/puestos?codigo_zona=${codigoZona}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene las mesas de votación de un puesto
+   * GET /admin/mesas?codigo_puesto=<codigo>
+   */
+  getMesasPorPuesto(codigoPuesto: string): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/mesas?codigo_puesto=${codigoPuesto}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene un gerente por ID
+   * GET /admin/get-gerente/{id}
+   */
+  getGerente(id: string | number): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/get-gerente/${id}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Actualiza un gerente
+   * PUT /admin/editar-gerente/{id}
+   */
+  updateGerente(id: string | number, data: any): Observable<any> {
+    return this.http.put(
+      `${this.backofficeUrl}/admin/editar-gerente/${id}`,
+      data,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene los departamentos del administrador actual
+   * GET /admin/departamentos
+   */
+  getDepartamentosAdmin(): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/departamentos`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene los municipios del administrador actual
+   * GET /admin/municipios?codigo_departamento={codigo}
+   * @param codigoDepartamento Código del departamento para filtrar municipios (opcional)
+   */
+  getMunicipiosAdmin(codigoDepartamento?: string): Observable<any> {
+    let url = `${this.backofficeUrl}/admin/municipios`;
+    if (codigoDepartamento) {
+      url += `?codigo_departamento=${encodeURIComponent(codigoDepartamento)}`;
+    }
+    return this.http.get(
+      url,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene el equipo completo del administrador (jerarquía completa)
+   * GET /admin/equipo
+   */
+  getEquipoAdmin(): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/equipo`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene los gerentes con y sin municipio asignado
+   * GET /admin/gerentes-municipio-asignado
+   */
+  getGerentesMunicipioAsignado(): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/gerentes-municipio-asignado`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Lista todos los gerentes
+   * GET /admin/gerentes
+   */
+  getGerentes(): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/gerentes`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
   }
 }
 

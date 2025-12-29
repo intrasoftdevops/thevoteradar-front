@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
+import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
@@ -25,7 +26,13 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   dtElement!: any;
   notFirstTime = false;
 
-  constructor(private apiService: ApiService, private router: Router, private localData: LocalDataService,private fb: FormBuilder) { }
+  constructor(
+    private apiService: ApiService,
+    private backofficeAdminService: BackofficeAdminService,
+    private router: Router,
+    private localData: LocalDataService,
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
     this.dataTableOptions();
@@ -33,26 +40,38 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy() {
-    this.dtTrigger.unsubscribe();
+    // Verificar si el Subject ya está cerrado antes de completarlo para evitar ObjectUnsubscribedError
+    if (!this.dtTrigger.closed) {
+      this.dtTrigger.complete();
+    }
   }
 
   getGerentes() {
-    this.apiService.getAssignedMunicipal().subscribe((resp: any) => {
-      const { gerentes_asignados, gerentes_no_asignados } = resp;
-      this.listGerenteAsignados = gerentes_asignados;
-      this.listGerenteNoAsignados = gerentes_no_asignados;
-      for (let gerente of this.listGerenteAsignados) {
-        let municipios = this.getMunicipals(gerente.municipios);
-        let lastMunicipio;
-        if (municipios.length > 1) {
-          lastMunicipio = municipios.shift();
-          this.listMunicipals.push(municipios.join(', ') + " y " + lastMunicipio);
-        } else {
-          this.listMunicipals.push(municipios['0']);
+    // Usar el nuevo servicio de backoffice
+    this.backofficeAdminService.getGerentesMunicipioAsignado().subscribe({
+      next: (resp: any) => {
+        // Adaptar respuesta según el formato del nuevo endpoint
+        const { gerentes_asignados, gerentes_no_asignados } = resp;
+        this.listGerenteAsignados = gerentes_asignados || [];
+        this.listGerenteNoAsignados = gerentes_no_asignados || [];
+        for (let gerente of this.listGerenteAsignados) {
+          let municipios = this.getMunicipals(gerente.municipios);
+          let lastMunicipio;
+          if (municipios.length > 1) {
+            lastMunicipio = municipios.shift();
+            this.listMunicipals.push(municipios.join(', ') + " y " + lastMunicipio);
+          } else {
+            this.listMunicipals.push(municipios['0']);
+          }
         }
+        this.renderer();
+        this.notFirstTime = true;
+      },
+      error: (error: any) => {
+        console.error('Error al obtener gerentes:', error);
+        this.listGerenteAsignados = [];
+        this.listGerenteNoAsignados = [];
       }
-      this.renderer();
-      this.notFirstTime = true;
     });
   }
 
@@ -113,7 +132,25 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
       ],
       responsive: true,
       language: {
-        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
+        emptyTable: "No hay datos disponibles en la tabla",
+        info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+        infoEmpty: "Mostrando 0 a 0 de 0 entradas",
+        infoFiltered: "(filtrado de _MAX_ entradas totales)",
+        lengthMenu: "Mostrar _MENU_ entradas",
+        loadingRecords: "Cargando...",
+        processing: "Procesando...",
+        search: "Buscar:",
+        zeroRecords: "No se encontraron registros coincidentes",
+        paginate: {
+          first: "Primero",
+          last: "Último",
+          next: "Siguiente",
+          previous: "Anterior"
+        },
+        aria: {
+          sortAscending: ": activar para ordenar la columna de forma ascendente",
+          sortDescending: ": activar para ordenar la columna de forma descendente"
+        }
       }
     };
     this.dtOptionsGerenteNoAsignados = {
@@ -136,7 +173,25 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
       ],
       responsive: true,
       language: {
-        url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_ES.json'
+        emptyTable: "No hay datos disponibles en la tabla",
+        info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+        infoEmpty: "Mostrando 0 a 0 de 0 entradas",
+        infoFiltered: "(filtrado de _MAX_ entradas totales)",
+        lengthMenu: "Mostrar _MENU_ entradas",
+        loadingRecords: "Cargando...",
+        processing: "Procesando...",
+        search: "Buscar:",
+        zeroRecords: "No se encontraron registros coincidentes",
+        paginate: {
+          first: "Primero",
+          last: "Último",
+          next: "Siguiente",
+          previous: "Anterior"
+        },
+        aria: {
+          sortAscending: ": activar para ordenar la columna de forma ascendente",
+          sortDescending: ": activar para ordenar la columna de forma descendente"
+        }
       }
     };
   }

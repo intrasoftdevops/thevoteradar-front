@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { 
   Tenant, 
   DOMAIN_TENANT_MAP, 
@@ -79,29 +80,40 @@ export class TenantService {
 
   /**
    * Obtener tenant ID para usar en peticiones HTTP
-   * Prioridad: temporal para login > guardado > detectado > null
+   * Prioridad: temporal para login > guardado > detectado > environment > null
    */
   getTenantIdForRequest(): string | null {
     // Prioridad 1: Temporal para login (se usa solo durante el proceso de login)
     const tempTenant = localStorage.getItem(this.TEMP_LOGIN_KEY);
-    if (tempTenant) {
+    if (tempTenant && tempTenant !== 'default' && tempTenant.trim() !== '') {
       return tempTenant;
     }
     
     // Prioridad 2: Tenant guardado (después de login exitoso)
     const savedTenant = localStorage.getItem(this.TENANT_KEY);
-    if (savedTenant) {
+    if (savedTenant && savedTenant !== 'default' && savedTenant.trim() !== '') {
       return savedTenant;
     }
     
     // Prioridad 3: Tenant detectado desde dominio
     const detectedTenant = localStorage.getItem(this.DETECTED_TENANT_KEY);
-    if (detectedTenant) {
+    if (detectedTenant && detectedTenant !== 'default' && detectedTenant.trim() !== '') {
       return detectedTenant;
     }
     
     // Prioridad 4: Detectar nuevamente desde dominio
-    return this.detectTenantFromDomain();
+    const domainTenant = this.detectTenantFromDomain();
+    if (domainTenant && domainTenant !== 'default' && domainTenant.trim() !== '') {
+      return domainTenant;
+    }
+    
+    // Prioridad 5: Environment default (pero validar que no sea "default")
+    const envTenant = (environment as any).defaultTenantId;
+    if (envTenant && envTenant !== 'default' && envTenant.trim() !== '') {
+      return envTenant;
+    }
+    
+    return null;
   }
 
   /**

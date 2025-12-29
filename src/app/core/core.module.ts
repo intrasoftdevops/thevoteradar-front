@@ -75,13 +75,14 @@ import { SurveyDomainInterceptor } from '../interceptors/survey-domain-intercept
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
     
     // 2. Tenant - Agrega X-Tenant-ID (nueva arquitectura)
+    // NOTA: BackofficeTenantInterceptor removido - TenantInterceptor ya maneja esto
     { provide: HTTP_INTERCEPTORS, useClass: TenantInterceptor, multi: true },
     
     // 3. Auth - Agrega Bearer token (nueva arquitectura)
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     
-    // Legacy interceptors (se pueden remover cuando se migre todo)
-    { provide: HTTP_INTERCEPTORS, useClass: BackofficeTenantInterceptor, multi: true },
+    // Legacy interceptors (se mantienen solo si son necesarios)
+    // BackofficeTenantInterceptor removido - duplicado de TenantInterceptor
     { provide: HTTP_INTERCEPTORS, useClass: SurveyDomainInterceptor, multi: true },
   ],
 })

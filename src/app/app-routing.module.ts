@@ -150,10 +150,13 @@ const routes: Routes = [
       { path: 'usuarios/gerente/cambiar-rol/:id', component: CambiarRolGerenteComponent },
       { path: 'usuarios/supervisores', component: ConsultarSupervisorComponent },
       { path: 'usuarios/supervisor/crear', component: CrearSupervisorAdminComponent },
+      { path: 'usuarios/supervisor/editar/:id', component: EditarSupervisorComponent },
       { path: 'usuarios/coordinadores', component: ConsultarCoordinadorComponent },
       { path: 'usuarios/coordinador/crear', component: CrearCoordinadorAdminComponent },
+      { path: 'usuarios/coordinador/editar/:id', component: EditarCoordinadorComponent },
       { path: 'usuarios/testigos', component: ConsultarTestigoComponent },
       { path: 'usuarios/testigo/crear', component: CrearTestigoAdminComponent },
+      { path: 'usuarios/testigo/editar/:id', component: EditarTestigoComponent },
       
       // === ACTIVACIÓN ===
       { path: 'activacion', redirectTo: 'activacion/challenges', pathMatch: 'full' },

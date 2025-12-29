@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
 import { ApiService } from '../../../services/api/api.service';
+import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { AlertService } from '../../../services/alert/alert.service';
 
@@ -49,7 +50,7 @@ export class CambiarRolGerenteComponent implements OnInit {
   idGerente: any;
   rolActual: any;
 
-  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService, private localData: LocalDataService, private activatedRoute: ActivatedRoute, private alertService: AlertService) { }
+  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService, private backofficeAdminService: BackofficeAdminService, private localData: LocalDataService, private activatedRoute: ActivatedRoute, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.getGerente();
@@ -128,10 +129,16 @@ export class CambiarRolGerenteComponent implements OnInit {
   }
 
   getDepartmentAdmin() {
-    this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      this.dataDepartments = resp;
-      this.getMunicipalAdmin();
-    })
+    this.backofficeAdminService.getDepartamentosAdmin().subscribe({
+      next: (resp: any) => {
+        this.dataDepartments = resp.departamentos || resp || [];
+        this.getMunicipalAdmin();
+      },
+      error: (error: any) => {
+        console.error('Error al cargar departamentos:', error);
+        this.dataDepartments = [];
+      }
+    });
   }
 
   getMunicipalAdmin() {

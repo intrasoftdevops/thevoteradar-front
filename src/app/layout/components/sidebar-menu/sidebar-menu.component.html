@@ -55,8 +55,7 @@
         <!-- Submenu -->
         <ul 
           class="submenu" 
-          *ngIf="item.children && isExpanded(item.id) && !collapsed"
-          [@submenuAnimation]>
+          *ngIf="item.children && isExpanded(item.id) && !collapsed">
           
           <li 
             *ngFor="let child of item.children" 

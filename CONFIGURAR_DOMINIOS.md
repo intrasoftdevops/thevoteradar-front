@@ -6,9 +6,8 @@ Esta guía explica cómo configurar subdominios para el servicio de producción 
 
 **Estado actual:**
 - ✅ Dominio verificado en Google Cloud
-- ✅ Zona DNS creada en Google Cloud: `voteradar-co`
 - ✅ Domain mapping creado para: `juan-duque.voteradar.co` (pendiente de DNS)
-- ⏳ Pendiente: Configurar DNS (ver Paso 3)
+- ⏳ Pendiente: Configurar wildcard CNAME en Cloudflare (ver Paso 3)
 
 ---
 
@@ -63,87 +62,28 @@ gcloud beta run domain-mappings list \
 
 ---
 
-## Paso 3: Configurar DNS
+## Paso 3: Configurar DNS en Cloudflare
 
-⚠️ **IMPORTANTE:** Tienes dos opciones. Elige la que mejor se adapte a tu situación:
+⚠️ **IMPORTANTE:** Aunque uses wildcard en DNS, **aún debes crear domain mappings individuales en Cloud Run** (Paso 2) para cada subdominio que quieras usar. El wildcard solo resuelve el DNS, pero Google Cloud Run requiere mappings explícitos por seguridad.
 
-### Opción A: Cambiar nameservers a Google Cloud DNS (Recomendado para gestión completa)
+### Crear wildcard CNAME en Cloudflare
 
-Si cambias los nameservers a Google Cloud, podrás gestionar todos los registros DNS desde aquí.
-
-#### 3.1. Obtener nameservers de Google Cloud DNS
-
-```bash
-gcloud dns managed-zones describe voteradar-co \
-  --project=$PROJECT \
-  --format="value(nameServers)"
-```
-
-Esto mostrará los 4 nameservers:
-```
-ns-cloud-b1.googledomains.com
-ns-cloud-b2.googledomains.com
-ns-cloud-b3.googledomains.com
-ns-cloud-b4.googledomains.com
-```
-
-#### 3.2. Agregar registros CNAME en Google Cloud DNS
-
-Para cada subdominio, crea el registro CNAME:
-
-```bash
-# Ejemplo para juan-duque (ya creado ✅)
-gcloud dns record-sets create juan-duque.voteradar.co. \
-  --rrdatas="ghs.googlehosted.com." \
-  --type=CNAME \
-  --ttl=300 \
-  --zone=voteradar-co \
-  --project=$PROJECT
-
-# Para otros subdominios, repite cambiando el nombre:
-# juan-duque.voteradar.co. → dev.voteradar.co.
-# juan-duque.voteradar.co. → daniel-quintero.voteradar.co.
-# juan-duque.voteradar.co. → potus-44.voteradar.co.
-```
-
-#### 3.3. Cambiar nameservers en Cloudflare (o donde esté registrado el dominio)
-
-**En Cloudflare:**
-1. Ve a tu dominio `voteradar.co`
-2. DNS → Settings → Nameservers
-3. Reemplaza los nameservers actuales con los 4 de Google Cloud
-4. Guarda
-
-**Nota:** Esto moverá toda la gestión DNS a Google Cloud. Asegúrate de tener todos los registros DNS necesarios (A, AAAA, MX, etc.) antes de cambiar.
-
----
-
-### Opción B: Agregar solo CNAME en Cloudflare (Rápido, sin cambiar nameservers)
-
-Si prefieres mantener Cloudflare como gestor DNS principal, solo agrega los registros CNAME allí.
-
-#### 3.1. Información para el administrador de Cloudflare
-
-Pide al administrador que agregue estos registros CNAME en Cloudflare:
-
-| Tipo | Nombre (Host) | Contenido/Target | TTL |
-|------|---------------|------------------|-----|
-| CNAME | `juan-duque` | `ghs.googlehosted.com` | Auto |
-| CNAME | `dev` | `ghs.googlehosted.com` | Auto |
-| CNAME | `daniel-quintero` | `ghs.googlehosted.com` | Auto |
-| CNAME | `potus-44` | `ghs.googlehosted.com` | Auto |
-
-**Instrucciones detalladas para Cloudflare:**
+**Instrucciones para Cloudflare:**
 1. Acceder a Cloudflare → Dominio `voteradar.co`
 2. DNS → Records → Add record
 3. Tipo: **CNAME**
-4. Name: `juan-duque` (solo el subdominio, sin `.voteradar.co`)
+4. Name: `*` (asterisco - esto es el wildcard)
 5. Target: `ghs.googlehosted.com`
 6. Proxy status: DNS only (gris) o Proxied (naranja) - ambos funcionan
 7. TTL: Auto
 8. Save
 
-Repite para cada subdominio que necesites.
+**Resultado:** Todos los subdominios de `voteradar.co` (ej: `cualquier-cosa.voteradar.co`) resolverán automáticamente a `ghs.googlehosted.com`.
+
+**Notas importantes:**
+- Solo necesitas crear **un registro DNS** una vez, y todos los subdominios funcionarán automáticamente a nivel DNS
+- El wildcard no funciona para el dominio raíz (`voteradar.co`), necesitas un registro separado si lo usas
+- Si tienes subdominios que NO deben ir a Google Cloud Run, necesitarás registros específicos que tienen prioridad sobre el wildcard
 
 ---
 
@@ -203,23 +143,11 @@ Cuando quieras configurar un nuevo subdominio (ej: `nuevo-sub.voteradar.co`):
     --project=political-referrals
   ```
 
-- [ ] **2. Si usas Google Cloud DNS (Opción A):**
-  ```bash
-  gcloud dns record-sets create nuevo-sub.voteradar.co. \
-    --rrdatas="ghs.googlehosted.com." \
-    --type=CNAME \
-    --ttl=300 \
-    --zone=voteradar-co \
-    --project=political-referrals
-  ```
+- [ ] **2. DNS en Cloudflare:**
+  - ✅ Ya está configurado (wildcard `*` → `ghs.googlehosted.com`)
+  - No necesitas hacer nada más en DNS
 
-- [ ] **3. Si usas Cloudflare (Opción B):**
-  - Pedir al administrador que agregue:
-    - Tipo: CNAME
-    - Nombre: `nuevo-sub`
-    - Target: `ghs.googlehosted.com`
-
-- [ ] **4. Verificar después de 15-30 minutos:**
+- [ ] **3. Verificar después de 15-30 minutos:**
   ```bash
   dig +short nuevo-sub.voteradar.co CNAME
   curl -I https://nuevo-sub.voteradar.co
@@ -238,17 +166,15 @@ Cuando quieras configurar un nuevo subdominio (ej: `nuevo-sub.voteradar.co`):
 
 ## 🎯 Siguientes Pasos
 
-1. **Decidir opción DNS:** Opción A (Google Cloud DNS) u Opción B (Cloudflare)
-2. **Configurar DNS** según la opción elegida
+1. **Configurar wildcard CNAME en Cloudflare** (Paso 3) - **una sola vez**
+2. **Crear domain mappings en Cloud Run** para cada subdominio (Paso 2) - **requerido para cada subdominio**
 3. **Esperar propagación** (15-30 minutos)
 4. **Verificar** que funciona accediendo al subdominio
-5. **Repetir** para otros subdominios si es necesario
+5. **Para nuevos subdominios:** Solo crear domain mapping (Paso 2), el DNS wildcard ya los cubre automáticamente
 
 ---
 
 ## 📚 Referencias
 
 - [Google Cloud Run Domain Mappings](https://cloud.google.com/run/docs/mapping-custom-domains)
-- [Google Cloud DNS](https://cloud.google.com/dns/docs)
-- Zona DNS creada: `voteradar-co` en proyecto `political-referrals`
 

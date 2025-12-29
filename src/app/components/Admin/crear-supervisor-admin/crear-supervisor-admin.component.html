@@ -115,7 +115,6 @@
         <div class="form-group col-md-6 col-lg-4 pt-2">
           <label class="fw-bold form-label">
             <span class="fw-bold">Departamento de votación</span>
-            <span class="text-danger">*</span>
           </label>
           <ng-select
             [items]="dataDepartments"
@@ -123,7 +122,7 @@
             class="custom-select rounded"
             placeholder="Seleccione departamento"
             bindLabel="nombre_departamento_votacion"
-            bindValue="nombre_departamento_votacion"
+            bindValue="codigo_unico"
             (change)="getSelectedDepartment($event)"
             información="No hay información disponible"
             [clearAllText]="'Borrar todo'"
@@ -133,7 +132,6 @@
         <div class="form-group col-md-6 col-lg-4 pt-2">
           <label class="fw-bold form-label">
             <span class="fw-bold">Municipio de votación</span>
-            <span class="text-danger">*</span>
           </label>
           <ng-select
             [items]="dataMunicipals"
