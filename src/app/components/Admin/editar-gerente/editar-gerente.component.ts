@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { ApiService } from '../../../services/api/api.service';
+import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
@@ -41,6 +42,7 @@ export class EditarGerenteComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
+    private backofficeAdminService: BackofficeAdminService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
@@ -84,10 +86,18 @@ export class EditarGerenteComponent implements OnInit {
       !this.updateFormControl['email'].errors?.['invalidEmail']
     ) {
       if (this.updateForm.valid) {
-        this.apiService
+        // Usar el nuevo servicio de backoffice
+        this.backofficeAdminService
           .updateGerente(this.idGerente, this.updateForm.value)
-          .subscribe((resp: any) => {
-            this.alertService.successAlert(resp.res);
+          .subscribe({
+            next: (resp: any) => {
+              this.alertService.successAlert(resp.message || resp.res || 'Gerente actualizado correctamente');
+            },
+            error: (error: any) => {
+              console.error('Error al actualizar gerente:', error);
+              const errorMessage = error.error?.detail || error.error?.message || 'Error al actualizar el gerente';
+              this.alertService.errorAlert(errorMessage);
+            }
           });
       } else {
         this.alertService.errorAlert('Llene los campos obligatorios.');
@@ -96,20 +106,35 @@ export class EditarGerenteComponent implements OnInit {
   }
 
   getDepartmentAdmin() {
-    this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      this.dataDepartments = resp;
-      this.getMunicipalAdmin();
+    // Usar el nuevo servicio de backoffice
+    this.backofficeAdminService.getDepartamentosAdmin().subscribe({
+      next: (resp: any) => {
+        this.dataDepartments = resp.departamentos || resp || [];
+        this.getMunicipalAdmin();
+      },
+      error: (error: any) => {
+        console.error('Error al cargar departamentos:', error);
+        this.dataDepartments = [];
+      }
     });
   }
 
   getMunicipalAdmin() {
-    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      if (this.updateFormControl['departamento'].value) {
-        this.dataMunicipals = resp.filter(
-          (dataMunicipal: any) =>
-            dataMunicipal.codigo_departamento_votacion ==
-            this.updateFormControl['departamento'].value
-        );
+    // Usar el nuevo servicio de backoffice
+    this.backofficeAdminService.getMunicipiosAdmin().subscribe({
+      next: (resp: any) => {
+        const municipios = resp.municipios || resp || [];
+        if (this.updateFormControl['departamento'].value) {
+          this.dataMunicipals = municipios.filter(
+            (dataMunicipal: any) =>
+              dataMunicipal.codigo_departamento_votacion ==
+              this.updateFormControl['departamento'].value
+          );
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al cargar municipios:', error);
+        this.dataMunicipals = [];
       }
     });
   }
@@ -122,27 +147,35 @@ export class EditarGerenteComponent implements OnInit {
     this.idGerente = this.localData.decryptIdUser(
       this.activatedRoute.snapshot.params['id']
     );
-    this.apiService.getGerente(this.idGerente).subscribe((resp: any) => {
-      const { gerente, municipios_asignados, departamentos_asignados } = resp;
+    // Usar el nuevo servicio de backoffice
+    this.backofficeAdminService.getGerente(this.idGerente).subscribe({
+      next: (resp: any) => {
+        const { gerente, municipios_asignados, departamentos_asignados } = resp;
 
-      this.updateForm.get('nombres')?.setValue(gerente.nombres);
-      this.updateForm.get('apellidos')?.setValue(gerente.apellidos);
-      this.updateForm.get('genero_id')?.setValue(gerente.genero_id);
-      this.updateForm.get('email')?.setValue(gerente.email);
-      this.updateForm.get('password')?.setValue(gerente.password);
-      this.updateForm
-        .get('tipo_documento_id')
-        ?.setValue(gerente.tipo_documento_id);
-      this.updateForm
-        .get('numero_documento')
-        ?.setValue(gerente.numero_documento);
-      this.updateForm.get('telefono')?.setValue(gerente.telefono);
-      this.updateForm
-        .get('municipios')
-        ?.setValue(this.getCodeMunicipals(municipios_asignados));
-      this.updateForm
-        .get('departamento')
-        ?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
+        this.updateForm.get('nombres')?.setValue(gerente.nombres);
+        this.updateForm.get('apellidos')?.setValue(gerente.apellidos);
+        this.updateForm.get('genero_id')?.setValue(gerente.genero_id);
+        this.updateForm.get('email')?.setValue(gerente.email);
+        this.updateForm.get('password')?.setValue(gerente.password);
+        this.updateForm
+          .get('tipo_documento_id')
+          ?.setValue(gerente.tipo_documento_id);
+        this.updateForm
+          .get('numero_documento')
+          ?.setValue(gerente.numero_documento);
+        this.updateForm.get('telefono')?.setValue(gerente.telefono);
+        this.updateForm
+          .get('municipios')
+          ?.setValue(this.getCodeMunicipals(municipios_asignados));
+        this.updateForm
+          .get('departamento')
+          ?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
+      },
+      error: (error: any) => {
+        console.error('Error al obtener gerente:', error);
+        const errorMessage = error.error?.detail || error.error?.message || 'Error al cargar el gerente';
+        this.alertService.errorAlert(errorMessage);
+      }
     });
   }
 

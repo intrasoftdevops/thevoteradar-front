@@ -89,7 +89,7 @@
       </div>
 
       
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5" *ngIf="!showOtpInput && !showProfileCompletion">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit($event)" (submit)="$event.preventDefault()" class="space-y-5" *ngIf="!showOtpInput && !showProfileCompletion">
         
         
         <div class="space-y-2">
@@ -105,11 +105,15 @@
               id="telefono"
               formControlName="telefono"
               placeholder="Ingresa tu número de teléfono o usuario"
-              class="w-full px-4 py-3.5 pl-16 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+              [class.border-red-500]="loginForm.get('telefono')?.invalid && loginForm.get('telefono')?.touched"
+              class="w-full px-4 py-3.5 pl-16 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
               required
               style="padding-left: 3.5rem;"
             />
           </div>
+          <p *ngIf="loginForm.get('telefono')?.invalid && loginForm.get('telefono')?.touched" class="text-xs text-red-500 mt-1">
+            El teléfono o usuario es requerido
+          </p>
         </div>
 
         
@@ -126,7 +130,8 @@
               id="password"
               formControlName="password"
               placeholder="Ingresa tu contraseña (primera vez: tu teléfono)"
-              class="w-full px-4 py-3.5 pl-16 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+              [class.border-red-500]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+              class="w-full px-4 py-3.5 pl-16 pr-12 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
               required
               style="padding-left: 3.5rem;"
             />
@@ -139,13 +144,18 @@
               <i *ngIf="showPassword" class="fa-solid fa-eye-slash text-gray-400 hover:text-gray-600"></i>
             </button>
           </div>
-          <p class="text-xs text-gray-500 mt-1">Si es tu primera vez, usa tu número de teléfono como contraseña</p>
+          <p *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-xs text-red-500 mt-1">
+            La contraseña es requerida
+          </p>
+          <p *ngIf="loginForm.get('password')?.valid || !loginForm.get('password')?.touched" class="text-xs text-gray-500 mt-1">Si es tu primera vez, usa tu número de teléfono como contraseña</p>
         </div>
 
         
         <button
-          type="submit"
-          [disabled]="isLoading"
+          type="button"
+          (click)="onSubmit($event)"
+          (mousedown)="$event.preventDefault()"
+          [disabled]="isLoading || !loginForm.valid"
           class="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span class="flex items-center justify-center">
@@ -160,7 +170,7 @@
       </form>
 
       
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5" *ngIf="showOtpInput && !showProfileCompletion">
+      <form [formGroup]="loginForm" (ngSubmit)="handleOtpVerification($event)" class="space-y-5" *ngIf="showOtpInput && !showProfileCompletion">
         <div class="text-center mb-4">
           <h3 class="text-lg font-semibold text-gray-800 mb-2">Verificación OTP</h3>
           <p class="text-sm text-gray-600">Ingresa el código de 6 dígitos enviado a tu WhatsApp</p>
@@ -225,7 +235,7 @@
       </form>
 
       
-      <form [formGroup]="profileForm!" (ngSubmit)="handleProfileCompletion()" class="space-y-5" *ngIf="showProfileCompletion && profileForm">
+      <form [formGroup]="profileForm!" (ngSubmit)="handleProfileCompletion($event)" class="space-y-5" *ngIf="showProfileCompletion && profileForm">
         <div class="text-center mb-4">
           <h3 class="text-lg font-semibold text-gray-800 mb-2">Completar Perfil</h3>
           <p class="text-sm text-gray-600">Necesitamos algunos datos adicionales para continuar</p>

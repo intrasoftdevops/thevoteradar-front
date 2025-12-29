@@ -51,10 +51,6 @@ export class TenantInterceptor implements HttpInterceptor {
         }
       });
       
-      if (!environment.production) {
-        console.log(`🔐 TenantInterceptor: Agregando X-Tenant-ID: ${tenantId} a ${req.url}`);
-      }
-      
       return next.handle(clonedRequest);
     }
 
@@ -90,14 +86,22 @@ export class TenantInterceptor implements HttpInterceptor {
    */
   private getTenantId(): string | null {
     // Usar el TenantService que maneja las prioridades
-    const tenantId = this.tenantService.getTenantIdForRequest();
+    let tenantId = this.tenantService.getTenantIdForRequest();
     
-    if (tenantId) {
-      return tenantId;
+    // Si no hay tenant del servicio, usar el del environment
+    if (!tenantId) {
+      tenantId = environment.defaultTenantId || null;
     }
     
-    // Fallback: tenant por defecto del environment
-    return environment.defaultTenantId || null;
+    // Validar que tenantId no sea "default" (string literal) o vacío
+    if (!tenantId || tenantId === 'default' || tenantId.trim() === '') {
+      console.warn('⚠️ Tenant ID inválido o es "default", usando fallback: 473173');
+      tenantId = '473173'; // Fallback hardcoded
+    }
+    
+    console.log('🔍 TenantInterceptor - Tenant ID que se enviará:', tenantId);
+    
+    return tenantId;
   }
 }
 

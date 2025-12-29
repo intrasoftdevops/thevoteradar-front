@@ -30,8 +30,8 @@ export interface TenantConfig {
  * Se usa para detectar automáticamente el tenant desde la URL
  */
 export const DOMAIN_TENANT_MAP: { [key: string]: string } = {
-  // Desarrollo local
-  'localhost': 'default',
+  // Desarrollo local - usar tenant_id real en lugar de 'default'
+  'localhost': '473173', // Tenant por defecto para desarrollo local
   'daniel-quintero.localhost': 'daniel-quintero',
   'juan-duque.localhost': 'juan-duque',
   'potus-44.localhost': 'potus-44',

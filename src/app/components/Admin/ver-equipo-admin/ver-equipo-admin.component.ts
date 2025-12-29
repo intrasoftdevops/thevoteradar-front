@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
+import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { Filtro } from '../../../models/filtro';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -35,6 +36,7 @@ export class VerEquipoAdminComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
+    private backofficeAdminService: BackofficeAdminService,
     private sanitizer: DomSanitizer,
     private fb: FormBuilder
   ) {}
@@ -138,13 +140,19 @@ export class VerEquipoAdminComponent implements OnInit {
   }
 
   getDepartmentAdmin() {
-    this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      this.dataDepartments = resp;
-      if (this.dataDepartments.length > 0) {
-        this.searchForm
-          .get('departamentos')
-          ?.setValue(this.dataDepartments[0].codigo_unico);
-        this.getSelectedDepartment(this.dataDepartments[0]);
+    this.backofficeAdminService.getDepartamentosAdmin().subscribe({
+      next: (resp: any) => {
+        this.dataDepartments = resp.departamentos || resp || [];
+        if (this.dataDepartments.length > 0) {
+          this.searchForm
+            .get('departamentos')
+            ?.setValue(this.dataDepartments[0].codigo_unico);
+          this.getSelectedDepartment(this.dataDepartments[0]);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al cargar departamentos:', error);
+        this.dataDepartments = [];
       }
     });
   }

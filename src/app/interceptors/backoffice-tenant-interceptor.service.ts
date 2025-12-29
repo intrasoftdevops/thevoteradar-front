@@ -18,11 +18,18 @@ export class BackofficeTenantInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const isLoginRequest = 
+    // Agregar X-Tenant-ID para endpoints que lo requieren
+    const requiresTenantId = 
       req.url.includes('/users/token') ||
-      req.url.endsWith('/users/token');
+      req.url.endsWith('/users/token') ||
+      req.url.includes('/users/verify-otp') ||
+      req.url.endsWith('/users/verify-otp') ||
+      req.url.includes('/users/request-otp') ||
+      req.url.endsWith('/users/request-otp') ||
+      req.url.includes('/users/complete-profile') ||
+      req.url.endsWith('/users/complete-profile');
     
-    if (isLoginRequest) {
+    if (requiresTenantId) {
       // Prioridad 1: Tenant temporal guardado para el login
       let tenantId = localStorage.getItem('temp_tenant_id_for_login');
       
@@ -36,10 +43,29 @@ export class BackofficeTenantInterceptor implements HttpInterceptor {
         tenantId = localStorage.getItem('tenant_id');
       }
       
-      // Prioridad 4: Tenant del environment (fallback)
+      // Prioridad 4: Tenant detectado guardado temporalmente
+      if (!tenantId) {
+        tenantId = localStorage.getItem('detected_tenant_id');
+      }
+      
+      // Prioridad 5: Tenant del environment (fallback)
       if (!tenantId) {
         tenantId = environment.defaultTenantId;
       }
+      
+      // Validar que tenantId no sea "default" (string literal) o vacío
+      if (!tenantId || tenantId === 'default' || tenantId.trim() === '') {
+        console.warn('⚠️ Tenant ID inválido o es "default", usando environment.defaultTenantId');
+        tenantId = environment.defaultTenantId || '473173'; // Fallback hardcoded si no hay en environment
+      }
+      
+      // Asegurarse de que tenantId no sea null o undefined
+      if (!tenantId) {
+        console.error('❌ No se pudo determinar el tenant_id. Verifica la configuración.');
+        // No lanzar error aquí, dejar que el backend lo maneje
+      }
+      
+      console.log('🔍 Tenant ID que se enviará:', tenantId);
       
       if (req.headers.has('X-Tenant-ID')) {
         return next.handle(req);

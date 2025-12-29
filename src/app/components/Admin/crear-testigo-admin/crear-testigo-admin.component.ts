@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ApiService } from '../../../services/api/api.service';
+import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 
@@ -33,12 +34,13 @@ export class CrearTestigoAdminComponent implements OnInit {
         this.customValidator.patternValidator(),
       ],
     ],
-    puesto: [[], Validators.required],
-    mesas: [[]],
+    puesto: [null], // Opcional - puede asignarse después
+    mesas: [null], // Opcional - puede asignarse después
   });
 
   constructor(
     private apiService: ApiService,
+    private backofficeAdminService: BackofficeAdminService,
     private fb: FormBuilder,
     private alertService: AlertService,
     private customValidator: CustomValidationService
@@ -63,14 +65,13 @@ export class CrearTestigoAdminComponent implements OnInit {
     }
   }
 
-  getSelectedMunicipal(item: any) {
+  getSelectedMunicipal(codigoMunicipio: string) {
     this.selectedZone = [];
     this.createFormControl['puesto'].reset();
     this.createFormControl['mesas'].reset();
-    if (item) {
-      const codigo_unico = this.getCode(item);
-      const data = { municipio: codigo_unico };
-      this.getZonasyGerentes(data);
+    if (codigoMunicipio) {
+      // codigoMunicipio ya es el código único del municipio (bindValue)
+      this.getZonasyGerentes(codigoMunicipio);
     } else {
       this.dataZones = [];
       this.dataStations = [];
@@ -78,25 +79,23 @@ export class CrearTestigoAdminComponent implements OnInit {
     }
   }
 
-  getSelectedZone(item: any) {
+  getSelectedZone(codigoZona: string) {
     this.createFormControl['puesto'].reset();
     this.createFormControl['mesas'].reset();
-    if (item) {
-      const codigo_unico = this.getCode(item);
-      const data = { zona: codigo_unico };
-      this.getPuestosySupervisores(data);
+    if (codigoZona) {
+      // codigoZona ya es el código único de la zona (bindValue)
+      this.getPuestosySupervisores(codigoZona);
     } else {
       this.dataStations = [];
       this.dataTables = [];
     }
   }
 
-  getSelectedStation(item: any) {
+  getSelectedStation(codigoPuesto: string) {
     this.createFormControl['mesas'].reset();
-    if (item) {
-      const codigo_unico = this.getCode(item);
-      const data = { puesto: codigo_unico };
-      this.getTablesTestigo(data);
+    if (codigoPuesto) {
+      // codigoPuesto ya es el código único del puesto (bindValue)
+      this.getTablesTestigo(codigoPuesto);
     } else {
       this.dataTables = [];
     }
@@ -116,10 +115,52 @@ export class CrearTestigoAdminComponent implements OnInit {
       !this.createFormControl['email'].errors?.['invalidEmail']
     ) {
       if (this.createForm.valid) {
-        this.apiService
-          .createTestigo(this.createForm.value)
-          .subscribe((resp: any) => {
-            this.alertService.successAlert(resp.message);
+        // Transformar los datos del formulario al formato esperado por el backend
+        const formValue = this.createForm.value;
+        const testigoData: any = {
+          email: formValue.email,
+          numero_documento: formValue.numero_documento.toString(),
+          nombres: formValue.nombres,
+          apellidos: formValue.apellidos,
+          telefono: formValue.telefono ? formValue.telefono.toString() : null,
+        };
+        
+        // Solo incluir puesto y mesas si fueron seleccionados
+        if (formValue.puesto) {
+          testigoData.puesto = formValue.puesto;
+        }
+        
+        if (Array.isArray(formValue.mesas) && formValue.mesas.length > 0) {
+          testigoData.mesas = formValue.mesas;
+        }
+        
+        this.backofficeAdminService
+          .createTestigo(testigoData)
+          .subscribe({
+            next: (resp: any) => {
+              this.alertService.successAlert(resp.message || 'Testigo creado correctamente');
+              this.createForm.reset();
+              this.dataMunicipals = [];
+              this.dataZones = [];
+              this.dataStations = [];
+              this.dataTables = [];
+            },
+            error: (error: any) => {
+              console.error('❌ Error al crear testigo:', error);
+              let errorMessage = 'Error al crear el testigo';
+              if (error.error?.detail) {
+                if (Array.isArray(error.error.detail)) {
+                  errorMessage = error.error.detail.map((err: any) => 
+                    `${err.loc?.join('.')}: ${err.msg}`
+                  ).join('\n');
+                } else {
+                  errorMessage = error.error.detail;
+                }
+              } else if (error.error?.message) {
+                errorMessage = error.error.message;
+              }
+              this.alertService.errorAlert(errorMessage);
+            }
           });
       } else {
         this.alertService.errorAlert('Llene los campos obligatorios.');
@@ -128,38 +169,80 @@ export class CrearTestigoAdminComponent implements OnInit {
   }
 
   getDepartmentAdmin() {
-    this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      this.dataDepartments = resp;
+    // Usar el nuevo servicio de backoffice
+    this.backofficeAdminService.getDepartamentosAdmin().subscribe({
+      next: (resp: any) => {
+        console.log('✅ Departamentos cargados:', resp);
+        this.dataDepartments = resp.departamentos || resp || [];
+      },
+      error: (error: any) => {
+        console.error('❌ Error al cargar departamentos:', error);
+        this.dataDepartments = [];
+      }
     });
   }
 
-  getMunicipalAdmin(data: any) {
-    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.dataMunicipals = resp.filter(
-        (dataMunicipal: any) =>
-          dataMunicipal.codigo_departamento_votacion == data
-      );
+  getMunicipalAdmin(codigoDepartamento: string) {
+    // Usar el nuevo servicio de backoffice, pasando el código del departamento
+    this.backofficeAdminService.getMunicipiosAdmin(codigoDepartamento).subscribe({
+      next: (resp: any) => {
+        console.log('✅ Municipios cargados:', resp);
+        // El backend ya filtra por departamento, así que no necesitamos filtrar aquí
+        this.dataMunicipals = resp.municipios || resp || [];
+      },
+      error: (error: any) => {
+        console.error('❌ Error al cargar municipios:', error);
+        this.dataMunicipals = [];
+      }
     });
   }
 
-  getZonasyGerentes(data: any) {
-    this.apiService.getZonasyGerentes(data).subscribe((resp: any) => {
-      const { zonas } = resp;
-      this.dataZones = zonas;
-    });
+  getZonasyGerentes(codigoMunicipio: string) {
+    // Usar el nuevo servicio de backoffice
+    if (codigoMunicipio) {
+      this.backofficeAdminService.getZonasPorMunicipio(codigoMunicipio).subscribe({
+        next: (resp: any) => {
+          console.log('✅ Zonas cargadas:', resp);
+          this.dataZones = resp.zonas || resp || [];
+        },
+        error: (error: any) => {
+          console.error('❌ Error al cargar zonas:', error);
+          this.dataZones = [];
+        }
+      });
+    }
   }
 
-  getPuestosySupervisores(data: any) {
-    this.apiService.getPuestosySupervisores(data).subscribe((resp: any) => {
-      const { puestos } = resp;
-      this.dataStations = puestos;
-    });
+  getPuestosySupervisores(codigoZona: string) {
+    // Usar el nuevo servicio de backoffice
+    if (codigoZona) {
+      this.backofficeAdminService.getPuestosPorZona(codigoZona).subscribe({
+        next: (resp: any) => {
+          console.log('✅ Puestos cargados:', resp);
+          this.dataStations = resp.puestos || resp || [];
+        },
+        error: (error: any) => {
+          console.error('❌ Error al cargar puestos:', error);
+          this.dataStations = [];
+        }
+      });
+    }
   }
 
-  getTablesTestigo(data: any) {
-    this.apiService.getMesasSinAsignar(data).subscribe((resp: any) => {
-      this.dataTables = resp;
-    });
+  getTablesTestigo(codigoPuesto: string) {
+    // Usar el nuevo servicio de backoffice
+    if (codigoPuesto) {
+      this.backofficeAdminService.getMesasPorPuesto(codigoPuesto).subscribe({
+        next: (resp: any) => {
+          console.log('✅ Mesas cargadas:', resp);
+          this.dataTables = resp.mesas || resp || [];
+        },
+        error: (error: any) => {
+          console.error('❌ Error al cargar mesas:', error);
+          this.dataTables = [];
+        }
+      });
+    }
   }
 
   getCode(item: any) {

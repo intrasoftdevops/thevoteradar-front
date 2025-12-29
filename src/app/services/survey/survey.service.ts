@@ -100,10 +100,21 @@ export class SurveyService {
       console.warn('No hay token de autenticación disponible para el servicio de encuestas');
       return null;
     }
-    return new HttpHeaders({
+    
+    // Obtener tenant_id del localStorage o del environment
+    const tenantId = localStorage.getItem('tenant_id') || environment.defaultTenantId;
+    
+    const headers: { [key: string]: string } = {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
-    });
+    };
+    
+    // Agregar X-Tenant-ID si está disponible
+    if (tenantId) {
+      headers['X-Tenant-ID'] = tenantId;
+    }
+    
+    return new HttpHeaders(headers);
   }
 
   getSurveys(): Observable<Survey[]> {
@@ -121,13 +132,6 @@ export class SurveyService {
     }
     
     const url = `${this.apiBaseUrl}/surveys`;
-    console.log('🔍 SurveyService.getSurveys:', {
-      url,
-      surveyApiUrl: this.surveyApiUrl,
-      apiBaseUrl: this.apiBaseUrl,
-      hasToken: !!headers.get('Authorization'),
-      tokenPreview: headers.get('Authorization')?.substring(0, 20) + '...'
-    });
     
     return this.http.get<Survey[]>(url, { headers })
       .pipe(
