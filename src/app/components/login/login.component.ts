@@ -10,6 +10,8 @@ import { environment } from '../../../environments/environment';
 import { ThemeService } from '../../services/theme/theme.service';
 import { Theme } from '../../core/models/theme.model';
 import { BackofficeAuthService } from '../../services/backoffice-auth/backoffice-auth.service';
+import { TenantService } from '../../core/services/tenant.service';
+import { getTenantIdFromCode } from '../../core/models/tenant.model';
 
 @Component({
   selector: 'app-login',
@@ -67,11 +69,12 @@ export class LoginComponent implements OnInit {
     private apiService: ApiService, 
     private router: Router, 
     private fb: FormBuilder, 
-    private alertService: AlertService, 
-    private localData: LocalDataService, 
+    private alertService: AlertService,
+    private localData: LocalDataService,
     private permissionsService: NgxPermissionsService,
     private themeService: ThemeService,
-    private backofficeAuth: BackofficeAuthService
+    private backofficeAuth: BackofficeAuthService,
+    private tenantService: TenantService
   ) {
     
     this.themeService.getCurrentTheme().subscribe(theme => {
@@ -111,14 +114,21 @@ export class LoginComponent implements OnInit {
 
   /**
    * Detectar tenant_id desde el dominio y aplicar tema
+   * Usa TenantService para obtener el tenant_id correcto (ej: 'juan-duque')
+   * y luego ThemeService para aplicar el tema correspondiente
    */
   private detectTenantFromDomain(): void {
-    const tenantId = this.themeService.detectAndApplyThemeFromDomain();
+    // Usar TenantService para detectar el tenant_id desde el dominio
+    // Esto retorna el tenant_id correcto (ej: 'juan-duque', 'daniel-quintero', etc.)
+    const tenantId = this.tenantService.detectTenantFromDomain();
     
     if (tenantId) {
       this.detectedTenantCode = tenantId;
-      console.log('🔍 Tenant detectado desde dominio:', tenantId);
+      console.log('🔍 Tenant detectado desde dominio (TenantService):', tenantId);
       console.log('🌐 Hostname:', window.location.hostname);
+      
+      // Aplicar el tema correspondiente usando ThemeService
+      this.themeService.detectAndApplyThemeFromDomain();
     } else {
       this.detectedTenantCode = environment.defaultTenantId || null;
       if (this.detectedTenantCode) {
@@ -197,6 +207,13 @@ export class LoginComponent implements OnInit {
         this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant. Por favor, accede desde un dominio válido.');
         return;
       }
+      
+      // IMPORTANTE: Convertir el tenant code (ej: 'juan-duque') al tenant_id numérico (ej: '475757')
+      // que el backend espera, y guardarlo en localStorage ANTES de hacer login
+      // Esto asegura que cuando se verifique el OTP, se use el mismo tenant_id
+      const tenantIdForBackend = getTenantIdFromCode(tenantCode);
+      localStorage.setItem('temp_tenant_id_for_login', tenantIdForBackend);
+      console.log('🔍 Tenant detectado:', tenantCode, '→ Tenant ID para backend:', tenantIdForBackend);
       
       // Para testigos: usar el endpoint del backoffice (permite login con teléfono)
       // El endpoint /users/token ahora acepta teléfono como username
