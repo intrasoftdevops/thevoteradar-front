@@ -36,9 +36,16 @@ export const DOMAIN_TENANT_MAP: { [key: string]: string } = {
   'juan-duque.localhost': 'juan-duque',
   'potus-44.localhost': 'potus-44',
   
-  // Producción (agregar dominios reales aquí)
-  // 'cliente1.voteradar.com': 'tenant-id-1',
-  // 'cliente2.voteradar.com': 'tenant-id-2',
+  // Producción - subdominios de voteradar.co
+  'daniel-quintero.voteradar.co': 'daniel-quintero',
+  'juan-duque.voteradar.co': 'juan-duque',
+  'potus-44.voteradar.co': 'potus-44',
+  'voteradar.co': '473173', // Dominio principal
+  
+  // También mapear solo el subdominio para búsqueda flexible
+  'daniel-quintero': 'daniel-quintero',
+  'juan-duque': 'juan-duque',
+  'potus-44': 'potus-44',
 };
 
 /**
