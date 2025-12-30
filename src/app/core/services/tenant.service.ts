@@ -72,7 +72,6 @@ export class TenantService {
     if (tenantId) {
       // Guardar como detectado (temporal hasta login)
       localStorage.setItem(this.DETECTED_TENANT_KEY, tenantId);
-      console.log(`🔍 Tenant detectado desde dominio: ${tenantId} (hostname: ${hostname})`);
     }
     
     return tenantId;
@@ -132,7 +131,6 @@ export class TenantService {
     localStorage.removeItem(this.TEMP_LOGIN_KEY);
     localStorage.removeItem(this.DETECTED_TENANT_KEY);
     this.currentTenantId$.next(tenantId);
-    console.log(`✅ Tenant guardado: ${tenantId}`);
   }
 
   /**

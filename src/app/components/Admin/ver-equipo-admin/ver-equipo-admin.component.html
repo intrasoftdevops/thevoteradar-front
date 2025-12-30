@@ -111,6 +111,14 @@
         </form>
       </div>
     </div>
+    <div class="card mt-5" *ngIf="tabla === 'ninguna'">
+      <div class="card-body text-center py-5">
+        <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+        <p class="text-muted mb-0">
+          Selecciona un departamento y municipio para ver el equipo de trabajo.
+        </p>
+      </div>
+    </div>
     <ng-container [ngSwitch]="tabla">
       <div class="card mt-5" *ngSwitchCase="'gerente'">
         <div class="bg-primary py-3 px-5 text-white">
@@ -154,7 +162,7 @@
         <div class="card-body">
           <div
             class="table-responsive"
-            *ngIf="listGerentes.length > 0; else content_supervisor"
+            *ngIf="listSupervisores.length > 0; else content_supervisor"
           >
             <table class="table text-center align-middle w-100">
               <thead class="text-dark align-middle">
@@ -232,7 +240,7 @@
         <div class="card-body">
           <div
             class="table-responsive"
-            *ngIf="listCoordinadores.length > 0; else content_testigo"
+            *ngIf="listTestigos.length > 0; else content_testigo"
           >
             <table class="table text-center align-middle w-100">
               <thead class="text-dark align-middle">

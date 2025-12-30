@@ -72,7 +72,6 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
    */
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
-    console.log('🔄 AdminLayout - Sidebar collapsed:', this.sidebarCollapsed);
   }
 
   /**

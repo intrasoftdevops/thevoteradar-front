@@ -122,7 +122,6 @@ export class CrearGerenteComponent implements OnInit {
     // Usar el nuevo servicio de backoffice
     this.backofficeAdminService.getDepartamentosAdmin().subscribe({
       next: (resp: any) => {
-        console.log('✅ Departamentos cargados:', resp);
         // Adaptar respuesta según el formato del nuevo endpoint
         this.dataDepartments = resp.departamentos || resp || [];
       },

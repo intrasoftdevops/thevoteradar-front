@@ -124,18 +124,10 @@ export class LoginComponent implements OnInit {
     
     if (tenantId) {
       this.detectedTenantCode = tenantId;
-      console.log('🔍 Tenant detectado desde dominio (TenantService):', tenantId);
-      console.log('🌐 Hostname:', window.location.hostname);
-      
       // Aplicar el tema correspondiente usando ThemeService
       this.themeService.detectAndApplyThemeFromDomain();
     } else {
       this.detectedTenantCode = environment.defaultTenantId || null;
-      if (this.detectedTenantCode) {
-        console.log('⚠️ No se detectó tenant desde dominio, usando environment.defaultTenantId:', this.detectedTenantCode);
-      } else {
-        console.warn('⚠️ No se detectó tenant desde dominio y no hay defaultTenantId configurado');
-      }
     }
   }
 
@@ -213,7 +205,6 @@ export class LoginComponent implements OnInit {
       // Esto asegura que cuando se verifique el OTP, se use el mismo tenant_id
       const tenantIdForBackend = getTenantIdFromCode(tenantCode);
       localStorage.setItem('temp_tenant_id_for_login', tenantIdForBackend);
-      console.log('🔍 Tenant detectado:', tenantCode, '→ Tenant ID para backend:', tenantIdForBackend);
       
       // Para testigos: usar el endpoint del backoffice (permite login con teléfono)
       // El endpoint /users/token ahora acepta teléfono como username
@@ -829,14 +820,17 @@ export class LoginComponent implements OnInit {
   }
 
   handleAdminLogin(email: string, password: string) {
-    const tenantIdToUse = this.detectedTenantCode || environment.defaultTenantId;
+    const tenantCode = this.detectedTenantCode || environment.defaultTenantId;
     
-    if (!tenantIdToUse) {
+    if (!tenantCode) {
       console.error('❌ No se pudo determinar el tenant_id para el login');
       this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant');
       this.isLoading = false;
       return;
     }
+    
+    // Convertir tenant code (ej: 'juan-duque') al tenant_id numérico (ej: '1062885')
+    const tenantIdToUse = getTenantIdFromCode(tenantCode);
     
     localStorage.setItem('temp_tenant_id_for_login', tenantIdToUse);
     
@@ -935,7 +929,7 @@ export class LoginComponent implements OnInit {
 
   redirectByRole(rol: number) {
     if (rol == 1) {
-      this.router.navigate(['estadisticasEquipoAdmin']);
+      this.router.navigate(['/inicio']);
     }
     else if (rol == 2) {
       this.router.navigate(['estadisticasEquipoGerente']);

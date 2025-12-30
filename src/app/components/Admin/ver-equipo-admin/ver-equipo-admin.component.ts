@@ -158,25 +158,48 @@ export class VerEquipoAdminComponent implements OnInit {
   }
 
   getMunicipalAdmin(data: any) {
-    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.dataMunicipals = resp.filter(
-        (dataMunicipal: any) =>
-          dataMunicipal.codigo_departamento_votacion == data
-      );
-      if (this.dataMunicipals.length > 0) {
-        this.searchForm
-          .get('municipios')
-          ?.setValue(this.dataMunicipals[0].codigo_unico);
-        this.getSelectedMunicipal(this.dataMunicipals[0]);
+    this.apiService.getMunicipalAdmin().subscribe({
+      next: (resp: any) => {
+        this.dataMunicipals = resp.filter(
+          (dataMunicipal: any) =>
+            dataMunicipal.codigo_departamento_votacion == data
+        );
+        if (this.dataMunicipals.length > 0) {
+          this.searchForm
+            .get('municipios')
+            ?.setValue(this.dataMunicipals[0].codigo_unico);
+          this.getSelectedMunicipal(this.dataMunicipals[0]);
+        } else {
+          this.tabla = 'ninguna';
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al cargar municipios:', error);
+        this.dataMunicipals = [];
+        this.tabla = 'ninguna';
       }
     });
   }
 
   getZonasGerentes(data: any) {
-    this.apiService.getZonasyGerentes(data).subscribe((resp: any) => {
-      const { zonas, gerentes } = resp;
-      this.dataZones = zonas;
-      this.listGerentes = gerentes;
+    this.apiService.getZonasyGerentes(data).subscribe({
+      next: (resp: any) => {
+        const { zonas, gerentes } = resp;
+        this.dataZones = zonas || [];
+        this.listGerentes = gerentes || [];
+        // Si no hay gerentes, mantener la tabla en 'ninguna'
+        if (!gerentes || gerentes.length === 0) {
+          this.tabla = 'ninguna';
+        } else {
+          this.tabla = 'gerente';
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al cargar zonas y gerentes:', error);
+        this.dataZones = [];
+        this.listGerentes = [];
+        this.tabla = 'ninguna';
+      }
     });
   }
 

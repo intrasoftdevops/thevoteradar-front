@@ -314,17 +314,26 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
       return;
     }
     
-    const total = entries.reduce((sum, [, count]) => sum + count, 0);
+    // Ordenar por cantidad (mayor a menor) y tomar top 6
+    const top6 = entries
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 6);
     
-    this.cityChartData = entries
-      .sort(([, a], [, b]) => b - a) // Ordenar por cantidad (mayor a menor)
-      .slice(0, 6) // Top 6 ciudades
-      .map(([city, count], index) => ({
-        city,
-        count,
-        percentage: total > 0 ? (count / total) * 100 : 0,
-        color: this.cityChartColors[index % this.cityChartColors.length] // Usar módulo para evitar undefined
-      }));
+    // Calcular el total SOLO de las top 6 ciudades para que los porcentajes sumen 100%
+    const top6Total = top6.reduce((sum, [, count]) => sum + count, 0);
+    
+    if (top6Total === 0) {
+      this.cityChartData = [];
+      return;
+    }
+    
+    // Recalcular porcentajes basándose solo en las top 6
+    this.cityChartData = top6.map(([city, count], index) => ({
+      city,
+      count,
+      percentage: (count / top6Total) * 100,
+      color: this.cityChartColors[index % this.cityChartColors.length]
+    }));
   }
 
   /**
@@ -338,12 +347,23 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
     let gradientStops: string[] = [];
     let currentAngle = 0;
 
-    this.cityChartData.forEach((data) => {
-      const angle = (data.percentage / 100) * 360;
+    // Calcular la suma total de porcentajes para normalizar
+    const totalPercentage = this.cityChartData.reduce((sum, data) => sum + data.percentage, 0);
+    
+    // Si los porcentajes no suman exactamente 100%, normalizar
+    const normalizationFactor = totalPercentage > 0 ? 100 / totalPercentage : 1;
+
+    this.cityChartData.forEach((data, index) => {
+      // Normalizar el porcentaje para asegurar que sume 100%
+      const normalizedPercentage = data.percentage * normalizationFactor;
+      const angle = (normalizedPercentage / 100) * 360;
       const nextAngle = currentAngle + angle;
       
-      gradientStops.push(`${data.color} ${currentAngle}deg ${nextAngle}deg`);
-      currentAngle = nextAngle;
+      // Para el último elemento, asegurar que llegue exactamente a 360deg
+      const finalAngle = index === this.cityChartData.length - 1 ? 360 : nextAngle;
+      
+      gradientStops.push(`${data.color} ${currentAngle}deg ${finalAngle}deg`);
+      currentAngle = finalAngle;
     });
 
     return `conic-gradient(${gradientStops.join(', ')})`;
