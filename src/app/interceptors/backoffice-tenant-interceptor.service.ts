@@ -55,17 +55,13 @@ export class BackofficeTenantInterceptor implements HttpInterceptor {
       
       // Validar que tenantId no sea "default" (string literal) o vacío
       if (!tenantId || tenantId === 'default' || tenantId.trim() === '') {
-        console.warn('⚠️ Tenant ID inválido o es "default", usando environment.defaultTenantId');
         tenantId = environment.defaultTenantId || '473173'; // Fallback hardcoded si no hay en environment
       }
       
       // Asegurarse de que tenantId no sea null o undefined
       if (!tenantId) {
-        console.error('❌ No se pudo determinar el tenant_id. Verifica la configuración.');
         // No lanzar error aquí, dejar que el backend lo maneje
       }
-      
-      console.log('🔍 Tenant ID que se enviará:', tenantId);
       
       if (req.headers.has('X-Tenant-ID')) {
         return next.handle(req);

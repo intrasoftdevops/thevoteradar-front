@@ -95,11 +95,8 @@ export class TenantInterceptor implements HttpInterceptor {
     
     // Validar que tenantId no sea "default" (string literal) o vacío
     if (!tenantId || tenantId === 'default' || tenantId.trim() === '') {
-      console.warn('⚠️ Tenant ID inválido o es "default", usando fallback: 473173');
       tenantId = '473173'; // Fallback hardcoded
     }
-    
-    console.log('🔍 TenantInterceptor - Tenant ID que se enviará:', tenantId);
     
     return tenantId;
   }

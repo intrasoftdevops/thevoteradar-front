@@ -25,10 +25,7 @@
         var script = document.createElement('script');
         script.src = 'assets/env.js';
         script.onerror = function() {
-          // Si falla en producción, usar valores por defecto
-          if (window.console && window.console.log) {
-            console.warn('env.js no encontrado en producción, usando valores por defecto');
-          }
+          // Si falla en producción, usar valores por defecto (silencioso)
         };
         document.head.appendChild(script);
       }
