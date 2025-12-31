@@ -19,6 +19,9 @@ export class WhatsAppTemplatesDashboardComponent implements OnInit, OnDestroy {
   templatesLoading = false;
   error: string | null = null;
 
+  // Templates excluidos de la lista
+  private readonly excludedTemplateNames = ['verification', 'onboarding_signoff', 'new_chat_v1'];
+
   // Búsqueda y filtros
   searchTerm = '';
   selectedStatus = '';
@@ -74,7 +77,9 @@ export class WhatsAppTemplatesDashboardComponent implements OnInit, OnDestroy {
         console.log('📱 WhatsApp - Total desde API:', data.total);
         console.log('📱 WhatsApp - Length del array:', data.templates?.length);
         
-        this.templates = data.templates || [];
+        // Filtrar templates excluidos
+        const allTemplates = data.templates || [];
+        this.templates = allTemplates.filter(t => !this.excludedTemplateNames.includes(t.template_name));
         this.filteredTemplates = [...this.templates];
         
         console.log('📱 WhatsApp - Templates asignados al componente:', this.templates.length);
