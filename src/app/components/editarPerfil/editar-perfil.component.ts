@@ -81,17 +81,80 @@ export class EditarPerfilComponent implements OnInit {
   }
 
   getUser() {
-    this.apiService.getUser().subscribe((resp: any) => {
-      this.updateForm.get('nombres')?.setValue(resp.nombres);
-      this.updateForm.get('apellidos')?.setValue(resp.apellidos);
-      this.updateForm.get('genero_id')?.setValue(resp.genero_id);
-      this.updateForm.get('email')?.setValue(resp.email);
-      this.updateForm.get('password')?.setValue(resp.password);
-      this.updateForm.get('tipo_documento_id')?.setValue(resp.tipo_documento_id);
-      this.updateForm.get('numero_documento')?.setValue(resp.numero_documento);
-      this.updateForm.get('telefono')?.setValue(resp.telefono);
+    this.apiService.getUser().subscribe({
+      next: (resp: any) => {
+        console.log('📋 Datos recibidos del usuario (completo):', JSON.stringify(resp, null, 2));
+        
+        // Asegurar que el formulario esté habilitado
+        this.updateForm.enable();
+        
+        // Mapear campos correctamente según la estructura del backend
+        // El backend devuelve datos de users_control que tienen: nombres, apellidos, email, phone, etc.
+        // Pero también puede devolver name/lastname si existe en users
+        // Prioridad: nombres/apellidos (de users_control) > name/lastname (de users)
+        const nombres = resp?.nombres || resp?.name || '';
+        const apellidos = resp?.apellidos || resp?.lastname || '';
+        // Para genero_id y tipo_documento_id, usar el valor exacto (puede ser null, 0, 1, 2, etc.)
+        const genero_id = resp?.genero_id !== undefined ? resp.genero_id : null;
+        const email = resp?.email || '';
+        const tipo_documento_id = resp?.tipo_documento_id !== undefined ? resp.tipo_documento_id : null;
+        const numero_documento = resp?.numero_documento || '';
+        // Limpiar el teléfono: remover el prefijo "+57" si existe para mostrar solo el número local
+        let telefono = resp?.telefono || resp?.phone || '';
+        if (telefono) {
+          // Remover el "+" y el código de país "57" si está presente
+          telefono = telefono.replace(/^\+?57/, '').trim();
+        }
+        
+        console.log('📝 Valores mapeados:', {
+          nombres,
+          apellidos,
+          genero_id,
+          email,
+          tipo_documento_id,
+          numero_documento,
+          telefono,
+          'resp.genero_id': resp?.genero_id,
+          'resp.tipo_documento_id': resp?.tipo_documento_id,
+          'resp.numero_documento': resp?.numero_documento,
+          'resp.email': resp?.email,
+          'resp.phone': resp?.phone,
+          'resp.telefono': resp?.telefono
+        });
+        
+        // Establecer valores en el formulario (establecer siempre, incluso si están vacíos o null)
+        this.updateForm.patchValue({
+          nombres: nombres || '',
+          apellidos: apellidos || '',
+          genero_id: genero_id !== null && genero_id !== undefined ? genero_id : null,
+          email: email || '',
+          tipo_documento_id: tipo_documento_id !== null && tipo_documento_id !== undefined ? tipo_documento_id : null,
+          numero_documento: numero_documento || '',
+          telefono: telefono || '',
+          password: '' // No mostrar password
+        });
+        
+        console.log('✅ Valores establecidos en el formulario:', this.updateForm.value);
 
-    })
+        // Asegurar que todos los campos estén habilitados individualmente
+        this.updateForm.get('nombres')?.enable();
+        this.updateForm.get('apellidos')?.enable();
+        this.updateForm.get('genero_id')?.enable();
+        this.updateForm.get('email')?.enable();
+        this.updateForm.get('tipo_documento_id')?.enable();
+        this.updateForm.get('numero_documento')?.enable();
+        this.updateForm.get('telefono')?.enable();
+      },
+      error: (error: any) => {
+        console.error('❌ Error al obtener datos del usuario:', error);
+        console.error('❌ Detalles del error:', {
+          status: error?.status,
+          statusText: error?.statusText,
+          message: error?.message,
+          error: error?.error
+        });
+      }
+    });
   }
 
   onSelect(event: any) {

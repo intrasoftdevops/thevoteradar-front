@@ -1,19 +1,33 @@
 <div class="min-h-screen" [style.background]="'linear-gradient(to bottom right, rgba(var(--color-primary-rgb), 0.05), white, rgba(var(--color-primary-rgb), 0.05))'">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-    <div class="flex items-center justify-between">
-      <div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex-1">
         <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Voto de Opinión · Muestra</h2>
-        <p class="text-gray-600 mt-1">Demográficos y tamaño de muestra por tenant (directorio central)</p>
+        <p class="text-gray-600 mt-1">{{ getDisplayTitle() }}</p>
       </div>
-      <button
-        class="inline-flex items-center justify-center px-4 py-2 rounded-full text-white font-semibold shadow-sm transition-all"
-        type="button"
-        (click)="loadSample()"
-        [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
-      >
-        <i class="fa-solid fa-rotate-right me-2"></i>
-        Actualizar
-      </button>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <!-- Selector de encuesta -->
+        <select
+          class="survey-select px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm font-semibold"
+          [(ngModel)]="selectedSurveyId"
+          (ngModelChange)="onSurveyChange($event)"
+          [style.border-color]="'rgba(0,0,0,0.15)'"
+        >
+          <option [ngValue]="null">Directorio Central (Todas)</option>
+          <option *ngFor="let survey of surveys" [ngValue]="survey.id">
+            {{ survey.title }}
+          </option>
+        </select>
+        <button
+          class="inline-flex items-center justify-center px-4 py-2 rounded-full text-white font-semibold shadow-sm transition-all"
+          type="button"
+          (click)="selectedSurveyId ? loadSample() : loadAllSurveysSummary()"
+          [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+        >
+          <i class="fa-solid fa-rotate-right me-2"></i>
+          Actualizar
+        </button>
+      </div>
     </div>
 
     <!-- Loading -->
@@ -33,34 +47,109 @@
       </div>
     </div>
 
-    <!-- Stats -->
-    <div *ngIf="!loading && !error" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
-        <div class="text-sm text-gray-500">Tamaño de muestra</div>
-        <div class="text-3xl font-bold text-gray-900 mt-1">{{ totalRespondents | number }}</div>
-        <div class="text-xs text-gray-500 mt-2">Cargados para cálculo: {{ respondentsLoaded | number }}</div>
+    <!-- Vista: Resumen de todas las encuestas -->
+    <ng-container *ngIf="!selectedSurveyId && !loading && !error">
+      <!-- Stats generales -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+          <div class="text-sm text-gray-500">Total de encuestas</div>
+          <div class="text-3xl font-bold text-gray-900 mt-1">{{ surveys.length | number }}</div>
+        </div>
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+          <div class="text-sm text-gray-500">Total de destinatarios</div>
+          <div class="text-3xl font-bold text-gray-900 mt-1">{{ totalRespondents | number }}</div>
+        </div>
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+          <div class="text-sm text-gray-500">Última actualización</div>
+          <div class="text-lg font-semibold text-gray-900 mt-2">{{ formatDate(lastUpdated) }}</div>
+        </div>
       </div>
-      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
-        <div class="text-sm text-gray-500">Demográficos detectados</div>
-        <div class="text-3xl font-bold text-gray-900 mt-1">{{ demographicSections.length }}</div>
-        <div class="text-xs text-gray-500 mt-2">N demográficos (dinámico)</div>
-      </div>
-      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
-        <div class="text-sm text-gray-500">Última actualización</div>
-        <div class="text-lg font-semibold text-gray-900 mt-2">{{ formatDate(lastUpdated) }}</div>
-      </div>
-    </div>
 
-    <!-- Empty state -->
-    <div *ngIf="!loading && !error && demographicSections.length === 0" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-10 text-center">
+      <!-- Lista de encuestas -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+        <div class="p-6 sm:p-8">
+          <div class="text-lg font-bold text-gray-900 mb-4">Encuestas disponibles</div>
+          <div *ngIf="surveySummaries.length === 0" class="text-center py-8 text-gray-500">
+            No hay encuestas disponibles
+          </div>
+          <div *ngIf="surveySummaries.length > 0" class="space-y-3">
+            <div
+              *ngFor="let summary of surveySummaries"
+              class="border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-all cursor-pointer"
+              (click)="viewSurveySample(summary.survey.id)"
+            >
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex-1">
+                  <div class="font-semibold text-gray-900 mb-2">{{ summary.survey.title }}</div>
+                  <div class="text-sm text-gray-600 mb-3" *ngIf="summary.survey.description">
+                    {{ summary.survey.description }}
+                  </div>
+                  <div class="flex flex-wrap gap-4 text-sm">
+                    <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-users text-gray-400"></i>
+                      <span class="text-gray-600">Destinatarios:</span>
+                      <span class="font-semibold text-gray-900">{{ summary.recipientsCount | number }}</span>
+                    </div>
+                    <div class="flex items-center gap-2" *ngIf="!summary.loading">
+                      <i class="fa-solid fa-check-circle text-gray-400"></i>
+                      <span class="text-gray-600">Respuestas:</span>
+                      <span class="font-semibold text-gray-900">{{ summary.responsesCount | number }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-question-circle text-gray-400"></i>
+                      <span class="text-gray-600">Preguntas:</span>
+                      <span class="font-semibold text-gray-900">{{ summary.survey.questions_count | number }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div *ngIf="summary.loading" class="animate-spin rounded-full h-4 w-4 border-b-2" [style.border-color]="'var(--color-primary)'"></div>
+                  <button
+                    class="inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-semibold text-white transition-all"
+                    [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+                    (click)="viewSurveySample(summary.survey.id); $event.stopPropagation()"
+                  >
+                    <i class="fa-solid fa-eye me-2"></i>
+                    Ver muestra
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Vista: Muestra de encuesta específica -->
+    <ng-container *ngIf="selectedSurveyId && !loading && !error">
+      <!-- Stats -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+          <div class="text-sm text-gray-500">Tamaño de muestra</div>
+          <div class="text-3xl font-bold text-gray-900 mt-1">{{ totalRespondents | number }}</div>
+          <div class="text-xs text-gray-500 mt-2">Cargados para cálculo: {{ respondentsLoaded | number }}</div>
+        </div>
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+          <div class="text-sm text-gray-500">Demográficos detectados</div>
+          <div class="text-3xl font-bold text-gray-900 mt-1">{{ demographicSections.length }}</div>
+          <div class="text-xs text-gray-500 mt-2">N demográficos (dinámico)</div>
+        </div>
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+          <div class="text-sm text-gray-500">Última actualización</div>
+          <div class="text-lg font-semibold text-gray-900 mt-2">{{ formatDate(lastUpdated) }}</div>
+        </div>
+      </div>
+
+    <!-- Empty state (solo para encuesta específica) -->
+    <div *ngIf="selectedSurveyId && !loading && !error && demographicSections.length === 0" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-10 text-center">
       <div class="text-xl font-bold text-gray-900">No hay demográficos para mostrar</div>
       <p class="text-gray-600 mt-2">
-        El endpoint devolvió respondents pero no se encontró un objeto <code>demographics</code> ni campos inferibles.
+        No se encontraron datos demográficos en los contactos. Los demográficos se agregan cuando los contactos responden encuestas o se importan con información adicional.
       </p>
     </div>
 
-    <!-- Demographics -->
-    <div *ngIf="!loading && !error && demographicSections.length > 0" class="space-y-6">
+    <!-- Demographics (solo para encuesta específica) -->
+    <div *ngIf="selectedSurveyId && !loading && !error && demographicSections.length > 0" class="space-y-6">
       <div *ngFor="let section of demographicSections" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
         <div class="p-6 sm:p-8 flex items-center justify-between">
           <div>
@@ -68,7 +157,7 @@
             <div class="text-sm text-gray-500">{{ section.buckets.length }} opciones</div>
           </div>
           <div class="text-sm text-gray-600">
-            Base: <strong>{{ section.total | number }}</strong>
+            Total: <strong class="text-gray-900">{{ section.total | number }}</strong>
           </div>
         </div>
 
@@ -89,8 +178,8 @@
       </div>
     </div>
 
-    <!-- Respondents -->
-    <div *ngIf="!loading && !error" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+    <!-- Respondents (solo para encuesta específica) -->
+    <div *ngIf="selectedSurveyId && !loading && !error" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
       <div class="p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div class="text-lg font-bold text-gray-900">Respondents (quiénes son)</div>
@@ -141,19 +230,21 @@
             </thead>
             <tbody class="divide-y divide-gray-200">
               <tr *ngFor="let r of respondentsPreview" class="hover:bg-gray-50">
-                <td class="px-4 py-3 text-sm font-semibold text-gray-900">{{ maskPhone(r.phone_number) }}</td>
+                <td class="px-4 py-3 text-sm font-semibold text-gray-900">{{ maskPhone(r.phone_number || r.phone) }}</td>
                 <td class="px-4 py-3 text-sm">
                   <span
                     class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                    [class.bg-green-100]="!r.opt_out"
-                    [class.text-green-800]="!r.opt_out"
+                    [class.bg-green-100]="!r.opt_out && r.opt_out !== undefined"
+                    [class.text-green-800]="!r.opt_out && r.opt_out !== undefined"
                     [class.bg-red-100]="r.opt_out"
                     [class.text-red-800]="r.opt_out"
+                    [class.bg-gray-100]="r.opt_out === undefined"
+                    [class.text-gray-800]="r.opt_out === undefined"
                   >
-                    {{ r.opt_out ? 'Sí' : 'No' }}
+                    {{ r.opt_out === undefined ? 'N/A' : (r.opt_out ? 'Sí' : 'No') }}
                   </span>
                 </td>
-                <td class="px-4 py-3 text-sm text-gray-600">{{ formatIso(r.created_at) }}</td>
+                <td class="px-4 py-3 text-sm text-gray-600">{{ formatIso(r.created_at || r.sent_at) }}</td>
                 <td class="px-4 py-3 text-xs text-gray-500">
                   <span class="truncate" [title]="r.id">{{ r.id }}</span>
                 </td>
@@ -166,6 +257,7 @@
         </div>
       </div>
     </div>
+    </ng-container>
   </div>
 </div>
 

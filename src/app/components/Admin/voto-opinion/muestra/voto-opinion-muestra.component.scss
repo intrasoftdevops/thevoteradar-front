@@ -11,4 +11,9 @@ code {
   font-size: 0.85em;
 }
 
+// Estilo para el select - mover flecha a la izquierda
+.survey-select {
+  padding-right: 1.75rem !important; // Reducir padding derecho para mover la flecha más cerca del texto
+}
+
 

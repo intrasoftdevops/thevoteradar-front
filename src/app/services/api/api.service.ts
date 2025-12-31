@@ -112,11 +112,13 @@ export class ApiService {
   }
 
   getUser() {
-    return this.http.get(this._URL + "/users/" + this.localData.getId(), { headers: this.getHeaders() });
+    // Usar el endpoint /users/me/ que devuelve el perfil del usuario autenticado
+    return this.http.get(this._URL + "/users/me/", { headers: this.getHeaders() });
   }
 
   updateUser(data: any) {
-    return this.http.put(this._URL + "/users/" + this.localData.getId(), data, { headers: this.getHeaders() });
+    // Usar el endpoint /users/me/ para actualizar el perfil del usuario autenticado
+    return this.http.put(this._URL + "/users/me/", data, { headers: this.getHeaders() });
   }
 
   getAssignedMunicipal() {
