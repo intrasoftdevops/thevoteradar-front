@@ -330,6 +330,28 @@ export class SurveyService {
       );
   }
 
+  deleteSurvey(surveyId: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
+    return this.http.delete(`${this.apiBaseUrl}/surveys/${surveyId}`, { 
+      headers,
+      observe: 'response',
+      responseType: 'json'
+    })
+      .pipe(
+        catchError(error => {
+          console.error('Error al eliminar encuesta:', error);
+          // Si es un error 405 (Method Not Allowed), dar un mensaje más claro
+          if (error.status === 405) {
+            return throwError(() => new Error('El método DELETE no está permitido. Verifica que el endpoint esté correctamente configurado.'));
+          }
+          return throwError(() => error);
+        })
+      );
+  }
+
   uploadRecipients(surveyId: string, recipients: RecipientImportItem[]): Observable<any> {
     const headers = this.getAuthHeaders();
     if (!headers) {

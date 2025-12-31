@@ -54,12 +54,11 @@
     </div>
 
     <!-- Table/Card -->
-    <div *ngIf="!loading && !error && surveys.length > 0" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
-      <div class="p-6 sm:p-8">
+    <div *ngIf="!loading && !error && surveys.length > 0" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 survey-table-container">
+      <!-- Header del listado -->
+      <div class="px-6 py-5 sm:px-8 sm:py-6 border-b border-gray-200">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xl font-bold text-gray-900">Listado</h3>
-          </div>
+          <h3 class="text-xl font-bold text-gray-900">Listado</h3>
 
           <div class="flex flex-col sm:flex-row sm:items-center gap-3">
             <!-- Filtro por estado -->
@@ -97,20 +96,22 @@
           </div>
         </div>
       </div>
-      <div class="overflow-x-auto">
+
+      <!-- Tabla -->
+      <div class="overflow-x-auto overflow-y-visible" [class.has-open-dropdown]="openActionsFor !== null">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Encuesta</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Preguntas</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Estado</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Creada</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Acciones</th>
+              <th class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wide survey-column-header">Encuesta</th>
+              <th class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wide survey-column-header">Preguntas</th>
+              <th class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wide survey-column-header">Estado</th>
+              <th class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wide survey-column-header">Creada</th>
+              <th class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wide survey-column-header">Acciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 bg-white">
-            <tr *ngFor="let survey of getDisplayedSurveys()" class="hover:bg-gray-50">
-              <td class="px-6 py-4" style="min-width: 360px; max-width: 620px;">
+            <tr *ngFor="let survey of getDisplayedSurveys()" class="hover:bg-gray-50 transition-colors">
+              <td class="survey-column-data" style="min-width: 360px; max-width: 620px;">
                 <div class="font-semibold text-gray-900 whitespace-normal break-words">
                   {{ survey.title }}
                 </div>
@@ -121,12 +122,12 @@
                   <div class="text-sm text-gray-400 mt-1">Sin descripción</div>
                 </ng-template>
               </td>
-              <td class="px-6 py-4 text-sm text-gray-700">{{ survey.questions_count }}</td>
-              <td class="px-6 py-4">
+              <td class="survey-column-data text-sm text-gray-700">{{ survey.questions_count }}</td>
+              <td class="survey-column-data">
                 <span [class]="getStatusBadgeClass(survey.status)">{{ getStatusText(survey.status) }}</span>
               </td>
-              <td class="px-6 py-4 text-sm text-gray-600">{{ survey.created_at | date: 'short' }}</td>
-              <td class="px-6 py-4">
+              <td class="survey-column-data text-sm text-gray-600">{{ survey.created_at | date: 'short' }}</td>
+              <td class="px-6 py-4 survey-actions-cell">
                 <div class="flex items-center gap-2 survey-actions" style="position: relative;" (click)="$event.stopPropagation()">
                   <button
                     class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold border transition-all"
@@ -154,8 +155,8 @@
                   <!-- Dropdown -->
                   <div
                     *ngIf="openActionsFor === survey.id"
-                    class="bg-white rounded-xl shadow-lg border border-gray-200"
-                    style="position: absolute; right: 0; top: 44px; width: 220px; z-index: 60;"
+                    class="bg-white rounded-xl shadow-lg border border-gray-200 survey-dropdown"
+                    style="position: absolute; right: 0; top: 44px; width: 220px; z-index: 1000;"
                     (click)="$event.stopPropagation()"
                   >
                     <button
@@ -184,6 +185,16 @@
                     >
                       <i class="fa-solid fa-list me-2"></i>
                       Respuestas
+                    </button>
+                    <div class="border-t border-gray-200 my-1"></div>
+                    <button
+                      class="w-full text-left px-3 py-2 text-sm font-semibold hover:bg-red-50"
+                      type="button"
+                      (click)="deleteSurvey(survey.id, survey.title); closeActionsMenu()"
+                      style="color: #dc2626;"
+                    >
+                      <i class="fa-solid fa-trash me-2"></i>
+                      Eliminar
                     </button>
                   </div>
                 </div>
