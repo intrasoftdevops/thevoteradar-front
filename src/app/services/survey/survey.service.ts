@@ -446,6 +446,20 @@ export class SurveyService {
         })
       );
   }
+
+  getSurveyRecipients(surveyId: string): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
+    return this.http.get<any[]>(`${this.apiBaseUrl}/surveys/${surveyId}/recipients`, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener destinatarios de encuesta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
 }
 
 export interface SurveyResponse {
