@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { filter, Subscription } from 'rxjs';
 import { LocalDataService } from './services/localData/local-data.service';
+import { ThemeService } from './services/theme/theme.service';
+import { TenantConfigService } from './services/tenant-config/tenant-config.service';
 import { environment } from '../environments/environment';
 
 @Component({
@@ -10,7 +12,7 @@ import { environment } from '../environments/environment';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   rol: any = '';
   subscriber!: Subscription;
   public isDevelopmentMode: boolean = this.checkDevelopmentMode();
@@ -18,10 +20,18 @@ export class AppComponent {
   constructor(
     private localData: LocalDataService,
     private router: Router,
-    private permissionsService: NgxPermissionsService
+    private permissionsService: NgxPermissionsService,
+    private themeService: ThemeService,
+    private tenantConfigService: TenantConfigService
   ) {}
 
   ngOnInit() {
+    // Cargar configuración del tenant y aplicar tema (no bloqueante)
+    this.loadTenantConfig().catch(error => {
+      console.error('Error al cargar configuración del tenant:', error);
+      this.themeService.setTheme('default');
+    });
+    
     this.permissionsService.addPermission([this.getRol()]);
     
     this.subscriber = this.router.events
@@ -36,6 +46,29 @@ export class AppComponent {
           this.router.navigate(['/']);
         }
       });
+  }
+
+  /**
+   * Cargar configuración del tenant basándose en el subdominio
+   */
+  private async loadTenantConfig(): Promise<void> {
+    try {
+      // Detectar tenant_id desde el dominio
+      let tenantId = localStorage.getItem('tenant_id');
+      
+      if (!tenantId) {
+        tenantId = this.themeService.getTenantIdFromDomain();
+      }
+      
+      if (tenantId) {
+        await this.themeService.loadThemeFromTenantConfig(tenantId);
+      } else {
+        this.themeService.setTheme('default');
+      }
+    } catch (error) {
+      console.error('Error al cargar configuración del tenant:', error);
+      this.themeService.setTheme('default');
+    }
   }
 
   getRol(): any {
