@@ -16,7 +16,78 @@
         class="row m-4 d-flex justify-content-center align-items-center align-items-center"
         [formGroup]="searchForm"
       >
-        <div class="form-group col-md-6 col-lg-4 pt-2">
+        <!-- Flujo para Admin: Departamento -> Municipio -> Zona -> Puesto -->
+        <div *ngIf="isAdmin" class="row w-100">
+          <div class="form-group col-md-6 col-lg-3 pt-2">
+            <label class="fw-bold form-label">Departamento</label>
+            <ng-select
+              [items]="dataDepartments"
+              [searchable]="true"
+              class="custom-select rounded"
+              bindLabel="nombre_departamento_votacion"
+              (change)="getSelectedDepartment()"
+              bindValue="codigo_unico"
+              placeholder="Seleccione departamento"
+              formControlName="departamento"
+              [clearable]="true"
+            >
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-3 pt-2">
+            <label class="fw-bold form-label">Municipio</label>
+            <ng-select
+              [items]="dataMunicipals"
+              [searchable]="true"
+              class="custom-select rounded"
+              bindLabel="nombre_municipio_votacion"
+              (change)="getSelectedMunicipal()"
+              bindValue="codigo_unico"
+              placeholder="Seleccione municipio"
+              formControlName="municipio"
+              [clearable]="true"
+              [loading]="loadingMunicipios"
+              [disabled]="!selectedDepartment"
+            >
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-3 pt-2">
+            <label class="fw-bold form-label">Zona</label>
+            <ng-select
+              [items]="dataZones"
+              [searchable]="true"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              (change)="getSelectedZone()"
+              bindValue="codigo_unico"
+              placeholder="Seleccione zona"
+              formControlName="zona"
+              [clearable]="true"
+              [loading]="loadingZonas"
+              [disabled]="!selectedMunicipal"
+            >
+            </ng-select>
+          </div>
+          <div class="form-group col-md-6 col-lg-3 pt-2">
+            <label class="fw-bold form-label">Puesto</label>
+            <ng-select
+              [items]="dataStations"
+              [searchable]="true"
+              class="custom-select rounded"
+              bindLabel="nombre"
+              (change)="getSelectedStation($event)"
+              bindValue="codigo_unico"
+              placeholder="Seleccione puesto"
+              formControlName="puestos"
+              [clearable]="true"
+              [loading]="loadingPuestos"
+              [disabled]="!selectedZone"
+            >
+            </ng-select>
+          </div>
+        </div>
+        
+        <!-- Flujo para Coordinador: Puesto directo -->
+        <div *ngIf="!isAdmin" class="form-group col-md-6 col-lg-4 pt-2">
           <label class="fw-bold form-label">Testigos por puesto</label>
           <ng-select
             [items]="dataStations"
