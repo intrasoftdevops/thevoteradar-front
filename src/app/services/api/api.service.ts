@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { LocalDataService } from '../localData/local-data.service';
 
@@ -28,12 +29,49 @@ export interface ChallengeApiResponse {
 })
 export class ApiService {
 
-  _URL = environment.apiURL;
+  // Deprecado: Usar backofficeApiURL en su lugar
+  // _URL = environment.apiURL;
+  _URL = environment.backofficeApiURL || 'http://localhost:8002';
 
   constructor(private http: HttpClient, private localData: LocalDataService) { }
 
-  getHeaders() {
-    return { 'Accept': 'application/json', 'Authorization': "Bearer " + this.localData.getToken() };
+  /**
+   * Obtiene los headers para peticiones a apiURL (voteradarback)
+   * 
+   * ✅ SOLUCIÓN IMPLEMENTADA:
+   * Los administradores ahora tienen dos tokens:
+   * 1. Token de backoffice (Firestore) - para peticiones a backofficeApiURL
+   * 2. Token de voteradar-back (MySQL) - para peticiones a apiURL (voteradar-back)
+   * 
+   * Cuando un admin hace login, el sistema automáticamente:
+   * - Verifica si existe en voteradar-back
+   * - Si no existe, lo crea automáticamente
+   * - Retorna ambos tokens en la respuesta del login
+   * 
+   * Este método usa el token de voteradar-back si está disponible (para admins),
+   * o el token normal para otros usuarios.
+   */
+  getHeaders(): { [header: string]: string | string[] } {
+    const headers: { [header: string]: string | string[] } = {
+      'Accept': 'application/json'
+    };
+    
+    // Prioridad 1: Usar token de voteradar-back si está disponible (para admins mapeados)
+    const voteradarToken = this.localData.getVoteradarToken();
+    if (voteradarToken && voteradarToken !== 'undefined' && voteradarToken !== '') {
+      headers['Authorization'] = "Bearer " + voteradarToken;
+      // Log temporal para debugging
+      console.log('🔑 ApiService.getHeaders - Enviando voteradar_token (primeros 20 chars):', voteradarToken.substring(0, 20) + '...');
+      return headers;
+    }
+    
+    // Prioridad 2: Usar token normal (para usuarios regulares o si no hay token de voteradar)
+    const token = this.localData.getToken();
+    if (token && token !== 'undefined' && token !== '') {
+      headers['Authorization'] = "Bearer " + token;
+    }
+    
+    return headers;
   }
 
   login(data: any) {
@@ -74,23 +112,61 @@ export class ApiService {
   }
 
   getUser() {
-    return this.http.get(this._URL + "/users/" + this.localData.getId(), { headers: this.getHeaders() });
+    // Usar el endpoint /users/me/ que devuelve el perfil del usuario autenticado
+    return this.http.get(this._URL + "/users/me/", { headers: this.getHeaders() });
   }
 
   updateUser(data: any) {
-    return this.http.put(this._URL + "/users/" + this.localData.getId(), data, { headers: this.getHeaders() });
+    // Usar el endpoint /users/me/ para actualizar el perfil del usuario autenticado
+    return this.http.put(this._URL + "/users/me/", data, { headers: this.getHeaders() });
   }
 
   getAssignedMunicipal() {
-    return this.http.get(this._URL + "/gerentes-municipio-asignado/" + this.localData.getId(), { headers: this.getHeaders() });
+    // Usar voteradar_user_id si está disponible (usuario mapeado en MySQL)
+    const voteradarUserId = this.localData.getVoteradarUserId();
+    
+    console.log('🔍 ApiService.getAssignedMunicipal - voteradarUserId:', voteradarUserId);
+    
+    if (voteradarUserId !== null && voteradarUserId !== undefined) {
+      // Usuario tiene ID de voteradar-back guardado
+      console.log('✅ ApiService.getAssignedMunicipal - Usando voteradar_user_id:', voteradarUserId);
+      return this.http.get(this._URL + "/gerentes-municipio-asignado/" + voteradarUserId, { headers: this.getHeaders() });
+    }
+    
+    console.warn('⚠️ ApiService.getAssignedMunicipal - NO hay voteradar_user_id, usando fallback');
+    
+    // Si no hay voteradar_user_id, intentar obtenerlo del endpoint /getId
+    // Esto es un fallback para usuarios que hicieron login antes de que se implementara esta funcionalidad
+    return this.getIdOnlineUser().pipe(
+      switchMap((response: any) => {
+        if (response && response.res && response.usuario) {
+          // Guardar el ID obtenido para futuras peticiones
+          this.localData.setVoteradarUserId(response.usuario);
+          return this.http.get(this._URL + "/gerentes-municipio-asignado/" + response.usuario, { headers: this.getHeaders() });
+        } else {
+          // Si no se puede obtener el ID, usar el fallback (puede fallar si es email)
+          const fallbackId = this.localData.getId();
+          return this.http.get(this._URL + "/gerentes-municipio-asignado/" + fallbackId, { headers: this.getHeaders() });
+        }
+      }),
+      catchError((error) => {
+        // Si falla, intentar con el fallback
+        const fallbackId = this.localData.getId();
+        return this.http.get(this._URL + "/gerentes-municipio-asignado/" + fallbackId, { headers: this.getHeaders() });
+      })
+    );
   }
 
   getMunicipalAdmin() {
-    return this.http.get(this._URL + "/municipios-administrador/" + this.localData.getId(), { headers: this.getHeaders() });
+    // Usar voteradar_user_id si está disponible (usuario mapeado en MySQL)
+    const adminId = this.localData.getVoteradarUserIdOrFallback();
+    return this.http.get(this._URL + "/municipios-administrador/" + adminId, { headers: this.getHeaders() });
   }
 
   getZoneGerente() {
-    return this.http.get(this._URL + "/zonas-gerente/" + this.localData.getId(), { headers: this.getHeaders() });
+    // Usar voteradar_user_id si está disponible
+    const gerenteId = this.localData.getVoteradarUserIdOrFallback();
+    return this.http.get(this._URL + "/zonas-gerente/" + gerenteId, { headers: this.getHeaders() });
   }
 
   getDepartmentAdmin() {

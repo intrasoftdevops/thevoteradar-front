@@ -100,10 +100,21 @@ export class SurveyService {
       console.warn('No hay token de autenticación disponible para el servicio de encuestas');
       return null;
     }
-    return new HttpHeaders({
+    
+    // Obtener tenant_id del localStorage o del environment
+    const tenantId = localStorage.getItem('tenant_id') || environment.defaultTenantId;
+    
+    const headers: { [key: string]: string } = {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
-    });
+    };
+    
+    // Agregar X-Tenant-ID si está disponible
+    if (tenantId) {
+      headers['X-Tenant-ID'] = tenantId;
+    }
+    
+    return new HttpHeaders(headers);
   }
 
   getSurveys(): Observable<Survey[]> {
@@ -121,13 +132,6 @@ export class SurveyService {
     }
     
     const url = `${this.apiBaseUrl}/surveys`;
-    console.log('🔍 SurveyService.getSurveys:', {
-      url,
-      surveyApiUrl: this.surveyApiUrl,
-      apiBaseUrl: this.apiBaseUrl,
-      hasToken: !!headers.get('Authorization'),
-      tokenPreview: headers.get('Authorization')?.substring(0, 20) + '...'
-    });
     
     return this.http.get<Survey[]>(url, { headers })
       .pipe(
@@ -326,6 +330,28 @@ export class SurveyService {
       );
   }
 
+  deleteSurvey(surveyId: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
+    return this.http.delete(`${this.apiBaseUrl}/surveys/${surveyId}`, { 
+      headers,
+      observe: 'response',
+      responseType: 'json'
+    })
+      .pipe(
+        catchError(error => {
+          console.error('Error al eliminar encuesta:', error);
+          // Si es un error 405 (Method Not Allowed), dar un mensaje más claro
+          if (error.status === 405) {
+            return throwError(() => new Error('El método DELETE no está permitido. Verifica que el endpoint esté correctamente configurado.'));
+          }
+          return throwError(() => error);
+        })
+      );
+  }
+
   uploadRecipients(surveyId: string, recipients: RecipientImportItem[]): Observable<any> {
     const headers = this.getAuthHeaders();
     if (!headers) {
@@ -416,6 +442,20 @@ export class SurveyService {
       .pipe(
         catchError(error => {
           console.error('Error al obtener respuestas de encuesta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  getSurveyRecipients(surveyId: string): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    if (!headers) {
+      return throwError(() => new Error('No hay token de autenticación disponible'));
+    }
+    return this.http.get<any[]>(`${this.apiBaseUrl}/surveys/${surveyId}/recipients`, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener destinatarios de encuesta:', error);
           return throwError(() => error);
         })
       );

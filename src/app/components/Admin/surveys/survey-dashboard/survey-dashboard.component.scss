@@ -1,3 +1,196 @@
 // Este componente usa principalmente utilidades (Tailwind-like) para alinearse con el resto del panel.
 
+// Mejoras de espaciado y organización
+.survey-actions {
+  min-width: fit-content;
+}
+
+// Asegurar que la tabla tenga espaciado adecuado
+table {
+  margin: 0;
+}
+
+// Mejorar el espaciado de las filas
+tbody tr {
+  transition: background-color 0.15s ease-in-out;
+}
+
+// Asegurar que el contenedor de la tabla tenga padding adecuado
+.overflow-x-auto {
+  padding: 0;
+  overflow-y: visible !important;
+  overflow-x: auto !important;
+  
+  // Agregar padding cuando hay un dropdown abierto
+  &.has-open-dropdown {
+    padding-bottom: 250px !important;
+    margin-bottom: -200px !important;
+  }
+}
+
+// Permitir que el dropdown se expanda fuera del contenedor
+.survey-table-container {
+  overflow: visible !important;
+  position: relative;
+  
+  > div {
+    overflow-y: visible !important;
+  }
+  
+  .overflow-x-auto {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+  }
+  
+  table {
+    position: relative;
+  }
+  
+  tbody {
+    position: relative;
+  }
+}
+
+// Asegurar que la celda de acciones permita que el dropdown se vea
+.survey-actions-cell {
+  position: relative !important;
+  overflow: visible !important;
+  z-index: 1;
+}
+
+// Estilos para el dropdown
+.survey-dropdown {
+  position: absolute !important;
+  z-index: 9999 !important;
+  margin-top: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+// Asegurar que el contenedor de acciones no corte el dropdown
+.survey-actions {
+  position: relative !important;
+  z-index: 10;
+  overflow: visible !important;
+}
+
+// Estilos para el modal de confirmación de eliminación
+::ng-deep .swal2-popup-custom {
+  text-align: left !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .swal2-html-container-custom {
+  text-align: left !important;
+  margin: 0 !important;
+  padding: 0 2rem 2rem 2rem !important;
+}
+
+::ng-deep .swal2-title-custom {
+  padding: 2rem 2rem 0 2rem !important;
+}
+
+::ng-deep .swal2-actions-custom {
+  margin: 0 !important;
+  padding: 1.5rem 2rem 2rem 2rem !important;
+  gap: 0.75rem !important;
+  justify-content: flex-end !important;
+}
+
+::ng-deep .swal2-confirm-custom {
+  background: linear-gradient(to right, #dc2626, #b91c1c) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+  transition: all 0.2s ease !important;
+  
+  &:hover {
+    background: linear-gradient(to right, #b91c1c, #991b1b) !important;
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4) !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  &:active {
+    transform: translateY(0) !important;
+  }
+}
+
+::ng-deep .swal2-cancel-custom {
+  background: white !important;
+  color: #6b7280 !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s ease !important;
+  
+  &:hover {
+    background: #f9fafb !important;
+    border-color: #d1d5db !important;
+    color: #374151 !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  &:active {
+    transform: translateY(0) !important;
+  }
+}
+
+// Espaciado consistente para encabezados y datos de las columnas
+.survey-column-header {
+  padding: 0.75rem 0 !important;
+  
+  &:first-child {
+    padding-left: 2.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+  
+  &:nth-child(2) {
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+  }
+  
+  &:nth-child(3) {
+    padding-left: 2.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+  
+  &:nth-child(4),
+  &:nth-child(5) {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
+.survey-column-data {
+  padding: 1rem 0 !important;
+  
+  &:first-child {
+    padding-left: 2.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+  
+  &:nth-child(2) {
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+  }
+  
+  &:nth-child(3) {
+    padding-left: 2.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+  
+  &:nth-child(4),
+  &:nth-child(5) {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
 

@@ -10,6 +10,8 @@ import { environment } from '../../../environments/environment';
 import { ThemeService } from '../../services/theme/theme.service';
 import { Theme } from '../../core/models/theme.model';
 import { BackofficeAuthService } from '../../services/backoffice-auth/backoffice-auth.service';
+import { TenantService } from '../../core/services/tenant.service';
+import { getTenantIdFromCode } from '../../core/models/tenant.model';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +38,7 @@ export class LoginComponent implements OnInit {
   public remoteUser: any = null;
   public missingFields: string[] = [];
   public isLoading: boolean = false;
+  public loginEmail: string | null = null; // Email usado para el login inicial
 
   public version: string = packageJson.version;
   public isDevelopmentMode: boolean = this.checkDevelopmentMode();
@@ -66,11 +69,12 @@ export class LoginComponent implements OnInit {
     private apiService: ApiService, 
     private router: Router, 
     private fb: FormBuilder, 
-    private alertService: AlertService, 
-    private localData: LocalDataService, 
+    private alertService: AlertService,
+    private localData: LocalDataService,
     private permissionsService: NgxPermissionsService,
     private themeService: ThemeService,
-    private backofficeAuth: BackofficeAuthService
+    private backofficeAuth: BackofficeAuthService,
+    private tenantService: TenantService
   ) {
     
     this.themeService.getCurrentTheme().subscribe(theme => {
@@ -121,15 +125,10 @@ export class LoginComponent implements OnInit {
     
     if (tenantId) {
       this.detectedTenantCode = tenantId;
-      console.log('🔍 Tenant detectado desde dominio:', tenantId);
-      console.log('🌐 Hostname:', window.location.hostname);
+      // Aplicar el tema correspondiente usando ThemeService
+      this.themeService.detectAndApplyThemeFromDomain();
     } else {
       this.detectedTenantCode = environment.defaultTenantId || null;
-      if (this.detectedTenantCode) {
-        console.log('⚠️ No se detectó tenant desde dominio, usando environment.defaultTenantId:', this.detectedTenantCode);
-      } else {
-        console.warn('⚠️ No se detectó tenant desde dominio y no hay defaultTenantId configurado');
-      }
     }
   }
 
@@ -141,13 +140,25 @@ export class LoginComponent implements OnInit {
     return input.includes('@') && input.includes('.');
   }
 
-  onSubmit() {
+  onSubmit(event?: Event) {
+    // SIEMPRE prevenir el comportamiento por defecto del formulario (recargar página)
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Marcar todos los campos como "touched" para mostrar errores de validación
+    if (this.loginForm) {
+      Object.keys(this.loginForm.controls).forEach(key => {
+        this.loginForm.get(key)?.markAsTouched();
+      });
+    }
+    
     if (this.loginForm.valid) {
       this.isLoading = true;
 
       const input = this.loginForm.value.telefono?.trim() || '';
-      const password = this.loginForm.value.password;
-
+      const password = this.loginForm.value.password || '';
 
       if (this.isEmail(input)) {
         this.handleAdminLogin(input, password);
@@ -155,13 +166,17 @@ export class LoginComponent implements OnInit {
       }
 
       if (this.showOtpInput && this.loginForm.value.otp) {
-        this.handleOtpVerification();
+        // Crear evento sintético si no existe
+        const eventToUse = event || new Event('submit');
+        this.handleOtpVerification(eventToUse);
         return;
       }
 
       
       if (this.showProfileCompletion) {
-        this.handleProfileCompletion();
+        // Crear evento sintético si no existe
+        const eventToUse = event || new Event('submit');
+        this.handleProfileCompletion(eventToUse);
         return;
       }
 
@@ -186,139 +201,223 @@ export class LoginComponent implements OnInit {
         return;
       }
       
-      const loginData: any = {
-        tenant_code: tenantCode,
-        telefono: this.loginForm.value.telefono,
-        password: this.loginForm.value.password || '', // Password siempre requerido
-        otp: this.loginForm.value.otp || null
-      };
-
-      this.apiService.tenantLogin(loginData).subscribe({
-        next: (resp: any) => {
+      // IMPORTANTE: Convertir el tenant code (ej: 'juan-duque') al tenant_id numérico (ej: '475757')
+      // que el backend espera, y guardarlo en localStorage ANTES de hacer login
+      // Esto asegura que cuando se verifique el OTP, se use el mismo tenant_id
+      const tenantIdForBackend = getTenantIdFromCode(tenantCode);
+      localStorage.setItem('temp_tenant_id_for_login', tenantIdForBackend);
+      
+      // Para testigos: usar el endpoint del backoffice (permite login con teléfono)
+      // El endpoint /users/token ahora acepta teléfono como username
+      const phoneOrEmail = this.loginForm.value.telefono?.trim() || '';
+      // password ya está declarado arriba en la línea 145
+      
+      // Usar backofficeAuth.login que acepta teléfono o email como username
+      this.backofficeAuth.login(phoneOrEmail, password).subscribe({
+        next: (response: any) => {
           this.isLoading = false;
           
-          
-          if (resp.res === true) {
-            this.handleSuccessfulLogin(resp);
-            return;
-          }
-
-          
-          if (resp.requires_otp === true) {
+          // Si requiere completar perfil y OTP
+          if (response.requires_profile_completion && response.requires_otp) {
+            this.showOtpInput = true;
+            this.showProfileCompletion = false;
+            this.verificationId = response.verification_id || null;
+            this.remoteUser = response.remote_user || {};
+            this.missingFields = response.missing_fields || [];
+            this.loginEmail = phoneOrEmail.includes('@') ? phoneOrEmail : (response.remote_user?.email || phoneOrEmail);
             
+            console.log('✅ Login backoffice - verificationId:', this.verificationId, 'remoteUser:', this.remoteUser, 'loginEmail:', this.loginEmail);
+            this.alertService.infoAlert(response.message || 'Es tu primera vez iniciando sesión. Por favor completa tus datos y verifica tu teléfono con el código OTP enviado.');
+              return;
+            }
+            
+          // Si solo requiere OTP (sin completar perfil)
+          if (response.requires_otp && !response.requires_profile_completion) {
             this.showOtpInput = true;
             this.showProfileCompletion = false; 
-            this.verificationId = resp.verification_id;
-            this.remoteUser = resp.remote_user || {}; 
-            this.missingFields = resp.missing_fields || [];
+            this.verificationId = response.verification_id || null;
+            this.remoteUser = response.remote_user || {};
+            this.loginEmail = phoneOrEmail.includes('@') ? phoneOrEmail : (response.remote_user?.email || phoneOrEmail);
             
-            
-            setTimeout(() => {
-              this.alertService.infoAlert(resp.message || 'Ingresa el código OTP enviado a tu WhatsApp');
-            }, 100);
+            this.alertService.infoAlert(response.message || 'Ingresa el código OTP enviado a tu WhatsApp');
             return;
           }
 
-          
-          if (resp.requires_profile_completion === true && !resp.requires_otp) {
+          // Si solo requiere completar perfil (sin OTP)
+          if (response.requires_profile_completion && !response.requires_otp) {
             this.showOtpInput = false;
             this.showProfileCompletion = true;
-            this.verificationId = resp.verification_id;
-            this.remoteUser = resp.remote_user || {};
-            this.missingFields = resp.missing_fields || [];
+            this.verificationId = response.verification_id || null;
+            this.remoteUser = response.remote_user || {};
+            this.missingFields = response.missing_fields || [];
+            this.loginEmail = phoneOrEmail.includes('@') ? phoneOrEmail : (response.remote_user?.email || phoneOrEmail);
             this.initProfileForm(); 
-            this.alertService.infoAlert(resp.message || 'Necesitamos completar algunos datos');
+            this.alertService.infoAlert(response.message || 'Necesitamos completar algunos datos');
             return;
           }
 
-          
-          if (resp.requires_onboarding === true) {
-            this.showOtpInput = true;
-            this.verificationId = resp.verification_id;
-            this.remoteUser = resp.remote_user || {};
-            this.alertService.infoAlert(resp.message || 'Te enviamos un código OTP para iniciar el registro');
+          // Login exitoso sin requerir completar perfil
+          if (response.access_token) {
+            // Guardar token y datos del usuario
+            this.localData.setBackofficeToken(response.access_token);
+            if (response.user) {
+              this.localData.setBackofficeUser(response.user);
+              this.localData.setToken(response.access_token);
+              
+              // Mapear rol
+              const role = response.user?.role?.toLowerCase();
+              let rolId = 1;
+              if (role === 'gerente') rolId = 2;
+              else if (role === 'supervisor') rolId = 3;
+              else if (role === 'coordinador') rolId = 4;
+              else if (role === 'testigo') rolId = 5;
+              else if (role === 'admin' || role === 'super_admin') rolId = 1;
+              
+              this.localData.setRol(rolId);
+              this.localData.setId(response.user.email || phoneOrEmail || '');
+              
+              const tenantIdToStore = response.user?.tenant_id || 
+                                         this.detectedTenantCode || 
+                                         environment.defaultTenantId;
+              localStorage.setItem('tenant_id', tenantIdToStore);
+              
+              this.themeService.loadThemeFromTenantId();
+              this.permissionsService.addPermission([rolId.toString()]);
+              
+              this.redirectByRole(rolId);
+              this.alertService.successAlert(`Bienvenido, ${response.user.role || 'usuario'}`);
+            } else {
+              this.alertService.errorAlert('Error: No se recibió información del usuario');
+            }
             return;
           }
 
-          
-          this.alertService.errorAlert(resp.message || 'Error al iniciar sesión');
+          // Si no hay access_token ni requiere completar perfil, mostrar error
+          this.alertService.errorAlert(response.message || 'Error al iniciar sesión');
         },
         error: (error) => {
           this.isLoading = false;
-          this.alertService.errorAlert(error.error?.message || 'Error al conectar con el servidor');
+          console.error('❌ Error en login:', error);
+          
+          // IMPORTANTE: NO resetear el formulario, mantener los valores ingresados
+          // Los valores del formulario se mantienen para que el usuario pueda corregirlos
+          
+          let errorMessage = 'Error al iniciar sesión';
+          
+          // Verificar si es un error de conexión
+          if (error.status === 0 || error.status === undefined) {
+            errorMessage = 'Error al conectar con el servidor. Verifica que el servidor esté en ejecución y que la URL sea correcta.';
+          } else if (error.error?.detail) {
+            errorMessage = error.error.detail;
+          } else if (error.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error.message) {
+            errorMessage = error.message;
+          } else if (error.status === 401) {
+            errorMessage = 'Credenciales incorrectas. Verifica tu teléfono y contraseña.';
+          } else if (error.status === 404) {
+            errorMessage = 'Endpoint no encontrado. Verifica la configuración del servidor.';
+          } else if (error.status >= 500) {
+            errorMessage = 'Error del servidor. Por favor, intenta más tarde.';
+          }
+          
+          // Mostrar error sin recargar la página ni resetear el formulario
+          this.alertService.errorAlert(errorMessage);
         }
       });
     } else {
+      // El formulario no es válido, mostrar mensaje de error
+      const missingFields: string[] = [];
+      if (this.loginForm.get('telefono')?.invalid) {
+        missingFields.push('Teléfono o Usuario');
+        }
+      if (this.loginForm.get('password')?.invalid) {
+        missingFields.push('Contraseña');
+      }
+      
+      if (missingFields.length > 0) {
+        this.alertService.errorAlert(`Por favor completa los siguientes campos: ${missingFields.join(', ')}`);
+    } else {
       this.alertService.errorAlert("No pueden existir campos vacíos.");
+    }
     }
   }
 
-  handleOtpVerification() {
+  handleOtpVerification(event: Event) {
+    // Prevenir el comportamiento por defecto del formulario (recargar página)
+    event.preventDefault();
+    event.stopPropagation();
+    
     if (!this.loginForm.value.otp || this.loginForm.value.otp.length !== 6) {
       this.alertService.errorAlert("El código OTP debe tener 6 dígitos");
       this.isLoading = false;
       return;
     }
 
-    // Validar que se haya detectado un tenant
-    const tenantCode = this.detectedTenantCode || environment.defaultTenantId;
-    if (!tenantCode) {
+    this.isLoading = true;
+
+    // Validar que tenemos los datos necesarios para el flujo de backoffice
+    if (!this.verificationId) {
+      console.error('❌ No hay verificationId disponible');
+      this.alertService.errorAlert('Error: No se encontró el ID de verificación. Por favor, intenta iniciar sesión nuevamente.');
       this.isLoading = false;
-      this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant. Por favor, accede desde un dominio válido.');
+      return;
+    }
+
+    if (!this.remoteUser) {
+      console.error('❌ No hay remoteUser disponible');
+      this.alertService.errorAlert('Error: No se encontró la información del usuario. Por favor, intenta iniciar sesión nuevamente.');
+      this.isLoading = false;
       return;
     }
     
-    const loginData = {
-      tenant_code: tenantCode,
-      telefono: this.loginForm.value.telefono,
-      password: this.loginForm.value.password || '', // Mantener password para verificación
-      otp: this.loginForm.value.otp
-    };
-
-    this.apiService.tenantLogin(loginData).subscribe({
+    // Flujo de backoffice: verificar el OTP antes de mostrar el formulario
+    console.log('✅ Verificando OTP - Flujo de backoffice');
+    console.log('🔍 verificationId:', this.verificationId);
+    console.log('🔍 remoteUser:', this.remoteUser);
+    console.log('🔍 OTP ingresado:', this.loginForm.value.otp);
+    
+    // Verificar el OTP con el backend antes de mostrar el formulario
+    this.backofficeAuth.verifyOtp(this.loginForm.value.otp, this.verificationId).subscribe({
       next: (resp: any) => {
-        this.isLoading = false;
-        
-        
         if (resp.res === true) {
-          this.handleSuccessfulLogin(resp);
-          return;
-        }
+          // OTP verificado correctamente, guardar y mostrar formulario
+          this.verifiedOtp = this.loginForm.value.otp;
 
+          try {
+            // Inicializar el formulario primero
+            this.initProfileForm();
         
-        if (resp.requires_profile_completion === true && !resp.requires_otp) {
+            // Solo mostrar el formulario si la inicialización fue exitosa
           this.showOtpInput = false;
           this.showProfileCompletion = true;
-          this.verificationId = resp.verification_id;
-          this.verifiedOtp = this.loginForm.value.otp; 
-          this.remoteUser = resp.remote_user || {};
-          this.missingFields = resp.missing_fields || [];
-          this.initProfileForm(); 
-          this.alertService.infoAlert(resp.message || 'Por favor completa los siguientes datos');
-          return;
+            // Usar infoAlert en lugar de successAlert para evitar que recargue la página
+            this.alertService.infoAlert('OTP verificado correctamente. Por favor completa tus datos para continuar.');
+            this.isLoading = false;
+          } catch (error) {
+            console.error('❌ Error al inicializar formulario de perfil:', error);
+            this.alertService.errorAlert('Error al inicializar el formulario. Por favor intenta nuevamente.');
+            this.isLoading = false;
+            // No cambiar el estado si hay un error
         }
-
-        
-        if (resp.requires_otp === true) {
-          this.showOtpInput = true;
-          this.showProfileCompletion = false;
-          this.verificationId = resp.verification_id;
-          this.remoteUser = resp.remote_user || {};
-          this.alertService.successAlert(resp.message || 'Ingresa el código OTP enviado a tu WhatsApp');
-          return;
+        } else {
+          this.alertService.errorAlert(resp.message || 'Error al verificar el OTP');
+          this.isLoading = false;
         }
-
-        
-        this.alertService.errorAlert(resp.message || 'Código OTP inválido');
       },
       error: (error) => {
+        console.error('❌ Error al verificar OTP:', error);
+        const errorMessage = error.error?.detail || error.error?.message || 'Código OTP incorrecto o expirado';
+        this.alertService.errorAlert(errorMessage);
         this.isLoading = false;
-        this.alertService.errorAlert(error.error?.message || 'Error al verificar OTP');
       }
     });
   }
 
-  handleProfileCompletion() {
+  handleProfileCompletion(event: Event) {
+    // Prevenir el comportamiento por defecto del formulario (recargar página)
+    event.preventDefault();
+    event.stopPropagation();
     
     if (!this.profileForm) {
       this.initProfileForm();
@@ -387,9 +486,21 @@ export class LoginComponent implements OnInit {
       return;
     }
     
+    // Obtener teléfono: primero del remoteUser (viene del backend), luego del profileForm, NUNCA del loginForm
+    // El loginForm.value.telefono puede contener el email si el usuario ingresó email en lugar de teléfono
+    const telefonoFromRemoteUser = this.remoteUser?.phone || this.remoteUser?.telefono;
+    const telefonoFromProfile = this.profileForm?.value?.telefono;
+    const telefonoToUse = telefonoFromRemoteUser || telefonoFromProfile || '';
+    
+    if (!telefonoToUse) {
+      this.alertService.errorAlert('Error: No se encontró el teléfono del usuario. Por favor, intenta iniciar sesión nuevamente.');
+      this.isLoading = false;
+      return;
+    }
+    
     const profileData: any = {
       tenant_code: tenantCode,
-      telefono: (this.loginForm.value.telefono || '').toString().trim(),
+      telefono: telefonoToUse.toString().trim(),
       otp: (otp || '').toString().trim(),
       nombres: (this.profileForm.value.nombres || '').toString().trim(),
       apellidos: (this.profileForm.value.apellidos || '').toString().trim(),
@@ -421,8 +532,9 @@ export class LoginComponent implements OnInit {
     }
 
     
-    if (this.profileForm.value.email?.trim()) {
-      profileData.email = this.profileForm.value.email.trim();
+    // El email del formulario se envía como email_optional (opcional)
+    if (this.profileForm.value.email?.trim() && this.profileForm.value.email.includes('@')) {
+      profileData.email_optional = this.profileForm.value.email.trim();
     }
     
     
@@ -454,50 +566,89 @@ export class LoginComponent implements OnInit {
     }
 
     
+    // Usar endpoint de backoffice (siempre es flujo de backoffice ahora)
+    // Usar el email del login inicial, o el del formulario, o el de remoteUser
+    const emailToUse = this.loginEmail || this.profileForm.value.email || this.remoteUser?.email;
     
-    this.apiService.completeProfile(profileData).subscribe({
-      next: (resp: any) => {
-        this.isLoading = false;
-        if (resp.res === true) {
-          this.handleSuccessfulLogin(resp);
-        } else {
-          this.alertService.errorAlert(resp.message || 'Error al completar el perfil');
-        }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        
-        
-        console.error('Error completo al completar perfil:', error);
-        console.error('Error details:', error.error);
-        console.error('Validation errors:', error.error?.errors);
-        
-        
-        let errorMessage = 'Error al completar el perfil';
-        
-        if (error.error?.errors) {
-          
-          const validationErrors = error.error.errors;
-          const errorMessages: string[] = [];
-          
-          Object.keys(validationErrors).forEach(field => {
-            const fieldErrors = validationErrors[field];
-            if (Array.isArray(fieldErrors)) {
-              fieldErrors.forEach((msg: string) => {
-                errorMessages.push(`${this.getFieldName(field)}: ${msg}`);
-              });
-            } else {
-              errorMessages.push(`${this.getFieldName(field)}: ${fieldErrors}`);
+    if (!emailToUse) {
+      this.alertService.errorAlert('Error: No se encontró el email del usuario. Por favor, intenta iniciar sesión nuevamente.');
+      this.isLoading = false;
+      return;
+    }
+    
+    const backofficeProfileData: any = {
+      email: emailToUse,
+        otp: otp || '',
+        verification_id: this.verificationId || undefined,
+        nombres: profileData.nombres,
+        apellidos: profileData.apellidos,
+        numero_documento: profileData.numero_documento,
+        password: profileData.password,
+        password_confirmation: profileData.password_confirmation,
+      telefono: profileData.telefono  // Ya se obtuvo correctamente arriba
+    };
+    
+    // Agregar email_optional si el usuario ingresó un email en el formulario
+    if (profileData.email_optional && profileData.email_optional.includes('@')) {
+      backofficeProfileData.email_optional = profileData.email_optional;
+    }
+    
+    console.log('📤 Enviando datos de perfil completado:', { ...backofficeProfileData, password: '***', password_confirmation: '***' });
+      
+      this.backofficeAuth.completeProfile(backofficeProfileData).subscribe({
+        next: (resp: any) => {
+          this.isLoading = false;
+          if (resp.access_token) {
+            // Validar que resp.user existe
+            if (!resp.user) {
+              console.error('❌ Respuesta sin información de usuario:', resp);
+              this.alertService.errorAlert('Error: No se recibió información del usuario en la respuesta');
+              return;
             }
-          });
-          
-          errorMessage = errorMessages.length > 0 
-            ? errorMessages.join('\n') 
-            : 'Por favor verifica que todos los campos estén completos correctamente';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        
+            
+            // Guardar token y datos del usuario
+            this.localData.setBackofficeToken(resp.access_token);
+            this.localData.setBackofficeUser(resp.user);
+            this.localData.setToken(resp.access_token);
+            
+            // Mapear rol
+            const role = resp.user?.role?.toLowerCase();
+            let rolId = 1;
+            if (role === 'gerente') rolId = 2;
+            else if (role === 'supervisor') rolId = 3;
+            else if (role === 'coordinador') rolId = 4;
+            else if (role === 'testigo') rolId = 5;
+            else if (role === 'admin' || role === 'super_admin') rolId = 1;
+            
+            this.localData.setRol(rolId);
+            this.localData.setId(resp.user?.email || this.loginEmail || '');
+            
+            const tenantIdToStore = resp.user?.tenant_id || 
+                                       this.detectedTenantCode || 
+                                       environment.defaultTenantId;
+            localStorage.setItem('tenant_id', tenantIdToStore);
+            // Eliminar temp_tenant_id_for_login después de completar el perfil exitosamente
+            localStorage.removeItem('temp_tenant_id_for_login');
+            
+            this.themeService.loadThemeFromTenantId();
+            this.permissionsService.addPermission([rolId.toString()]);
+            
+            this.redirectByRole(rolId);
+            this.alertService.successAlert('Perfil completado correctamente. Bienvenido!');
+            
+            // Limpiar estado
+            this.showProfileCompletion = false;
+            this.showOtpInput = false;
+            this.verificationId = null;
+            this.remoteUser = null;
+          } else {
+            this.alertService.errorAlert(resp.message || 'Error al completar el perfil');
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Error completo al completar perfil (backoffice):', error);
+          const errorMessage = error.error?.detail || error.error?.message || 'Error al completar el perfil';
         this.alertService.errorAlert(errorMessage);
       }
     });
@@ -516,11 +667,46 @@ export class LoginComponent implements OnInit {
   public profileForm: FormGroup | null = null;
 
   initProfileForm() {
+    try {
+      console.log('🔧 Inicializando formulario de perfil...');
+      console.log('🔧 remoteUser:', this.remoteUser);
+      console.log('🔧 user role:', this.remoteUser?.role);
+      
+      // Autocompletar desde remoteUser si tiene datos de users (name, lastname, numero_documento)
+      // Los gerentes, supervisores, coordinadores también tienen datos en users cuando fueron creados
+      const hasUserProfileData = this.remoteUser?.name || this.remoteUser?.nombres || 
+                                  this.remoteUser?.lastname || this.remoteUser?.apellidos ||
+                                  this.remoteUser?.numero_documento;
+      
+      let nombres = '';
+      let apellidos = '';
+      let email = '';
+      let numeroDocumento = '';
+      let telefono = '';
+      
+      if (hasUserProfileData) {
+        // Si tiene datos de users (name, lastname, numero_documento), usarlos para autocompletar
+        nombres = this.remoteUser?.nombres || this.remoteUser?.name || '';
+        apellidos = this.remoteUser?.apellidos || this.remoteUser?.lastname || '';
+        email = this.remoteUser?.email || '';
+        numeroDocumento = this.remoteUser?.numero_documento || '';
+        telefono = this.remoteUser?.telefono || this.remoteUser?.phone || '';
+        console.log('🔧 Datos de users detectados - autocompletando:', { nombres, apellidos, numeroDocumento });
+      } else {
+        // Si no tiene datos de users, solo usar datos básicos
+        email = this.remoteUser?.email || '';
+        telefono = this.remoteUser?.phone || this.remoteUser?.telefono || '';
+        console.log('🔧 No hay datos de users, solo datos básicos');
+      }
+      
+      console.log('🔧 Datos del formulario:', { nombres, apellidos, email, numeroDocumento, telefono });
+    
     this.profileForm = this.fb.group({
-      nombres: [this.remoteUser?.nombres || '', Validators.required],
-      apellidos: [this.remoteUser?.apellidos || '', Validators.required],
-      numero_documento: [this.remoteUser?.numero_documento || '', Validators.required],
-      email: [this.remoteUser?.email || ''],
+      nombres: [nombres, Validators.required],
+      apellidos: [apellidos, Validators.required],
+      numero_documento: [numeroDocumento, Validators.required],
+      email: [email],
+      telefono: [telefono],
       password: ['', [Validators.required, Validators.minLength(6)]],
       password_confirmation: ['', Validators.required],
       genero_id: [this.remoteUser?.genero_id || ''],
@@ -530,6 +716,14 @@ export class LoginComponent implements OnInit {
     }, {
       validators: this.passwordMatchValidator
     });
+      
+      console.log('✅ Formulario de perfil inicializado correctamente');
+    } catch (error) {
+      console.error('❌ Error al inicializar formulario de perfil:', error);
+      this.alertService.errorAlert('Error al inicializar el formulario. Por favor intenta nuevamente.');
+      // No lanzar el error para evitar que se propague y resetee el componente
+      // El error ya se maneja en handleOtpVerification()
+    }
   }
 
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -569,15 +763,24 @@ export class LoginComponent implements OnInit {
       return;
     }
     
+    // Detectar si es un usuario de backoffice (tiene email en remoteUser)
+    const isBackofficeUser = this.remoteUser?.email;
+    
     const otpData = {
       tenant_code: tenantCode,
       telefono: this.loginForm.value.telefono,
+      email: this.remoteUser?.email,
       user_data: this.remoteUser || {}
     };
 
-    this.apiService.requestOtp(otpData).subscribe({
+    // Usar backofficeAuthService si es usuario de backoffice, sino usar apiService (voteradar-back)
+    const otpService = isBackofficeUser 
+      ? this.backofficeAuth.requestOtp(otpData)
+      : this.apiService.requestOtp(otpData);
+
+    otpService.subscribe({
       next: (resp: any) => {
-        if (resp.res === true) {
+        if (resp.res === true || resp.verification_id) {
           this.verificationId = resp.verification_id;
           this.alertService.successAlert('Código OTP reenviado correctamente');
         } else {
@@ -598,6 +801,7 @@ export class LoginComponent implements OnInit {
     this.remoteUser = null;
     this.missingFields = [];
     this.profileForm = null;
+    this.loginEmail = null;
     this.loginForm.patchValue({ otp: '' });
   }
 
@@ -617,14 +821,17 @@ export class LoginComponent implements OnInit {
   }
 
   handleAdminLogin(email: string, password: string) {
-    const tenantIdToUse = this.detectedTenantCode || environment.defaultTenantId;
+    const tenantCode = this.detectedTenantCode || environment.defaultTenantId;
     
-    if (!tenantIdToUse) {
+    if (!tenantCode) {
       console.error('❌ No se pudo determinar el tenant_id para el login');
       this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant');
       this.isLoading = false;
       return;
     }
+    
+    // Convertir tenant code (ej: 'juan-duque') al tenant_id numérico (ej: '1062885')
+    const tenantIdToUse = getTenantIdFromCode(tenantCode);
     
     localStorage.setItem('temp_tenant_id_for_login', tenantIdToUse);
     
@@ -632,18 +839,65 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         
-        if (!this.backofficeAuth.isAdmin(response)) {
-          console.warn('LoginComponent - Usuario no es admin, abortando');
+        // Si requiere completar perfil y OTP
+        if (response.requires_profile_completion && response.requires_otp) {
+          this.showOtpInput = true;
+          this.showProfileCompletion = false;
+          this.verificationId = response.verification_id || null;
+          this.remoteUser = response.remote_user || {};
+          this.missingFields = response.missing_fields || [];
+          // Guardar el email del login para usarlo después
+          this.loginEmail = email;
+          console.log('✅ Login backoffice - verificationId:', this.verificationId, 'remoteUser:', this.remoteUser, 'loginEmail:', this.loginEmail);
+          this.alertService.infoAlert(response.message || 'Es tu primera vez iniciando sesión. Por favor completa tus datos y verifica tu teléfono con el código OTP enviado.');
+          // NO eliminar temp_tenant_id_for_login aquí - se necesita para completar el perfil
+          // Se eliminará después de completar el perfil exitosamente
+          return;
+        }
+        
+        // Si no tiene token, es porque requiere completar perfil
+        if (!response.access_token) {
+          console.warn('LoginComponent - Respuesta sin token, requiere completar perfil');
           localStorage.removeItem('temp_tenant_id_for_login');
           return;
         }
 
-        // Guardar token y datos del usuario
+        // Verificar que response.user existe
+        if (!response.user) {
+          console.error('LoginComponent - Respuesta sin información de usuario');
+          this.alertService.errorAlert('Error: No se recibió información del usuario');
+          localStorage.removeItem('temp_tenant_id_for_login');
+          return;
+        }
+
+        // Guardar token y datos del usuario de backoffice
         this.localData.setBackofficeToken(response.access_token);
         this.localData.setBackofficeUser(response.user);
         this.localData.setToken(response.access_token);
-        this.localData.setRol(1);
+        
+        // Mapear rol según el role del usuario
+        const role = response.user.role?.toLowerCase();
+        let rolId = 1; // Por defecto admin
+        if (role === 'gerente') rolId = 2;
+        else if (role === 'supervisor') rolId = 3;
+        else if (role === 'coordinador') rolId = 4;
+        else if (role === 'testigo') rolId = 5;
+        else if (role === 'admin' || role === 'super_admin') rolId = 1;
+        
+        this.localData.setRol(rolId);
         this.localData.setId(response.user.email);
+        
+        // Guardar token de voteradar-back si está disponible (usuario creado/mapeado automáticamente)
+        if (response.voteradar_token) {
+          this.localData.setVoteradarToken(response.voteradar_token);
+          
+          if (response.voteradar_user_id) {
+            this.localData.setVoteradarUserId(response.voteradar_user_id);
+            console.log('✅ LoginComponent - voteradar_user_id guardado:', response.voteradar_user_id);
+          } else {
+            console.warn('⚠️ LoginComponent - voteradar_token recibido pero NO voteradar_user_id');
+          }
+        }
         
         // Usar el tenant_id del usuario si viene en la respuesta, 
         // sino usar el detectado del dominio o el del environment
@@ -661,15 +915,11 @@ export class LoginComponent implements OnInit {
           this.themeService.setTheme('default');
         });
         
-        this.permissionsService.addPermission(['1']);
+        this.permissionsService.addPermission([rolId.toString()]);
         
-        
-        setTimeout(() => {
-          const savedRol = this.localData.getRol();
-        }, 100);
-        
-        this.router.navigate(['adminHome']);
-        this.alertService.successAlert('Bienvenido, administrador');
+        // Redirigir según el rol
+        this.redirectByRole(rolId);
+        this.alertService.successAlert(`Bienvenido, ${response.user.role || 'usuario'}`);
       },
       error: (error) => {
         localStorage.removeItem('temp_tenant_id_for_login');
@@ -684,7 +934,7 @@ export class LoginComponent implements OnInit {
 
   redirectByRole(rol: number) {
     if (rol == 1) {
-      this.router.navigate(['estadisticasEquipoAdmin']);
+      this.router.navigate(['/inicio']);
     }
     else if (rol == 2) {
       this.router.navigate(['estadisticasEquipoGerente']);

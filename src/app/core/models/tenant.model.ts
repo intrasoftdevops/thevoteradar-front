@@ -65,6 +65,21 @@ export const TENANT_THEME_MAP: { [key: string]: string } = {
 };
 
 /**
+ * Mapeo de tenant code (string) a tenant_id numérico para el backend
+ * Se usa para convertir el tenant code detectado del dominio al tenant_id que el backend espera
+ */
+export const TENANT_CODE_TO_ID_MAP: { [key: string]: string } = {
+  'daniel-quintero': '475711',
+  'juan-duque': '1062885',
+  'potus-44': '473173',
+  // Si el tenant code ya es numérico, se retorna tal cual
+  '473173': '473173',
+  '475711': '475711',
+  '475757': '475757',
+  '1062885': '1062885',
+};
+
+/**
  * Detecta el tenant ID desde el hostname actual
  */
 export function getTenantFromHostname(hostname: string): string | null {
@@ -101,5 +116,19 @@ export function getTenantFromHostname(hostname: string): string | null {
  */
 export function getThemeForTenant(tenantId: string): string {
   return TENANT_THEME_MAP[tenantId] || 'default';
+}
+
+/**
+ * Convierte un tenant code (ej: 'juan-duque') al tenant_id numérico (ej: '1062885')
+ * que el backend espera. Si el tenant code ya es numérico, lo retorna tal cual.
+ */
+export function getTenantIdFromCode(tenantCode: string): string {
+  // Si ya es numérico, retornarlo tal cual
+  if (/^\d+$/.test(tenantCode)) {
+    return tenantCode;
+  }
+  
+  // Convertir tenant code a tenant_id numérico
+  return TENANT_CODE_TO_ID_MAP[tenantCode] || tenantCode;
 }
 

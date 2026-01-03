@@ -21,7 +21,9 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "lodash"
+              "lodash",
+              "crypto-js",
+              "ngx-lightbox"
             ],
             "outputPath": "dist/voteradar-front",
             "index": "src/index.html",

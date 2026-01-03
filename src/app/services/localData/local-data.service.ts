@@ -108,4 +108,57 @@ export class LocalDataService {
     return token !== null && token !== '' && token !== 'undefined';
   }
 
+  setVoteradarToken(token: string) {
+    const tokenEncrypt = CryptoJS.AES.encrypt(token, environment.key1).toString();
+    localStorage.setItem('voteradar_token', tokenEncrypt);
+  }
+
+  getVoteradarToken(): string | null {
+    try {
+      const encrypted = localStorage.getItem('voteradar_token');
+      if (!encrypted) {
+        return null;
+      }
+      return CryptoJS.AES.decrypt(encrypted, environment.key1).toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+      console.error('Error al obtener token de voteradar:', error);
+      return null;
+    }
+  }
+
+  setVoteradarUserId(userId: number) {
+    localStorage.setItem('voteradar_user_id', userId.toString());
+    console.log('✅ LocalDataService - voteradar_user_id guardado en localStorage:', userId);
+  }
+
+  getVoteradarUserId(): number | null {
+    const userId = localStorage.getItem('voteradar_user_id');
+    const parsed = userId ? parseInt(userId, 10) : null;
+    if (parsed) {
+      console.log('✅ LocalDataService - voteradar_user_id recuperado:', parsed);
+    } else {
+      console.warn('⚠️ LocalDataService - NO se encontró voteradar_user_id en localStorage');
+    }
+    return parsed;
+  }
+
+  /**
+   * Obtiene el ID del usuario para peticiones a voteradar-back.
+   * Si hay voteradar_user_id (usuario mapeado en MySQL), lo usa.
+   * Si no, usa el ID normal (puede ser email u otro identificador).
+   */
+  getVoteradarUserIdOrFallback(): string {
+    const voteradarUserId = this.getVoteradarUserId();
+    if (voteradarUserId !== null && voteradarUserId !== undefined) {
+      return voteradarUserId.toString();
+    }
+    // Fallback al ID normal (puede ser email para usuarios no mapeados)
+    return this.getId();
+  }
+
+  isVoteradarAuthenticated(): boolean {
+    const token = this.getVoteradarToken();
+    return token !== null && token !== '' && token !== 'undefined';
+  }
+
 }

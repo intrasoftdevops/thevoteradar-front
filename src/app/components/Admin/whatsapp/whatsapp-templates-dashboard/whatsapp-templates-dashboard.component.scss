@@ -64,6 +64,14 @@
       color: var(--color-text-primary, #2c3e50);
       font-size: 1.1rem;
       font-weight: 600;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      padding: 0.4em 0.7em;
+      white-space: nowrap;
     }
 
     .card-text {

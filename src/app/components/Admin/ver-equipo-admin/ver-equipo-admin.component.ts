@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
+import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { Filtro } from '../../../models/filtro';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -35,6 +36,7 @@ export class VerEquipoAdminComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
+    private backofficeAdminService: BackofficeAdminService,
     private sanitizer: DomSanitizer,
     private fb: FormBuilder
   ) {}
@@ -138,37 +140,66 @@ export class VerEquipoAdminComponent implements OnInit {
   }
 
   getDepartmentAdmin() {
-    this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      this.dataDepartments = resp;
-      if (this.dataDepartments.length > 0) {
-        this.searchForm
-          .get('departamentos')
-          ?.setValue(this.dataDepartments[0].codigo_unico);
-        this.getSelectedDepartment(this.dataDepartments[0]);
+    this.backofficeAdminService.getDepartamentosAdmin().subscribe({
+      next: (resp: any) => {
+        this.dataDepartments = resp.departamentos || resp || [];
+        if (this.dataDepartments.length > 0) {
+          this.searchForm
+            .get('departamentos')
+            ?.setValue(this.dataDepartments[0].codigo_unico);
+          this.getSelectedDepartment(this.dataDepartments[0]);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al cargar departamentos:', error);
+        this.dataDepartments = [];
       }
     });
   }
 
   getMunicipalAdmin(data: any) {
-    this.apiService.getMunicipalAdmin().subscribe((resp: any) => {
-      this.dataMunicipals = resp.filter(
-        (dataMunicipal: any) =>
-          dataMunicipal.codigo_departamento_votacion == data
-      );
-      if (this.dataMunicipals.length > 0) {
-        this.searchForm
-          .get('municipios')
-          ?.setValue(this.dataMunicipals[0].codigo_unico);
-        this.getSelectedMunicipal(this.dataMunicipals[0]);
+    this.apiService.getMunicipalAdmin().subscribe({
+      next: (resp: any) => {
+        this.dataMunicipals = resp.filter(
+          (dataMunicipal: any) =>
+            dataMunicipal.codigo_departamento_votacion == data
+        );
+        if (this.dataMunicipals.length > 0) {
+          this.searchForm
+            .get('municipios')
+            ?.setValue(this.dataMunicipals[0].codigo_unico);
+          this.getSelectedMunicipal(this.dataMunicipals[0]);
+        } else {
+          this.tabla = 'ninguna';
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al cargar municipios:', error);
+        this.dataMunicipals = [];
+        this.tabla = 'ninguna';
       }
     });
   }
 
   getZonasGerentes(data: any) {
-    this.apiService.getZonasyGerentes(data).subscribe((resp: any) => {
-      const { zonas, gerentes } = resp;
-      this.dataZones = zonas;
-      this.listGerentes = gerentes;
+    this.apiService.getZonasyGerentes(data).subscribe({
+      next: (resp: any) => {
+        const { zonas, gerentes } = resp;
+        this.dataZones = zonas || [];
+        this.listGerentes = gerentes || [];
+        // Si no hay gerentes, mantener la tabla en 'ninguna'
+        if (!gerentes || gerentes.length === 0) {
+          this.tabla = 'ninguna';
+        } else {
+          this.tabla = 'gerente';
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al cargar zonas y gerentes:', error);
+        this.dataZones = [];
+        this.listGerentes = [];
+        this.tabla = 'ninguna';
+      }
     });
   }
 

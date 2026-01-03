@@ -126,9 +126,9 @@
       <div *ngFor="let template of filteredTemplates" class="col-md-6 col-lg-4">
         <div class="card border-0 shadow-sm h-100 template-card">
           <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <h5 class="card-title mb-0">{{ template.template_name }}</h5>
-              <span class="badge" [ngClass]="getStatusBadgeClass(template.status)">
+            <h5 class="card-title mb-2">{{ template.template_name }}</h5>
+            <div class="d-flex justify-content-end mb-3">
+              <span class="badge status-badge" [ngClass]="getStatusBadgeClass(template.status)">
                 {{ getStatusLabel(template.status) }}
               </span>
             </div>
@@ -142,10 +142,6 @@
                 <span class="badge bg-light text-dark" *ngIf="template.category">
                   <i class="fas fa-tag me-1"></i>
                   {{ getCategoryLabel(template.category) }}
-                </span>
-                <span class="badge bg-light text-dark" *ngIf="template.language">
-                  <i class="fas fa-language me-1"></i>
-                  {{ getLanguageDisplay(template.language) }}
                 </span>
                 <span class="badge bg-light text-dark" *ngIf="template.parameters && template.parameters.length > 0">
                   <i class="fas fa-code me-1"></i>

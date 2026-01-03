@@ -95,10 +95,9 @@
         <div class="form-group col-md-6 col-lg-4 pt-2">
           <label class="form-label fw-bold">Teléfono</label>
           <input
-            type="number"
+            type="tel"
             class="form-control border-2 border-dark rounded"
             formControlName="telefono"
-            (keypress)="keypressValidator.keyPressNumbers($event)"
             placeholder="Ingrese número de teléfono"
           />
         </div>
@@ -133,7 +132,7 @@
       CAMBIAR CONTRASEÑA
     </button>
     <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">
-      EDITAR
+      GUARDAR
     </button>
   </div>
 </form>

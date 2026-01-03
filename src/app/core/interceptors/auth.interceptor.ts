@@ -77,11 +77,23 @@ export class AuthInterceptor implements HttpInterceptor {
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
     if (error.status === 401) {
-      // Token expirado o inválido
-      if (!environment.production) {
-        console.warn('🔒 AuthInterceptor: Token inválido o expirado');
+      // Solo hacer logout si el error es del backoffice
+      // No hacer logout para servicios externos (encuestas, etc.)
+      const url = error.url || '';
+      const isBackofficeApi = url.includes(environment.backofficeApiURL || 'localhost:8002');
+      
+      if (isBackofficeApi) {
+        // Token expirado o inválido en nuestro backend
+        if (!environment.production) {
+          console.warn('🔒 AuthInterceptor: Token inválido o expirado en backend principal');
+        }
+        this.authService.logout();
+      } else {
+        // Error 401 de servicio externo (encuestas, etc.) - no hacer logout
+        if (!environment.production) {
+          console.warn('🔒 AuthInterceptor: Error 401 en servicio externo, no haciendo logout');
+        }
       }
-      this.authService.logout();
     }
     
     if (error.status === 403) {

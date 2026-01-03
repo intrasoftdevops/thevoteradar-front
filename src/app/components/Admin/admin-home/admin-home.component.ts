@@ -130,8 +130,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('🚀 AdminHome - Inicializando componente');
-    
     // Cargar todos los datos de manera paralela pero con retry logic
     this.loadAllDataWithRetry();
   }
@@ -140,13 +138,11 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
    * Carga todos los datos con retry logic para mayor estabilidad
    */
   loadAllDataWithRetry(): void {
-    console.log('🔄 AdminHome - Iniciando carga de todos los datos con retry logic...');
     
     // Preparar todas las peticiones con retry y manejo de errores individual
     const stats$ = this.backofficeService.getUserStatistics().pipe(
       retry(2), // Reintentar 2 veces si falla
       tap((statistics) => {
-        console.log('✅ AdminHome - Estadísticas recibidas:', statistics);
         this.stats.totalUsers = statistics.total_users;
         if (statistics.users_by_city) {
           this.processCityChartData(statistics.users_by_city);
@@ -163,7 +159,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
     const leaders$ = this.backofficeService.getGlobalRanking({ limit: 5 }).pipe(
       retry(2),
       tap((response) => {
-        console.log('✅ AdminHome - Líderes recibidos:', response);
         this.leaders = (response.leaderboard || []).slice(0, 5).map((user) => ({
           user_id: user.phone || '',
           name: `${user.name || ''} ${user.lastname || ''}`.trim() || 'Usuario',
@@ -183,7 +178,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
     const challenges$ = this.apiService.getMyChallenges().pipe(
       retry(2),
       tap((response: ChallengeApiResponse[]) => {
-        console.log('✅ AdminHome - Challenges recibidos:', response);
         const activeChallenges = response.filter((c) => c.status === 'active');
         this.challenges = activeChallenges
           .sort((a, b) => {
@@ -218,7 +212,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
     const surveys$ = this.surveyService.getSurveys().pipe(
       retry(2),
       tap((surveys) => {
-        console.log('✅ AdminHome - Encuestas recibidas:', surveys);
         const activeSurveys = (surveys || []).filter(s => this.isSurveyActiveOrPublished(s));
 
         this.recentSurveys = activeSurveys
@@ -238,7 +231,10 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
         this.stats.totalSurveys = surveys.length;
       }),
       catchError((err) => {
-        console.error('❌ AdminHome - Error al cargar encuestas:', err);
+        // Solo loguear errores que no sean 401 (esperados si el usuario no tiene permisos)
+        if (err.status !== 401) {
+          console.error('❌ AdminHome - Error al cargar encuestas:', err);
+        }
         this.recentSurveys = [];
         this.surveysError = 'No se pudieron cargar las encuestas';
         return of(null);
@@ -248,7 +244,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
     const ranking$ = this.backofficeService.getGlobalRanking({ limit: 100 }).pipe(
       retry(2),
       tap((response) => {
-        console.log('✅ AdminHome - Ranking para puntos recibido');
         this.stats.totalPoints = (response.leaderboard || []).reduce((sum, user) => sum + user.points, 0);
       }),
       catchError((err) => {
@@ -278,14 +273,12 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
         this.leadersLoading = false;
         this.challengesLoading = false;
         this.surveysLoading = false;
-        console.log('✅ AdminHome - Todas las peticiones completadas');
         this.cdr.detectChanges();
       })
     );
 
     const sub = allData$.subscribe({
       next: (results) => {
-        console.log('✅ AdminHome - Todos los datos cargados:', results);
         this.loadRankings(); // Cargar rankings interactivos después
       },
       error: (err) => {
@@ -298,7 +291,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('🛑 AdminHome - Destruyendo componente, limpiando suscripciones');
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
@@ -307,11 +299,8 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
    * Procesar datos de ciudades para el pie chart
    */
   processCityChartData(usersByCity: Record<string, number>): void {
-    console.log('📊 AdminHome - Procesando users_by_city:', usersByCity);
-    
     // Validar que el objeto no esté vacío
     if (!usersByCity || Object.keys(usersByCity).length === 0) {
-      console.warn('⚠️ AdminHome - users_by_city está vacío o undefined');
       this.cityChartData = [];
       return;
     }
@@ -320,28 +309,31 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
     const entries = Object.entries(usersByCity)
       .filter(([city, count]) => city && city !== 'N/A' && count > 0);
     
-    console.log('📊 AdminHome - Ciudades filtradas:', entries);
-    
     if (entries.length === 0) {
-      console.warn('⚠️ AdminHome - No hay ciudades válidas después de filtrar');
       this.cityChartData = [];
       return;
     }
     
-    const total = entries.reduce((sum, [, count]) => sum + count, 0);
-    console.log('📊 AdminHome - Total usuarios (sin N/A):', total);
+    // Ordenar por cantidad (mayor a menor) y tomar top 6
+    const top6 = entries
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 6);
     
-    this.cityChartData = entries
-      .sort(([, a], [, b]) => b - a) // Ordenar por cantidad (mayor a menor)
-      .slice(0, 6) // Top 6 ciudades
-      .map(([city, count], index) => ({
-        city,
-        count,
-        percentage: total > 0 ? (count / total) * 100 : 0,
-        color: this.cityChartColors[index % this.cityChartColors.length] // Usar módulo para evitar undefined
-      }));
+    // Calcular el total SOLO de las top 6 ciudades para que los porcentajes sumen 100%
+    const top6Total = top6.reduce((sum, [, count]) => sum + count, 0);
     
-    console.log('✅ AdminHome - City Chart Data final:', this.cityChartData);
+    if (top6Total === 0) {
+      this.cityChartData = [];
+      return;
+    }
+    
+    // Recalcular porcentajes basándose solo en las top 6
+    this.cityChartData = top6.map(([city, count], index) => ({
+      city,
+      count,
+      percentage: (count / top6Total) * 100,
+      color: this.cityChartColors[index % this.cityChartColors.length]
+    }));
   }
 
   /**
@@ -349,24 +341,32 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
    */
   getPieChartGradient(): string {
     if (this.cityChartData.length === 0) {
-      console.log('⚠️ AdminHome - No hay datos para generar el gradiente');
       return 'conic-gradient(#e0e0e0 0deg 360deg)';
     }
 
     let gradientStops: string[] = [];
     let currentAngle = 0;
 
-    this.cityChartData.forEach((data) => {
-      const angle = (data.percentage / 100) * 360;
+    // Calcular la suma total de porcentajes para normalizar
+    const totalPercentage = this.cityChartData.reduce((sum, data) => sum + data.percentage, 0);
+    
+    // Si los porcentajes no suman exactamente 100%, normalizar
+    const normalizationFactor = totalPercentage > 0 ? 100 / totalPercentage : 1;
+
+    this.cityChartData.forEach((data, index) => {
+      // Normalizar el porcentaje para asegurar que sume 100%
+      const normalizedPercentage = data.percentage * normalizationFactor;
+      const angle = (normalizedPercentage / 100) * 360;
       const nextAngle = currentAngle + angle;
       
-      gradientStops.push(`${data.color} ${currentAngle}deg ${nextAngle}deg`);
-      currentAngle = nextAngle;
+      // Para el último elemento, asegurar que llegue exactamente a 360deg
+      const finalAngle = index === this.cityChartData.length - 1 ? 360 : nextAngle;
+      
+      gradientStops.push(`${data.color} ${currentAngle}deg ${finalAngle}deg`);
+      currentAngle = finalAngle;
     });
 
-    const gradient = `conic-gradient(${gradientStops.join(', ')})`;
-    console.log('📊 AdminHome - Gradiente generado:', gradient);
-    return gradient;
+    return `conic-gradient(${gradientStops.join(', ')})`;
   }
 
   /**

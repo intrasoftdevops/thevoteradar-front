@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
+import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { AlertService } from '../../../services/alert/alert.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
@@ -31,7 +32,8 @@ export class VerPuestoAdminComponent implements OnInit {
   isDevelopmentMode: boolean = this.checkDevelopmentMode();
 
   constructor(
-    private apiService: ApiService, 
+    private apiService: ApiService,
+    private backofficeAdminService: BackofficeAdminService,
     private fb: FormBuilder,
     private devDataService: DevDataService
   ) {}
@@ -165,13 +167,19 @@ export class VerPuestoAdminComponent implements OnInit {
   }
 
   getDepartmentAdmin() {
-    this.apiService.getDepartmentAdmin().subscribe((resp: any) => {
-      this.dataDepartments = resp;
-      if (this.dataDepartments.length > 0) {
-        this.searchForm
-          .get('departamentos')
-          ?.setValue(this.dataDepartments[0].codigo_unico);
-        this.getSelectedDepartment(this.dataDepartments[0]);
+    this.backofficeAdminService.getDepartamentosAdmin().subscribe({
+      next: (resp: any) => {
+        this.dataDepartments = resp.departamentos || resp || [];
+        if (this.dataDepartments.length > 0) {
+          this.searchForm
+            .get('departamentos')
+            ?.setValue(this.dataDepartments[0].codigo_unico);
+          this.getSelectedDepartment(this.dataDepartments[0]);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al cargar departamentos:', error);
+        this.dataDepartments = [];
       }
     });
   }

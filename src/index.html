@@ -12,7 +12,26 @@
   <meta name="description" content="The vote radar la mejor herramienta para evitar el fraude electoral.">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <!-- Variables de entorno inyectadas en runtime desde Cloud Run -->
-  <script src="assets/env.js"></script>
+  <!-- En desarrollo, este archivo no existe y se usan los valores por defecto de environment.ts -->
+  <script>
+    // Cargar env.js solo si existe (producción), en desarrollo se ignorará silenciosamente
+    (function() {
+      // Verificar si estamos en producción (el archivo existe) antes de intentar cargarlo
+      // En desarrollo, simplemente no cargamos el script para evitar errores 404
+      var isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+      
+      if (isProduction) {
+        // Solo en producción intentamos cargar env.js
+        var script = document.createElement('script');
+        script.src = 'assets/env.js';
+        script.onerror = function() {
+          // Si falla en producción, usar valores por defecto (silencioso)
+        };
+        document.head.appendChild(script);
+      }
+      // En desarrollo, no intentar cargar el archivo (silencioso)
+    })();
+  </script>
 </head>
 
 <body>
