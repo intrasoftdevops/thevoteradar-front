@@ -368,6 +368,7 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
           icon: 'fas fa-cog',
           children: [
             { id: 'perfil', label: 'Mi Perfil', icon: 'fas fa-user-edit', route: '/panel/configuracion/perfil' },
+            ...(this.isSuperAdmin() ? [{ id: 'tenants', label: 'Tenants', icon: 'fas fa-building', route: '/panel/configuracion/tenants' }] : []),
           ]
         },
       ];
@@ -527,6 +528,22 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
     ).catch((error) => {
       console.error('❌ SidebarMenu - Error en navegación:', error);
     });
+  }
+
+  /**
+   * Verifica si el usuario actual es super_admin
+   */
+  isSuperAdmin(): boolean {
+    const backofficeUser = this.localData.getBackofficeUser();
+    
+    if (backofficeUser && backofficeUser.role) {
+      const role = backofficeUser.role.toLowerCase();
+      return role === 'super_admin';
+    }
+    
+    const rol = this.localData.getRol();
+    const rolNumber = rol ? parseInt(rol, 10) : null;
+    return rolNumber === 9;
   }
 
   /**

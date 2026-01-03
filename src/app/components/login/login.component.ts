@@ -80,6 +80,11 @@ export class LoginComponent implements OnInit {
         this.logoSize = theme.branding.logoSize || 'medium';
         this.title = theme.branding.title;
         this.description = theme.branding.description;
+        console.log('🖼️ LoginComponent - Logo actualizado:', {
+          logo: this.logo,
+          logoSize: this.logoSize,
+          title: this.title
+        });
       }
     });
   }
@@ -109,10 +114,10 @@ export class LoginComponent implements OnInit {
   }
 
   /**
-   * Detectar tenant_id desde el dominio y aplicar tema
+   * Detectar tenant_id desde el dominio (sin aplicar tema - AppComponent ya lo hizo)
    */
   private detectTenantFromDomain(): void {
-    const tenantId = this.themeService.detectAndApplyThemeFromDomain();
+    const tenantId = this.themeService.getTenantIdFromDomain();
     
     if (tenantId) {
       this.detectedTenantCode = tenantId;
@@ -649,8 +654,12 @@ export class LoginComponent implements OnInit {
         
         localStorage.removeItem('temp_tenant_id_for_login');
         
-        // Aplicar tema basado en tenant_id
-        this.themeService.loadThemeFromTenantId();
+        // Cargar tema desde la configuración del tenant (backend) en lugar del tema hardcodeado
+        this.themeService.loadThemeFromTenantConfig(tenantIdToStore).catch(error => {
+          console.error('Error al cargar tema después del login:', error);
+          // Fallback al tema por defecto si falla
+          this.themeService.setTheme('default');
+        });
         
         this.permissionsService.addPermission(['1']);
         

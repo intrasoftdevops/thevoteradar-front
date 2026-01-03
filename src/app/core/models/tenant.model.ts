@@ -28,13 +28,22 @@ export interface TenantConfig {
 /**
  * Mapeo de dominios a tenant IDs
  * Se usa para detectar automáticamente el tenant desde la URL
+ * Valores deben ser tenant IDs numéricos del backend
  */
 export const DOMAIN_TENANT_MAP: { [key: string]: string } = {
-  // Desarrollo local
-  'localhost': 'default',
-  'daniel-quintero.localhost': 'daniel-quintero',
-  'juan-duque.localhost': 'juan-duque',
-  'potus-44.localhost': 'potus-44',
+  'localhost': '473173', // tenant por defecto (potus-44)
+  
+  // Potus 44 - Tenant ID: 473173
+  'potus-44.localhost': '473173',
+  'potus-44': '473173',
+  
+  // Daniel Quintero - Tenant ID: 475711
+  'daniel-quintero.localhost': '475711',
+  'daniel-quintero': '475711',
+  
+  // Juan Duque - Tenant ID: 475757
+  'juan-duque.localhost': '475757',
+  'juan-duque': '475757',
   
   // Producción (agregar dominios reales aquí)
   // 'cliente1.voteradar.com': 'tenant-id-1',
@@ -44,12 +53,13 @@ export const DOMAIN_TENANT_MAP: { [key: string]: string } = {
 /**
  * Mapeo de tenant ID a theme ID
  * Permite que un tenant use un tema específico
+ * IMPORTANTE: Las claves son tenant IDs numéricos del backend
  */
 export const TENANT_THEME_MAP: { [key: string]: string } = {
+  '473173': 'potus-44',      // Potus 44
+  '475711': 'daniel-quintero', // Daniel Quintero
+  '475757': 'juan-duque',     // Juan Duque
   'default': 'default',
-  'daniel-quintero': 'daniel-quintero',
-  'juan-duque': 'juan-duque',
-  'potus-44': 'potus-44',
 };
 
 /**
@@ -84,6 +94,8 @@ export function getTenantFromHostname(hostname: string): string | null {
 
 /**
  * Obtiene el theme ID para un tenant
+ * @param tenantId - Tenant ID numérico del backend (ej: '473173')
+ * @returns Theme ID (ej: 'potus-44')
  */
 export function getThemeForTenant(tenantId: string): string {
   return TENANT_THEME_MAP[tenantId] || 'default';

@@ -54,6 +54,10 @@ import { AssignChallengeModalComponent } from './components/Admin/activacion/cha
 import { ConfirmCompletionsModalComponent } from './components/Admin/activacion/challenges-dashboard/confirm-completions-modal/confirm-completions-modal.component';
 import { AssignedUsersModalComponent } from './components/Admin/activacion/challenges-dashboard/assigned-users-modal/assigned-users-modal.component';
 
+// Admin - Tenants
+import { TenantManagementComponent } from './components/Admin/tenants/tenant-management/tenant-management.component';
+import { TenantEditComponent } from './components/Admin/tenants/tenant-edit/tenant-edit.component';
+
 // Gerente Components
 import { GerenteHomeComponent } from './components/Gerente/gerente-home/gerente-home.component';
 import { MenuGerenteComponent } from './components/Gerente/menu-gerente/menu-gerente.component';
@@ -156,6 +160,10 @@ import { ContactosComponent } from './components/contactos/contactos.component';
     AssignChallengeModalComponent,
     ConfirmCompletionsModalComponent,
     AssignedUsersModalComponent,
+    
+    // Admin - Tenants
+    TenantManagementComponent,
+    TenantEditComponent,
     
     // Gerente (TODO: Migrar a GerenteModule con lazy loading)
     GerenteHomeComponent,
