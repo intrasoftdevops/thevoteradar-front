@@ -62,7 +62,6 @@ export class BackofficeAuthService {
   login(email: string, password: string): Observable<BackofficeLoginResponse> {
     const url = `${this.backofficeUrl}/users/token`;
     
-    console.log('🔍 Intentando login:', { url, username: email, backofficeUrl: this.backofficeUrl });
     
     // Headers - El interceptor agregará automáticamente X-Tenant-ID usando environment.defaultTenantId
     const headers = new HttpHeaders({

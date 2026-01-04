@@ -22,6 +22,7 @@ export class ReporteVotosTestigoComponent implements OnInit {
   });
   puestos_asignado: any = "";
   files: File[] = [];
+  loading: boolean = false;
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private alertService: AlertService, private localData: LocalDataService) { }
 
@@ -44,11 +45,12 @@ export class ReporteVotosTestigoComponent implements OnInit {
 
       const uploadData = new FormData();
       uploadData.append('codigo_mesa', this.createForm.get('codigo_mesa')!.value);
-      for (let file in this.files) {
-        uploadData.append("url_archivo[]", this.files[file]);
+      for (let file of this.files) {
+        uploadData.append("url_archivo", file);
       }
       for (var i = 0; i < this.createFormControl['votos'].value.length; i++) {
-        uploadData.append("votos[]", this.createFormControl['votos'].value[i]);
+        const votoValue = this.createFormControl['votos'].value[i];
+        uploadData.append("votos", String(votoValue));
       }
       this.apiService.createVotos(uploadData).subscribe((resp: any) => {
 
@@ -62,12 +64,20 @@ export class ReporteVotosTestigoComponent implements OnInit {
   }
 
   getVotosTestigo() {
-    this.apiService.getVotosTestigo().subscribe((resp: any) => {
-      const { mesas_sin_reportar } = resp;
-      this.mesas_asignadas = mesas_sin_reportar;
-      if (this.mesas_asignadas.length > 0) {
-        this.createForm.get('codigo_mesa')?.setValue(this.mesas_asignadas[0].codigo_unico);
-        this.getSelectedValue(this.mesas_asignadas[0]);
+    this.loading = true;
+    this.apiService.getVotosTestigo().subscribe({
+      next: (resp: any) => {
+        const { mesas_sin_reportar } = resp;
+        this.mesas_asignadas = mesas_sin_reportar;
+        if (this.mesas_asignadas.length > 0) {
+          this.createForm.get('codigo_mesa')?.setValue(this.mesas_asignadas[0].codigo_unico);
+          this.getSelectedValue(this.mesas_asignadas[0]);
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al obtener mesas:', error);
+        this.loading = false;
       }
     })
   }
@@ -75,20 +85,44 @@ export class ReporteVotosTestigoComponent implements OnInit {
   getMesasTetigo() {
     this.apiService.getTestigo(this.localData.getId()).subscribe((resp: any) => {
       const { puestos_asignados } = resp;
-      this.puestos_asignado = puestos_asignados[0].nombre;
+      this.puestos_asignado = puestos_asignados?.nombre || '';
     })
   }
 
   getCandidatos() {
-    this.apiService.getCandidatos().subscribe((resp: any) => {
-      const { candidatos } = resp;
-      this.listCandidatos = candidatos;
-      candidatos.forEach(() => {
-        const votos = this.createForm.get('votos') as FormArray;
-        votos.push(
-          this.fb.control('', Validators.required)
-        );
-      });
+    this.apiService.getCandidatos().subscribe({
+      next: (resp: any) => {
+        console.log('📋 Respuesta completa de getCandidatos:', resp);
+        const candidatos = resp?.candidatos || resp || [];
+        console.log('📋 Candidatos extraídos:', candidatos);
+        console.log('📋 Cantidad de candidatos:', candidatos.length);
+        
+        this.listCandidatos = candidatos;
+        
+        if (candidatos.length === 0) {
+          console.warn('⚠️ No se encontraron candidatos para este reporte');
+          this.alertService.errorAlert('No se encontraron candidatos para este reporte. Por favor, contacte al administrador.');
+        } else {
+          // Limpiar FormArray de votos antes de agregar nuevos
+          const votos = this.createForm.get('votos') as FormArray;
+          while (votos.length !== 0) {
+            votos.removeAt(0);
+          }
+          
+          candidatos.forEach(() => {
+            votos.push(
+              this.fb.control('', Validators.required)
+            );
+          });
+          console.log('✅ FormArray de votos actualizado con', votos.length, 'campos');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error al obtener candidatos:', error);
+        console.error('❌ Detalles del error:', error.error);
+        this.alertService.errorAlert('Error al cargar los candidatos. Por favor, intente nuevamente.');
+        this.listCandidatos = [];
+      }
     })
   }
 

@@ -64,6 +64,7 @@ import { EditarTestigoComponent } from './components/Coordinador/editar-testigo/
 import { ConsultarTestigoComponent } from './components/Coordinador/consultar-testigo/consultar-testigo.component';
 import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
 import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
+import { ReporteVotosAdminComponent } from './components/Admin/dia-electoral/reporte-votos-admin/reporte-votos-admin.component';
 
 // Testigo Components
 import { TestigoHomeComponent } from './components/Testigo/testigo-home/testigo-home.component';
@@ -172,8 +173,9 @@ const routes: Routes = [
       // === VOTO DE OPINIÓN ===
       { path: 'voto-opinion/muestra', component: VotoOpinionMuestraComponent },
       
-      // === DÍA ELECTORAL === (próximamente)
-      { path: 'dia-electoral', redirectTo: 'estructura', pathMatch: 'full' },
+      // === DÍA ELECTORAL ===
+      { path: 'dia-electoral', redirectTo: 'dia-electoral/reportes', pathMatch: 'full' },
+      { path: 'dia-electoral/reportes', component: ReporteVotosAdminComponent },
       
       // === CONFIGURACIÓN ===
       { path: 'configuracion', redirectTo: 'configuracion/perfil', pathMatch: 'full' },

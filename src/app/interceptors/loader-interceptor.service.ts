@@ -66,12 +66,10 @@ export class LoaderInterceptor implements HttpInterceptor {
         
         // No mostrar error para logout, contactos-usuario, errores 401 de encuestas, o cuando el servidor no está disponible
         if ((isConnectionRefused && isBackofficeApi) || url.includes('contactos-usuario') || isLogoutRequest || isSurvey401) {
-          if (isLogoutRequest) {
-            console.log('LoaderInterceptor - Logout request, omitiendo alerta de error');
-          } else if (isSurvey401) {
+          if (isSurvey401) {
             // Silenciar errores 401 del servicio de encuestas (esperados si el usuario no tiene permisos)
             // No loguear para evitar ruido en la consola
-          } else {
+          } else if (!isLogoutRequest) {
             console.warn('LoaderInterceptor - Servidor backoffice no disponible o petición de contactos, omitiendo alerta de error');
           }
           return throwError(() => err);

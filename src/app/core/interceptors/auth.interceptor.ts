@@ -90,9 +90,6 @@ export class AuthInterceptor implements HttpInterceptor {
         this.authService.logout();
       } else {
         // Error 401 de servicio externo (encuestas, etc.) - no hacer logout
-        if (!environment.production) {
-          console.warn('🔒 AuthInterceptor: Error 401 en servicio externo, no haciendo logout');
-        }
       }
     }
     

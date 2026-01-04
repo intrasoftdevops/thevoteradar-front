@@ -272,6 +272,10 @@ export class ApiService {
   getTestigo(id: any) {
     // Usar backofficeApiURL para testigo
     const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    // Si no hay ID o es un email, usar el endpoint /testigo/me que usa current_user
+    if (!id || id.includes('@')) {
+      return this.http.get(backofficeUrl + "/testigo/me", { headers: this.getBackofficeHeaders() });
+    }
     return this.http.get(backofficeUrl + "/get-testigo/" + id, { headers: this.getBackofficeHeaders() });
   }
 
@@ -362,6 +366,15 @@ export class ApiService {
     // Usar backofficeApiURL para reportes de votos
     const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
     return this.http.post(backofficeUrl + "/reportes-coordinador", data, { headers: this.getBackofficeHeaders() });
+  }
+
+  getReportesPuesto(data: any) {
+    // Usar backofficeApiURL para reportes de votos por puesto (sin filtrar por coordinador)
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    // El endpoint espera FormData, no JSON
+    const formData = new FormData();
+    formData.append('puesto', data.puesto);
+    return this.http.post(backofficeUrl + "/reportes-puesto", formData, { headers: this.getBackofficeHeaders() });
   }
 
   getCandidatos() {

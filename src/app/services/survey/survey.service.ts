@@ -136,22 +136,6 @@ export class SurveyService {
     return this.http.get<Survey[]>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ SurveyService.getSurveys - Error completo:', {
-            error,
-            status: error?.status,
-            statusText: error?.statusText,
-            message: error?.message,
-            url: error?.url,
-            errorBody: error?.error,
-            headers: error?.headers
-          });
-          
-          // Mensaje más descriptivo según el tipo de error
-          if (error?.status === 0 || error?.status === undefined) {
-            console.error('   ⚠️ Posible problema: El backend no está disponible o hay un problema de CORS');
-            console.error('   💡 Verifica que el backend de encuestas esté corriendo en:', this.surveyApiUrl);
-          }
-          
           return throwError(() => error);
         })
       );
