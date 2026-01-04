@@ -74,6 +74,31 @@ export class ApiService {
     return headers;
   }
 
+  /**
+   * Obtiene los headers para peticiones a backofficeApiURL
+   * Usa el token de backoffice en lugar del token de voteradar-back
+   */
+  getBackofficeHeaders(): { [header: string]: string | string[] } {
+    const headers: { [header: string]: string | string[] } = {
+      'Accept': 'application/json'
+    };
+    
+    // Usar token de backoffice para endpoints de backoffice
+    const backofficeToken = this.localData.getBackofficeToken();
+    if (backofficeToken && backofficeToken !== 'undefined' && backofficeToken !== '') {
+      headers['Authorization'] = "Bearer " + backofficeToken;
+      return headers;
+    }
+    
+    // Fallback: usar token normal si no hay token de backoffice
+    const token = this.localData.getToken();
+    if (token && token !== 'undefined' && token !== '') {
+      headers['Authorization'] = "Bearer " + token;
+    }
+    
+    return headers;
+  }
+
   login(data: any) {
     return this.http.post(this._URL + "/login", data);
   }
@@ -166,7 +191,9 @@ export class ApiService {
   getZoneGerente() {
     // Usar voteradar_user_id si está disponible
     const gerenteId = this.localData.getVoteradarUserIdOrFallback();
-    return this.http.get(this._URL + "/zonas-gerente/" + gerenteId, { headers: this.getHeaders() });
+    // Usar backofficeApiURL para zonas del gerente
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.get(backofficeUrl + "/admin/zonas-gerente/" + gerenteId, { headers: this.getBackofficeHeaders() });
   }
 
   getDepartmentAdmin() {
@@ -194,7 +221,9 @@ export class ApiService {
   }
 
   getZonesSupervisor() {
-    return this.http.get(this._URL + "/get-zonas-supervisor", { headers: this.getHeaders() });
+    // Usar backofficeApiURL para zonas del supervisor
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.get(backofficeUrl + "/admin/get-zonas-supervisor", { headers: this.getBackofficeHeaders() });
   }
 
   getStationsCoordinador() {
@@ -218,11 +247,16 @@ export class ApiService {
   }
 
   getStationsTestigo() {
-    return this.http.get(this._URL + "/get-puestos-coordinador/", { headers: this.getHeaders() });
+    // Usar backofficeApiURL para puestos del coordinador
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.get(backofficeUrl + "/get-puestos-coordinador", { headers: this.getBackofficeHeaders() });
   }
 
   getTablesTestigo() {
-    return this.http.get(this._URL + "/mesas-coordinador/" + this.localData.getId(), { headers: this.getHeaders() });
+    // Usar backofficeApiURL para mesas del coordinador
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    // El ID puede ser el email del usuario, que es lo que se está pasando
+    return this.http.get(backofficeUrl + "/mesas-coordinador/" + this.localData.getId(), { headers: this.getBackofficeHeaders() });
   }
 
   createTestigo(data: any) {
@@ -230,15 +264,24 @@ export class ApiService {
   }
 
   getTestigos() {
-    return this.http.get(this._URL + "/testigos-mesa-asignada/" + this.localData.getId(), { headers: this.getHeaders() });
+    // Usar backofficeApiURL para testigos
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.get(backofficeUrl + "/testigos-mesa-asignada/" + this.localData.getId(), { headers: this.getBackofficeHeaders() });
   }
 
   getTestigo(id: any) {
-    return this.http.get(this._URL + "/get-testigo/" + id, { headers: this.getHeaders() });
+    // Usar backofficeApiURL para testigo
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    // Si no hay ID o es un email, usar el endpoint /testigo/me que usa current_user
+    if (!id || id.includes('@')) {
+      return this.http.get(backofficeUrl + "/testigo/me", { headers: this.getBackofficeHeaders() });
+    }
+    return this.http.get(backofficeUrl + "/get-testigo/" + id, { headers: this.getBackofficeHeaders() });
   }
 
   updateTestigo(id: any, data: any) {
-    return this.http.put(this._URL + "/editar-testigo/" + id, data, { headers: this.getHeaders() });
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.put(backofficeUrl + "/editar-testigo/" + id, data, { headers: this.getBackofficeHeaders() });
   }
 
   getZonasyGerentes(data: any) {
@@ -314,19 +357,36 @@ export class ApiService {
   }
 
   getVotosTestigo() {
-    return this.http.get(this._URL + "/mesas-con-sin-reportar", { headers: this.getHeaders() });
+    // Usar backofficeApiURL para reportes de votos
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.get(backofficeUrl + "/mesas-con-sin-reportar", { headers: this.getBackofficeHeaders() });
   }
 
   getVotosCoordinador(data: any) {
-    return this.http.post(this._URL + "/reportes-coordinador", data, { headers: this.getHeaders() });
+    // Usar backofficeApiURL para reportes de votos
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.post(backofficeUrl + "/reportes-coordinador", data, { headers: this.getBackofficeHeaders() });
+  }
+
+  getReportesPuesto(data: any) {
+    // Usar backofficeApiURL para reportes de votos por puesto (sin filtrar por coordinador)
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    // El endpoint espera FormData, no JSON
+    const formData = new FormData();
+    formData.append('puesto', data.puesto);
+    return this.http.post(backofficeUrl + "/reportes-puesto", formData, { headers: this.getBackofficeHeaders() });
   }
 
   getCandidatos() {
-    return this.http.get(this._URL + "/candidato-e-intereses", { headers: this.getHeaders() });
+    // Usar backofficeApiURL para candidatos
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.get(backofficeUrl + "/candidato-e-intereses", { headers: this.getBackofficeHeaders() });
   }
 
   createVotos(data: any) {
-    return this.http.post(this._URL + "/reportes-mesa", data, { headers: this.getHeaders() });
+    // Usar backofficeApiURL para crear reportes
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.post(backofficeUrl + "/reportes-mesa", data, { headers: this.getBackofficeHeaders() });
   }
 
   getInteresesCandidato() {
@@ -360,7 +420,9 @@ export class ApiService {
   }
 
   getMesasSinAsignar(data: any) {
-    return this.http.post(this._URL + "/mesas-sin-asignar", data, { headers: this.getHeaders() });
+    // Usar backofficeApiURL para mesas sin asignar
+    const backofficeUrl = environment.backofficeApiURL || 'http://localhost:8000';
+    return this.http.post(backofficeUrl + "/mesas-sin-asignar", data, { headers: this.getBackofficeHeaders() });
   }
 
   getIdOnlineUser() {
@@ -395,7 +457,7 @@ export class ApiService {
    */
   getMyChallenges(): Observable<ChallengeApiResponse[]> {
     const backofficeUrl = environment.backofficeApiURL || '';
-    return this.http.get<ChallengeApiResponse[]>(backofficeUrl + "/challenges/my-challenges", { headers: this.getHeaders() });
+    return this.http.get<ChallengeApiResponse[]>(backofficeUrl + "/challenges/my-challenges", { headers: this.getBackofficeHeaders() });
   }
 
 }

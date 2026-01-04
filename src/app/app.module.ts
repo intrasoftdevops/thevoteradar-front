@@ -84,6 +84,7 @@ import { ConsultarTestigoComponent } from './components/Coordinador/consultar-te
 import { VerEquipoCoordinadorComponent } from './components/Coordinador/ver-equipo-coordinador/ver-equipo-coordinador.component';
 import { VerPuestoCoordinadorComponent } from './components/Coordinador/ver-puesto-coordinador/ver-puesto-coordinador.component';
 import { ReporteVotosCoordinadorComponent } from './components/Coordinador/reporte-votos-coordinador/reporte-votos-coordinador.component';
+import { ReporteVotosAdminComponent } from './components/Admin/dia-electoral/reporte-votos-admin/reporte-votos-admin.component';
 import { ReporteIncidenciasCoordinadorComponent } from './components/Coordinador/reporte-incidencias-coordinador/reporte-incidencias-coordinador.component';
 
 // Testigo Components
@@ -187,6 +188,7 @@ import { ContactosComponent } from './components/contactos/contactos.component';
     VerEquipoCoordinadorComponent,
     VerPuestoCoordinadorComponent,
     ReporteVotosCoordinadorComponent,
+    ReporteVotosAdminComponent,
     ReporteIncidenciasCoordinadorComponent,
     
     // Testigo (TODO: Migrar a TestigoModule con lazy loading)

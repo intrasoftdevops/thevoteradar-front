@@ -28,6 +28,7 @@ export interface SubMenuItem {
   label: string;
   icon?: string;
   route: string;
+  comingSoon?: boolean;
 }
 
 /**
@@ -376,14 +377,14 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
           id: 'dia-electoral',
           label: 'Día Electoral',
           icon: 'fas fa-calendar-check',
-          comingSoon: true,
+          comingSoon: false,
           children: [
-            { id: 'gerentes', label: 'Gerentes', icon: 'fas fa-user-tie', route: '/panel/dia-electoral/gerentes' },
-            { id: 'supervisores', label: 'Supervisores', icon: 'fas fa-users-cog', route: '/panel/dia-electoral/supervisores' },
-            { id: 'coordinadores', label: 'Coordinadores', icon: 'fas fa-user-friends', route: '/panel/dia-electoral/coordinadores' },
-            { id: 'testigos', label: 'Testigos', icon: 'fas fa-user-check', route: '/panel/dia-electoral/testigos' },
+            { id: 'gerentes', label: 'Gerentes', icon: 'fas fa-user-tie', route: '/panel/dia-electoral/gerentes', comingSoon: true },
+            { id: 'supervisores', label: 'Supervisores', icon: 'fas fa-users-cog', route: '/panel/dia-electoral/supervisores', comingSoon: true },
+            { id: 'coordinadores', label: 'Coordinadores', icon: 'fas fa-user-friends', route: '/panel/dia-electoral/coordinadores', comingSoon: true },
+            { id: 'testigos', label: 'Testigos', icon: 'fas fa-user-check', route: '/panel/dia-electoral/testigos', comingSoon: true },
             { id: 'reportes', label: 'Reportes', icon: 'fas fa-file-alt', route: '/panel/dia-electoral/reportes' },
-            { id: 'mapa', label: 'Mapa en Vivo', icon: 'fas fa-map-marked-alt', route: '/panel/dia-electoral/mapa' },
+            { id: 'mapa', label: 'Mapa en Vivo', icon: 'fas fa-map-marked-alt', route: '/panel/dia-electoral/mapa', comingSoon: true },
           ]
         },
         {

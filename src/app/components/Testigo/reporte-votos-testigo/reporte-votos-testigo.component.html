@@ -1,9 +1,9 @@
-<div class="container py-4">
-  <!-- Encabezado similar a admin -->
-  <div class="mb-4">
+<div class="reporte-votos-testigo">
+  <!-- Banner de encabezado -->
+  <div class="welcome-banner mb-4">
     <div class="card border-0 shadow-sm">
       <div
-        class="card-body p-3 p-md-4 text-white"
+        class="card-body p-4 text-white"
         [style.background]="'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)'"
       >
         <div class="d-flex align-items-center justify-content-between">
@@ -21,13 +21,22 @@
     </div>
   </div>
 
-  <div class="pb-4">
+  <!-- Contenido principal -->
+  <div class="container-fluid">
+    <!-- Loader -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-3 text-muted">Cargando mesas asignadas...</p>
+    </div>
+
     <form
-      class="row pt-5"
       [formGroup]="createForm"
       (ngSubmit)="onSubmit()"
-      *ngIf="mesas_asignadas.length > 0; else mesas_content"
+      *ngIf="!loading && mesas_asignadas.length > 0; else mesas_content"
     >
+      <div class="row pt-5">
       <div class="col-lg-7 mb-4 mb-lg-0">
         <div class="card border-0 shadow-sm">
           <div class="py-3 px-4 text-white"
@@ -86,11 +95,11 @@
                     class="bg-white"
                     *ngFor="let candidato of listCandidatos; index as index"
                   >
-                    <td class="col-5">{{ candidato.partido }}</td>
-                    <td class="col-4">
+                    <td>{{ candidato.partido }}</td>
+                    <td>
                       {{ candidato.nombres }} {{ candidato.apellidos }}
                     </td>
-                    <td class="col-3">
+                    <td>
                       <div formGroupName="votos">
                         <input
                           type="text"
@@ -164,9 +173,10 @@
           </div>
         </div>
       </div>
+      </div>
     </form>
     <ng-template #mesas_content>
-      <div class="card mt-5">
+      <div class="card mt-5" *ngIf="!loading">
         <div class="card-body">
           <p class="text-center mb-0">No hay mesas para reportar.</p>
         </div>
