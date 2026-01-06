@@ -36,6 +36,10 @@ import { WhatsAppTemplatesDashboardComponent } from './components/Admin/whatsapp
 // Admin Activación
 import { ChallengesDashboardComponent } from './components/Admin/activacion/challenges-dashboard/challenges-dashboard.component';
 
+// Admin Tenants
+import { TenantManagementComponent } from './components/Admin/tenants/tenant-management/tenant-management.component';
+import { TenantEditComponent } from './components/Admin/tenants/tenant-edit/tenant-edit.component';
+
 // Gerente Components
 import { GerenteHomeComponent } from './components/Gerente/gerente-home/gerente-home.component';
 import { CrearSupervisorComponent } from './components/Gerente/crear-supervisor/crear-supervisor.component';
@@ -180,6 +184,9 @@ const routes: Routes = [
       // === CONFIGURACIÓN ===
       { path: 'configuracion', redirectTo: 'configuracion/perfil', pathMatch: 'full' },
       { path: 'configuracion/perfil', component: EditarPerfilComponent },
+      { path: 'configuracion/tenants', component: TenantManagementComponent },
+      { path: 'configuracion/tenants/nuevo', component: TenantEditComponent },
+      { path: 'configuracion/tenants/:tenantId/editar', component: TenantEditComponent },
     ]
   },
 

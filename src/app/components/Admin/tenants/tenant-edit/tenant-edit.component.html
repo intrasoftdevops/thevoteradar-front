@@ -1,0 +1,431 @@
+<div class="tenant-edit-container">
+  <div class="access-denied-container" *ngIf="accessDenied">
+    <div class="alert alert-danger">
+      <i class="fas fa-lock"></i>
+      <h2>Acceso Denegado</h2>
+      <p>Esta sección está disponible solo para super administradores.</p>
+      <p>Serás redirigido automáticamente...</p>
+    </div>
+  </div>
+
+  <div *ngIf="!accessDenied">
+    <div class="header">
+      <div class="header-content">
+        <button class="btn btn-link btn-back" (click)="cancel()" [disabled]="saving">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>{{ isEditMode ? 'Editar Tenant' : 'Nuevo Tenant' }}</h1>
+      </div>
+      <button class="btn btn-secondary" (click)="cancel()" [disabled]="saving">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+    </div>
+
+    <div class="loading-container" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Cargando configuración...</p>
+    </div>
+
+    <form [formGroup]="tenantForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+      <!-- Tabs Navigation -->
+      <ul class="nav nav-tabs" id="tenantFormTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" 
+                  type="button" role="tab" aria-controls="general" aria-selected="true">
+            <i class="fas fa-info-circle me-2"></i>
+            Información General
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="branding-tab" data-bs-toggle="tab" data-bs-target="#branding" 
+                  type="button" role="tab" aria-controls="branding" aria-selected="false">
+            <i class="fas fa-palette me-2"></i>
+            Branding
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="integrations-tab" data-bs-toggle="tab" data-bs-target="#integrations" 
+                  type="button" role="tab" aria-controls="integrations" aria-selected="false">
+            <i class="fas fa-plug me-2"></i>
+            Integraciones
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="advanced-tab" data-bs-toggle="tab" data-bs-target="#advanced" 
+                  type="button" role="tab" aria-controls="advanced" aria-selected="false">
+            <i class="fas fa-cogs me-2"></i>
+            Configuración Avanzada
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="tenantFormTabContent">
+        <!-- Tab 1: Información General -->
+        <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+          <div class="form-section">
+            <h2><i class="fas fa-database me-2"></i>Información Básica del Tenant</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Project ID <span class="required">*</span></label>
+                <input type="text" formControlName="client_project_id" class="form-control" 
+                       placeholder="political-referrals" />
+                <small class="form-text text-muted">ID del proyecto en Google Cloud</small>
+              </div>
+              <div class="form-group">
+                <label>Database ID</label>
+                <input type="text" formControlName="client_database_id" class="form-control" 
+                       placeholder="(default)" />
+                <small class="form-text text-muted">ID de la base de datos (default: "(default)")</small>
+              </div>
+              <div class="form-group">
+                <label>Subdominio</label>
+                <input type="text" formControlName="subdomain" class="form-control" 
+                       placeholder="juan-duque" />
+                <small class="form-text text-muted">Subdominio único para este tenant</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2><i class="fas fa-sliders-h me-2"></i>Configuración Adicional</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Tenant Type</label>
+                <select formControlName="tenant_type" class="form-control">
+                  <option value="prod">Producción (prod)</option>
+                  <option value="dev">Desarrollo (dev)</option>
+                  <option value="test">Prueba (test)</option>
+                  <option value="staging">Staging</option>
+                </select>
+                <small class="form-text text-muted">Tipo de ambiente del tenant</small>
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                <select formControlName="status" class="form-control">
+                  <option value="active">Activo (active)</option>
+                  <option value="inactive">Inactivo (inactive)</option>
+                  <option value="in_progress">En Progreso (in_progress)</option>
+                  <option value="suspended">Suspendido (suspended)</option>
+                </select>
+                <small class="form-text text-muted">Estado del tenant</small>
+              </div>
+              <div class="form-group">
+                <div class="checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="use_adc" />
+                    <span>Use Application Default Credentials (ADC)</span>
+                  </label>
+                  <small class="form-text text-muted">
+                    Habilita el uso de credenciales por defecto de la aplicación
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Branding -->
+        <div class="tab-pane fade" id="branding" role="tabpanel" aria-labelledby="branding-tab" formGroupName="branding">
+          <!-- Vista del Logo Actual (solo en modo edición) -->
+          <div class="form-section" *ngIf="isEditMode && currentTenantConfig?.branding?.logo_url">
+            <h2><i class="fas fa-image me-2"></i>Logo Actual</h2>
+            <div class="current-logo-container">
+              <img 
+                [src]="currentTenantConfig?.branding?.logo_url" 
+                [alt]="currentTenantConfig?.branding?.title || currentTenantConfig?.branding?.candidate_name || 'Logo actual'"
+                class="current-logo"
+                (error)="onLogoError($event)" />
+              <div class="logo-info">
+                <p><strong>URL:</strong> {{ currentTenantConfig?.branding?.logo_url }}</p>
+                <p *ngIf="currentTenantConfig?.branding?.logo_size">
+                  <strong>Tamaño:</strong> {{ currentTenantConfig?.branding?.logo_size }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2><i class="fas fa-user-tie me-2"></i>Información del Candidato</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nombre del Candidato</label>
+                <input type="text" formControlName="candidate_name" class="form-control" 
+                       placeholder="Juan Duque" />
+              </div>
+              <div class="form-group">
+                <label>Nombre de Contacto</label>
+                <input type="text" formControlName="contact_name" class="form-control" 
+                       placeholder="Juan Duque" />
+              </div>
+              <div class="form-group">
+                <label>URL de Privacidad</label>
+                <input type="url" formControlName="privacy_url" class="form-control" 
+                       placeholder="https://juanduque.com/politica-privacidad" />
+              </div>
+              <div class="form-group">
+                <label>URL de Video de Privacidad</label>
+                <input type="url" formControlName="privacy_video_url" class="form-control" 
+                       placeholder="https://youtube.com/watch?v=..." />
+              </div>
+              <div class="form-group full-width">
+                <label>Mensaje de Bienvenida</label>
+                <textarea formControlName="welcome_message" class="form-control" rows="3"
+                          placeholder="Te doy la bienvenida a nuestra campaña: Juan Duque al Senado!!!"></textarea>
+              </div>
+              <div class="form-group full-width">
+                <label>Mensaje de Bienvenida para Voluntarios</label>
+                <textarea formControlName="volunteer_welcome_message" class="form-control" rows="4"
+                          placeholder="{nombre}, te doy la bienvenida..."></textarea>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-section">
+            <h2><i class="fas fa-eye me-2"></i>Branding Visual</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Título</label>
+                <input type="text" formControlName="title" class="form-control" 
+                       placeholder="VoteRadar" />
+              </div>
+              <div class="form-group">
+                <label>Descripción</label>
+                <input type="text" formControlName="description" class="form-control" 
+                       placeholder="Sistema de gestión electoral en tiempo real" />
+              </div>
+              <div class="form-group">
+                <label>Tamaño del Logo</label>
+                <select formControlName="logo_size" class="form-control">
+                  <option value="small">Pequeño</option>
+                  <option value="medium">Mediano</option>
+                  <option value="large">Grande</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label>URL del Logo</label>
+                <input type="text" formControlName="logo_url" class="form-control" 
+                       placeholder="assets/logo.png o https://ejemplo.com/logo.png" />
+                <small class="form-text text-muted">
+                  Puede ser una ruta relativa (ej: assets/logo.png) o una URL completa (ej: https://ejemplo.com/logo.png)
+                </small>
+                <!-- Vista previa del logo -->
+                <div class="logo-preview" *ngIf="tenantForm.get('branding')?.get('logo_url')?.value">
+                  <label class="preview-label">Vista Previa:</label>
+                  <div class="preview-container">
+                    <img [src]="tenantForm.get('branding')?.get('logo_url')?.value" 
+                         [alt]="tenantForm.get('branding')?.get('title')?.value || 'Logo'"
+                         class="preview-logo"
+                         (error)="onLogoError($event)" />
+                    <div class="preview-error" *ngIf="logoError">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      No se pudo cargar la imagen. Verifica la URL.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2><i class="fas fa-paint-brush me-2"></i>Colores del Tema</h2>
+            <div class="colors-grid">
+              <div class="color-item">
+                <label>Color Primario</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="primary_color" class="color-picker" />
+                  <input type="text" formControlName="primary_color" class="form-control" 
+                         placeholder="#64248b" />
+                </div>
+              </div>
+              <div class="color-item">
+                <label>Color Secundario</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="secondary_color" class="color-picker" />
+                  <input type="text" formControlName="secondary_color" class="form-control" 
+                         placeholder="#cecece" />
+                </div>
+              </div>
+              <div class="color-item">
+                <label>Color de Acento</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="accent_color" class="color-picker" />
+                  <input type="text" formControlName="accent_color" class="form-control" 
+                         placeholder="#4a1a6b" />
+                </div>
+              </div>
+              <div class="color-item">
+                <label>Color de Fondo</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="background_color" class="color-picker" />
+                  <input type="text" formControlName="background_color" class="form-control" 
+                         placeholder="#f9fafb" />
+                </div>
+              </div>
+              <div class="color-item">
+                <label>Color de Superficie</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="surface_color" class="color-picker" />
+                  <input type="text" formControlName="surface_color" class="form-control" 
+                         placeholder="#ffffff" />
+                </div>
+              </div>
+              <div class="color-item">
+                <label>Color de Texto Primario</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="text_primary_color" class="color-picker" />
+                  <input type="text" formControlName="text_primary_color" class="form-control" 
+                         placeholder="#1f2937" />
+                </div>
+              </div>
+              <div class="color-item">
+                <label>Color de Texto Secundario</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="text_secondary_color" class="color-picker" />
+                  <input type="text" formControlName="text_secondary_color" class="form-control" 
+                         placeholder="#6b7280" />
+                </div>
+              </div>
+              <div class="color-item">
+                <label>Color de Éxito</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="success_color" class="color-picker" />
+                  <input type="text" formControlName="success_color" class="form-control" 
+                         placeholder="#10b981" />
+                </div>
+              </div>
+              <div class="color-item">
+                <label>Color de Advertencia</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="warning_color" class="color-picker" />
+                  <input type="text" formControlName="warning_color" class="form-control" 
+                         placeholder="#f59e0b" />
+                </div>
+              </div>
+              <div class="color-item">
+                <label>Color de Error</label>
+                <div class="color-input-group">
+                  <input type="color" formControlName="error_color" class="color-picker" />
+                  <input type="text" formControlName="error_color" class="form-control" 
+                         placeholder="#ef4444" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Integraciones -->
+        <div class="tab-pane fade" id="integrations" role="tabpanel" aria-labelledby="integrations-tab">
+          <div class="form-section">
+            <h2><i class="fas fa-link me-2"></i>Integraciones Externas</h2>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label>ManyChat API Token</label>
+                <input type="password" formControlName="manychatApiToken" class="form-control" 
+                       placeholder="3998759:5af132076c2f1526401b072e0469ea34" />
+                <small class="form-text text-muted">Token de API para ManyChat</small>
+              </div>
+              <div class="form-group">
+                <label>Link de Calendly</label>
+                <input type="url" formControlName="link_calendly" class="form-control" 
+                       placeholder="https://calendar.app.google/..." />
+              </div>
+              <div class="form-group">
+                <label>Link de Forms</label>
+                <input type="url" formControlName="link_forms" class="form-control" 
+                       placeholder="https://forms.gle/..." />
+              </div>
+              <div class="form-group full-width">
+                <label>Client Credentials Secret</label>
+                <input type="password" formControlName="client_credentials_secret" class="form-control" 
+                       placeholder="••••••••" />
+                <small class="form-text text-muted">Credenciales secretas del cliente</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2><i class="fab fa-whatsapp me-2"></i>Wati API Configuration</h2>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label>Wati API Endpoint</label>
+                <input type="url" formControlName="wati_api_endpoint" class="form-control" 
+                       placeholder="https://live-mt-server.wati.io:443" />
+                <small class="form-text text-muted">Endpoint de la API de Wati</small>
+              </div>
+              <div class="form-group full-width">
+                <label>Wati API Token</label>
+                <input type="password" formControlName="wati_api_token" class="form-control" 
+                       placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+                <small class="form-text text-muted">Token de autenticación para la API de Wati</small>
+              </div>
+              <div class="form-group">
+                <label>Wati Tenant ID</label>
+                <input type="text" formControlName="wati_tenant_id" class="form-control" 
+                       placeholder="1062885" />
+                <small class="form-text text-muted">ID del tenant en Wati</small>
+              </div>
+              <div class="form-group">
+                <label>Número de WhatsApp</label>
+                <input type="text" formControlName="numero_whatsapp" class="form-control" 
+                       placeholder="573134515059" />
+                <small class="form-text text-muted">Número de WhatsApp (con código de país)</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Configuración Avanzada -->
+        <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+          <div class="form-section" formGroupName="ai_config">
+            <h2><i class="fas fa-robot me-2"></i>Configuración AI</h2>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label>URL del Bucket de Documentación</label>
+                <input type="url" formControlName="documentation_bucket_url" class="form-control" 
+                       placeholder="https://storage.googleapis.com/juan-duque-docs" />
+                <small class="form-text text-muted">
+                  URL del bucket de Google Cloud Storage que contiene la documentación para el AI
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2><i class="fas fa-envelope me-2"></i>Emails de Agentes</h2>
+            <p class="section-description">
+              Agrega las direcciones de correo electrónico de los agentes que tendrán acceso al sistema.
+            </p>
+            <div formArrayName="agent_emails">
+              <div *ngFor="let email of agentEmailsArray.controls; let i = index" class="email-item">
+                <input type="email" [formControl]="getAgentEmailControl(i)" class="form-control" 
+                       placeholder="intrasoftdevops@gmail.com" />
+                <button type="button" class="btn btn-danger btn-sm" (click)="removeAgentEmail(i)" 
+                        title="Eliminar email">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+              <button type="button" class="btn btn-secondary btn-add-email" (click)="addAgentEmail()">
+                <i class="fas fa-plus me-2"></i>Agregar Email
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de Acción (Fuera de los tabs) -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="saving">
+          <i class="fas fa-times me-2"></i>Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="saving || tenantForm.invalid">
+          <i class="fas fa-save me-2" *ngIf="!saving"></i>
+          <span *ngIf="saving">
+            <i class="fas fa-spinner fa-spin me-2"></i>Guardando...
+          </span>
+          <span *ngIf="!saving">{{ isEditMode ? 'Guardar Cambios' : 'Crear Tenant' }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
