@@ -1,0 +1,77 @@
+<div class="tenant-management-container">
+  <div class="access-denied-container" *ngIf="accessDenied">
+    <div class="alert alert-danger">
+      <i class="fas fa-lock"></i>
+      <h2>Acceso Denegado</h2>
+      <p>Esta sección está disponible solo para super administradores.</p>
+      <p>Serás redirigido automáticamente...</p>
+    </div>
+  </div>
+
+  <div *ngIf="!accessDenied">
+    <div class="header">
+      <h1>Gestión de Tenants</h1>
+      <button class="btn btn-primary" (click)="createTenant()" [disabled]="loading">
+        <i class="fas fa-plus"></i> Nuevo Tenant
+      </button>
+    </div>
+
+  <div class="loading-container" *ngIf="loading && tenants.length === 0">
+    <div class="spinner"></div>
+    <p>Cargando tenants...</p>
+  </div>
+
+  <div class="error-container" *ngIf="error && !loading">
+    <div class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+    </div>
+    <button class="btn btn-secondary" (click)="loadTenants()">
+      <i class="fas fa-redo"></i> Reintentar
+    </button>
+  </div>
+
+  <div class="tenants-table-container" *ngIf="!loading || tenants.length > 0">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Tenant ID</th>
+          <th>Nombre del Candidato</th>
+          <th>Subdominio</th>
+          <th>Project ID</th>
+          <th>Status</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tenant of tenants">
+          <td><strong>{{ tenant.tenant_id }}</strong></td>
+          <td>{{ tenant.candidate_name || 'N/A' }}</td>
+          <td>{{ tenant.subdomain || 'N/A' }}</td>
+          <td>{{ tenant.client_project_id || 'N/A' }}</td>
+          <td>
+            <span class="badge" 
+                  [class.badge-success]="tenant.status === 'active'"
+                  [class.badge-secondary]="tenant.status === 'inactive' || !tenant.status"
+                  [class.badge-info]="tenant.status === 'in_progress'"
+                  [class.badge-warning]="tenant.status === 'suspended'">
+              {{ (tenant.status === 'in_progress' ? 'in progress' : tenant.status) || 'N/A' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-primary" (click)="editTenant(tenant.tenant_id)">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="tenants.length === 0 && !loading">
+          <td colspan="6" class="text-center">
+            <p>No hay tenants registrados</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+</div>
+
