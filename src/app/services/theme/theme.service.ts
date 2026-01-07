@@ -66,7 +66,7 @@ export class ThemeService {
   private getThemeIdFromTenantId(tenantId: string): string | null {
     const tenantThemeMap: { [key: string]: string } = {
       '475711': 'daniel-quintero',
-      '475757': 'juan-duque',
+      '1062885': 'juan-duque',
       '473173': 'potus-44',
     };
     
@@ -97,11 +97,11 @@ export class ThemeService {
 		// Dominios de producción
 		'daniel-quintero.com': '475711',
 		
-		// ===== JUAN DUQUE (475757) =====
+		// ===== JUAN DUQUE (1062885) =====
 		'juan-duque': '1062885',
-		'juan-duque.localhost': '475757',
+		'juan-duque.localhost': '1062885',
 		// Dominios de producción
-		'juan-duque.com': '475757',
+		'juan-duque.com': '1062885',
 		
 		// ===== POTUS 44 (473173) =====
 		'potus-44': '473173',
