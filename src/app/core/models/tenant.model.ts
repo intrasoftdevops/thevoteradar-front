@@ -41,13 +41,13 @@ export const DOMAIN_TENANT_MAP: { [key: string]: string } = {
   'daniel-quintero.localhost': '475711',
   'daniel-quintero': '475711',
   
-  // Juan Duque - Tenant ID: 475757
-  'juan-duque.localhost': '475757',
-  'juan-duque': '475757',
+  // Juan Duque - Tenant ID: 1062885
+  'juan-duque.localhost': '1062885',
+  'juan-duque': '1062885',
   
   // Producción - subdominios de voteradar.co
   'daniel-quintero.voteradar.co': '475711',
-  'juan-duque.voteradar.co': '475757',
+  'juan-duque.voteradar.co': '1062885',
   'potus-44.voteradar.co': '473173',
   'voteradar.co': '473173', // Dominio principal
 };
