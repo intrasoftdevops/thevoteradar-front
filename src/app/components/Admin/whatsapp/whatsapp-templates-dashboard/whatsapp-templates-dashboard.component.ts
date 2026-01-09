@@ -72,24 +72,16 @@ export class WhatsAppTemplatesDashboardComponent implements OnInit, OnDestroy {
 
     const sub = this.whatsappService.getWatiTemplates().subscribe({
       next: (data) => {
-        console.log('📱 WhatsApp - Respuesta completa del endpoint:', data);
-        console.log('📱 WhatsApp - Templates recibidos:', data.templates);
-        console.log('📱 WhatsApp - Total desde API:', data.total);
-        console.log('📱 WhatsApp - Length del array:', data.templates?.length);
-        
         // Filtrar templates excluidos
         const allTemplates = data.templates || [];
         this.templates = allTemplates.filter(t => !this.excludedTemplateNames.includes(t.template_name));
         this.filteredTemplates = [...this.templates];
         
-        console.log('📱 WhatsApp - Templates asignados al componente:', this.templates.length);
-        console.log('📱 WhatsApp - Filtered templates:', this.filteredTemplates.length);
         
         this.applyFilters();
         this.templatesLoading = false;
       },
       error: (err) => {
-        console.error('❌ WhatsApp - Error loading templates:', err);
         this.error = `Error al cargar los templates: ${err.message}`;
         this.templates = [];
         this.filteredTemplates = [];
@@ -104,17 +96,9 @@ export class WhatsAppTemplatesDashboardComponent implements OnInit, OnDestroy {
    * Aplicar filtros y búsqueda
    */
   applyFilters(): void {
-    console.log('🔍 WhatsApp - Aplicando filtros...');
-    console.log('🔍 WhatsApp - Templates totales:', this.templates.length);
-    console.log('🔍 WhatsApp - Filtros activos:', {
-      searchTerm: this.searchTerm,
-      selectedStatus: this.selectedStatus,
-      selectedCategory: this.selectedCategory,
-      sortBy: this.sortBy
-    });
+    
 
     let filtered = [...this.templates];
-    console.log('🔍 WhatsApp - Después de copiar:', filtered.length);
 
     // Filtrar por búsqueda
     if (this.searchTerm.trim()) {
@@ -123,19 +107,16 @@ export class WhatsAppTemplatesDashboardComponent implements OnInit, OnDestroy {
         t.template_name.toLowerCase().includes(term) ||
         t.template_content.toLowerCase().includes(term)
       );
-      console.log('🔍 WhatsApp - Después de búsqueda:', filtered.length);
     }
 
     // Filtrar por status
     if (this.selectedStatus) {
       filtered = filtered.filter(t => t.status === this.selectedStatus);
-      console.log('🔍 WhatsApp - Después de filtrar status:', filtered.length);
     }
 
     // Filtrar por categoría
     if (this.selectedCategory) {
       filtered = filtered.filter(t => t.category === this.selectedCategory);
-      console.log('🔍 WhatsApp - Después de filtrar categoría:', filtered.length);
     }
 
     // Ordenar
@@ -161,8 +142,6 @@ export class WhatsAppTemplatesDashboardComponent implements OnInit, OnDestroy {
     });
 
     this.filteredTemplates = filtered;
-    console.log('✅ WhatsApp - Templates filtrados finales:', this.filteredTemplates.length);
-    console.log('✅ WhatsApp - Nombres de templates filtrados:', this.filteredTemplates.map(t => t.template_name));
   }
 
   /**
@@ -178,11 +157,9 @@ export class WhatsAppTemplatesDashboardComponent implements OnInit, OnDestroy {
   }
 
   openCreateModal(): void {
-    console.log('🔄 WhatsAppDashboard - Abriendo modal de crear template');
     this.showCreateModal = true;
     this.createSuccess = false;
     this.error = null;
-    console.log('✅ WhatsAppDashboard - showCreateModal:', this.showCreateModal);
   }
 
   closeCreateModal(): void {
@@ -199,10 +176,8 @@ export class WhatsAppTemplatesDashboardComponent implements OnInit, OnDestroy {
   }
 
   openSendModal(template: WhatsAppTemplatePending): void {
-    console.log('🔄 WhatsAppDashboard - Abriendo modal de enviar template:', template);
     this.selectedTemplate = template;
     this.showSendModal = true;
-    console.log('✅ WhatsAppDashboard - showSendModal:', this.showSendModal);
   }
 
   closeSendModal(): void {
@@ -244,7 +219,6 @@ export class WhatsAppTemplatesDashboardComponent implements OnInit, OnDestroy {
         }, 1500);
       },
       error: (err) => {
-        console.error('Error creating template:', err);
         if (err.status === 401) {
           this.error = 'Token de autenticación expirado. Por favor, inicia sesión nuevamente.';
         } else {

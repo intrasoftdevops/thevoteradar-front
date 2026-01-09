@@ -281,6 +281,167 @@ table.dataTable:not(:first-child) {
   border-spacing: 0 1em !important;
 }
 
+// DataTables Pagination Styles
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  color: var(--color-primary) !important;
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3) !important;
+  border-radius: 8px !important;
+  padding: 0.5rem 1rem !important;
+  margin: 0 0.25rem !important;
+  transition: all 0.2s ease !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+
+  &:hover:not(.disabled):not(.current) {
+    background: rgba(var(--color-primary-rgb), 0.1) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.1) !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary) !important;
+  }
+
+  &.current,
+  &.current:hover,
+  &.current:active,
+  &.current:focus {
+    background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+    background-color: transparent !important;
+    background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+    border-color: var(--color-primary) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+  }
+
+  &.disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    color: #6b7280 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  &.previous,
+  &.next {
+    font-weight: 500 !important;
+  }
+}
+
+// Additional specificity for current button - Multiple approaches to ensure it applies
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+table.dataTable .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:active,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:focus,
+table.dataTable .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover,
+table.dataTable .dataTables_wrapper .dataTables_paginate .paginate_button.current:active,
+table.dataTable .dataTables_wrapper .dataTables_paginate .paginate_button.current:focus,
+div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a:hover,
+div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a:active,
+div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a:focus {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+// Override any inline styles or Bootstrap classes
+div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current,
+div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a,
+div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current button {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+// Override Bootswatch Cosmo pagination styles with maximum specificity - Remove any purple/magenta colors
+body div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current,
+body div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a,
+body div.dataTables_wrapper div.dataTables_paginate ul li.paginate_button.current,
+body .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+body .dataTables_wrapper .dataTables_paginate .paginate_button.current a {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+// Remove any purple/magenta background colors that might come from Bootswatch or Bootstrap
+body div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a[style*="background"],
+body div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current[style*="background"],
+table.dataTable div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current,
+table.dataTable div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+}
+
+// Force remove any inline styles with purple color - NO solid background-color, only gradient
+body div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current,
+body div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current * {
+  &[style*="#64248b"],
+  &[style*="#4a1a6b"],
+  &[style*="purple"],
+  &[style*="magenta"],
+  &[style*="background-color"] {
+    background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+    background-color: transparent !important;
+    background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  }
+}
+
+body div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a:hover,
+body div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a:active,
+body div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a:focus {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  background-color: var(--color-primary) !important;
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+  opacity: 1 !important;
+}
+
+.dataTables_wrapper .dataTables_info {
+  color: #6b7280 !important;
+  font-size: 0.875rem !important;
+}
+
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label {
+  color: #6b7280 !important;
+  font-size: 0.875rem !important;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3) !important;
+  border-radius: 8px !important;
+  padding: 0.375rem 0.75rem !important;
+  transition: all 0.2s ease !important;
+
+  &:focus {
+    border-color: var(--color-primary) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25) !important;
+  }
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

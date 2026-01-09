@@ -27,7 +27,8 @@ export interface SubMenuItem {
   id: string;
   label: string;
   icon?: string;
-  route: string;
+  route?: string;
+  children?: SubMenuItem[];
   comingSoon?: boolean;
 }
 
@@ -64,6 +65,7 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
   currentTheme: Theme | null = null;
   activeMenuItem: string = '';
   expandedMenus: Set<string> = new Set();
+  expandedSubmenus: Set<string> = new Set(); // Submenús anidados expandidos
   currentRoute: string = '';
   manuallyExpandedMenus: Set<string> = new Set(); // Menús expandidos manualmente por el usuario
   manuallyCollapsedMenus: Set<string> = new Set(); // Menús colapsados manualmente (override contra auto-expansión)
@@ -320,39 +322,6 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
             { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', route: '/panel/estructura/dashboard' },
             { id: 'usuarios', label: 'Usuarios', icon: 'fas fa-users', route: '/panel/estructura/usuarios' },
             { id: 'rankings', label: 'Rankings', icon: 'fas fa-trophy', route: '/panel/estructura' },
-            { id: 'equipo', label: 'Ver Equipo', icon: 'fas fa-users-cog', route: '/panel/estructura/equipo' },
-            { id: 'estadisticas', label: 'Estadísticas', icon: 'fas fa-chart-pie', route: '/panel/estructura/estadisticas' },
-          ]
-        },
-        {
-          id: 'gestion-usuarios',
-          label: 'Gestión de Usuarios',
-          icon: 'fas fa-user-cog',
-          children: [
-            {
-              id: 'gerentes',
-              label: 'Gerentes',
-              icon: 'fas fa-user-tie',
-              route: '/panel/usuarios/gerentes'
-            },
-            {
-              id: 'supervisores',
-              label: 'Supervisores',
-              icon: 'fas fa-users-cog',
-              route: '/panel/usuarios/supervisores'
-            },
-            {
-              id: 'coordinadores',
-              label: 'Coordinadores',
-              icon: 'fas fa-user-friends',
-              route: '/panel/usuarios/coordinadores'
-            },
-            {
-              id: 'testigos',
-              label: 'Testigos',
-              icon: 'fas fa-user-check',
-              route: '/panel/usuarios/testigos'
-            },
           ]
         },
         {
@@ -369,8 +338,8 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
           label: 'Intención de Voto',
           icon: 'fas fa-poll',
           children: [
-            { id: 'encuestas', label: 'Encuestas', icon: 'fas fa-clipboard-list', route: '/panel/encuestas' },
-            { id: 'muestra-opinion', label: 'Muestra (Voto Opinión)', icon: 'fas fa-users', route: '/panel/voto-opinion/muestra' },
+            { id: 'encuestas', label: 'Encuestas', icon: 'fas fa-clipboard-list', route: '/panel/encuestas', comingSoon: true },
+            { id: 'muestra-opinion', label: 'Muestra (Voto Opinión)', icon: 'fas fa-users', route: '/panel/voto-opinion/muestra', comingSoon: true },
           ]
         },
         {
@@ -379,11 +348,18 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
           icon: 'fas fa-calendar-check',
           comingSoon: false,
           children: [
-            { id: 'gerentes', label: 'Gerentes', icon: 'fas fa-user-tie', route: '/panel/dia-electoral/gerentes', comingSoon: true },
-            { id: 'supervisores', label: 'Supervisores', icon: 'fas fa-users-cog', route: '/panel/dia-electoral/supervisores', comingSoon: true },
-            { id: 'coordinadores', label: 'Coordinadores', icon: 'fas fa-user-friends', route: '/panel/dia-electoral/coordinadores', comingSoon: true },
-            { id: 'testigos', label: 'Testigos', icon: 'fas fa-user-check', route: '/panel/dia-electoral/testigos', comingSoon: true },
-            { id: 'reportes', label: 'Reportes', icon: 'fas fa-file-alt', route: '/panel/dia-electoral/reportes' },
+            {
+              id: 'gestion-usuarios',
+              label: 'Gestión de Usuarios',
+              icon: 'fas fa-user-cog',
+              children: [
+                { id: 'gerentes', label: 'Gerentes', icon: 'fas fa-user-tie', route: '/panel/usuarios/gerentes' },
+                { id: 'supervisores', label: 'Supervisores', icon: 'fas fa-users-cog', route: '/panel/usuarios/supervisores' },
+                { id: 'coordinadores', label: 'Coordinadores', icon: 'fas fa-user-friends', route: '/panel/usuarios/coordinadores' },
+                { id: 'testigos', label: 'Testigos', icon: 'fas fa-user-check', route: '/panel/usuarios/testigos' },
+              ]
+            },
+            { id: 'reportes', label: 'Reportes', icon: 'fas fa-file-alt', route: '/panel/dia-electoral/reportes', comingSoon: true },
             { id: 'mapa', label: 'Mapa en Vivo', icon: 'fas fa-map-marked-alt', route: '/panel/dia-electoral/mapa', comingSoon: true },
           ]
         },
@@ -423,7 +399,7 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
         return;
       }
       
-      // Check children
+      // Check children (including nested children)
       if (item.children) {
         for (const child of item.children) {
           // Verificar si la ruta actual coincide con alguna ruta hija
@@ -436,7 +412,29 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
             if (routeMatches) {
               this.activeMenuItem = child.id;
               parentMenuToExpand = item.id;
+              // Si tiene submenús anidados, expandir también
+              if (child.children) {
+                this.expandedSubmenus.add(child.id);
+              }
               break; // Salir del loop de children
+            }
+          }
+          
+          // Verificar submenús anidados
+          if (child.children) {
+            for (const nestedChild of child.children) {
+              if (nestedChild.route) {
+                const routeMatches = this.currentRoute === nestedChild.route || 
+                                    this.currentRoute.startsWith(nestedChild.route + '/') ||
+                                    (this.currentRoute.includes(nestedChild.route) && nestedChild.route.length > 0);
+                
+                if (routeMatches) {
+                  this.activeMenuItem = nestedChild.id;
+                  parentMenuToExpand = item.id;
+                  this.expandedSubmenus.add(child.id); // Expandir el submenú padre
+                  break;
+                }
+              }
             }
           }
         }
@@ -488,6 +486,31 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
   }
 
   /**
+   * Toggle expansión de submenú anidado (nested submenu)
+   */
+  toggleSubmenu(submenuId: string, event?: Event): void {
+    // Prevenir propagación del evento si está disponible
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    if (this.expandedSubmenus.has(submenuId)) {
+      this.expandedSubmenus.delete(submenuId);
+    } else {
+      this.expandedSubmenus.add(submenuId);
+    }
+    
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Verifica si un submenú anidado está expandido
+   */
+  isSubmenuExpanded(submenuId: string): boolean {
+    return this.expandedSubmenus.has(submenuId);
+  }
+
+  /**
    * Verifica si un menú está expandido
    */
   isExpanded(menuId: string): boolean {
@@ -510,12 +533,22 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Verifica si un menú padre tiene un hijo activo
+   * Verifica si un menú padre tiene un hijo activo (incluyendo submenús anidados)
    */
   hasActiveChild(menuId: string): boolean {
     const menu = this.menuItems.find(m => m.id === menuId);
     if (menu?.children) {
-      return menu.children.some(child => this.isActive(child.id));
+      return menu.children.some(child => {
+        // Verificar si el child está activo
+        if (this.isActive(child.id)) {
+          return true;
+        }
+        // Verificar si algún hijo anidado está activo
+        if (child.children) {
+          return child.children.some(nestedChild => this.isActive(nestedChild.id));
+        }
+        return false;
+      });
     }
     return false;
   }
@@ -527,11 +560,9 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
     this.router.navigate(['/inicio']).then(
       (success) => {
         if (!success) {
-          console.error('❌ SidebarMenu - Navegación falló');
         }
       }
     ).catch((error) => {
-      console.error('❌ SidebarMenu - Error en navegación:', error);
     });
   }
 

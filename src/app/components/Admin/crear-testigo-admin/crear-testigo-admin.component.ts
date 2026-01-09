@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ApiService } from '../../../services/api/api.service';
 import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
@@ -11,6 +12,7 @@ import { CustomValidationService } from '../../../services/validations/custom-va
   styleUrls: ['./crear-testigo-admin.component.scss'],
 })
 export class CrearTestigoAdminComponent implements OnInit {
+  loading: boolean = false;
   dataStations: any = [];
   dataTables: any = [];
   dataDepartments: any = [];
@@ -43,20 +45,28 @@ export class CrearTestigoAdminComponent implements OnInit {
     private backofficeAdminService: BackofficeAdminService,
     private fb: FormBuilder,
     private alertService: AlertService,
-    private customValidator: CustomValidationService
+    private customValidator: CustomValidationService,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.getDepartmentAdmin();
   }
 
-  getSelectedDepartment(item: any) {
+  getSelectedDepartment(codigoDepartamento: any) {
     this.selectedMunicipal = [];
     this.selectedZone = [];
     this.createFormControl['puesto'].reset();
     this.createFormControl['mesas'].reset();
-    if (item) {
-      this.getMunicipalAdmin(item.codigo_unico);
+
+    // En ng-select, el (change) puede enviar el objeto completo o el código; normalizamos
+    const codigo =
+      typeof codigoDepartamento === 'string'
+        ? codigoDepartamento
+        : codigoDepartamento?.codigo_unico || codigoDepartamento;
+
+    if (codigo) {
+      this.getMunicipalAdmin(codigo);
     } else {
       this.dataMunicipals = [];
       this.dataZones = [];
@@ -65,13 +75,19 @@ export class CrearTestigoAdminComponent implements OnInit {
     }
   }
 
-  getSelectedMunicipal(codigoMunicipio: string) {
+  getSelectedMunicipal(codigoMunicipio: any) {
     this.selectedZone = [];
     this.createFormControl['puesto'].reset();
     this.createFormControl['mesas'].reset();
-    if (codigoMunicipio) {
-      // codigoMunicipio ya es el código único del municipio (bindValue)
-      this.getZonasyGerentes(codigoMunicipio);
+
+    // Normalizar municipio (string o objeto con codigo_unico)
+    const codigo =
+      typeof codigoMunicipio === 'string'
+        ? codigoMunicipio
+        : codigoMunicipio?.codigo_unico || codigoMunicipio;
+
+    if (codigo) {
+      this.getZonasyGerentes(codigo);
     } else {
       this.dataZones = [];
       this.dataStations = [];
@@ -79,23 +95,35 @@ export class CrearTestigoAdminComponent implements OnInit {
     }
   }
 
-  getSelectedZone(codigoZona: string) {
+  getSelectedZone(codigoZona: any) {
     this.createFormControl['puesto'].reset();
     this.createFormControl['mesas'].reset();
-    if (codigoZona) {
-      // codigoZona ya es el código único de la zona (bindValue)
-      this.getPuestosySupervisores(codigoZona);
+
+    // Normalizar zona (string o objeto con codigo_unico)
+    const codigo =
+      typeof codigoZona === 'string'
+        ? codigoZona
+        : codigoZona?.codigo_unico || codigoZona;
+
+    if (codigo) {
+      this.getPuestosySupervisores(codigo);
     } else {
       this.dataStations = [];
       this.dataTables = [];
     }
   }
 
-  getSelectedStation(codigoPuesto: string) {
+  getSelectedStation(codigoPuesto: any) {
     this.createFormControl['mesas'].reset();
-    if (codigoPuesto) {
-      // codigoPuesto ya es el código único del puesto (bindValue)
-      this.getTablesTestigo(codigoPuesto);
+
+    // Normalizar puesto (string o objeto con codigo_unico)
+    const codigo =
+      typeof codigoPuesto === 'string'
+        ? codigoPuesto
+        : codigoPuesto?.codigo_unico || codigoPuesto;
+
+    if (codigo) {
+      this.getTablesTestigo(codigo);
     } else {
       this.dataTables = [];
     }
@@ -115,6 +143,7 @@ export class CrearTestigoAdminComponent implements OnInit {
       !this.createFormControl['email'].errors?.['invalidEmail']
     ) {
       if (this.createForm.valid) {
+        this.loading = true;
         // Transformar los datos del formulario al formato esperado por el backend
         const formValue = this.createForm.value;
         const testigoData: any = {
@@ -138,15 +167,13 @@ export class CrearTestigoAdminComponent implements OnInit {
           .createTestigo(testigoData)
           .subscribe({
             next: (resp: any) => {
+              this.loading = false;
               this.alertService.successAlert(resp.message || 'Testigo creado correctamente');
-              this.createForm.reset();
-              this.dataMunicipals = [];
-              this.dataZones = [];
-              this.dataStations = [];
-              this.dataTables = [];
+              // Redirigir a la lista de testigos
+              this.router.navigate(['/panel/usuarios/testigos']);
             },
             error: (error: any) => {
-              console.error('❌ Error al crear testigo:', error);
+              this.loading = false;
               let errorMessage = 'Error al crear el testigo';
               if (error.error?.detail) {
                 if (Array.isArray(error.error.detail)) {
@@ -172,26 +199,28 @@ export class CrearTestigoAdminComponent implements OnInit {
     // Usar el nuevo servicio de backoffice
     this.backofficeAdminService.getDepartamentosAdmin().subscribe({
       next: (resp: any) => {
-        console.log('✅ Departamentos cargados:', resp);
         this.dataDepartments = resp.departamentos || resp || [];
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar departamentos:', error);
         this.dataDepartments = [];
       }
     });
   }
 
-  getMunicipalAdmin(codigoDepartamento: string) {
+  getMunicipalAdmin(codigoDepartamento: string | any) {
     // Usar el nuevo servicio de backoffice, pasando el código del departamento
-    this.backofficeAdminService.getMunicipiosAdmin(codigoDepartamento).subscribe({
+    // codigoDepartamento puede llegar como string o como objeto desde el select
+    const codigo =
+      typeof codigoDepartamento === 'string'
+        ? codigoDepartamento
+        : codigoDepartamento?.codigo_unico || codigoDepartamento;
+
+    this.backofficeAdminService.getMunicipiosAdmin(codigo).subscribe({
       next: (resp: any) => {
-        console.log('✅ Municipios cargados:', resp);
         // El backend ya filtra por departamento, así que no necesitamos filtrar aquí
         this.dataMunicipals = resp.municipios || resp || [];
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar municipios:', error);
         this.dataMunicipals = [];
       }
     });
@@ -202,11 +231,9 @@ export class CrearTestigoAdminComponent implements OnInit {
     if (codigoMunicipio) {
       this.backofficeAdminService.getZonasPorMunicipio(codigoMunicipio).subscribe({
         next: (resp: any) => {
-          console.log('✅ Zonas cargadas:', resp);
           this.dataZones = resp.zonas || resp || [];
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar zonas:', error);
           this.dataZones = [];
         }
       });
@@ -218,11 +245,9 @@ export class CrearTestigoAdminComponent implements OnInit {
     if (codigoZona) {
       this.backofficeAdminService.getPuestosPorZona(codigoZona).subscribe({
         next: (resp: any) => {
-          console.log('✅ Puestos cargados:', resp);
           this.dataStations = resp.puestos || resp || [];
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar puestos:', error);
           this.dataStations = [];
         }
       });
@@ -234,11 +259,9 @@ export class CrearTestigoAdminComponent implements OnInit {
     if (codigoPuesto) {
       this.backofficeAdminService.getMesasPorPuesto(codigoPuesto).subscribe({
         next: (resp: any) => {
-          console.log('✅ Mesas cargadas:', resp);
           this.dataTables = resp.mesas || resp || [];
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar mesas:', error);
           this.dataTables = [];
         }
       });
@@ -248,5 +271,37 @@ export class CrearTestigoAdminComponent implements OnInit {
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  onInputFocus(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.05)';
+    }
+  }
+
+  onInputBlur(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = '';
+      target.style.backgroundColor = '';
+    }
+  }
+
+  onButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target && target.tagName === 'BUTTON') {
+      target.style.transform = 'translateY(-2px)';
+      target.style.background = 'linear-gradient(to right, var(--color-accent), var(--color-primary))';
+    }
+  }
+
+  onButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target && target.tagName === 'BUTTON') {
+      target.style.transform = '';
+      target.style.background = 'linear-gradient(to right, var(--color-primary), var(--color-accent))';
+    }
   }
 }

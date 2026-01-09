@@ -70,7 +70,6 @@ export class LoaderInterceptor implements HttpInterceptor {
             // Silenciar errores 401 del servicio de encuestas (esperados si el usuario no tiene permisos)
             // No loguear para evitar ruido en la consola
           } else if (!isLogoutRequest) {
-            console.warn('LoaderInterceptor - Servidor backoffice no disponible o petición de contactos, omitiendo alerta de error');
           }
           return throwError(() => err);
         }
@@ -87,8 +86,6 @@ export class LoaderInterceptor implements HttpInterceptor {
           // Si es admin de backoffice y el error es en backofficeApi,
           // NO desloguear porque puede ser un error temporal
           if (isBackofficeAdmin && isBackofficeApi && !isSurveyApi) {
-            console.warn('LoaderInterceptor - Error 401 en backofficeApi para admin de backoffice.');
-            console.warn('LoaderInterceptor - Esto puede ser un error temporal o de configuración.');
             this.alertService.errorAlert(
               'Error de autenticación: El token del backoffice no es válido para esta operación. ' +
               'Por favor, contacte al administrador del sistema.'
@@ -97,7 +94,6 @@ export class LoaderInterceptor implements HttpInterceptor {
           }
           
           if (!isSurveyApi) {
-            console.warn('LoaderInterceptor - Error 401 en petición no relacionada con encuestas, limpiando localStorage');
             this.localData.deleteCookies();
             window.location.reload();
           }

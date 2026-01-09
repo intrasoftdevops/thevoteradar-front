@@ -66,7 +66,6 @@ export class SurveyDashboardComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error al cargar encuestas:', error);
         if (error.status === 401 || error.status === 403) {
           this.error = 'No tienes permisos para ver las encuestas o tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
         } else if (error.message && error.message.includes('token')) {
@@ -139,7 +138,6 @@ export class SurveyDashboardComponent implements OnInit {
         this.router.navigate(['/panel/encuestas/crear', newSurvey.survey_id]);
       },
       error: (error) => {
-        console.error('Error al crear encuesta:', error);
         this.createError = error.error?.detail || error.message || 'Error al crear la encuesta';
         this.creatingSurvey = false;
       }
@@ -300,7 +298,6 @@ export class SurveyDashboardComponent implements OnInit {
       },
       error: (error) => {
         this.loading = false;
-        console.error('Error al eliminar encuesta:', error);
         
         // Mensaje de error más específico
         let errorMessage = 'No se pudo eliminar la encuesta. Por favor, intenta nuevamente.';

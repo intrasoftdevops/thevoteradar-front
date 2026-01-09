@@ -66,7 +66,7 @@ export class ThemeService {
   private getThemeIdFromTenantId(tenantId: string): string | null {
     const tenantThemeMap: { [key: string]: string } = {
       '475711': 'daniel-quintero',
-      '475757': 'juan-duque',
+      '1062885': 'juan-duque',
       '473173': 'potus-44',
     };
     
@@ -99,9 +99,9 @@ export class ThemeService {
 		
 		// ===== JUAN DUQUE (475757) =====
 		'juan-duque': '1062885',
-		'juan-duque.localhost': '475757',
+		'juan-duque.localhost': '1062885',
 		// Dominios de producción
-		'juan-duque.com': '475757',
+		'juan-duque.com': '1062885',
 		
 		// ===== POTUS 44 (473173) =====
 		'potus-44': '473173',
@@ -211,7 +211,6 @@ export class ThemeService {
         this.loadThemeFromTenantId(tenantId);
       }
     } catch (error) {
-      console.error('Error al cargar tema desde configuración del tenant:', error);
       this.loadThemeFromTenantId(tenantId);
     }
   }
@@ -227,7 +226,6 @@ export class ThemeService {
         // Por ahora usamos el mapeo existente como fallback
       }
     } catch (error) {
-      console.error('Error al obtener tenant desde subdominio:', error);
     }
     
     return this.getTenantIdFromDomain();

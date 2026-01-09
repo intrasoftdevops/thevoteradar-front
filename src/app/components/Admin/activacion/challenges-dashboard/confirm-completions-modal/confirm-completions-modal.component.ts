@@ -75,13 +75,11 @@ export class ConfirmCompletionsModalComponent {
       phones: validPhones
     }).subscribe({
       next: (response) => {
-        console.log('✅ Completaciones confirmadas exitosamente:', response);
         this.confirming = false;
         this.onClose();
         this.confirmed.emit();
       },
       error: (error) => {
-        console.error('❌ Error al confirmar completaciones:', error);
         this.confirming = false;
         
         let errorMessage = 'No se pudieron confirmar las completaciones';

@@ -151,7 +151,6 @@ export class VerEquipoAdminComponent implements OnInit {
         }
       },
       error: (error: any) => {
-        console.error('Error al cargar departamentos:', error);
         this.dataDepartments = [];
       }
     });
@@ -174,7 +173,6 @@ export class VerEquipoAdminComponent implements OnInit {
         }
       },
       error: (error: any) => {
-        console.error('Error al cargar municipios:', error);
         this.dataMunicipals = [];
         this.tabla = 'ninguna';
       }
@@ -195,7 +193,6 @@ export class VerEquipoAdminComponent implements OnInit {
         }
       },
       error: (error: any) => {
-        console.error('Error al cargar zonas y gerentes:', error);
         this.dataZones = [];
         this.listGerentes = [];
         this.tabla = 'ninguna';

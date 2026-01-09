@@ -109,7 +109,6 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
         this.hasMoreFiltered = !!response.next_page_cursor;
       }
     } catch (err: any) {
-      console.error('Error filtering by city:', err);
       this.filterError = err.error?.detail || 'Error al filtrar por ciudad';
     } finally {
       this.isFiltering = false;
@@ -143,7 +142,6 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
         this.hasMoreFiltered = !!response.next_page_cursor;
       }
     } catch (err: any) {
-      console.error('Error filtering by state:', err);
       this.filterError = err.error?.detail || 'Error al filtrar por estado';
     } finally {
       this.isFiltering = false;
@@ -189,7 +187,6 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
    */
   contactViaWhatsApp(phone: string | null): void {
     if (!phone) {
-      console.warn('No hay número de teléfono para contactar');
       return;
     }
 
@@ -199,7 +196,6 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
     // Construir URL de WhatsApp
     const whatsappUrl = `https://wa.me/${cleanPhone}`;
     
-    console.log('📱 Abriendo WhatsApp:', whatsappUrl);
     
     // Abrir en nueva pestaña
     window.open(whatsappUrl, '_blank');
@@ -271,7 +267,6 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
     } else {
       this.selectedUsers.add(phone);
     }
-    console.log('📋 Usuarios seleccionados:', this.selectedUsers.size);
   }
 
   /**
@@ -291,7 +286,6 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
         this.selectedUsers.add(user.phone);
       }
     });
-    console.log('✅ Seleccionados todos los usuarios:', this.selectedUsers.size);
   }
 
   /**
@@ -299,7 +293,6 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
    */
   deselectAllUsers(): void {
     this.selectedUsers.clear();
-    console.log('❌ Deseleccionados todos los usuarios');
   }
 
   /**
@@ -319,7 +312,6 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
       return;
     }
     this.showSendTemplateModal = true;
-    console.log('📧 Abriendo modal para enviar template a:', this.selectedUsers.size, 'usuarios');
   }
 
   /**
@@ -351,7 +343,6 @@ export class AdminUsersManagementPageComponent implements OnInit, OnDestroy {
     // Guardar en localStorage para que el componente de WhatsApp los use
     localStorage.setItem('preselectedWhatsAppRecipients', JSON.stringify(selectedUsersData));
     
-    console.log('📧 Navegando a WhatsApp con usuarios preseleccionados:', selectedUsersData.length);
     
     // Navegar a WhatsApp
     this.router.navigate(['/panel/activacion/whatsapp']);

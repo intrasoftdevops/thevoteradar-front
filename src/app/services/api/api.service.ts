@@ -61,7 +61,6 @@ export class ApiService {
     if (voteradarToken && voteradarToken !== 'undefined' && voteradarToken !== '') {
       headers['Authorization'] = "Bearer " + voteradarToken;
       // Log temporal para debugging
-      console.log('🔑 ApiService.getHeaders - Enviando voteradar_token (primeros 20 chars):', voteradarToken.substring(0, 20) + '...');
       return headers;
     }
     
@@ -150,15 +149,12 @@ export class ApiService {
     // Usar voteradar_user_id si está disponible (usuario mapeado en MySQL)
     const voteradarUserId = this.localData.getVoteradarUserId();
     
-    console.log('🔍 ApiService.getAssignedMunicipal - voteradarUserId:', voteradarUserId);
     
     if (voteradarUserId !== null && voteradarUserId !== undefined) {
       // Usuario tiene ID de voteradar-back guardado
-      console.log('✅ ApiService.getAssignedMunicipal - Usando voteradar_user_id:', voteradarUserId);
       return this.http.get(this._URL + "/gerentes-municipio-asignado/" + voteradarUserId, { headers: this.getHeaders() });
     }
     
-    console.warn('⚠️ ApiService.getAssignedMunicipal - NO hay voteradar_user_id, usando fallback');
     
     // Si no hay voteradar_user_id, intentar obtenerlo del endpoint /getId
     // Esto es un fallback para usuarios que hicieron login antes de que se implementara esta funcionalidad

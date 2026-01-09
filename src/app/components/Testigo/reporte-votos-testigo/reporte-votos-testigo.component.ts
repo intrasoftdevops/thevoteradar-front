@@ -76,7 +76,6 @@ export class ReporteVotosTestigoComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error al obtener mesas:', error);
         this.loading = false;
       }
     })
@@ -92,15 +91,11 @@ export class ReporteVotosTestigoComponent implements OnInit {
   getCandidatos() {
     this.apiService.getCandidatos().subscribe({
       next: (resp: any) => {
-        console.log('📋 Respuesta completa de getCandidatos:', resp);
         const candidatos = resp?.candidatos || resp || [];
-        console.log('📋 Candidatos extraídos:', candidatos);
-        console.log('📋 Cantidad de candidatos:', candidatos.length);
         
         this.listCandidatos = candidatos;
         
         if (candidatos.length === 0) {
-          console.warn('⚠️ No se encontraron candidatos para este reporte');
           this.alertService.errorAlert('No se encontraron candidatos para este reporte. Por favor, contacte al administrador.');
         } else {
           // Limpiar FormArray de votos antes de agregar nuevos
@@ -114,12 +109,9 @@ export class ReporteVotosTestigoComponent implements OnInit {
               this.fb.control('', Validators.required)
             );
           });
-          console.log('✅ FormArray de votos actualizado con', votos.length, 'campos');
         }
       },
       error: (error) => {
-        console.error('❌ Error al obtener candidatos:', error);
-        console.error('❌ Detalles del error:', error.error);
         this.alertService.errorAlert('Error al cargar los candidatos. Por favor, intente nuevamente.');
         this.listCandidatos = [];
       }

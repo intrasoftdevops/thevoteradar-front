@@ -28,7 +28,6 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     // Cargar configuración del tenant y aplicar tema (no bloqueante)
     this.loadTenantConfig().catch(error => {
-      console.error('Error al cargar configuración del tenant:', error);
       this.themeService.setTheme('default');
     });
     
@@ -66,7 +65,6 @@ export class AppComponent implements OnInit {
         this.themeService.setTheme('default');
       }
     } catch (error) {
-      console.error('Error al cargar configuración del tenant:', error);
       this.themeService.setTheme('default');
     }
   }

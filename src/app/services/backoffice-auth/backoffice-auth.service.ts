@@ -75,13 +75,7 @@ export class BackofficeAuthService {
     return this.http.post<BackofficeLoginResponse>(url, body.toString(), { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ Error en login de backoffice:', {
-            url,
-            status: error.status,
-            statusText: error.statusText,
-            error: error.error,
-            message: error.message
-          });
+      
           return throwError(() => error);
         })
       );
@@ -101,7 +95,6 @@ export class BackofficeAuthService {
     return this.http.get(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error validando token de backoffice:', error);
           return throwError(() => error);
         })
       );
@@ -142,7 +135,6 @@ export class BackofficeAuthService {
     return this.http.post(`${this.backofficeUrl}/users/request-otp`, requestData, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error solicitando OTP:', error);
           return throwError(() => error);
         })
       );
@@ -172,7 +164,6 @@ export class BackofficeAuthService {
     return this.http.post(url, { otp, verification_id: verificationId }, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error verificando OTP:', error);
           return throwError(() => error);
         })
       );
@@ -198,7 +189,6 @@ export class BackofficeAuthService {
     return this.http.post<BackofficeLoginResponse>(url, profileData, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error completando perfil:', error);
           return throwError(() => error);
         })
       );

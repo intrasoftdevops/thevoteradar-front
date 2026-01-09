@@ -54,7 +54,6 @@ export class ContactosComponent implements OnInit {
     if (isValidId) {
       this.getContactos();
     } else {
-      console.warn('ContactosComponent: No hay ID de usuario válido disponible. No se cargarán contactos.');
       this.listContactos = [];
     }
     this.innerWidth = window.innerWidth;
@@ -131,7 +130,6 @@ export class ContactosComponent implements OnInit {
         this.listContactos = resp;
       },
       error: (error: any) => {
-        console.warn('No se pudieron cargar los contactos. El servidor puede no estar disponible:', error);
         this.listContactos = [];
       }
     });

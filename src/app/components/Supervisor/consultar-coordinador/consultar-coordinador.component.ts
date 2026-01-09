@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
+import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../../../services/localData/local-data.service';
 import { Subject } from 'rxjs';
@@ -19,8 +20,15 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   coordinadorActual: any={};
   puestosActual: any='';
+  activeTab: string = 'asignados';
+  loading: boolean = true;
 
-  constructor(private apiService: ApiService,private router: Router,private localData: LocalDataService) { }
+  constructor(
+    private apiService: ApiService,
+    private backofficeAdminService: BackofficeAdminService,
+    private router: Router,
+    private localData: LocalDataService
+  ) { }
 
   ngOnInit() {
     this.dataTableOptions();
@@ -32,24 +40,75 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
   }
 
   getCoordinadores() {
-    this.apiService.getCoordinadores().subscribe((resp: any) => {
-      const { coordinadores_asignados, coordinadores_no_asignados } = resp;
-      this.listCoordinadorAsignados = coordinadores_asignados;
-      this.listCoordinadorNoAsignados = coordinadores_no_asignados;
-      for (let coordinador of this.listCoordinadorAsignados) {
-        let puestos = this.getZones(coordinador.puestos);
-        let lastPuestos;
-        if (puestos.length > 1) {
-          lastPuestos = puestos.shift();
-          this.listStations.push(puestos.join(', ') + " y " + lastPuestos);
-        } else {
-          this.listStations.push(puestos);
+    this.loading = true;
+    
+    // Si es admin, usar el endpoint de backoffice sin parámetros
+    // Si es supervisor, usar el endpoint con el ID del supervisor
+    const userRol = this.localData.getRol();
+    const isAdmin = userRol === '1' || userRol === 'admin' || userRol === 'Admin';
+    
+    if (isAdmin) {
+      // Para admin: usar el nuevo endpoint de coordinadores
+      this.backofficeAdminService.getCoordinadoresZonaAsignado().subscribe({
+        next: (resp: any) => {
+          const { coordinadores_asignados, coordinadores_no_asignados } = resp;
+          this.listCoordinadorAsignados = coordinadores_asignados || [];
+          this.listCoordinadorNoAsignados = coordinadores_no_asignados || [];
+          
+          // Procesar puestos para mostrar
+          for (let coordinador of this.listCoordinadorAsignados) {
+            let puestos = this.getZones(coordinador.puestos || []);
+            let lastPuestos;
+            if (puestos.length > 1) {
+              lastPuestos = puestos.shift();
+              this.listStations.push(puestos.join(', ') + " y " + lastPuestos);
+            } else {
+              this.listStations.push(puestos[0] || '');
+            }
+          }
+          
+          setTimeout(() => {
+            this.dtTrigger.next(void 0);
+            this.applyPaginationStyles();
+          });
+          this.loading = false;
+        },
+        error: (error: any) => {
+          this.listCoordinadorAsignados = [];
+          this.listCoordinadorNoAsignados = [];
+          this.loading = false;
         }
-      }
-      setTimeout(() => {
-        this.dtTrigger.next(void 0);
       });
-    })
+    } else {
+      // Para supervisor: usar el endpoint tradicional con el ID del supervisor
+      this.apiService.getCoordinadores().subscribe({
+        next: (resp: any) => {
+          const { coordinadores_asignados, coordinadores_no_asignados } = resp;
+          this.listCoordinadorAsignados = coordinadores_asignados || [];
+          this.listCoordinadorNoAsignados = coordinadores_no_asignados || [];
+          for (let coordinador of this.listCoordinadorAsignados) {
+            let puestos = this.getZones(coordinador.puestos || []);
+            let lastPuestos;
+            if (puestos.length > 1) {
+              lastPuestos = puestos.shift();
+              this.listStations.push(puestos.join(', ') + " y " + lastPuestos);
+            } else {
+              this.listStations.push(puestos);
+            }
+          }
+          setTimeout(() => {
+            this.dtTrigger.next(void 0);
+            this.applyPaginationStyles();
+          });
+          this.loading = false;
+        },
+        error: (error: any) => {
+          this.listCoordinadorAsignados = [];
+          this.listCoordinadorNoAsignados = [];
+          this.loading = false;
+        }
+      });
+    }
   }
 
   getZones(data: any) {
@@ -67,6 +126,60 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
   coordinadorActualSeleccionado(coordinador: any, puestos?:any) {
     this.coordinadorActual=coordinador;
     this.puestosActual=puestos;
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
+  }
+
+  applyPaginationStyles() {
+    const applyStyles = () => {
+      const root = document.documentElement;
+      const primaryColor = getComputedStyle(root).getPropertyValue('--color-primary').trim();
+      const accentColor = getComputedStyle(root).getPropertyValue('--color-accent').trim();
+      
+      const selectors = [
+        '.dataTables_wrapper .dataTables_paginate .paginate_button.current',
+        '.dataTables_wrapper .dataTables_paginate .paginate_button.current a',
+        '.dataTables_wrapper .dataTables_paginate ul.pagination li.paginate_button.current',
+        '.dataTables_wrapper .dataTables_paginate ul.pagination li.paginate_button.current a'
+      ];
+      
+      selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((button: any) => {
+          if (button) {
+            button.removeAttribute('style');
+            button.style.cssText += `background: linear-gradient(to right, ${primaryColor}, ${accentColor}) !important;`;
+            button.style.cssText += `background-color: transparent !important;`;
+            button.style.cssText += `background-image: linear-gradient(to right, ${primaryColor}, ${accentColor}) !important;`;
+            button.style.cssText += `border-color: ${primaryColor} !important;`;
+            button.style.cssText += `color: white !important;`;
+            button.style.cssText += `font-weight: 600 !important;`;
+          }
+        });
+      });
+    };
+    
+    const intervals = [0, 50, 100, 200, 300, 500, 1000];
+    intervals.forEach(delay => setTimeout(applyStyles, delay));
+    
+    const paginationContainers = document.querySelectorAll('.dataTables_wrapper');
+    paginationContainers.forEach(container => {
+      const paginationContainer = container.querySelector('.dataTables_paginate');
+      if (paginationContainer) {
+        const observer = new MutationObserver(() => applyStyles());
+        observer.observe(paginationContainer, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+      }
+    });
+    
+    document.addEventListener('click', (e: any) => {
+      if (e.target && e.target.closest && e.target.closest('.dataTables_wrapper .dataTables_paginate')) {
+        setTimeout(applyStyles, 10);
+        setTimeout(applyStyles, 50);
+        setTimeout(applyStyles, 100);
+      }
+    }, true);
   }
 
   dataTableOptions() {

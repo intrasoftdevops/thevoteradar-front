@@ -45,7 +45,6 @@ export class SurveyResponsesComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error al cargar respuestas:', error);
         this.error = 'No fue posible cargar las respuestas de la encuesta.';
         this.loading = false;
       }
@@ -60,7 +59,6 @@ export class SurveyResponsesComponent implements OnInit {
         this.questions = state.questions || [];
       },
       error: (error) => {
-        console.error('Error al cargar preguntas:', error);
       }
     });
   }

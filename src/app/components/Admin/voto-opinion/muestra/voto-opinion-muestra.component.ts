@@ -73,7 +73,6 @@ export class VotoOpinionMuestraComponent implements OnInit {
         this.loadSample();
       }
     } catch (e: any) {
-      console.error('Error cargando encuestas:', e);
       // Si falla, intentar cargar el resumen
       if (!this.selectedSurveyId) {
         await this.loadAllSurveysSummary();
@@ -117,15 +116,12 @@ export class VotoOpinionMuestraComponent implements OnInit {
 
       if (surveyId) {
         // Cargar recipients de la encuesta seleccionada
-        console.log('📊 Cargando recipients de encuesta:', surveyId);
         await this.loadSurveyRecipients();
       } else {
         // Cargar directorio central
-        console.log('📊 Cargando directorio central (todas las encuestas)');
         await this.loadCentralDirectory();
       }
     } catch (e: any) {
-      console.error('❌ VotoOpinionMuestra - Error cargando muestra:', e);
       const errorMessage = e?.error?.detail || e?.error?.message || e?.message || 'No se pudo cargar la muestra';
       this.error = errorMessage;
       // Limpiar datos en caso de error
@@ -140,7 +136,6 @@ export class VotoOpinionMuestraComponent implements OnInit {
 
   async loadSurveyRecipients(): Promise<void> {
     if (!this.selectedSurveyId) {
-      console.warn('No hay encuesta seleccionada, no se pueden cargar recipients');
       return;
     }
 
@@ -148,7 +143,6 @@ export class VotoOpinionMuestraComponent implements OnInit {
       const recipients = await firstValueFrom(this.surveyService.getSurveyRecipients(this.selectedSurveyId));
       
       if (!Array.isArray(recipients)) {
-        console.warn('La respuesta de recipients no es un array:', recipients);
         this.totalRespondents = 0;
         this.respondentsLoaded = 0;
         this.respondentsPreview = [];
@@ -177,7 +171,6 @@ export class VotoOpinionMuestraComponent implements OnInit {
       this.demographicSections = this.buildDemographicsFromRespondents(allRecipients);
       this.demographicSections = this.demographicSections.sort((a, b) => b.buckets.length - a.buckets.length);
     } catch (error: any) {
-      console.error('Error cargando recipients de encuesta:', error);
       // Si hay error, limpiar datos
       this.totalRespondents = 0;
       this.respondentsLoaded = 0;
@@ -238,7 +231,6 @@ export class VotoOpinionMuestraComponent implements OnInit {
       // Ordenar secciones por cantidad de buckets (para que sea más útil arriba)
       this.demographicSections = this.demographicSections.sort((a, b) => b.buckets.length - a.buckets.length);
     } catch (error: any) {
-      console.error('Error cargando directorio central:', error);
       // Si hay error, al menos mostrar que no hay datos
       this.totalRespondents = 0;
       this.respondentsLoaded = 0;
@@ -615,7 +607,6 @@ export class VotoOpinionMuestraComponent implements OnInit {
             );
             this.surveySummaries[index].recipientsCount = Array.isArray(recipients) ? recipients.length : 0;
           } catch (recipientsError) {
-            console.warn(`No se pudieron cargar recipients de encuesta ${summary.survey.id}:`, recipientsError);
             // Mantener el valor por defecto o intentar usar recipients_count si está disponible
             if (summary.survey.recipients_count) {
               this.surveySummaries[index].recipientsCount = summary.survey.recipients_count;
@@ -624,7 +615,6 @@ export class VotoOpinionMuestraComponent implements OnInit {
 
           this.surveySummaries[index].loading = false;
         } catch (error) {
-          console.error(`Error cargando analytics de encuesta ${summary.survey.id}:`, error);
           this.surveySummaries[index].loading = false;
         }
       });
@@ -637,7 +627,6 @@ export class VotoOpinionMuestraComponent implements OnInit {
       );
       this.lastUpdated = new Date();
     } catch (e: any) {
-      console.error('Error cargando resumen de encuestas:', e);
       this.error = e?.error?.detail || e?.error?.message || e?.message || 'No se pudo cargar el resumen';
     } finally {
       this.loading = false;

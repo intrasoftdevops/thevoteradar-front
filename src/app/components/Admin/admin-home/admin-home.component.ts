@@ -149,7 +149,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
         }
       }),
       catchError((err) => {
-        console.error('❌ AdminHome - Error al cargar estadísticas:', err);
         this.stats.totalUsers = 0;
         this.cityChartData = [];
         return of(null); // Retornar observable vacío para no romper forkJoin
@@ -168,7 +167,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
         }));
       }),
       catchError((err) => {
-        console.error('❌ AdminHome - Error al cargar líderes:', err);
         this.leaders = [];
         this.leadersError = 'No se pudieron cargar los líderes';
         return of(null);
@@ -201,7 +199,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
         this.hasChallengesEndpoint = true;
       }),
       catchError((err) => {
-        console.error('❌ AdminHome - Error al cargar challenges:', err);
         this.challenges = [];
         this.challengesError = 'No se pudieron cargar los challenges';
         this.stats.activeChallenges = 0;
@@ -233,7 +230,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
       catchError((err) => {
         // Solo loguear errores que no sean 401 (esperados si el usuario no tiene permisos)
         if (err.status !== 401) {
-          console.error('❌ AdminHome - Error al cargar encuestas:', err);
         }
         this.recentSurveys = [];
         this.surveysError = 'No se pudieron cargar las encuestas';
@@ -247,7 +243,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
         this.stats.totalPoints = (response.leaderboard || []).reduce((sum, user) => sum + user.points, 0);
       }),
       catchError((err) => {
-        console.error('❌ AdminHome - Error al cargar ranking:', err);
         this.stats.totalPoints = 0;
         return of(null);
       })
@@ -282,7 +277,6 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
         this.loadRankings(); // Cargar rankings interactivos después
       },
       error: (err) => {
-        console.error('❌ AdminHome - Error general en carga de datos:', err);
         this.cdr.detectChanges();
       }
     });

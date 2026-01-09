@@ -36,7 +36,6 @@ export class SupervisorHomeComponent implements OnInit {
         this.zona_asignada = [];
       }
     }, (error) => {
-      console.error('Error al obtener datos del supervisor:', error);
       this.municipio_asignado = '';
       this.zona_asignada = [];
     });

@@ -99,13 +99,11 @@ export class EditChallengeModalComponent implements OnChanges {
 
     this.challengeService.updateChallenge(this.challenge.challenge_id, challengeData).subscribe({
       next: (response) => {
-        console.log('✅ Challenge actualizado exitosamente:', response);
         this.updating = false;
         this.onClose();
         this.updated.emit();
       },
       error: (error) => {
-        console.error('❌ Error al actualizar challenge:', error);
         this.updating = false;
         
         let errorMessage = 'No se pudo actualizar el challenge';

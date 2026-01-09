@@ -25,6 +25,8 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   @ViewChild(DataTableDirective)
   dtElement!: any;
   notFirstTime = false;
+  activeTab: string = 'asignados';
+  loading: boolean = true;
 
   constructor(
     private apiService: ApiService,
@@ -34,9 +36,16 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
     private fb: FormBuilder
   ) { }
 
+  private paginationStyleInterval: any;
+
   ngOnInit() {
     this.dataTableOptions();
     this.getGerentes();
+    
+    // Continuous interval to ensure styles are applied (as backup)
+    this.paginationStyleInterval = setInterval(() => {
+      this.applyPaginationStyles();
+    }, 500);
   }
 
   ngOnDestroy() {
@@ -44,9 +53,14 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
     if (!this.dtTrigger.closed) {
       this.dtTrigger.complete();
     }
+    // Clear interval
+    if (this.paginationStyleInterval) {
+      clearInterval(this.paginationStyleInterval);
+    }
   }
 
   getGerentes() {
+    this.loading = true;
     // Usar el nuevo servicio de backoffice
     this.backofficeAdminService.getGerentesMunicipioAsignado().subscribe({
       next: (resp: any) => {
@@ -66,11 +80,16 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
         }
         this.renderer();
         this.notFirstTime = true;
+        this.loading = false;
+        // Apply styles after rendering is complete
+        setTimeout(() => {
+          this.applyPaginationStyles();
+        }, 300);
       },
       error: (error: any) => {
-        console.error('Error al obtener gerentes:', error);
         this.listGerenteAsignados = [];
         this.listGerenteNoAsignados = [];
+        this.loading = false;
       }
     });
   }
@@ -84,7 +103,86 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
     }
     setTimeout(() => {
       this.dtTrigger.next(void 0);
+      this.applyPaginationStyles();
     });
+  }
+
+  applyPaginationStyles() {
+    const applyStyles = () => {
+      // Get computed styles to use actual CSS variable values
+      const root = document.documentElement;
+      const primaryColor = getComputedStyle(root).getPropertyValue('--color-primary').trim();
+      const accentColor = getComputedStyle(root).getPropertyValue('--color-accent').trim();
+      
+      // Find all current page buttons - be very specific
+      const selectors = [
+        '.dataTables_wrapper .dataTables_paginate .paginate_button.current',
+        '.dataTables_wrapper .dataTables_paginate .paginate_button.current a',
+        '.dataTables_wrapper .dataTables_paginate ul.pagination li.paginate_button.current',
+        '.dataTables_wrapper .dataTables_paginate ul.pagination li.paginate_button.current a'
+      ];
+      
+      selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((button: any) => {
+          if (button) {
+            // Completely remove all inline styles first
+            button.removeAttribute('style');
+            
+            // Apply new styles directly as inline styles with !important via setAttribute
+            const style = button.getAttribute('style') || '';
+            const newStyle = `background: linear-gradient(to right, ${primaryColor}, ${accentColor}) !important; ` +
+                           `background-color: ${primaryColor} !important; ` +
+                           `background-image: linear-gradient(to right, ${primaryColor}, ${accentColor}) !important; ` +
+                           `border-color: ${primaryColor} !important; ` +
+                           `color: white !important; ` +
+                           `font-weight: 600 !important; ` +
+                           style;
+            button.setAttribute('style', newStyle);
+            
+            // Also use setProperty for modern browsers
+            button.style.cssText += `background: linear-gradient(to right, ${primaryColor}, ${accentColor}) !important;`;
+            button.style.cssText += `background-color: transparent !important;`;
+            button.style.cssText += `background-image: linear-gradient(to right, ${primaryColor}, ${accentColor}) !important;`;
+            button.style.cssText += `border-color: ${primaryColor} !important;`;
+            button.style.cssText += `color: white !important;`;
+            button.style.cssText += `font-weight: 600 !important;`;
+          }
+        });
+      });
+    };
+    
+    // Apply immediately and repeatedly
+    const intervals = [0, 50, 100, 200, 300, 500, 1000];
+    intervals.forEach(delay => {
+      setTimeout(applyStyles, delay);
+    });
+    
+    // Use MutationObserver to detect when pagination changes
+    const paginationContainers = document.querySelectorAll('.dataTables_wrapper');
+    paginationContainers.forEach(container => {
+      const paginationContainer = container.querySelector('.dataTables_paginate');
+      if (paginationContainer) {
+        const observer = new MutationObserver(() => {
+          applyStyles();
+        });
+        observer.observe(paginationContainer, { 
+          childList: true, 
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['class', 'style']
+        });
+      }
+    });
+    
+    // Listen for all click events on pagination
+    document.addEventListener('click', (e: any) => {
+      if (e.target && e.target.closest && e.target.closest('.dataTables_wrapper .dataTables_paginate')) {
+        setTimeout(applyStyles, 10);
+        setTimeout(applyStyles, 50);
+        setTimeout(applyStyles, 100);
+      }
+    }, true);
   }
 
   getMunicipals(data: any) {
@@ -96,7 +194,8 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
 
   redirectUpdateGerente(id: any) {
     const idEncrypt = this.localData.encryptIdUser(id);
-    this.router.navigate(["editarGerente", idEncrypt]);
+    // Navigate to the new route under /panel/usuarios/gerente/editar/:id
+    this.router.navigate(['/panel/usuarios/gerente/editar', idEncrypt]);
   }
 
   redirectSwitchRolGerente(id: any) {
@@ -107,6 +206,10 @@ export class ConsultarGerenteComponent implements OnDestroy, OnInit {
   gerenteActualSeleccionado(gerente: any, municipios?:any) {
     this.gerenteActual=gerente;
     this.municipiosActual=municipios;
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
   }
 
   dataTableOptions() {
