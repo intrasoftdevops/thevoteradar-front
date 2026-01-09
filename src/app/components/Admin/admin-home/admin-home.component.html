@@ -54,7 +54,7 @@
       </div>
     </div>
 
-    <div class="col-md-3 col-sm-6">
+    <div class="col-md-3 col-sm-6" *ngIf="SHOW_RETOS">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body">
           <div class="d-flex align-items-center">
@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <div class="col-md-3 col-sm-6">
+    <div class="col-md-3 col-sm-6" *ngIf="SHOW_ENCUESTAS">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body">
           <div class="d-flex align-items-center">
@@ -218,7 +218,7 @@
       </div>
 
       <!-- Challenges/Retos -->
-      <div class="card border-0 shadow-sm mb-4">
+      <div class="card border-0 shadow-sm mb-4" *ngIf="SHOW_RETOS">
         <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
           <div class="d-flex align-items-center justify-content-between">
             <div>
@@ -352,7 +352,7 @@
       </div>
 
       <!-- Encuestas Recientes (Secundario - Compacto) -->
-      <div class="card border-0 shadow-sm mb-4">
+      <div class="card border-0 shadow-sm mb-4" *ngIf="SHOW_ENCUESTAS">
         <div class="card-header bg-transparent border-0 pb-0 pt-3 px-4">
           <div class="d-flex align-items-center justify-content-between">
             <div>
