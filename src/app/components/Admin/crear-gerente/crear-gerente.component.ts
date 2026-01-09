@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -12,6 +13,7 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 })
 export class CrearGerenteComponent implements OnInit {
 
+  loading: boolean = false;
   dataMunicipals: any = [];
   dataDepartments: any = [];
 
@@ -30,7 +32,8 @@ export class CrearGerenteComponent implements OnInit {
     private backofficeAdminService: BackofficeAdminService,
     private fb: FormBuilder,
     private alertService: AlertService,
-    private customValidator: CustomValidationService
+    private customValidator: CustomValidationService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -60,6 +63,7 @@ export class CrearGerenteComponent implements OnInit {
     if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
 
       if (this.createForm.valid) {
+        this.loading = true;
         // Transformar los datos del formulario al formato esperado por el backend
         const formValue = this.createForm.value;
         const gerenteData: any = {
@@ -83,12 +87,13 @@ export class CrearGerenteComponent implements OnInit {
         // Usar el nuevo servicio de backoffice en lugar de voteradar-back
         this.backofficeAdminService.createGerente(gerenteData).subscribe({
           next: (resp: any) => {
+            this.loading = false;
             this.alertService.successAlert(resp.message || 'Gerente creado correctamente');
-            // Opcional: resetear el formulario después de crear
-            this.createForm.reset();
-            this.dataMunicipals = [];
+            // Redirigir a la lista de gerentes
+            this.router.navigate(['/panel/usuarios/gerentes']);
           },
           error: (error: any) => {
+            this.loading = false;
             // Mostrar detalles del error de validación si están disponibles
             let errorMessage = 'Error al crear el gerente';
             if (error.error?.detail) {

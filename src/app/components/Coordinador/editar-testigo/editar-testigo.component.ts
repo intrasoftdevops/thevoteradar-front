@@ -43,6 +43,7 @@ export class EditarTestigoComponent implements OnInit {
   });
 
   loading: boolean = false;
+  saving: boolean = false;
   testigoLoaded: boolean = false;
 
   constructor(
@@ -101,6 +102,7 @@ export class EditarTestigoComponent implements OnInit {
   onSubmit() {
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
+        this.saving = true;
         const formValue = this.updateForm.value;
         const testigoData: any = {
           nombres: formValue.nombres,
@@ -124,9 +126,13 @@ export class EditarTestigoComponent implements OnInit {
         
         this.backofficeAdminService.updateTestigo(this.idTestigo, testigoData).subscribe({
           next: (resp: any) => {
+            this.saving = false;
             this.alertService.successAlert(resp.message || resp.res || 'Testigo actualizado correctamente');
+            // Redirigir a la lista de testigos
+            this.router.navigate(['/panel/usuarios/testigos']);
           },
           error: (error: any) => {
+            this.saving = false;
             let errorMessage = 'Error al actualizar el testigo';
             if (error.error?.detail) {
               if (Array.isArray(error.error.detail)) {
@@ -175,7 +181,8 @@ export class EditarTestigoComponent implements OnInit {
     
     this.backofficeAdminService.getTestigo(this.idTestigo).subscribe({
       next: (resp: any) => {
-        const testigo = resp.testigo || resp;
+        // La respuesta puede venir como { testigo: {...} } o directamente como objeto
+        const testigo = resp.testigo || resp.data || resp;
         
         if (!testigo) {
           this.loading = false;
@@ -186,11 +193,12 @@ export class EditarTestigoComponent implements OnInit {
           return;
         }
         
-        this.updateForm.get('nombres')?.setValue(testigo.nombres || '');
-        this.updateForm.get('apellidos')?.setValue(testigo.apellidos || '');
+        // Cargar datos básicos del testigo - verificar diferentes posibles nombres de campos
+        this.updateForm.get('nombres')?.setValue(testigo.nombres || testigo.name || '');
+        this.updateForm.get('apellidos')?.setValue(testigo.apellidos || testigo.lastname || testigo.last_name || '');
         this.updateForm.get('email')?.setValue(testigo.email || '');
         this.updateForm.get('password')?.setValue(testigo.password || '');
-        this.updateForm.get('numero_documento')?.setValue(testigo.numero_documento || '');
+        this.updateForm.get('numero_documento')?.setValue(testigo.numero_documento || testigo.document_number || testigo.documento || '');
         const telefono = testigo.telefono || testigo.phone || '';
         this.updateForm.get('telefono')?.setValue(telefono.toString());
         

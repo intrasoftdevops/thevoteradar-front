@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ApiService } from '../../../services/api/api.service';
 import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
@@ -11,6 +12,7 @@ import { CustomValidationService } from '../../../services/validations/custom-va
   styleUrls: ['./crear-coordinador-admin.component.scss'],
 })
 export class CrearCoordinadorAdminComponent implements OnInit {
+  loading: boolean = false;
   dataZones: any = [];
   dataStations: any = [];
   dataFiltered: any = [];
@@ -40,7 +42,8 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     private backofficeAdminService: BackofficeAdminService,
     private fb: FormBuilder,
     private alertService: AlertService,
-    private customValidator: CustomValidationService
+    private customValidator: CustomValidationService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -59,12 +62,19 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     });
   }
 
-  getSelectedDepartment(item: any) {
+  getSelectedDepartment(codigoDepartamento: any) {
     this.selectedMunicipal = [];
     this.createFormControl['zona'].reset();
     this.createFormControl['puestos'].reset();
-    if (item) {
-      this.getMunicipalAdmin(item.codigo_unico);
+
+    // En ng-select, el (change) puede enviar el objeto completo o el código; normalizamos
+    const codigo =
+      typeof codigoDepartamento === 'string'
+        ? codigoDepartamento
+        : codigoDepartamento?.codigo_unico || codigoDepartamento;
+
+    if (codigo) {
+      this.getMunicipalAdmin(codigo);
     } else {
       this.dataMunicipals = [];
       this.dataZones = [];
@@ -72,23 +82,35 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     }
   }
 
-  getSelectedMunicipal(codigoMunicipio: string) {
+  getSelectedMunicipal(codigoMunicipio: any) {
     this.createFormControl['zona'].reset();
     this.createFormControl['puestos'].reset();
-    if (codigoMunicipio) {
-      // codigoMunicipio ya es el código único del municipio (bindValue)
-      this.getZonasyGerentes(codigoMunicipio);
+
+    // Normalizar municipio (string o objeto con codigo_unico)
+    const codigo =
+      typeof codigoMunicipio === 'string'
+        ? codigoMunicipio
+        : codigoMunicipio?.codigo_unico || codigoMunicipio;
+
+    if (codigo) {
+      this.getZonasyGerentes(codigo);
     } else {
       this.dataZones = [];
       this.dataStations = [];
     }
   }
 
-  getSelectedZone(codigoZona: string) {
+  getSelectedZone(codigoZona: any) {
     this.createFormControl['puestos'].reset();
-    if (codigoZona) {
-      // codigoZona ya es el código único de la zona (bindValue)
-      this.getPuestosySupervisores(codigoZona);
+
+    // Normalizar zona (string o objeto con codigo_unico)
+    const codigo =
+      typeof codigoZona === 'string'
+        ? codigoZona
+        : codigoZona?.codigo_unico || codigoZona;
+
+    if (codigo) {
+      this.getPuestosySupervisores(codigo);
     } else {
       this.dataStations = [];
     }
@@ -108,6 +130,7 @@ export class CrearCoordinadorAdminComponent implements OnInit {
       !this.createFormControl['email'].errors?.['invalidEmail']
     ) {
       if (this.createForm.valid) {
+        this.loading = true;
         // Transformar los datos del formulario al formato esperado por el backend
         const formValue = this.createForm.value;
         const coordinadorData: any = {
@@ -131,13 +154,13 @@ export class CrearCoordinadorAdminComponent implements OnInit {
           .createCoordinador(coordinadorData)
           .subscribe({
             next: (resp: any) => {
+              this.loading = false;
               this.alertService.successAlert(resp.message || 'Coordinador creado correctamente');
-              this.createForm.reset();
-              this.dataMunicipals = [];
-              this.dataZones = [];
-              this.dataStations = [];
+              // Redirigir a la lista de coordinadores
+              this.router.navigate(['/panel/usuarios/coordinadores']);
             },
             error: (error: any) => {
+              this.loading = false;
               let errorMessage = 'Error al crear el coordinador';
               if (error.error?.detail) {
                 if (Array.isArray(error.error.detail)) {
@@ -159,9 +182,15 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     }
   }
 
-  getMunicipalAdmin(codigoDepartamento: string) {
+  getMunicipalAdmin(codigoDepartamento: string | any) {
     // Usar el nuevo servicio de backoffice, pasando el código del departamento
-    this.backofficeAdminService.getMunicipiosAdmin(codigoDepartamento).subscribe({
+    // codigoDepartamento puede llegar como string o como objeto desde el select
+    const codigo =
+      typeof codigoDepartamento === 'string'
+        ? codigoDepartamento
+        : codigoDepartamento?.codigo_unico || codigoDepartamento;
+
+    this.backofficeAdminService.getMunicipiosAdmin(codigo).subscribe({
       next: (resp: any) => {
         // El backend ya filtra por departamento, así que no necesitamos filtrar aquí
         this.dataMunicipals = resp.municipios || resp || [];

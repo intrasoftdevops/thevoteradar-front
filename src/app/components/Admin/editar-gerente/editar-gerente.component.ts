@@ -17,6 +17,7 @@ export class EditarGerenteComponent implements OnInit, OnDestroy {
 
   idGerente: any;
   loading: boolean = false;
+  saving: boolean = false;
   gerenteLoaded: boolean = false; // Flag para evitar múltiples cargas
 
   updateForm: FormGroup = this.fb.group({
@@ -80,6 +81,7 @@ export class EditarGerenteComponent implements OnInit, OnDestroy {
       !this.updateFormControl['email'].errors?.['invalidEmail']
     ) {
       if (this.updateForm.valid) {
+        this.saving = true;
         // Transformar los datos del formulario al formato esperado por el backend
         const formValue = this.updateForm.value;
         const gerenteData: any = {
@@ -109,9 +111,13 @@ export class EditarGerenteComponent implements OnInit, OnDestroy {
           .updateGerente(this.idGerente, gerenteData)
           .subscribe({
             next: (resp: any) => {
+              this.saving = false;
               this.alertService.successAlert(resp.message || resp.res || 'Gerente actualizado correctamente');
+              // Redirigir a la lista de gerentes
+              this.router.navigate(['/panel/usuarios/gerentes']);
             },
             error: (error: any) => {
+              this.saving = false;
               let errorMessage = 'Error al actualizar el gerente';
               if (error.error?.detail) {
                 if (Array.isArray(error.error.detail)) {

@@ -1,6 +1,13 @@
 <div class="min-h-screen" [style.background]="'linear-gradient(to bottom right, rgba(var(--color-primary-rgb), 0.05), white, rgba(var(--color-primary-rgb), 0.05))'">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+    <!-- Loader para guardar -->
+    <div *ngIf="saving" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-8 flex flex-col items-center gap-4 shadow-2xl">
+        <div class="animate-spin rounded-full h-16 w-16 border-b-4" [style.border-color]="'var(--color-primary)'"></div>
+        <p class="text-gray-700 font-semibold text-lg">Guardando cambios...</p>
+      </div>
+    </div>
+    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()" [class.opacity-50]="saving" [class.pointer-events-none]="saving">
       <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden mb-6">
         <div class="p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
           <h2 class="text-2xl sm:text-3xl font-bold text-white mb-0">Editar testigo</h2>
