@@ -53,37 +53,6 @@
               </div>
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                  Género <span class="text-red-500">*</span>
-                </label>
-                <ng-select
-                  [searchable]="false"
-                  class="custom-select rounded"
-                  formControlName="genero_id"
-                  placeholder="Seleccione género"
-                  [clearAllText]="'Borrar todo'"
-                  appInputs
-                >
-                  <ng-option [value]="1">Masculino</ng-option>
-                  <ng-option [value]="2">Femenino</ng-option>
-                  <ng-option [value]="3">Otro</ng-option>
-                </ng-select>
-              </div>
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                  Tipo de documento <span class="text-red-500">*</span>
-                </label>
-                <ng-select
-                  [searchable]="false"
-                  class="custom-select rounded"
-                  formControlName="tipo_documento_id"
-                  placeholder="Seleccione tipo de documento"
-                  [clearAllText]="'Borrar todo'"
-                >
-                  <ng-option [value]="1">Cédula de ciudadanía</ng-option>
-                </ng-select>
-              </div>
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">
                   Número de documento <span class="text-red-500">*</span>
                 </label>
                 <input

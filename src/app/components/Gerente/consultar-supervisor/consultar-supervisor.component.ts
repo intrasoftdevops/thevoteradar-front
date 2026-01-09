@@ -48,28 +48,12 @@ export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
     const isAdmin = userRol === '1' || userRol === 'admin' || userRol === 'Admin';
     
     if (isAdmin) {
-      // Para admin: obtener todos los supervisores desde el equipo completo
-      this.backofficeAdminService.getEquipoAdmin().subscribe({
+      // Para admin: usar el nuevo endpoint de supervisores
+      this.backofficeAdminService.getSupervisoresMunicipioAsignado().subscribe({
         next: (resp: any) => {
-          // El endpoint devuelve toda la jerarquía, extraer supervisores
-          const allSupervisores: any[] = [];
-          
-          // Recorrer gerentes y extraer sus supervisores
-          if (resp.gerentes && Array.isArray(resp.gerentes)) {
-            resp.gerentes.forEach((gerente: any) => {
-              if (gerente.supervisores && Array.isArray(gerente.supervisores)) {
-                allSupervisores.push(...gerente.supervisores);
-              }
-            });
-          }
-          
-          // Separar supervisores asignados y no asignados
-          this.listSupervisorAsignados = allSupervisores.filter((s: any) => 
-            s.zonas && Array.isArray(s.zonas) && s.zonas.length > 0
-          );
-          this.listSupervisorNoAsignados = allSupervisores.filter((s: any) => 
-            !s.zonas || !Array.isArray(s.zonas) || s.zonas.length === 0
-          );
+          const { supervisores_asignados, supervisores_no_asignados } = resp;
+          this.listSupervisorAsignados = supervisores_asignados || [];
+          this.listSupervisorNoAsignados = supervisores_no_asignados || [];
           
           // Procesar zonas para mostrar
           for (let supervisor of this.listSupervisorAsignados) {
@@ -79,7 +63,7 @@ export class ConsultarSupervisorComponent implements OnInit, OnDestroy {
               lastZonas = zonas.shift();
               this.listZones.push(zonas.join(', ') + " y " + lastZonas);
             } else {
-              this.listZones.push(zonas);
+              this.listZones.push(zonas[0] || '');
             }
           }
           

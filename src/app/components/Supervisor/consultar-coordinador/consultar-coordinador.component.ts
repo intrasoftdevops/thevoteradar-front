@@ -48,32 +48,12 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
     const isAdmin = userRol === '1' || userRol === 'admin' || userRol === 'Admin';
     
     if (isAdmin) {
-      // Para admin: obtener todos los coordinadores desde el equipo completo
-      this.backofficeAdminService.getEquipoAdmin().subscribe({
+      // Para admin: usar el nuevo endpoint de coordinadores
+      this.backofficeAdminService.getCoordinadoresZonaAsignado().subscribe({
         next: (resp: any) => {
-          // El endpoint devuelve toda la jerarquía, extraer coordinadores
-          const allCoordinadores: any[] = [];
-          
-          // Recorrer gerentes -> supervisores -> coordinadores
-          if (resp.gerentes && Array.isArray(resp.gerentes)) {
-            resp.gerentes.forEach((gerente: any) => {
-              if (gerente.supervisores && Array.isArray(gerente.supervisores)) {
-                gerente.supervisores.forEach((supervisor: any) => {
-                  if (supervisor.coordinadores && Array.isArray(supervisor.coordinadores)) {
-                    allCoordinadores.push(...supervisor.coordinadores);
-                  }
-                });
-              }
-            });
-          }
-          
-          // Separar coordinadores asignados y no asignados
-          this.listCoordinadorAsignados = allCoordinadores.filter((c: any) => 
-            c.puestos && Array.isArray(c.puestos) && c.puestos.length > 0
-          );
-          this.listCoordinadorNoAsignados = allCoordinadores.filter((c: any) => 
-            !c.puestos || !Array.isArray(c.puestos) || c.puestos.length === 0
-          );
+          const { coordinadores_asignados, coordinadores_no_asignados } = resp;
+          this.listCoordinadorAsignados = coordinadores_asignados || [];
+          this.listCoordinadorNoAsignados = coordinadores_no_asignados || [];
           
           // Procesar puestos para mostrar
           for (let coordinador of this.listCoordinadorAsignados) {
@@ -83,7 +63,7 @@ export class ConsultarCoordinadorComponent implements OnInit,OnDestroy {
               lastPuestos = puestos.shift();
               this.listStations.push(puestos.join(', ') + " y " + lastPuestos);
             } else {
-              this.listStations.push(puestos);
+              this.listStations.push(puestos[0] || '');
             }
           }
           

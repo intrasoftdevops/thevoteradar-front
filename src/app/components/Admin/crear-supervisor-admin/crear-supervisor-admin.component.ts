@@ -18,8 +18,6 @@ export class CrearSupervisorAdminComponent implements OnInit {
   createForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
-    genero_id: [null, Validators.required],
-    tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
     telefono: ['', Validators.required],
     email: [

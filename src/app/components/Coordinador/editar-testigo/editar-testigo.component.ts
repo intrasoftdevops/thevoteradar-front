@@ -34,15 +34,16 @@ export class EditarTestigoComponent implements OnInit {
   updateForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
-    genero_id: ['', Validators.required],
-    tipo_documento_id: ['', Validators.required],
     numero_documento: ['', Validators.required],
     telefono: [''],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     password: [''],
-    puesto: [[], Validators.required],
-    mesas: [[]],
+    puesto: [null], // Opcional
+    mesas: [null], // Opcional
   });
+
+  loading: boolean = false;
+  testigoLoaded: boolean = false;
 
   constructor(
     private apiService: ApiService, 
@@ -60,7 +61,7 @@ export class EditarTestigoComponent implements OnInit {
     const rol = this.localData.getRol();
     this.isAdmin = rol === '1' || rol === 'admin';
     
-    this.getTestigo();
+    this.loading = true;
     
     if (this.isAdmin) {
       // Si es admin, cargar departamentos asignados
@@ -69,13 +70,6 @@ export class EditarTestigoComponent implements OnInit {
       // Si es coordinador, cargar puestos directamente
       this.getStationsTestigo();
     }
-
-    this.subscriber = this.router.events.pipe(
-      filter((event: any) => event instanceof NavigationEnd)
-    ).subscribe((event) => {
-      window.location.reload();
-    });
-
   }
 
   getSelectedValue(item: any) {
@@ -107,11 +101,47 @@ export class EditarTestigoComponent implements OnInit {
   onSubmit() {
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
-
-        this.apiService.updateTestigo(this.idTestigo, this.updateForm.value).subscribe((resp: any) => {
-          const message = resp.message || resp.res || 'Testigo actualizado correctamente';
-          this.alertService.successAlert(message);
-        })
+        const formValue = this.updateForm.value;
+        const testigoData: any = {
+          nombres: formValue.nombres,
+          apellidos: formValue.apellidos,
+          email: formValue.email,
+          numero_documento: formValue.numero_documento,
+          telefono: formValue.telefono
+        };
+        
+        if (formValue.password) {
+          testigoData.password = formValue.password;
+        }
+        
+        if (formValue.puesto) {
+          testigoData.puesto = formValue.puesto;
+        }
+        
+        if (Array.isArray(formValue.mesas) && formValue.mesas.length > 0) {
+          testigoData.mesas = formValue.mesas;
+        }
+        
+        this.backofficeAdminService.updateTestigo(this.idTestigo, testigoData).subscribe({
+          next: (resp: any) => {
+            this.alertService.successAlert(resp.message || resp.res || 'Testigo actualizado correctamente');
+          },
+          error: (error: any) => {
+            let errorMessage = 'Error al actualizar el testigo';
+            if (error.error?.detail) {
+              if (Array.isArray(error.error.detail)) {
+                errorMessage = error.error.detail.map((err: any) => 
+                  `${err.loc?.join('.')}: ${err.msg}`
+                ).join('\n');
+              } else {
+                errorMessage = error.error.detail;
+              }
+            } else if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+            this.alertService.errorAlert(errorMessage);
+          }
+        });
       } else {
         this.alertService.errorAlert("Llene los campos obligatorios.");
       }
@@ -127,89 +157,85 @@ export class EditarTestigoComponent implements OnInit {
   }
 
   getTestigo() {
-    this.idTestigo = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
-    this.apiService.getTestigo(this.idTestigo).subscribe((resp: any) => {
-      const { testigo, puestos_asignados, mesas_asignadas } = resp;
-
-
-      this.updateForm.get('nombres')?.setValue(testigo.nombres);
-      this.updateForm.get('apellidos')?.setValue(testigo.apellidos);
-      this.updateForm.get('genero_id')?.setValue(testigo.genero_id);
-      this.updateForm.get('email')?.setValue(testigo.email);
-      this.updateForm.get('password')?.setValue(testigo.password);
-      this.updateForm.get('tipo_documento_id')?.setValue(testigo.tipo_documento_id);
-      this.updateForm.get('numero_documento')?.setValue(testigo.numero_documento);
-      // Asegurar que el teléfono sea string (puede venir con prefijo +)
-      const telefono = testigo.telefono || testigo.phone || '';
-      this.updateForm.get('telefono')?.setValue(telefono.toString());
-      
-      // Las mesas asignadas se cargarán después de que se carguen las mesas del puesto
-      // para poder mapearlas correctamente a los objetos completos
-      
-      // Cargar puesto asignado y pre-seleccionar jerarquía si es admin
-      if (puestos_asignados && puestos_asignados.codigo_unico) {
+    if (this.testigoLoaded) {
+      return;
+    }
+    
+    const encryptedId = this.activatedRoute.snapshot.params['id'];
+    this.idTestigo = this.localData.decryptIdUser(encryptedId);
+    
+    if (!this.idTestigo || this.idTestigo.trim() === '' || this.idTestigo === encryptedId) {
+      this.loading = false;
+      this.alertService.errorAlert('Error: No se pudo obtener el ID del testigo. Por favor, intente nuevamente.');
+      this.router.navigate(['/panel/usuarios/testigos']);
+      return;
+    }
+    
+    this.testigoLoaded = true;
+    
+    this.backofficeAdminService.getTestigo(this.idTestigo).subscribe({
+      next: (resp: any) => {
+        const testigo = resp.testigo || resp;
         
-        if (this.isAdmin) {
-          // Si es admin, pre-seleccionar toda la jerarquía
-          const zona = resp.testigo?.zona;
-          const municipio = resp.testigo?.municipio;
-          const departamento = resp.testigo?.departamento;
-          
-          
-          // Pre-seleccionar departamento
-          if (departamento && departamento.codigo_unico) {
-            this.selectedDepartment = departamento.codigo_unico;
-            
-            // Cargar municipios del departamento
-            this.getMunicipalAdmin(departamento.codigo_unico);
-            
-            // Pre-seleccionar municipio después de cargar
-            setTimeout(() => {
-              if (municipio && municipio.codigo_unico) {
-                this.selectedMunicipal = municipio.codigo_unico;
-                
-                // Cargar zonas del municipio
-                this.getZonasyGerentes(municipio.codigo_unico);
-                
-                // Pre-seleccionar zona después de cargar
-                setTimeout(() => {
-                  if (zona && zona.codigo_unico) {
-                    this.selectedZone = zona.codigo_unico;
-                    
-                    // Cargar puestos de la zona
-                    this.getPuestosySupervisores(zona.codigo_unico);
-                    
-                    // Pre-seleccionar puesto después de cargar
-                    setTimeout(() => {
-                      this.updateForm.get('puesto')?.setValue(puestos_asignados.codigo_unico);
-                      
-                      // Cargar mesas del puesto y luego pre-seleccionar las asignadas
-                      this.loadMesasAndSelectAssigned(puestos_asignados.codigo_unico, mesas_asignadas);
-                    }, 500);
-                  }
-                }, 500);
-              }
-            }, 500);
+        if (!testigo) {
+          this.loading = false;
+          this.alertService.errorAlert('Error: No se pudo encontrar el testigo con el ID proporcionado.');
+          setTimeout(() => {
+            this.router.navigate(['/panel/usuarios/testigos']);
+          }, 2000);
+          return;
+        }
+        
+        this.updateForm.get('nombres')?.setValue(testigo.nombres || '');
+        this.updateForm.get('apellidos')?.setValue(testigo.apellidos || '');
+        this.updateForm.get('email')?.setValue(testigo.email || '');
+        this.updateForm.get('password')?.setValue(testigo.password || '');
+        this.updateForm.get('numero_documento')?.setValue(testigo.numero_documento || '');
+        const telefono = testigo.telefono || testigo.phone || '';
+        this.updateForm.get('telefono')?.setValue(telefono.toString());
+        
+        // Cargar puesto asignado y pre-seleccionar jerarquía si es admin
+        if (testigo.puesto && testigo.puesto.codigo_unico) {
+          if (this.isAdmin) {
+            // Si es admin, pre-seleccionar toda la jerarquía
+            // Necesitamos obtener la jerarquía del puesto desde el backend
+            // Por ahora, solo pre-seleccionar el puesto
+            this.updateForm.get('puesto')?.setValue(testigo.puesto.codigo_unico);
+            this.loadMesasAndSelectAssigned(testigo.puesto.codigo_unico, testigo.mesas || []);
+          } else {
+            // Si es coordinador, solo seleccionar el puesto
+            this.updateForm.get('puesto')?.setValue(testigo.puesto.codigo_unico);
+            this.loadMesasAndSelectAssigned(testigo.puesto.codigo_unico, testigo.mesas || []);
           }
         } else {
-          // Si es coordinador, solo seleccionar el puesto
-          this.updateForm.get('puesto')?.setValue(puestos_asignados.codigo_unico);
-          
-          // Cargar mesas del puesto y luego pre-seleccionar las asignadas
-          this.loadMesasAndSelectAssigned(puestos_asignados.codigo_unico, mesas_asignadas);
+          this.updateForm.get('puesto')?.setValue(null);
+          this.loading = false;
         }
-      } else {
-        this.updateForm.get('puesto')?.setValue(null);
+      },
+      error: (error: any) => {
+        this.loading = false;
+        const errorMessage = error.error?.detail || error.error?.message || 'Error al cargar el testigo.';
+        this.alertService.errorAlert(errorMessage);
+        setTimeout(() => {
+          this.router.navigate(['/panel/usuarios/testigos']);
+        }, 2000);
       }
-
-    })
+    });
   }
 
   getStationsTestigo() {
-    this.apiService.getStationsTestigo().subscribe((resp: any) => {
-      this.dataStations = resp;
-      this.getTablesTestigo();
-    })
+    this.apiService.getStationsTestigo().subscribe({
+      next: (resp: any) => {
+        this.dataStations = resp || [];
+        // Después de cargar puestos, cargar el testigo
+        this.getTestigo();
+      },
+      error: (error: any) => {
+        this.dataStations = [];
+        this.loading = false;
+        this.alertService.errorAlert('Error al cargar los puestos.');
+      }
+    });
   }
 
   getTablesTestigo() {
@@ -232,9 +258,13 @@ export class EditarTestigoComponent implements OnInit {
     this.backofficeAdminService.getDepartamentosAdmin().subscribe({
       next: (resp: any) => {
         this.dataDepartments = resp.departamentos || resp || [];
+        // Después de cargar departamentos, cargar el testigo
+        this.getTestigo();
       },
       error: (error: any) => {
         this.dataDepartments = [];
+        this.loading = false;
+        this.alertService.errorAlert('Error al cargar los departamentos.');
       }
     });
   }

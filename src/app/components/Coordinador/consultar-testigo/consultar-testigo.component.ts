@@ -82,38 +82,14 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
     this.loading = true;
     
     if (this.isAdmin) {
-      // Para admin: obtener todos los testigos desde el equipo completo
-      this.backofficeAdminService.getEquipoAdmin().subscribe({
+      // Para admin: usar el nuevo endpoint de testigos
+      this.backofficeAdminService.getTestigosPuestoAsignado().subscribe({
         next: (resp: any) => {
-          
-          // El endpoint devuelve toda la jerarquía, extraer testigos
-          const allTestigos: any[] = [];
-          
-          // Recorrer gerentes -> supervisores -> coordinadores -> testigos
-          if (resp.gerentes && Array.isArray(resp.gerentes)) {
-            resp.gerentes.forEach((gerente: any) => {
-              if (gerente.supervisores && Array.isArray(gerente.supervisores)) {
-                gerente.supervisores.forEach((supervisor: any) => {
-                  if (supervisor.coordinadores && Array.isArray(supervisor.coordinadores)) {
-                    supervisor.coordinadores.forEach((coordinador: any) => {
-                      if (coordinador.testigos && Array.isArray(coordinador.testigos)) {
-                        allTestigos.push(...coordinador.testigos);
-                      }
-                    });
-                  }
-                });
-              }
-            });
-          }
-          
+          const { testigos_asignados, testigos_no_asignados } = resp;
           
           // Separar testigos asignados y no asignados
-          const testigosAsignados = allTestigos.filter((t: any) => 
-            t.mesas && Array.isArray(t.mesas) && t.mesas.length > 0
-          );
-          const testigosNoAsignados = allTestigos.filter((t: any) => 
-            !t.mesas || !Array.isArray(t.mesas) || t.mesas.length === 0
-          );
+          const testigosAsignados = testigos_asignados || [];
+          const testigosNoAsignados = testigos_no_asignados || [];
           
           
           // Inicializar listas
