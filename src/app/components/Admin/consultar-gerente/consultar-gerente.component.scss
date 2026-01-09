@@ -1,0 +1,25 @@
+// DataTables pagination button current page styling - NO solid background-color, only gradient
+::ng-deep .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+::ng-deep div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover,
+::ng-deep .dataTables_wrapper .dataTables_paginate .paginate_button.current:active,
+::ng-deep .dataTables_wrapper .dataTables_paginate .paginate_button.current:focus,
+::ng-deep div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a:hover,
+::ng-deep div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a:active,
+::ng-deep div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button.current a:focus {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+  opacity: 1 !important;
+}
+

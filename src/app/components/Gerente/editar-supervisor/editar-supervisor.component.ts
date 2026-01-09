@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api/api.service';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CustomValidationService } from '../../../services/validations/custom-validation.service';
 import { AlertService } from '../../../services/alert/alert.service';
@@ -14,6 +14,7 @@ import { LocalDataService } from '../../../services/localData/local-data.service
 })
 export class EditarSupervisorComponent implements OnInit {
 
+  dataDepartments: any = [];
   dataMunicipals: any = [];
   dataZones: any = [];
   idSupervisor: any;
@@ -21,37 +22,81 @@ export class EditarSupervisorComponent implements OnInit {
   updateForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
-    genero_id: ['', Validators.required],
-    tipo_documento_id: ['', Validators.required],
     numero_documento: ['', Validators.required],
     telefono: [''],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     password: [''],
-    municipio: [[], Validators.required],
-    zonas: [[]],
+    departamento: [null], // Opcional
+    municipio: [null], // Opcional
+    zonas: [null], // Opcional
   });
 
-  constructor(private apiService: ApiService, private activatedRoute: ActivatedRoute,
-    private router: Router, private fb: FormBuilder, private customValidator: CustomValidationService, private alertService: AlertService,private localData: LocalDataService) { }
+  loading: boolean = false;
+  saving: boolean = false;
+  supervisorLoaded: boolean = false;
+  isAdmin: boolean = false;
+
+  constructor(
+    private apiService: ApiService,
+    private backofficeAdminService: BackofficeAdminService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private fb: FormBuilder,
+    private customValidator: CustomValidationService,
+    private alertService: AlertService,
+    private localData: LocalDataService
+  ) { }
 
   ngOnInit(): void {
-    this.getSupervisor();
-    this.getMunicipalSupervisor();
+    this.loading = true;
 
-    this.subscriber = this.router.events.pipe(
-      filter((event: any) => event instanceof NavigationEnd)
-    ).subscribe((event) => {
-      window.location.reload();
-    });
+    // Determinar si es admin (backoffice) o gerente
+    const rol = this.localData.getRol();
+    this.isAdmin = rol === '1' || rol === 'admin';
 
+    // Para admin, cargamos departamentos y luego el supervisor desde el backoffice.
+    // Para gerente, usamos los endpoints legacy (ApiService) para municipios y zonas.
+    if (this.isAdmin) {
+      this.getDepartmentAdmin();
+    } else {
+      this.getMunicipalSupervisor();
+    }
+  }
+
+  getSelectedDepartment(codigoDepartamento: any) {
+    this.updateFormControl['municipio'].reset();
+    this.updateFormControl['zonas'].reset();
+    // codigoDepartamento ya es el código único del departamento (bindValue)
+    if (codigoDepartamento) {
+      this.getMunicipalAdmin(codigoDepartamento);
+    } else {
+      this.dataMunicipals = [];
+      this.dataZones = [];
+    }
+  }
+
+  getSelectedMunicipal(codigoMunicipio: any) {
+    this.updateFormControl['zonas'].reset();
+    // En ng-select, el (change) puede enviar el objeto completo o el código; normalizamos
+    const codigo =
+      typeof codigoMunicipio === 'string'
+        ? codigoMunicipio
+        : codigoMunicipio?.codigo_unico || codigoMunicipio;
+
+    if (codigo) {
+      this.getZonasyGerentes(codigo);
+    } else {
+      this.dataZones = [];
+    }
   }
 
   getSelectedValue(item: any) {
+    // Método legacy para gerente
     this.updateForm.patchValue({
       zonas: [],
     });
     if (item) {
-      this.getZoneSupervisor()
+      this.getZoneSupervisor();
     } else {
       this.dataZones = [];
     }
@@ -60,11 +105,52 @@ export class EditarSupervisorComponent implements OnInit {
   onSubmit() {
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
-        this.apiService.updateSupervisor(this.idSupervisor, this.updateForm.value).subscribe((resp: any) => {
-
-          this.alertService.successAlert(resp.res);
-
-        })
+        this.saving = true;
+        const formValue = this.updateForm.value;
+        const supervisorData: any = {
+          nombres: formValue.nombres,
+          apellidos: formValue.apellidos,
+          email: formValue.email,
+          numero_documento: formValue.numero_documento,
+          telefono: formValue.telefono
+        };
+        
+        if (formValue.password) {
+          supervisorData.password = formValue.password;
+        }
+        
+        if (formValue.municipio) {
+          supervisorData.municipio = formValue.municipio;
+        }
+        
+        if (Array.isArray(formValue.zonas) && formValue.zonas.length > 0) {
+          supervisorData.zonas = formValue.zonas;
+        }
+        
+        this.backofficeAdminService.updateSupervisor(this.idSupervisor, supervisorData).subscribe({
+          next: (resp: any) => {
+            this.saving = false;
+            this.alertService.successAlert(resp.message || resp.res || 'Supervisor actualizado correctamente');
+            // Redirigir a la lista de supervisores
+            this.router.navigate(['/panel/usuarios/supervisores']);
+          },
+          error: (error: any) => {
+            this.saving = false;
+            let errorMessage = 'Error al actualizar el supervisor';
+            if (error.error?.detail) {
+              if (Array.isArray(error.error.detail)) {
+                errorMessage = error.error.detail.map((err: any) => 
+                  `${err.loc?.join('.')}: ${err.msg}`
+                ).join('\n');
+              } else {
+                errorMessage = error.error.detail;
+              }
+            } else if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+            this.alertService.errorAlert(errorMessage);
+          }
+        });
       } else {
         this.alertService.errorAlert("Llene los campos obligatorios.");
       }
@@ -81,39 +167,223 @@ export class EditarSupervisorComponent implements OnInit {
 
 
   getMunicipalSupervisor() {
-    this.apiService.getMunicipalGerente().subscribe((resp: any) => {
-      this.dataMunicipals = resp;
-      this.getZoneSupervisor();
-    })
+    // Obtener municipios del gerente (desde el contexto del gerente autenticado)
+    // Solo aplica para el flujo de GERENTE, no para admin de backoffice.
+    this.apiService.getMunicipalGerente().subscribe({
+      next: (resp: any) => {
+        this.dataMunicipals = resp || [];
+        // Después de cargar municipios, cargar el supervisor
+        this.getSupervisor();
+      },
+      error: (error: any) => {
+        this.dataMunicipals = [];
+        this.loading = false;
+        this.alertService.errorAlert('Error al cargar los municipios.');
+      }
+    });
   }
 
   getZoneSupervisor() {
-    this.apiService.getZoneGerente().subscribe((resp: any) => {
-      if (this.updateFormControl['municipio'].value) {
-        this.dataZones = resp.filter((dataZone: any) => 
-          dataZone.codigo_municipio_votacion.trim() === this.updateFormControl['municipio'].value.trim()
-        );
+    const municipioCodigo = this.updateFormControl['municipio'].value;
+    if (!municipioCodigo) {
+      this.dataZones = [];
+      return;
+    }
+    
+    this.apiService.getZoneGerente().subscribe({
+      next: (resp: any) => {
+        if (Array.isArray(resp)) {
+          this.dataZones = resp.filter((dataZone: any) => {
+            const codigoMunicipio = dataZone.codigo_municipio_votacion || dataZone.codigo_municipio;
+            return codigoMunicipio && codigoMunicipio.toString().trim() === municipioCodigo.toString().trim();
+          });
+        } else {
+          this.dataZones = [];
+        }
+      },
+      error: (error: any) => {
+        this.dataZones = [];
       }
     });
   }
 
   getSupervisor() {
-    this.idSupervisor = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
-    this.apiService.getSupervisor(this.idSupervisor).subscribe((resp: any) => {
-      const { municipios_asignados, supervisor, zonas_asignadas } = resp;
+    if (this.supervisorLoaded) {
+      return;
+    }
+    
+    const encryptedId = this.activatedRoute.snapshot.params['id'];
+    this.idSupervisor = this.localData.decryptIdUser(encryptedId);
+    
+    if (!this.idSupervisor || this.idSupervisor.trim() === '' || this.idSupervisor === encryptedId) {
+      this.loading = false;
+      this.alertService.errorAlert('Error: No se pudo obtener el ID del supervisor. Por favor, intente nuevamente.');
+      this.router.navigate(['/panel/usuarios/supervisores']);
+      return;
+    }
+    
+    this.supervisorLoaded = true;
+    
+    this.backofficeAdminService.getSupervisor(this.idSupervisor).subscribe({
+      next: (resp: any) => {
+        // La respuesta viene como { res: True, supervisor: {...} }
+        const supervisor = resp.supervisor || resp.data || resp;
+        
+        if (!supervisor) {
+          this.loading = false;
+          this.alertService.errorAlert('Error: No se pudo encontrar el supervisor con el ID proporcionado.');
+          setTimeout(() => {
+            this.router.navigate(['/panel/usuarios/supervisores']);
+          }, 2000);
+          return;
+        }
+        
+        // Debug: verificar qué datos recibimos
+        
+        // Cargar datos básicos del supervisor
+        // El backend devuelve: nombres, apellidos, numero_documento, telefono, email
+        const nombres = supervisor.nombres || supervisor.name || '';
+        const apellidos = supervisor.apellidos || supervisor.lastname || supervisor.last_name || '';
+        const numeroDocumento = supervisor.numero_documento || supervisor.document_number || supervisor.documento || '';
+        const telefono = supervisor.telefono || supervisor.phone || '';
+        const email = supervisor.email || '';
+        
+        // Asignar valores al formulario
+        this.updateForm.patchValue({
+          nombres: nombres,
+          apellidos: apellidos,
+          numero_documento: numeroDocumento,
+          telefono: telefono,
+          email: email,
+          password: supervisor.password || ''
+        });
 
-      this.updateForm.get('nombres')?.setValue(supervisor.nombres);
-      this.updateForm.get('apellidos')?.setValue(supervisor.apellidos);
-      this.updateForm.get('genero_id')?.setValue(supervisor.genero_id);
-      this.updateForm.get('email')?.setValue(supervisor.email);
-      this.updateForm.get('password')?.setValue(supervisor.password);
-      this.updateForm.get('tipo_documento_id')?.setValue(supervisor.tipo_documento_id);
-      this.updateForm.get('numero_documento')?.setValue(supervisor.numero_documento);
-      this.updateForm.get('telefono')?.setValue(supervisor.telefono);
-      this.updateForm.get('zonas')?.setValue(this.getCodeMunicipals(zonas_asignadas));
-      this.updateForm.get('municipio')?.setValue(this.getCodeMunicipals(municipios_asignados)[0]);
+        // FLUJO ADMIN (backoffice): cargar departamento -> municipio -> zonas
+        if (this.isAdmin) {
+          // Obtener códigos de departamento y municipio de forma robusta,
+          // similar a como se hace en editar-testigo (soportando distintos nombres de campos)
+          const municipio = supervisor.municipio || {};
+          const codigoDepartamento =
+            municipio.codigo_departamento_votacion ||
+            municipio.departamento?.codigo_unico ||
+            municipio.departamento?.codigo_departamento_votacion ||
+            null;
 
-    })
+          const codigoMunicipio =
+            municipio.codigo_unico ||
+            municipio.codigo_municipio_votacion ||
+            municipio.codigo_municipio ||
+            null;
+
+          if (codigoDepartamento) {
+            this.updateForm.get('departamento')?.setValue(codigoDepartamento);
+            // Cargar municipios del departamento
+            this.getMunicipalAdmin(codigoDepartamento).then(() => {
+              // Después de cargar municipios, establecer el municipio si existe
+              if (codigoMunicipio) {
+                this.updateForm.get('municipio')?.setValue(codigoMunicipio);
+                // Cargar zonas del municipio
+                this.getZonasyGerentes(codigoMunicipio).then(() => {
+                  // Después de cargar zonas, establecer las zonas asignadas
+                  if (supervisor.zonas && Array.isArray(supervisor.zonas) && supervisor.zonas.length > 0) {
+                    const zonasCodigos = supervisor.zonas
+                      .filter((z: any) => !!z?.codigo_unico)
+                      .map((z: any) => z.codigo_unico);
+                    this.updateForm.get('zonas')?.setValue(zonasCodigos);
+                  }
+                  this.loading = false;
+                });
+              } else {
+                this.loading = false;
+              }
+            });
+          } else {
+            // Si no hay municipio/departamento, solo cargar departamentos
+            this.loading = false;
+          }
+        } else {
+          // FLUJO GERENTE (legacy): se apoya en los catálogos de ApiService
+          if (supervisor.municipio && supervisor.municipio.codigo_unico) {
+            this.updateForm.get('municipio')?.setValue(supervisor.municipio.codigo_unico);
+            this.getZoneSupervisor();
+          }
+
+          if (supervisor.zonas && Array.isArray(supervisor.zonas) && supervisor.zonas.length > 0) {
+            const zonasCodigos = supervisor.zonas.map((z: any) => z.codigo_unico);
+            this.updateForm.get('zonas')?.setValue(zonasCodigos);
+          }
+        }
+
+        this.loading = false;
+      },
+      error: (error: any) => {
+        this.loading = false;
+        const errorMessage = error.error?.detail || error.error?.message || 'Error al cargar el supervisor.';
+        this.alertService.errorAlert(errorMessage);
+        setTimeout(() => {
+          this.router.navigate(['/panel/usuarios/supervisores']);
+        }, 2000);
+      }
+    });
+  }
+
+  getDepartmentAdmin() {
+    // Usar el nuevo servicio de backoffice
+    this.backofficeAdminService.getDepartamentosAdmin().subscribe({
+      next: (resp: any) => {
+        this.dataDepartments = resp.departamentos || resp || [];
+        // Después de cargar departamentos, cargar el supervisor
+        this.getSupervisor();
+      },
+      error: (error: any) => {
+        this.dataDepartments = [];
+        this.loading = false;
+        const errorMessage = error.error?.detail || error.error?.message || 'Error al cargar los departamentos.';
+        this.alertService.errorAlert(errorMessage);
+      }
+    });
+  }
+
+  getMunicipalAdmin(codigoDepartamento: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Usar el nuevo servicio de backoffice, pasando el código del departamento
+      // codigoDepartamento puede venir como string o como objeto, igual que en editar-testigo
+      const codigo =
+        typeof codigoDepartamento === 'string'
+          ? codigoDepartamento
+          : (codigoDepartamento as any)?.codigo_unico || (codigoDepartamento as any);
+
+      this.backofficeAdminService.getMunicipiosAdmin(codigo).subscribe({
+        next: (resp: any) => {
+          this.dataMunicipals = resp.municipios || resp || [];
+          resolve();
+        },
+        error: (error: any) => {
+          this.dataMunicipals = [];
+          reject(error);
+        }
+      });
+    });
+  }
+
+  getZonasyGerentes(codigoMunicipio: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Usar el nuevo servicio de backoffice
+      if (codigoMunicipio) {
+        this.backofficeAdminService.getZonasPorMunicipio(codigoMunicipio).subscribe({
+          next: (resp: any) => {
+            this.dataZones = resp.zonas || resp || [];
+            resolve();
+          },
+          error: (error: any) => {
+            this.dataZones = [];
+            reject(error);
+          }
+        });
+      } else {
+        resolve();
+      }
+    });
   }
 
   getCodeMunicipals(data: any) {

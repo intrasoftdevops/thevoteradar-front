@@ -98,7 +98,6 @@ export class BackofficeAdminService {
   private handleError(error: any): Observable<never> {
     const errorMessage = error.error?.detail || error.message || 'Error desconocido';
     this.errorSubject.next(errorMessage);
-    console.error('Error:', error);
     return throwError(() => error);
   }
 
@@ -669,6 +668,126 @@ export class BackofficeAdminService {
   getGerentes(): Observable<any> {
     return this.http.get(
       `${this.backofficeUrl}/admin/gerentes`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene un supervisor específico por su ID
+   * GET /admin/get-supervisor/{id}
+   */
+  getSupervisor(id: string | number): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/get-supervisor/${id}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Actualiza un supervisor
+   * PUT /admin/editar-supervisor/{id}
+   */
+  updateSupervisor(id: string | number, data: any): Observable<any> {
+    return this.http.put(
+      `${this.backofficeUrl}/admin/editar-supervisor/${id}`,
+      data,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene los supervisores con y sin municipio/zona asignado
+   * GET /admin/supervisores-municipio-asignado
+   */
+  getSupervisoresMunicipioAsignado(): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/supervisores-municipio-asignado`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene un coordinador específico por su ID
+   * GET /admin/get-coordinador/{id}
+   */
+  getCoordinador(id: string | number): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/get-coordinador/${id}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Actualiza un coordinador
+   * PUT /admin/editar-coordinador/{id}
+   */
+  updateCoordinador(id: string | number, data: any): Observable<any> {
+    return this.http.put(
+      `${this.backofficeUrl}/admin/editar-coordinador/${id}`,
+      data,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene los coordinadores con y sin zona/puesto asignado
+   * GET /admin/coordinadores-zona-asignado
+   */
+  getCoordinadoresZonaAsignado(): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/coordinadores-zona-asignado`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene un testigo específico por su ID
+   * GET /admin/get-testigo/{id}
+   */
+  getTestigo(id: string | number): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/get-testigo/${id}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Actualiza un testigo
+   * PUT /admin/editar-testigo/{id}
+   */
+  updateTestigo(id: string | number, data: any): Observable<any> {
+    return this.http.put(
+      `${this.backofficeUrl}/admin/editar-testigo/${id}`,
+      data,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Obtiene los testigos con y sin puesto/mesa asignado
+   * GET /admin/testigos-puesto-asignado
+   */
+  getTestigosPuestoAsignado(): Observable<any> {
+    return this.http.get(
+      `${this.backofficeUrl}/admin/testigos-puesto-asignado`,
       { headers: this.getHeaders() }
     ).pipe(
       catchError(this.handleError.bind(this))

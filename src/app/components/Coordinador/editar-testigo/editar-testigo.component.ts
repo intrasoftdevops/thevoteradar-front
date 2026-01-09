@@ -34,15 +34,17 @@ export class EditarTestigoComponent implements OnInit {
   updateForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
-    genero_id: ['', Validators.required],
-    tipo_documento_id: ['', Validators.required],
     numero_documento: ['', Validators.required],
     telefono: [''],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
     password: [''],
-    puesto: [[], Validators.required],
-    mesas: [[]],
+    puesto: [null], // Opcional
+    mesas: [null], // Opcional
   });
+
+  loading: boolean = false;
+  saving: boolean = false;
+  testigoLoaded: boolean = false;
 
   constructor(
     private apiService: ApiService, 
@@ -60,7 +62,7 @@ export class EditarTestigoComponent implements OnInit {
     const rol = this.localData.getRol();
     this.isAdmin = rol === '1' || rol === 'admin';
     
-    this.getTestigo();
+    this.loading = true;
     
     if (this.isAdmin) {
       // Si es admin, cargar departamentos asignados
@@ -69,13 +71,6 @@ export class EditarTestigoComponent implements OnInit {
       // Si es coordinador, cargar puestos directamente
       this.getStationsTestigo();
     }
-
-    this.subscriber = this.router.events.pipe(
-      filter((event: any) => event instanceof NavigationEnd)
-    ).subscribe((event) => {
-      window.location.reload();
-    });
-
   }
 
   getSelectedValue(item: any) {
@@ -89,10 +84,8 @@ export class EditarTestigoComponent implements OnInit {
       this.apiService.getTablesTestigo().subscribe({
         next: (resp: any) => {
           this.dataTables = resp.filter((dataTable: any) => dataTable.codigo_puesto_votacion == codigo);
-          console.log('📋 Mesas cargadas para coordinador:', this.dataTables.length, 'mesas');
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar mesas:', error);
           this.dataTables = [];
         }
       });
@@ -109,11 +102,52 @@ export class EditarTestigoComponent implements OnInit {
   onSubmit() {
     if (!this.updateFormControl['email'].errors?.['email'] || !this.updateFormControl['email'].errors?.['invalidEmail']) {
       if (this.updateForm.valid) {
-
-        this.apiService.updateTestigo(this.idTestigo, this.updateForm.value).subscribe((resp: any) => {
-          const message = resp.message || resp.res || 'Testigo actualizado correctamente';
-          this.alertService.successAlert(message);
-        })
+        this.saving = true;
+        const formValue = this.updateForm.value;
+        const testigoData: any = {
+          nombres: formValue.nombres,
+          apellidos: formValue.apellidos,
+          email: formValue.email,
+          numero_documento: formValue.numero_documento,
+          telefono: formValue.telefono
+        };
+        
+        if (formValue.password) {
+          testigoData.password = formValue.password;
+        }
+        
+        if (formValue.puesto) {
+          testigoData.puesto = formValue.puesto;
+        }
+        
+        if (Array.isArray(formValue.mesas) && formValue.mesas.length > 0) {
+          testigoData.mesas = formValue.mesas;
+        }
+        
+        this.backofficeAdminService.updateTestigo(this.idTestigo, testigoData).subscribe({
+          next: (resp: any) => {
+            this.saving = false;
+            this.alertService.successAlert(resp.message || resp.res || 'Testigo actualizado correctamente');
+            // Redirigir a la lista de testigos
+            this.router.navigate(['/panel/usuarios/testigos']);
+          },
+          error: (error: any) => {
+            this.saving = false;
+            let errorMessage = 'Error al actualizar el testigo';
+            if (error.error?.detail) {
+              if (Array.isArray(error.error.detail)) {
+                errorMessage = error.error.detail.map((err: any) => 
+                  `${err.loc?.join('.')}: ${err.msg}`
+                ).join('\n');
+              } else {
+                errorMessage = error.error.detail;
+              }
+            } else if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+            this.alertService.errorAlert(errorMessage);
+          }
+        });
       } else {
         this.alertService.errorAlert("Llene los campos obligatorios.");
       }
@@ -129,98 +163,87 @@ export class EditarTestigoComponent implements OnInit {
   }
 
   getTestigo() {
-    this.idTestigo = this.localData.decryptIdUser(this.activatedRoute.snapshot.params['id']);
-    this.apiService.getTestigo(this.idTestigo).subscribe((resp: any) => {
-      const { testigo, puestos_asignados, mesas_asignadas } = resp;
-
-      console.log('📋 Datos del testigo recibidos:', { testigo, puestos_asignados, mesas_asignadas });
-
-      this.updateForm.get('nombres')?.setValue(testigo.nombres);
-      this.updateForm.get('apellidos')?.setValue(testigo.apellidos);
-      this.updateForm.get('genero_id')?.setValue(testigo.genero_id);
-      this.updateForm.get('email')?.setValue(testigo.email);
-      this.updateForm.get('password')?.setValue(testigo.password);
-      this.updateForm.get('tipo_documento_id')?.setValue(testigo.tipo_documento_id);
-      this.updateForm.get('numero_documento')?.setValue(testigo.numero_documento);
-      // Asegurar que el teléfono sea string (puede venir con prefijo +)
-      const telefono = testigo.telefono || testigo.phone || '';
-      this.updateForm.get('telefono')?.setValue(telefono.toString());
-      
-      // Las mesas asignadas se cargarán después de que se carguen las mesas del puesto
-      // para poder mapearlas correctamente a los objetos completos
-      console.log('📋 Mesas asignadas recibidas:', mesas_asignadas);
-      
-      // Cargar puesto asignado y pre-seleccionar jerarquía si es admin
-      if (puestos_asignados && puestos_asignados.codigo_unico) {
-        console.log('📋 Puesto asignado:', puestos_asignados.codigo_unico);
+    if (this.testigoLoaded) {
+      return;
+    }
+    
+    const encryptedId = this.activatedRoute.snapshot.params['id'];
+    this.idTestigo = this.localData.decryptIdUser(encryptedId);
+    
+    if (!this.idTestigo || this.idTestigo.trim() === '' || this.idTestigo === encryptedId) {
+      this.loading = false;
+      this.alertService.errorAlert('Error: No se pudo obtener el ID del testigo. Por favor, intente nuevamente.');
+      this.router.navigate(['/panel/usuarios/testigos']);
+      return;
+    }
+    
+    this.testigoLoaded = true;
+    
+    this.backofficeAdminService.getTestigo(this.idTestigo).subscribe({
+      next: (resp: any) => {
+        // La respuesta puede venir como { testigo: {...} } o directamente como objeto
+        const testigo = resp.testigo || resp.data || resp;
         
-        if (this.isAdmin) {
-          // Si es admin, pre-seleccionar toda la jerarquía
-          const zona = resp.testigo?.zona;
-          const municipio = resp.testigo?.municipio;
-          const departamento = resp.testigo?.departamento;
-          
-          console.log('📍 Datos de ubicación:', { zona, municipio, departamento });
-          
-          // Pre-seleccionar departamento
-          if (departamento && departamento.codigo_unico) {
-            console.log('📍 Pre-seleccionando departamento:', departamento.codigo_unico);
-            this.selectedDepartment = departamento.codigo_unico;
-            
-            // Cargar municipios del departamento
-            this.getMunicipalAdmin(departamento.codigo_unico);
-            
-            // Pre-seleccionar municipio después de cargar
-            setTimeout(() => {
-              if (municipio && municipio.codigo_unico) {
-                console.log('📍 Pre-seleccionando municipio:', municipio.codigo_unico);
-                this.selectedMunicipal = municipio.codigo_unico;
-                
-                // Cargar zonas del municipio
-                this.getZonasyGerentes(municipio.codigo_unico);
-                
-                // Pre-seleccionar zona después de cargar
-                setTimeout(() => {
-                  if (zona && zona.codigo_unico) {
-                    console.log('📍 Pre-seleccionando zona:', zona.codigo_unico);
-                    this.selectedZone = zona.codigo_unico;
-                    
-                    // Cargar puestos de la zona
-                    this.getPuestosySupervisores(zona.codigo_unico);
-                    
-                    // Pre-seleccionar puesto después de cargar
-                    setTimeout(() => {
-                      console.log('📍 Pre-seleccionando puesto:', puestos_asignados.codigo_unico);
-                      this.updateForm.get('puesto')?.setValue(puestos_asignados.codigo_unico);
-                      
-                      // Cargar mesas del puesto y luego pre-seleccionar las asignadas
-                      this.loadMesasAndSelectAssigned(puestos_asignados.codigo_unico, mesas_asignadas);
-                    }, 500);
-                  }
-                }, 500);
-              }
-            }, 500);
+        if (!testigo) {
+          this.loading = false;
+          this.alertService.errorAlert('Error: No se pudo encontrar el testigo con el ID proporcionado.');
+          setTimeout(() => {
+            this.router.navigate(['/panel/usuarios/testigos']);
+          }, 2000);
+          return;
+        }
+        
+        // Cargar datos básicos del testigo - verificar diferentes posibles nombres de campos
+        this.updateForm.get('nombres')?.setValue(testigo.nombres || testigo.name || '');
+        this.updateForm.get('apellidos')?.setValue(testigo.apellidos || testigo.lastname || testigo.last_name || '');
+        this.updateForm.get('email')?.setValue(testigo.email || '');
+        this.updateForm.get('password')?.setValue(testigo.password || '');
+        this.updateForm.get('numero_documento')?.setValue(testigo.numero_documento || testigo.document_number || testigo.documento || '');
+        const telefono = testigo.telefono || testigo.phone || '';
+        this.updateForm.get('telefono')?.setValue(telefono.toString());
+        
+        // Cargar puesto asignado y pre-seleccionar jerarquía si es admin
+        if (testigo.puesto && testigo.puesto.codigo_unico) {
+          if (this.isAdmin) {
+            // Si es admin, pre-seleccionar toda la jerarquía
+            // Necesitamos obtener la jerarquía del puesto desde el backend
+            // Por ahora, solo pre-seleccionar el puesto
+            this.updateForm.get('puesto')?.setValue(testigo.puesto.codigo_unico);
+            this.loadMesasAndSelectAssigned(testigo.puesto.codigo_unico, testigo.mesas || []);
+          } else {
+            // Si es coordinador, solo seleccionar el puesto
+            this.updateForm.get('puesto')?.setValue(testigo.puesto.codigo_unico);
+            this.loadMesasAndSelectAssigned(testigo.puesto.codigo_unico, testigo.mesas || []);
           }
         } else {
-          // Si es coordinador, solo seleccionar el puesto
-          this.updateForm.get('puesto')?.setValue(puestos_asignados.codigo_unico);
-          
-          // Cargar mesas del puesto y luego pre-seleccionar las asignadas
-          this.loadMesasAndSelectAssigned(puestos_asignados.codigo_unico, mesas_asignadas);
+          this.updateForm.get('puesto')?.setValue(null);
+          this.loading = false;
         }
-      } else {
-        console.log('⚠️ No hay puesto asignado');
-        this.updateForm.get('puesto')?.setValue(null);
+      },
+      error: (error: any) => {
+        this.loading = false;
+        const errorMessage = error.error?.detail || error.error?.message || 'Error al cargar el testigo.';
+        this.alertService.errorAlert(errorMessage);
+        setTimeout(() => {
+          this.router.navigate(['/panel/usuarios/testigos']);
+        }, 2000);
       }
-
-    })
+    });
   }
 
   getStationsTestigo() {
-    this.apiService.getStationsTestigo().subscribe((resp: any) => {
-      this.dataStations = resp;
-      this.getTablesTestigo();
-    })
+    this.apiService.getStationsTestigo().subscribe({
+      next: (resp: any) => {
+        this.dataStations = resp || [];
+        // Después de cargar puestos, cargar el testigo
+        this.getTestigo();
+      },
+      error: (error: any) => {
+        this.dataStations = [];
+        this.loading = false;
+        this.alertService.errorAlert('Error al cargar los puestos.');
+      }
+    });
   }
 
   getTablesTestigo() {
@@ -243,10 +266,13 @@ export class EditarTestigoComponent implements OnInit {
     this.backofficeAdminService.getDepartamentosAdmin().subscribe({
       next: (resp: any) => {
         this.dataDepartments = resp.departamentos || resp || [];
+        // Después de cargar departamentos, cargar el testigo
+        this.getTestigo();
       },
       error: (error: any) => {
-        console.error('Error al cargar departamentos:', error);
         this.dataDepartments = [];
+        this.loading = false;
+        this.alertService.errorAlert('Error al cargar los departamentos.');
       }
     });
   }
@@ -261,7 +287,6 @@ export class EditarTestigoComponent implements OnInit {
     if (item) {
       // item puede ser un objeto con codigo_unico o directamente el código
       const codigoDepartamento = typeof item === 'string' ? item : (item.codigo_unico || item);
-      console.log('🔍 Departamento seleccionado:', codigoDepartamento, 'Item completo:', item);
       this.getMunicipalAdmin(codigoDepartamento);
     } else {
       this.dataMunicipals = [];
@@ -272,18 +297,14 @@ export class EditarTestigoComponent implements OnInit {
   }
 
   getMunicipalAdmin(codigoDepartamento: string) {
-    console.log('📞 Llamando a getMunicipiosAdmin con código:', codigoDepartamento);
     this.loadingMunicipios = true;
     this.dataMunicipals = [];
     this.backofficeAdminService.getMunicipiosAdmin(codigoDepartamento).subscribe({
       next: (resp: any) => {
-        console.log('✅ Respuesta de municipios:', resp);
         this.dataMunicipals = resp.municipios || resp || [];
-        console.log('📋 Municipios cargados:', this.dataMunicipals.length, 'municipios');
         this.loadingMunicipios = false;
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar municipios:', error);
         this.dataMunicipals = [];
         this.loadingMunicipios = false;
       }
@@ -293,7 +314,6 @@ export class EditarTestigoComponent implements OnInit {
   getSelectedMunicipal(codigoMunicipio: any) {
     // codigoMunicipio puede ser un string o un objeto
     const codigo = typeof codigoMunicipio === 'string' ? codigoMunicipio : (codigoMunicipio?.codigo_unico || codigoMunicipio);
-    console.log('🔍 Municipio seleccionado:', codigo, 'Item completo:', codigoMunicipio);
     
     this.selectedZone = [];
     this.updateForm.patchValue({
@@ -311,18 +331,14 @@ export class EditarTestigoComponent implements OnInit {
 
   getZonasyGerentes(codigoMunicipio: string) {
     if (codigoMunicipio) {
-      console.log('📞 Llamando a getZonasPorMunicipio con código:', codigoMunicipio);
       this.loadingZonas = true;
       this.dataZones = [];
       this.backofficeAdminService.getZonasPorMunicipio(codigoMunicipio).subscribe({
         next: (resp: any) => {
-          console.log('✅ Respuesta de zonas:', resp);
           this.dataZones = resp.zonas || resp || [];
-          console.log('📋 Zonas cargadas:', this.dataZones.length, 'zonas');
           this.loadingZonas = false;
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar zonas:', error);
           this.dataZones = [];
           this.loadingZonas = false;
         }
@@ -333,7 +349,6 @@ export class EditarTestigoComponent implements OnInit {
   getSelectedZone(codigoZona: any) {
     // codigoZona puede ser un string o un objeto
     const codigo = typeof codigoZona === 'string' ? codigoZona : (codigoZona?.codigo_unico || codigoZona);
-    console.log('🔍 Zona seleccionada:', codigo, 'Item completo:', codigoZona);
     
     this.updateForm.patchValue({
       puesto: null,
@@ -349,18 +364,14 @@ export class EditarTestigoComponent implements OnInit {
 
   getPuestosySupervisores(codigoZona: string) {
     if (codigoZona) {
-      console.log('📞 Llamando a getPuestosPorZona con código:', codigoZona);
       this.loadingPuestos = true;
       this.dataStations = [];
       this.backofficeAdminService.getPuestosPorZona(codigoZona).subscribe({
         next: (resp: any) => {
-          console.log('✅ Respuesta de puestos:', resp);
           this.dataStations = resp.puestos || resp || [];
-          console.log('📋 Puestos cargados:', this.dataStations.length, 'puestos');
           this.loadingPuestos = false;
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar puestos:', error);
           this.dataStations = [];
           this.loadingPuestos = false;
         }
@@ -371,7 +382,6 @@ export class EditarTestigoComponent implements OnInit {
   getSelectedStation(codigoPuesto: any) {
     // codigoPuesto puede ser un string o un objeto
     const codigo = typeof codigoPuesto === 'string' ? codigoPuesto : (codigoPuesto?.codigo_unico || codigoPuesto);
-    console.log('🔍 Puesto seleccionado:', codigo, 'Item completo:', codigoPuesto);
     
     this.updateForm.patchValue({
       mesas: []
@@ -385,18 +395,14 @@ export class EditarTestigoComponent implements OnInit {
 
   getTablesTestigoForPuesto(codigoPuesto: string) {
     if (codigoPuesto) {
-      console.log('📞 Llamando a getMesasPorPuesto con código:', codigoPuesto);
       this.loadingMesas = true;
       this.dataTables = [];
       this.backofficeAdminService.getMesasPorPuesto(codigoPuesto).subscribe({
         next: (resp: any) => {
-          console.log('✅ Respuesta de mesas:', resp);
           this.dataTables = resp.mesas || resp || [];
-          console.log('📋 Mesas cargadas:', this.dataTables.length, 'mesas');
           this.loadingMesas = false;
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar mesas:', error);
           this.dataTables = [];
           this.loadingMesas = false;
         }
@@ -409,12 +415,9 @@ export class EditarTestigoComponent implements OnInit {
    */
   loadMesasAndSelectAssigned(codigoPuesto: string, mesasAsignadas: any[]) {
     if (!codigoPuesto) {
-      console.log('⚠️ No hay puesto para cargar mesas');
       return;
     }
 
-    console.log('📞 Cargando mesas del puesto:', codigoPuesto);
-    console.log('📋 Mesas asignadas a pre-seleccionar:', mesasAsignadas);
     
     this.loadingMesas = true;
     this.dataTables = [];
@@ -423,16 +426,13 @@ export class EditarTestigoComponent implements OnInit {
     if (this.isAdmin) {
       this.backofficeAdminService.getMesasPorPuesto(codigoPuesto).subscribe({
         next: (resp: any) => {
-          console.log('✅ Respuesta de mesas:', resp);
           this.dataTables = resp.mesas || resp || [];
-          console.log('📋 Mesas cargadas:', this.dataTables.length, 'mesas');
           this.loadingMesas = false;
           
           // Pre-seleccionar las mesas asignadas
           this.selectAssignedMesas(mesasAsignadas);
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar mesas:', error);
           this.dataTables = [];
           this.loadingMesas = false;
         }
@@ -441,16 +441,13 @@ export class EditarTestigoComponent implements OnInit {
       // Para coordinador, usar getTablesTestigo
       this.apiService.getTablesTestigo().subscribe({
         next: (resp: any) => {
-          console.log('✅ Respuesta de mesas:', resp);
           this.dataTables = resp.filter((dataTable: any) => dataTable.codigo_puesto_votacion == codigoPuesto);
-          console.log('📋 Mesas cargadas:', this.dataTables.length, 'mesas');
           this.loadingMesas = false;
           
           // Pre-seleccionar las mesas asignadas
           this.selectAssignedMesas(mesasAsignadas);
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar mesas:', error);
           this.dataTables = [];
           this.loadingMesas = false;
         }
@@ -463,13 +460,11 @@ export class EditarTestigoComponent implements OnInit {
    */
   selectAssignedMesas(mesasAsignadas: any[]) {
     if (!mesasAsignadas || !Array.isArray(mesasAsignadas) || mesasAsignadas.length === 0) {
-      console.log('⚠️ No hay mesas asignadas para pre-seleccionar');
       this.updateForm.get('mesas')?.setValue([]);
       return;
     }
 
     if (!this.dataTables || this.dataTables.length === 0) {
-      console.log('⚠️ No hay mesas cargadas, esperando...');
       // Esperar un poco más si las mesas aún no están cargadas
       setTimeout(() => {
         this.selectAssignedMesas(mesasAsignadas);
@@ -477,9 +472,6 @@ export class EditarTestigoComponent implements OnInit {
       return;
     }
 
-    console.log('🔍 Mapeando mesas asignadas a objetos completos...');
-    console.log('📋 Mesas disponibles:', this.dataTables.length);
-    console.log('📋 Mesas asignadas:', mesasAsignadas);
 
     // Mapear las mesas asignadas a los objetos completos de dataTables
     const mesasToSelect: string[] = [];
@@ -492,16 +484,13 @@ export class EditarTestigoComponent implements OnInit {
       
       if (mesaCompleta) {
         mesasToSelect.push(codigoUnico);
-        console.log(`✅ Mesa encontrada: ${codigoUnico} (Mesa ${mesaCompleta.numero_mesa})`);
       } else {
-        console.log(`⚠️ Mesa no encontrada en dataTables: ${codigoUnico}`);
         // Si no se encuentra, usar directamente el código único
         // Esto puede pasar si la mesa fue eliminada o no está disponible
         mesasToSelect.push(codigoUnico);
       }
     }
 
-    console.log('📋 Mesas a seleccionar:', mesasToSelect);
     this.updateForm.get('mesas')?.setValue(mesasToSelect);
   }
 

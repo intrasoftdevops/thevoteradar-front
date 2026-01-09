@@ -43,7 +43,8 @@
     // Asegurar que los textos estén ocultos cuando está colapsado
     .menu-label,
     .brand-name,
-    .submenu-label {
+    .submenu-label,
+    .nested-submenu-label {
       display: none !important;
       visibility: hidden !important;
       opacity: 0 !important;
@@ -52,7 +53,8 @@
     }
 
     // Ocultar submenus cuando está colapsado
-    .submenu {
+    .submenu,
+    .nested-submenu {
       display: none !important;
       visibility: hidden !important;
       opacity: 0 !important;
@@ -295,30 +297,102 @@
 }
 
 .submenu-item {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden; // Prevenir overflow
+  
+  &.has-children {
+    .submenu-header {
+      cursor: pointer;
+    }
+  }
+  
+  &.expanded {
+    .submenu-arrow {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.submenu-header {
   display: flex;
   align-items: center;
   padding: 10px 20px 10px 67px;
-  cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.9rem;
   opacity: 0.85;
   width: 100%;
   box-sizing: border-box;
-  overflow: hidden; // Prevenir overflow
-  white-space: nowrap; // Evitar que el texto se corte en múltiples líneas
+  white-space: nowrap;
 
   &:hover {
     opacity: 1;
     background: rgba(255, 255, 255, 0.05);
     padding-left: 72px;
   }
+}
+
+.submenu-item.active > .submenu-header {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 2px solid var(--color-secondary);
+
+  .submenu-icon {
+    color: var(--color-secondary);
+  }
+}
+
+.submenu-item.disabled > .submenu-header {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.submenu-arrow {
+  font-size: 0.7rem;
+  margin-left: auto;
+  transition: transform 0.2s ease;
+  
+  &.rotated {
+    transform: rotate(90deg);
+  }
+}
+
+// Nested submenu
+.nested-submenu {
+  list-style: none;
+  padding: 5px 0 5px 0;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.25);
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.nested-submenu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 20px 8px 110px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.08);
+    padding-left: 115px;
+  }
 
   &.active {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
     border-left: 2px solid var(--color-secondary);
 
-    .submenu-icon {
+    .nested-submenu-icon {
       color: var(--color-secondary);
     }
   }
@@ -328,6 +402,21 @@
     cursor: not-allowed;
     pointer-events: none;
   }
+}
+
+.nested-submenu-icon {
+  width: 18px;
+  font-size: 0.75rem;
+  margin-right: 10px;
+  text-align: center;
+}
+
+.nested-submenu-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
 .submenu-icon {

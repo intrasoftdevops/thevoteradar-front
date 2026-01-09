@@ -61,18 +61,12 @@ export class ChallengesDashboardComponent implements OnInit {
 
     this.challengeService.getMyChallenges().subscribe({
       next: (challenges) => {
-        console.log('✅ ChallengesDashboard - Challenges cargados:', challenges);
         this.challenges = challenges;
         this.applyFilters();
         this.challengesLoading = false;
       },
       error: (error) => {
-        console.error('❌ ChallengesDashboard - Error al cargar challenges:', {
-          error,
-          status: error?.status,
-          message: error?.message,
-          errorBody: error?.error
-        });
+        
 
         let errorMessage = 'No se pudieron cargar los challenges';
         if (error?.status === 0 || error?.status === undefined) {

@@ -66,8 +66,6 @@ export class ReporteVotosAdminComponent implements OnInit, OnDestroy {
     this.reporte = mesa;
     this.listReportes = this.reporte.reporte?.reportes || [];
     this.photos = mesa.reporte?.archivos || [];
-    console.log('ModalReporteActual - Photos asignadas:', this.photos);
-    console.log('ModalReporteActual - Cantidad de fotos:', this.photos.length);
     this.totalVotosMesas = this.listReportes.reduce((acc: any, obj: any,) => acc + (obj.numero_votos || 0), 0);
   }
 
@@ -82,7 +80,6 @@ export class ReporteVotosAdminComponent implements OnInit, OnDestroy {
         this.notFirstTime = true;
       },
       error: (error: any) => {
-        console.error('Error al cargar reportes:', error);
         this.listMesas = [];
         this.loadingReportes = false;
         this.clearTable();
@@ -104,7 +101,6 @@ export class ReporteVotosAdminComponent implements OnInit, OnDestroy {
         }
       },
       error: (error: any) => {
-        console.error('Error al cargar departamentos:', error);
         this.dataDepartments = [];
         this.loadingDepartamentos = false;
       }
@@ -187,7 +183,6 @@ export class ReporteVotosAdminComponent implements OnInit, OnDestroy {
         this.loadingMunicipios = false;
       },
       error: (error: any) => {
-        console.error('Error al cargar municipios:', error);
         this.dataMunicipals = [];
         this.loadingMunicipios = false;
       }
@@ -203,7 +198,6 @@ export class ReporteVotosAdminComponent implements OnInit, OnDestroy {
         this.loadingZonas = false;
       },
       error: (error: any) => {
-        console.error('Error al cargar zonas:', error);
         this.dataZones = [];
         this.loadingZonas = false;
       }
@@ -219,7 +213,6 @@ export class ReporteVotosAdminComponent implements OnInit, OnDestroy {
         this.loadingPuestos = false;
       },
       error: (error: any) => {
-        console.error('Error al cargar puestos:', error);
         this.dataStations = [];
         this.loadingPuestos = false;
       }
@@ -276,7 +269,6 @@ export class ReporteVotosAdminComponent implements OnInit, OnDestroy {
         this.lightbox.open(album, index);
       }
     } catch (error) {
-      console.error('Error al abrir lightbox:', error);
     }
   }
 

@@ -68,7 +68,6 @@ export class CoordinadorHomeComponent implements OnInit {
         this.departamento_asignado = '';
       }
     }, (error) => {
-      console.error('Error al obtener datos del coordinador:', error);
       this.zona_asignada = '';
       this.municipio_asignado = '';
       this.departamento_asignado = '';

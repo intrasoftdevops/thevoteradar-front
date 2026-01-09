@@ -97,7 +97,6 @@ export class SurveyService {
   private getAuthHeaders(): HttpHeaders | null {
     const token = this.localData.getBackofficeToken();
     if (!token || token === 'undefined' || token === '') {
-      console.warn('No hay token de autenticación disponible para el servicio de encuestas');
       return null;
     }
     
@@ -120,14 +119,11 @@ export class SurveyService {
   getSurveys(): Observable<Survey[]> {
     // Validar que la URL del API esté configurada
     if (!this.surveyApiUrl || !this.apiBaseUrl) {
-      console.error('❌ SurveyService.getSurveys: No hay URL del API de encuestas configurada');
-      console.error('   surveyApiURL en environment:', environment.surveyApiURL);
       return throwError(() => new Error('El servicio de encuestas no está configurado. Verifica environment.surveyApiURL'));
     }
     
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ SurveyService.getSurveys: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
     
@@ -177,7 +173,6 @@ export class SurveyService {
     return this.http.post<BuilderState>(`${this.apiBaseUrl}/builder/draft`, body, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al crear borrador de encuesta:', error);
           return throwError(() => error);
         })
       );
@@ -191,7 +186,6 @@ export class SurveyService {
     return this.http.get<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/state`, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener estado del builder:', error);
           return throwError(() => error);
         })
       );
@@ -209,7 +203,6 @@ export class SurveyService {
     return this.http.post<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/reorder`, body, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al reordenar preguntas:', error);
           return throwError(() => error);
         })
       );
@@ -252,7 +245,6 @@ export class SurveyService {
     return this.http.post<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/questions`, body, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al agregar pregunta:', error);
           return throwError(() => error);
         })
       );
@@ -266,7 +258,6 @@ export class SurveyService {
     return this.http.put<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/questions/${questionId}`, questionData, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al actualizar pregunta:', error);
           return throwError(() => error);
         })
       );
@@ -280,7 +271,6 @@ export class SurveyService {
     return this.http.delete<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/questions/${questionId}`, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al eliminar pregunta:', error);
           return throwError(() => error);
         })
       );
@@ -294,7 +284,6 @@ export class SurveyService {
     return this.http.put<BuilderState>(`${this.apiBaseUrl}/builder/${surveyId}/details`, details, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al actualizar detalles de encuesta:', error);
           return throwError(() => error);
         })
       );
@@ -308,7 +297,6 @@ export class SurveyService {
     return this.http.put(`${this.apiBaseUrl}/surveys/${surveyId}`, data, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al actualizar encuesta:', error);
           return throwError(() => error);
         })
       );
@@ -326,7 +314,6 @@ export class SurveyService {
     })
       .pipe(
         catchError(error => {
-          console.error('Error al eliminar encuesta:', error);
           // Si es un error 405 (Method Not Allowed), dar un mensaje más claro
           if (error.status === 405) {
             return throwError(() => new Error('El método DELETE no está permitido. Verifica que el endpoint esté correctamente configurado.'));
@@ -382,7 +369,6 @@ export class SurveyService {
     return this.http.post(`${this.apiBaseUrl}/surveys/${surveyId}/recipients`, body, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al importar destinatarios:', error);
           return throwError(() => error);
         })
       );
@@ -397,7 +383,6 @@ export class SurveyService {
     return this.http.post(`${this.apiBaseUrl}/redirector/shorten`, body, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al crear enlace corto:', error);
           return throwError(() => error);
         })
       );
@@ -411,7 +396,6 @@ export class SurveyService {
     return this.http.get<SurveyAnalytics>(`${this.apiBaseUrl}/responses/survey/${surveyId}/summary`, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener analytics de encuesta:', error);
           return throwError(() => error);
         })
       );
@@ -425,7 +409,6 @@ export class SurveyService {
     return this.http.get<SurveyResponse[]>(`${this.apiBaseUrl}/responses/survey/${surveyId}/list`, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener respuestas de encuesta:', error);
           return throwError(() => error);
         })
       );
@@ -439,7 +422,6 @@ export class SurveyService {
     return this.http.get<any[]>(`${this.apiBaseUrl}/surveys/${surveyId}/recipients`, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener destinatarios de encuesta:', error);
           return throwError(() => error);
         })
       );

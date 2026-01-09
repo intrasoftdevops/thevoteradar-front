@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { BackofficeAdminService } from '../../../services/backoffice-admin/backoffice-admin.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -12,14 +13,13 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 })
 export class CrearGerenteComponent implements OnInit {
 
+  loading: boolean = false;
   dataMunicipals: any = [];
   dataDepartments: any = [];
 
   createForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
-    genero_id: [null, Validators.required],
-    tipo_documento_id: [null, Validators.required],
     numero_documento: ['', Validators.required],
     telefono: ['', Validators.required],
     email: ['', [Validators.required, Validators.email, this.customValidator.patternValidator()]],
@@ -32,7 +32,8 @@ export class CrearGerenteComponent implements OnInit {
     private backofficeAdminService: BackofficeAdminService,
     private fb: FormBuilder,
     private alertService: AlertService,
-    private customValidator: CustomValidationService
+    private customValidator: CustomValidationService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -62,6 +63,7 @@ export class CrearGerenteComponent implements OnInit {
     if (!this.createFormControl['email'].errors?.['email'] || !this.createFormControl['email'].errors?.['invalidEmail']) {
 
       if (this.createForm.valid) {
+        this.loading = true;
         // Transformar los datos del formulario al formato esperado por el backend
         const formValue = this.createForm.value;
         const gerenteData: any = {
@@ -81,19 +83,17 @@ export class CrearGerenteComponent implements OnInit {
           gerenteData.municipios = formValue.municipios; // Array de códigos únicos
         }
         
-        console.log('📤 Datos a enviar:', gerenteData);
         
         // Usar el nuevo servicio de backoffice en lugar de voteradar-back
         this.backofficeAdminService.createGerente(gerenteData).subscribe({
           next: (resp: any) => {
+            this.loading = false;
             this.alertService.successAlert(resp.message || 'Gerente creado correctamente');
-            // Opcional: resetear el formulario después de crear
-            this.createForm.reset();
-            this.dataMunicipals = [];
+            // Redirigir a la lista de gerentes
+            this.router.navigate(['/panel/usuarios/gerentes']);
           },
           error: (error: any) => {
-            console.error('❌ Error al crear gerente:', error);
-            console.error('❌ Error completo:', error.error);
+            this.loading = false;
             // Mostrar detalles del error de validación si están disponibles
             let errorMessage = 'Error al crear el gerente';
             if (error.error?.detail) {
@@ -126,16 +126,9 @@ export class CrearGerenteComponent implements OnInit {
         this.dataDepartments = resp.departamentos || resp || [];
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar departamentos:', error);
-        console.error('❌ Error completo:', {
-          status: error.status,
-          statusText: error.statusText,
-          url: error.url,
-          error: error.error,
-          message: error.message
-        });
+        // Limpiar lista actual en caso de error
         this.dataDepartments = [];
-        
+
         let errorMessage = 'Error al cargar los departamentos.';
         
         if (error.status === 401) {
@@ -161,20 +154,12 @@ export class CrearGerenteComponent implements OnInit {
     // Usar el nuevo servicio de backoffice, pasando el código del departamento
     this.backofficeAdminService.getMunicipiosAdmin(codigoDepartamento).subscribe({
       next: (resp: any) => {
-        console.log('✅ Municipios cargados:', resp);
         // Adaptar respuesta según el formato del nuevo endpoint
         // El backend ya filtra por departamento, así que no necesitamos filtrar aquí
         this.dataMunicipals = resp.municipios || resp || [];
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar municipios:', error);
-        console.error('❌ Error completo:', {
-          status: error.status,
-          statusText: error.statusText,
-          url: error.url,
-          error: error.error,
-          message: error.message
-        });
+        // Limpiar lista actual en caso de error
         this.dataMunicipals = [];
         
         let errorMessage = 'Error al cargar los municipios.';
@@ -196,6 +181,38 @@ export class CrearGerenteComponent implements OnInit {
         this.alertService.errorAlert(errorMessage);
       }
     });
+  }
+
+  onInputFocus(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.05)';
+    }
+  }
+
+  onInputBlur(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = '';
+      target.style.backgroundColor = '';
+    }
+  }
+
+  onButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target && target.tagName === 'BUTTON') {
+      target.style.transform = 'translateY(-2px)';
+      target.style.background = 'linear-gradient(to right, var(--color-accent), var(--color-primary))';
+    }
+  }
+
+  onButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target && target.tagName === 'BUTTON') {
+      target.style.transform = '';
+      target.style.background = 'linear-gradient(to right, var(--color-primary), var(--color-accent))';
+    }
   }
 
 }

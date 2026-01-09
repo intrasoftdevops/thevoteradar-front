@@ -68,7 +68,6 @@ export class TenantConfigService {
         this.loadingSubject.next(false);
         const errorMessage = error.error?.detail || error.message || 'Error al obtener configuración del tenant';
         this.errorSubject.next(errorMessage);
-        console.error('Error al obtener configuración del tenant:', error);
         return throwError(() => error);
       })
     );
@@ -90,7 +89,6 @@ export class TenantConfigService {
         this.loadingSubject.next(false);
         const errorMessage = error.error?.detail || error.message || 'Error al listar tenants';
         this.errorSubject.next(errorMessage);
-        console.error('Error al listar tenants:', error);
         return throwError(() => error);
       })
     );
@@ -112,7 +110,6 @@ export class TenantConfigService {
         this.loadingSubject.next(false);
         const errorMessage = error.error?.detail || error.message || 'Error al obtener configuración del tenant';
         this.errorSubject.next(errorMessage);
-        console.error('Error al obtener configuración del tenant:', error);
         return throwError(() => error);
       })
     );
@@ -136,7 +133,6 @@ export class TenantConfigService {
         this.loadingSubject.next(false);
         const errorMessage = error.error?.detail || error.message || 'Error al actualizar configuración del tenant';
         this.errorSubject.next(errorMessage);
-        console.error('Error al actualizar configuración del tenant:', error);
         return throwError(() => error);
       })
     );
@@ -158,7 +154,6 @@ export class TenantConfigService {
         this.loadingSubject.next(false);
         const errorMessage = error.error?.detail || error.message || 'Error al crear tenant';
         this.errorSubject.next(errorMessage);
-        console.error('Error al crear tenant:', error);
         return throwError(() => error);
       })
     );
@@ -187,7 +182,6 @@ export class TenantConfigService {
 
       return parsed.data;
     } catch (error) {
-      console.error('Error al leer caché de configuración:', error);
       return null;
     }
   }
@@ -204,7 +198,6 @@ export class TenantConfigService {
       };
       localStorage.setItem(cacheKey, JSON.stringify(cacheData));
     } catch (error) {
-      console.error('Error al guardar en caché:', error);
     }
   }
 

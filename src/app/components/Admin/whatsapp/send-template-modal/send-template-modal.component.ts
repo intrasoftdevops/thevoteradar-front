@@ -58,7 +58,6 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy, OnChanges 
   ) { }
 
   ngOnInit(): void {
-    console.log('🔄 SendTemplateModal - ngOnInit, isOpen:', this.isOpen, 'template:', this.template);
     if (this.isOpen) {
       this.recipients = [];
       this.currentPage = 1;
@@ -69,7 +68,6 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy, OnChanges 
   }
 
   ngOnChanges(): void {
-    console.log('🔄 SendTemplateModal - ngOnChanges, isOpen:', this.isOpen, 'template:', this.template);
     if (this.isOpen && this.template) {
       this.recipients = [];
       this.currentPage = 1;
@@ -178,22 +176,16 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy, OnChanges 
   }
 
   handleSend(): void {
-    console.log('🔄 SendTemplateModal - handleSend llamado');
-    console.log('📋 SendTemplateModal - Template:', this.template);
-    console.log('📋 SendTemplateModal - Recipients:', this.recipients);
     
     if (!this.template) {
-      console.error('❌ SendTemplateModal - No hay template');
       this.error = 'No hay template seleccionado';
       return;
     }
 
     if (!this.validateForm()) {
-      console.error('❌ SendTemplateModal - Validación falló:', this.error);
       return;
     }
 
-    console.log('✅ SendTemplateModal - Validación exitosa, enviando...');
     this.sending = true;
     this.error = null;
     this.results = [];
@@ -211,11 +203,9 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy, OnChanges 
       parameters_values: parametersValues
     };
 
-    console.log('📤 SendTemplateModal - Enviando request:', request);
 
     const sub = this.whatsappService.sendPendingTemplate(request).subscribe({
       next: (data) => {
-        console.log('✅ SendTemplateModal - Envío exitoso:', data);
         this.successState = true;
         this.results = data.results || [];
         
@@ -228,7 +218,6 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy, OnChanges 
         }, 3000);
       },
       error: (err) => {
-        console.error('❌ SendTemplateModal - Error sending template:', err);
         this.error = err.error?.detail || err.message || 'Error al enviar templates';
         this.sending = false;
       }
@@ -290,7 +279,6 @@ export class SendTemplateModalComponent implements OnInit, OnDestroy, OnChanges 
         this.referralLoading = false;
       },
       error: (err) => {
-        console.error('Error loading referrals:', err);
         this.referralError = 'Error al cargar referidos';
         this.referralLoading = false;
       }

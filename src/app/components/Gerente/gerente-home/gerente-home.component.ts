@@ -36,7 +36,6 @@ export class GerenteHomeComponent implements OnInit {
         this.municipio_asignado = [];
       }
     }, (error) => {
-      console.error('Error al obtener datos del gerente:', error);
       this.departamento_asignado = '';
       this.municipio_asignado = [];
     });

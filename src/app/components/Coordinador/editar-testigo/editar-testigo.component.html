@@ -1,11 +1,36 @@
-<form class="container py-5" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white">
-      <h4 class="m-0">Editar testigo</h4>
+<div class="min-h-screen" [style.background]="'linear-gradient(to bottom right, rgba(var(--color-primary-rgb), 0.05), white, rgba(var(--color-primary-rgb), 0.05))'">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Loader para guardar -->
+    <div *ngIf="saving" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-8 flex flex-col items-center gap-4 shadow-2xl">
+        <div class="animate-spin rounded-full h-16 w-16 border-b-4" [style.border-color]="'var(--color-primary)'"></div>
+        <p class="text-gray-700 font-semibold text-lg">Guardando cambios...</p>
+      </div>
     </div>
-    <div class="card-body">
-      <h4 class="ms-4 fw-bolder">Datos personales</h4>
-      <div class="row m-4">
+    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()" [class.opacity-50]="saving" [class.pointer-events-none]="saving">
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden mb-6">
+        <div class="p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-0">Editar testigo</h2>
+          <button
+            type="button"
+            class="bg-white/20 hover:bg-white/30 text-white text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-all duration-200 flex items-center gap-2 font-semibold"
+            routerLink="/panel/usuarios/testigos"
+            title="Volver a consultar testigos"
+          >
+            <i class="fa-solid fa-arrow-left"></i>
+            Volver
+          </button>
+        </div>
+        <div class="p-6 sm:p-8">
+          <div *ngIf="loading" class="text-center py-8">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando datos del testigo...</p>
+          </div>
+          <div *ngIf="!loading">
+          <h4 class="mb-4 fw-bolder text-xl" [style.color]="'var(--color-primary)'">Datos personales</h4>
+          <div class="row">
         <div class="form-group col-md-6 col-lg-4 pt-2">
           <label class="form-label">
             <span class="fw-bold">Nombres</span>
@@ -13,7 +38,8 @@
           </label>
           <input
             type="text"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="'rgba(var(--color-primary-rgb), 0.3)'"
             formControlName="nombres"
             (keypress)="keypressValidator.keyPressLetters($event)"
             placeholder="Ingrese nombres"
@@ -26,43 +52,12 @@
           </label>
           <input
             type="text"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="'rgba(var(--color-primary-rgb), 0.3)'"
             formControlName="apellidos"
             (keypress)="keypressValidator.keyPressLetters($event)"
             placeholder="Ingrese apellidos"
           />
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Género</span>
-            <span class="text-danger">*</span>
-          </label>
-          <ng-select
-            [searchable]="false"
-            class="custom-select rounded"
-            formControlName="genero_id"
-            placeholder="Seleccione género"
-            [clearAllText]="'Borrar todo'"
-          >
-            <ng-option [value]="1">Masculino</ng-option>
-            <ng-option [value]="2">Femenino</ng-option>
-            <ng-option [value]="3">Otro</ng-option>
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Tipo de documento</span>
-            <span class="text-danger">*</span>
-          </label>
-          <ng-select
-            [searchable]="false"
-            class="custom-select rounded"
-            formControlName="tipo_documento_id"
-            placeholder="Seleccione tipo de documento"
-            [clearAllText]="'Borrar todo'"
-          >
-            <ng-option [value]="1">Cédula de ciudadanía</ng-option>
-          </ng-select>
         </div>
         <div class="form-group col-md-6 col-lg-4 pt-2">
           <label class="form-label">
@@ -71,7 +66,8 @@
           </label>
           <input
             type="number"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="'rgba(var(--color-primary-rgb), 0.3)'"
             placeholder="Ingrese número de documento"
             formControlName="numero_documento"
             (keypress)="keypressValidator.keyPressNumbers($event)"
@@ -81,7 +77,8 @@
           <label class="form-label fw-bold">Teléfono</label>
           <input
             type="text"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="'rgba(var(--color-primary-rgb), 0.3)'"
             formControlName="telefono"
             placeholder="Ingrese número de teléfono"
           />
@@ -93,7 +90,8 @@
           </label>
           <input
             type="email"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="'rgba(var(--color-primary-rgb), 0.3)'"
             formControlName="email"
             placeholder="Ingrese correo electrónico"
           />
@@ -105,15 +103,14 @@
           </small>
         </div>
       </div>
-      <hr class="mx-4 border border-primary rounded border-2" />
-      <h4 class="ms-4 fw-bolder">Lugar de trabajo</h4>
-      <div class="row mx-4 my-4">
+          <hr class="my-6" [style.border-color]="'rgba(var(--color-primary-rgb), 0.2)'" style="border-width: 2px;" />
+          <h4 class="mb-4 fw-bolder text-xl" [style.color]="'var(--color-primary)'">Lugar de trabajo</h4>
+          <div class="row">
         <!-- Flujo completo para admin: Departamento -> Municipio -> Zona -> Puesto -->
         <ng-container *ngIf="isAdmin">
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">
               <span class="fw-bold">Departamento de votación</span>
-              <span class="text-danger">*</span>
             </label>
             <ng-select
               [items]="dataDepartments"
@@ -133,7 +130,6 @@
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">
               <span class="fw-bold">Municipio de votación</span>
-              <span class="text-danger">*</span>
             </label>
             <ng-select
               [items]="dataMunicipals"
@@ -153,7 +149,6 @@
           <div class="form-group col-md-6 col-lg-4 pt-2">
             <label class="fw-bold form-label">
               <span class="fw-bold">Zona de votación</span>
-              <span class="text-danger">*</span>
             </label>
             <ng-select
               [items]="dataZones"
@@ -176,7 +171,6 @@
         <div class="form-group col-md-6 col-lg-4 pt-3">
           <label class="fw-bold">
             <span class="fw-bold">Puesto de votación</span>
-            <span class="text-danger">*</span>
           </label>
           <ng-select
             [items]="dataStations"
@@ -209,12 +203,20 @@
           >
           </ng-select>
         </div>
+          </div>
+          </div>
+        </div>
       </div>
-    </div>
+      <div class="d-flex justify-content-end pt-4" *ngIf="!loading">
+        <button
+          type="submit"
+          class="text-white text-lg px-6 py-3 rounded-lg transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+        >
+          <i class="fa-solid fa-pen mr-2"></i>
+          EDITAR
+        </button>
+      </div>
+    </form>
   </div>
-  <div class="d-flex justify-content-end pt-4">
-    <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">
-      EDITAR
-    </button>
-  </div>
-</form>
+</div>

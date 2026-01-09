@@ -85,7 +85,6 @@ export class AuthInterceptor implements HttpInterceptor {
       if (isBackofficeApi) {
         // Token expirado o inválido en nuestro backend
         if (!environment.production) {
-          console.warn('🔒 AuthInterceptor: Token inválido o expirado en backend principal');
         }
         this.authService.logout();
       } else {
@@ -96,7 +95,6 @@ export class AuthInterceptor implements HttpInterceptor {
     if (error.status === 403) {
       // Sin permisos
       if (!environment.production) {
-        console.warn('🚫 AuthInterceptor: Acceso prohibido');
       }
       // No hacer logout, solo registrar
     }

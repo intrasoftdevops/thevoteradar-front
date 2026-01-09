@@ -40,7 +40,6 @@ export class SurveyAnalyticsComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error al cargar analytics:', error);
         this.error = 'No fue posible cargar las estadísticas de la encuesta.';
         this.loading = false;
       }
