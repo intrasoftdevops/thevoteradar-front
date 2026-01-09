@@ -46,7 +46,6 @@ export class SurveyBuilderComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error al cargar estado del builder:', error);
         this.error = error.error?.detail || error.message || 'Error al cargar la encuesta';
         this.loading = false;
       }
@@ -66,7 +65,6 @@ export class SurveyBuilderComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error al agregar pregunta:', error);
         this.error = error.error?.detail || error.message || 'Error al agregar pregunta';
       }
     });
@@ -110,7 +108,6 @@ export class SurveyBuilderComponent implements OnInit {
         this.error = null;
       },
       error: (error) => {
-        console.error('Error al guardar pregunta:', error);
         this.error = error.error?.detail || error.message || 'Error al guardar pregunta';
       }
     });
@@ -133,7 +130,6 @@ export class SurveyBuilderComponent implements OnInit {
         this.error = null;
       },
       error: (error) => {
-        console.error('Error al actualizar is_demographic:', error);
         // rollback
         question.is_demographic = prev;
         this.error = 'No se pudo guardar el estado demográfico.';
@@ -189,7 +185,6 @@ export class SurveyBuilderComponent implements OnInit {
         this.error = null;
       },
       error: (err) => {
-        console.error('Error al reordenar preguntas:', err);
         // rollback
         if (this.builderState) {
           this.builderState.questions = prevOrder;
@@ -214,7 +209,6 @@ export class SurveyBuilderComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error al eliminar pregunta:', error);
         this.error = error.error?.detail || error.message || 'Error al eliminar pregunta';
       }
     });
@@ -234,7 +228,6 @@ export class SurveyBuilderComponent implements OnInit {
     
     this.surveyService.updateSurvey(this.surveyId, { title: newTitle.trim() }).subscribe({
       error: (error) => {
-        console.error('Error al actualizar título:', error);
         
         if (this.builderState) {
           this.builderState.title = previousTitle;
@@ -265,7 +258,6 @@ export class SurveyBuilderComponent implements OnInit {
         this.loadBuilderState();
       },
       error: (error) => {
-        console.error('Error al activar encuesta:', error);
         this.builderState = previousState;
         this.error = 'No se pudo activar la encuesta.';
       }
@@ -288,7 +280,6 @@ export class SurveyBuilderComponent implements OnInit {
         this.loadBuilderState();
       },
       error: (error) => {
-        console.error('Error al cerrar encuesta:', error);
         this.error = 'No se pudo cerrar la encuesta.';
       }
     });

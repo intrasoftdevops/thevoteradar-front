@@ -81,7 +81,6 @@ export class CrearGerenteComponent implements OnInit {
           gerenteData.municipios = formValue.municipios; // Array de códigos únicos
         }
         
-        console.log('📤 Datos a enviar:', gerenteData);
         
         // Usar el nuevo servicio de backoffice en lugar de voteradar-back
         this.backofficeAdminService.createGerente(gerenteData).subscribe({
@@ -92,8 +91,6 @@ export class CrearGerenteComponent implements OnInit {
             this.dataMunicipals = [];
           },
           error: (error: any) => {
-            console.error('❌ Error al crear gerente:', error);
-            console.error('❌ Error completo:', error.error);
             // Mostrar detalles del error de validación si están disponibles
             let errorMessage = 'Error al crear el gerente';
             if (error.error?.detail) {
@@ -126,16 +123,9 @@ export class CrearGerenteComponent implements OnInit {
         this.dataDepartments = resp.departamentos || resp || [];
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar departamentos:', error);
-        console.error('❌ Error completo:', {
-          status: error.status,
-          statusText: error.statusText,
-          url: error.url,
-          error: error.error,
-          message: error.message
-        });
+        // Limpiar lista actual en caso de error
         this.dataDepartments = [];
-        
+
         let errorMessage = 'Error al cargar los departamentos.';
         
         if (error.status === 401) {
@@ -161,20 +151,12 @@ export class CrearGerenteComponent implements OnInit {
     // Usar el nuevo servicio de backoffice, pasando el código del departamento
     this.backofficeAdminService.getMunicipiosAdmin(codigoDepartamento).subscribe({
       next: (resp: any) => {
-        console.log('✅ Municipios cargados:', resp);
         // Adaptar respuesta según el formato del nuevo endpoint
         // El backend ya filtra por departamento, así que no necesitamos filtrar aquí
         this.dataMunicipals = resp.municipios || resp || [];
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar municipios:', error);
-        console.error('❌ Error completo:', {
-          status: error.status,
-          statusText: error.statusText,
-          url: error.url,
-          error: error.error,
-          message: error.message
-        });
+        // Limpiar lista actual en caso de error
         this.dataMunicipals = [];
         
         let errorMessage = 'Error al cargar los municipios.';
@@ -196,6 +178,38 @@ export class CrearGerenteComponent implements OnInit {
         this.alertService.errorAlert(errorMessage);
       }
     });
+  }
+
+  onInputFocus(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.05)';
+    }
+  }
+
+  onInputBlur(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = '';
+      target.style.backgroundColor = '';
+    }
+  }
+
+  onButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target && target.tagName === 'BUTTON') {
+      target.style.transform = 'translateY(-2px)';
+      target.style.background = 'linear-gradient(to right, var(--color-accent), var(--color-primary))';
+    }
+  }
+
+  onButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target && target.tagName === 'BUTTON') {
+      target.style.transform = '';
+      target.style.background = 'linear-gradient(to right, var(--color-primary), var(--color-accent))';
+    }
   }
 
 }

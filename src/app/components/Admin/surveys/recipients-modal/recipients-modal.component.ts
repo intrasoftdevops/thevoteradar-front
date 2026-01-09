@@ -143,7 +143,6 @@ export class RecipientsModalComponent implements OnInit, OnChanges {
         }, 1500);
       },
       error: (error) => {
-        console.error('Error al importar destinatarios:', error);
         this.message = 'Guardado local. (Error al conectar con el servidor)';
         this.isUploading = false;
       }
@@ -180,7 +179,6 @@ export class RecipientsModalComponent implements OnInit, OnChanges {
       this.refreshDemographicKeys();
       this.refreshDemographicValues();
     } catch (e: any) {
-      console.error('❌ RecipientsModal - Error cargando respondents:', e);
       this.respondentsError = e?.error?.detail || e?.message || 'No se pudieron cargar respondents';
     } finally {
       this.respondentsLoading = false;
@@ -305,7 +303,6 @@ export class RecipientsModalComponent implements OnInit, OnChanges {
       this.isUploading = false;
       setTimeout(() => this.close(), 1200);
     } catch (e: any) {
-      console.error('❌ RecipientsModal - Error importando segmento:', e);
       this.message = e?.error?.detail || e?.message || 'Error al importar destinatarios del segmento';
       this.isUploading = false;
     }

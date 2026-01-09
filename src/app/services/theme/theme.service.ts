@@ -211,7 +211,6 @@ export class ThemeService {
         this.loadThemeFromTenantId(tenantId);
       }
     } catch (error) {
-      console.error('Error al cargar tema desde configuración del tenant:', error);
       this.loadThemeFromTenantId(tenantId);
     }
   }
@@ -227,7 +226,6 @@ export class ThemeService {
         // Por ahora usamos el mapeo existente como fallback
       }
     } catch (error) {
-      console.error('Error al obtener tenant desde subdominio:', error);
     }
     
     return this.getTenantIdFromDomain();

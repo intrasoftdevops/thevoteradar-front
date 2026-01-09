@@ -68,13 +68,11 @@ export class CreateChallengeModalComponent {
 
     this.challengeService.createChallenge(challengeData).subscribe({
       next: (response) => {
-        console.log('✅ Challenge creado exitosamente:', response);
         this.creating = false;
         this.onClose();
         this.created.emit();
       },
       error: (error) => {
-        console.error('❌ Error al crear challenge:', error);
         this.creating = false;
         
         let errorMessage = 'No se pudo crear el challenge';

@@ -178,7 +178,6 @@ export class VerPuestoAdminComponent implements OnInit {
         }
       },
       error: (error: any) => {
-        console.error('Error al cargar departamentos:', error);
         this.dataDepartments = [];
       }
     });

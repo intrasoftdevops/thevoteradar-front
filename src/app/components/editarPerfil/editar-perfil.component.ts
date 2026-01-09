@@ -14,6 +14,7 @@ import { RxwebValidators } from '@rxweb/reactive-form-validators';
 export class EditarPerfilComponent implements OnInit {
 
   files: File[] = [];
+  loading: boolean = true;
   updateForm: FormGroup = this.fb.group({
     nombres: ['', Validators.required],
     apellidos: ['', Validators.required],
@@ -81,9 +82,9 @@ export class EditarPerfilComponent implements OnInit {
   }
 
   getUser() {
+    this.loading = true;
     this.apiService.getUser().subscribe({
       next: (resp: any) => {
-        console.log('📋 Datos recibidos del usuario (completo):', JSON.stringify(resp, null, 2));
         
         // Asegurar que el formulario esté habilitado
         this.updateForm.enable();
@@ -106,22 +107,7 @@ export class EditarPerfilComponent implements OnInit {
           telefono = telefono.replace(/^\+?57/, '').trim();
         }
         
-        console.log('📝 Valores mapeados:', {
-          nombres,
-          apellidos,
-          genero_id,
-          email,
-          tipo_documento_id,
-          numero_documento,
-          telefono,
-          'resp.genero_id': resp?.genero_id,
-          'resp.tipo_documento_id': resp?.tipo_documento_id,
-          'resp.numero_documento': resp?.numero_documento,
-          'resp.email': resp?.email,
-          'resp.phone': resp?.phone,
-          'resp.telefono': resp?.telefono
-        });
-        
+       
         // Establecer valores en el formulario (establecer siempre, incluso si están vacíos o null)
         this.updateForm.patchValue({
           nombres: nombres || '',
@@ -134,7 +120,6 @@ export class EditarPerfilComponent implements OnInit {
           password: '' // No mostrar password
         });
         
-        console.log('✅ Valores establecidos en el formulario:', this.updateForm.value);
 
         // Asegurar que todos los campos estén habilitados individualmente
         this.updateForm.get('nombres')?.enable();
@@ -144,15 +129,10 @@ export class EditarPerfilComponent implements OnInit {
         this.updateForm.get('tipo_documento_id')?.enable();
         this.updateForm.get('numero_documento')?.enable();
         this.updateForm.get('telefono')?.enable();
+        this.loading = false;
       },
       error: (error: any) => {
-        console.error('❌ Error al obtener datos del usuario:', error);
-        console.error('❌ Detalles del error:', {
-          status: error?.status,
-          statusText: error?.statusText,
-          message: error?.message,
-          error: error?.error
-        });
+        this.loading = false;
       }
     });
   }

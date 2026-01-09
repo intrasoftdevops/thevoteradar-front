@@ -55,7 +55,6 @@ export class WhatsAppTemplatesService {
     return this.http.post<WhatsAppTemplatePending>(url, templateData, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al crear template:', error);
           return throwError(() => error);
         })
       );
@@ -75,7 +74,6 @@ export class WhatsAppTemplatesService {
         take(1),
         map(response => response.templates),
         catchError(error => {
-          console.error('Error al obtener templates pendientes:', error);
           return throwError(() => error);
         })
       );
@@ -93,7 +91,6 @@ export class WhatsAppTemplatesService {
     return this.http.get<WhatsAppTemplatesByCreatorResponse>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener mis templates:', error);
           return throwError(() => error);
         })
       );
@@ -111,7 +108,6 @@ export class WhatsAppTemplatesService {
     return this.http.get<WhatsAppTemplatesByCreatorResponse>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener templates de WATI:', error);
           return throwError(() => error);
         })
       );
@@ -129,7 +125,6 @@ export class WhatsAppTemplatesService {
     return this.http.get<WhatsAppTemplateStatusResponse>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener estado del template:', error);
           return throwError(() => error);
         })
       );
@@ -147,7 +142,6 @@ export class WhatsAppTemplatesService {
     return this.http.get<WhatsAppTemplateSummaryResponse>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener resumen de templates:', error);
           return throwError(() => error);
         })
       );
@@ -169,7 +163,6 @@ export class WhatsAppTemplatesService {
     return this.http.put<WhatsAppTemplateUpdateStatusResponse>(url, { status: 'failed' }, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al rechazar template:', error);
           return throwError(() => error);
         })
       );
@@ -187,7 +180,6 @@ export class WhatsAppTemplatesService {
     return this.http.post<WhatsAppTemplateSendPendingResponse>(url, request, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al enviar template:', error);
           return throwError(() => error);
         })
       );
@@ -256,7 +248,6 @@ export class WhatsAppTemplatesService {
     return this.http.get<ReferralDetailsResponse>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('Error al obtener referidos:', error);
           return throwError(() => error);
         })
       );

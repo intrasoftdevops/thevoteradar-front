@@ -94,7 +94,6 @@ export class EditarGerenteComponent implements OnInit {
               this.alertService.successAlert(resp.message || resp.res || 'Gerente actualizado correctamente');
             },
             error: (error: any) => {
-              console.error('Error al actualizar gerente:', error);
               const errorMessage = error.error?.detail || error.error?.message || 'Error al actualizar el gerente';
               this.alertService.errorAlert(errorMessage);
             }
@@ -113,7 +112,6 @@ export class EditarGerenteComponent implements OnInit {
         this.getMunicipalAdmin();
       },
       error: (error: any) => {
-        console.error('Error al cargar departamentos:', error);
         this.dataDepartments = [];
       }
     });
@@ -133,7 +131,6 @@ export class EditarGerenteComponent implements OnInit {
         }
       },
       error: (error: any) => {
-        console.error('Error al cargar municipios:', error);
         this.dataMunicipals = [];
       }
     });
@@ -144,37 +141,77 @@ export class EditarGerenteComponent implements OnInit {
   }
 
   getGerente() {
-    this.idGerente = this.localData.decryptIdUser(
-      this.activatedRoute.snapshot.params['id']
-    );
-    // Usar el nuevo servicio de backoffice
-    this.backofficeAdminService.getGerente(this.idGerente).subscribe({
+    const encryptedId = this.activatedRoute.snapshot.params['id'];
+    
+    this.idGerente = this.localData.decryptIdUser(encryptedId);
+    
+    // Verificar que el ID desencriptado sea válido
+    if (!this.idGerente || this.idGerente.trim() === '' || this.idGerente === encryptedId) {
+      this.alertService.errorAlert('Error: No se pudo obtener el ID del gerente. Por favor, intente nuevamente.');
+      this.router.navigate(['/panel/usuarios/gerentes']);
+      return;
+    }
+    
+    // El endpoint /admin/get-gerente/{id} no existe, usar el método de obtener desde lista
+    this.backofficeAdminService.getGerentesMunicipioAsignado().subscribe({
       next: (resp: any) => {
-        const { gerente, municipios_asignados, departamentos_asignados } = resp;
-
-        this.updateForm.get('nombres')?.setValue(gerente.nombres);
-        this.updateForm.get('apellidos')?.setValue(gerente.apellidos);
-        this.updateForm.get('genero_id')?.setValue(gerente.genero_id);
-        this.updateForm.get('email')?.setValue(gerente.email);
-        this.updateForm.get('password')?.setValue(gerente.password);
-        this.updateForm
-          .get('tipo_documento_id')
-          ?.setValue(gerente.tipo_documento_id);
-        this.updateForm
-          .get('numero_documento')
-          ?.setValue(gerente.numero_documento);
-        this.updateForm.get('telefono')?.setValue(gerente.telefono);
-        this.updateForm
-          .get('municipios')
-          ?.setValue(this.getCodeMunicipals(municipios_asignados));
-        this.updateForm
-          .get('departamento')
-          ?.setValue(this.getCodeMunicipals(departamentos_asignados)[0]);
+        const { gerentes_asignados, gerentes_no_asignados } = resp;
+        const allGerentes = [...(gerentes_asignados || []), ...(gerentes_no_asignados || [])];
+        
+        // Buscar el gerente por ID (probar tanto 'id' como '_id')
+        const gerente = allGerentes.find((g: any) => {
+          return g.id === this.idGerente || 
+                 g._id === this.idGerente || 
+                 String(g.id) === String(this.idGerente) || 
+                 String(g._id) === String(this.idGerente);
+        });
+        
+        if (gerente) {
+          
+          // Obtener municipios y departamentos del gerente
+          const municipios_asignados = gerente.municipios || [];
+          
+          // Extraer departamentos únicos de los municipios
+          const departamentosUnicos = [...new Set(
+            municipios_asignados
+              .filter((m: any) => m && m.codigo_departamento_votacion)
+              .map((m: any) => m.codigo_departamento_votacion)
+          )];
+          
+          // Llenar el formulario
+          this.updateForm.get('nombres')?.setValue(gerente.nombres);
+          this.updateForm.get('apellidos')?.setValue(gerente.apellidos);
+          this.updateForm.get('genero_id')?.setValue(gerente.genero_id);
+          this.updateForm.get('email')?.setValue(gerente.email);
+          this.updateForm.get('password')?.setValue(gerente.password || '');
+          this.updateForm.get('tipo_documento_id')?.setValue(gerente.tipo_documento_id);
+          this.updateForm.get('numero_documento')?.setValue(gerente.numero_documento);
+          this.updateForm.get('telefono')?.setValue(gerente.telefono);
+          
+          // Establecer municipios
+          if (municipios_asignados && municipios_asignados.length > 0) {
+            this.updateForm.get('municipios')?.setValue(this.getCodeMunicipals(municipios_asignados));
+            
+            // Establecer departamento: usar el primero de los departamentos únicos encontrados
+            if (departamentosUnicos.length > 0) {
+              this.updateForm.get('departamento')?.setValue(departamentosUnicos[0]);
+              // Cargar municipios después de establecer el departamento
+              this.getMunicipalAdmin();
+            }
+          }
+        } else {
+          this.alertService.errorAlert('Error: No se pudo encontrar el gerente con el ID proporcionado.');
+          setTimeout(() => {
+            this.router.navigate(['/panel/usuarios/gerentes']);
+          }, 2000);
+        }
       },
       error: (error: any) => {
-        console.error('Error al obtener gerente:', error);
-        const errorMessage = error.error?.detail || error.error?.message || 'Error al cargar el gerente';
+        const errorMessage = error.error?.detail || error.error?.message || 'Error al cargar el gerente.';
         this.alertService.errorAlert(errorMessage);
+        setTimeout(() => {
+          this.router.navigate(['/panel/usuarios/gerentes']);
+        }, 2000);
       }
     });
   }

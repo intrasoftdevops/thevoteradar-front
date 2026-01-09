@@ -98,7 +98,6 @@ export class BackofficeAdminService {
   private handleError(error: any): Observable<never> {
     const errorMessage = error.error?.detail || error.message || 'Error desconocido';
     this.errorSubject.next(errorMessage);
-    console.error('Error:', error);
     return throwError(() => error);
   }
 

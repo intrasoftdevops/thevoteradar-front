@@ -61,11 +61,43 @@
             *ngFor="let child of item.children" 
             class="submenu-item"
             [class.active]="isActive(child.id)"
-            [class.disabled]="item.comingSoon"
-            (click)="!item.comingSoon && navigateTo(child.route, child.id)">
+            [class.has-children]="child.children"
+            [class.expanded]="child.children && isSubmenuExpanded(child.id)"
+            [class.disabled]="item.comingSoon || child.comingSoon">
             
-            <i [class]="child.icon || 'fas fa-circle'" class="submenu-icon"></i>
-            <span class="submenu-label">{{ child.label }}</span>
+            <!-- Submenu item header -->
+            <div 
+              class="submenu-header"
+              (click)="child.children ? toggleSubmenu(child.id, $event) : (!item.comingSoon && !child.comingSoon && child.route && navigateTo(child.route, child.id))">
+              <i [class]="child.icon || 'fas fa-circle'" class="submenu-icon"></i>
+              <span class="submenu-label">{{ child.label }}</span>
+              <i 
+                *ngIf="child.children" 
+                class="fas fa-chevron-right submenu-arrow"
+                [class.rotated]="isSubmenuExpanded(child.id)">
+              </i>
+              <span class="coming-soon-badge" *ngIf="child.comingSoon">
+                Próximamente
+              </span>
+            </div>
+            
+            <!-- Nested submenu -->
+            <ul 
+              class="nested-submenu" 
+              *ngIf="child.children && isSubmenuExpanded(child.id)">
+              <li 
+                *ngFor="let nestedChild of child.children" 
+                class="nested-submenu-item"
+                [class.active]="isActive(nestedChild.id)"
+                [class.disabled]="nestedChild.comingSoon"
+                (click)="!nestedChild.comingSoon && nestedChild.route && navigateTo(nestedChild.route, nestedChild.id)">
+                <i [class]="nestedChild.icon || 'fas fa-circle'" class="nested-submenu-icon"></i>
+                <span class="nested-submenu-label">{{ nestedChild.label }}</span>
+                <span class="coming-soon-badge" *ngIf="nestedChild.comingSoon">
+                  Próximamente
+                </span>
+              </li>
+            </ul>
           </li>
         </ul>
       </li>

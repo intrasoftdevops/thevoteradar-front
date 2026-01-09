@@ -51,7 +51,6 @@ export class ShortLinkRedirectComponent implements OnInit {
     // Construir la URL del backend del survey module
     const surveyApiUrl = environment.surveyApiURL || '';
     if (!surveyApiUrl) {
-      console.error('[ShortLinkRedirect] Survey API URL no configurada');
       this.handleError();
       return;
     }
@@ -65,9 +64,6 @@ export class ShortLinkRedirectComponent implements OnInit {
     }
     backendBase = backendBase.replace(/\/$/, ''); // Remover trailing slash
     
-    console.log(`[ShortLinkRedirect] Obteniendo long_url para short code: ${this.shortCode}`);
-    console.log(`[ShortLinkRedirect] Backend base: ${backendBase}`);
-    console.log(`[ShortLinkRedirect] URL completa: ${backendBase}/${this.shortCode}`);
     
     // Intentar primero con HttpClient (puede manejar mejor CORS a través de interceptores)
     // Si falla, usar fetch como fallback
@@ -86,7 +82,6 @@ export class ShortLinkRedirectComponent implements OnInit {
     // Usar el endpoint /url que devuelve JSON en lugar de hacer redirect
     // Esto evita problemas de CORS con redirects
     const url = `${backendBase}/${this.shortCode}/url`;
-    console.log(`[ShortLinkRedirect] Obteniendo URL desde endpoint JSON: ${url}`);
     
     // Hacer petición al endpoint que devuelve JSON
     fetch(url, {
@@ -100,32 +95,25 @@ export class ShortLinkRedirectComponent implements OnInit {
       },
     })
     .then(response => {
-      console.log(`[ShortLinkRedirect] Fetch response status: ${response.status}`);
       
       if (response.ok) {
         // El endpoint devuelve JSON con la URL
         response.json().then(data => {
-          console.log(`[ShortLinkRedirect] URL obtenida: ${data.url}`);
           if (data.url) {
             this.handleRedirect(data.url, currentHost);
           } else {
-            console.error('[ShortLinkRedirect] No se encontró URL en la respuesta');
             this.handleError();
           }
         }).catch(err => {
-          console.error('[ShortLinkRedirect] Error al parsear JSON:', err);
           this.handleError();
         });
       } else if (response.status === 404) {
-        console.error('[ShortLinkRedirect] Short code no encontrado (404)');
         this.handleError();
       } else {
-        console.error(`[ShortLinkRedirect] Respuesta inesperada: ${response.status}`);
         this.handleError();
       }
     })
     .catch(err => {
-      console.error('[ShortLinkRedirect] Error en fetch:', err);
       this.handleError();
     });
   }
@@ -138,12 +126,10 @@ export class ShortLinkRedirectComponent implements OnInit {
       const search = url.search;
       const fullPath = path + search;
       
-      console.log(`[ShortLinkRedirect] Redirigiendo a: ${fullPath}`);
       
       // Si la URL es del mismo dominio, usar router.navigate
       if (url.hostname === window.location.hostname || url.hostname === currentHost || !url.hostname || url.hostname === '') {
         this.router.navigateByUrl(fullPath).catch(err => {
-          console.error('[ShortLinkRedirect] Error al navegar con router:', err);
           window.location.href = location;
         });
       } else {
@@ -151,7 +137,6 @@ export class ShortLinkRedirectComponent implements OnInit {
         window.location.href = location;
       }
     } catch (e) {
-      console.error('[ShortLinkRedirect] Error al parsear URL:', e);
       // Si la location es relativa, intentar navegar directamente
       if (location.startsWith('/')) {
         this.router.navigateByUrl(location).catch(() => {
@@ -165,7 +150,6 @@ export class ShortLinkRedirectComponent implements OnInit {
 
   handleError(): void {
     // Si hay error o el short code no existe, redirigir al inicio
-    console.error('[ShortLinkRedirect] Error: redirigiendo al inicio');
     // Usar replace para evitar que el usuario pueda volver atrás a una página de error
     this.router.navigate(['/'], { replaceUrl: true });
   }

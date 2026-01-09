@@ -135,7 +135,6 @@ export class CambiarRolGerenteComponent implements OnInit {
         this.getMunicipalAdmin();
       },
       error: (error: any) => {
-        console.error('Error al cargar departamentos:', error);
         this.dataDepartments = [];
       }
     });

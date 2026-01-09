@@ -45,7 +45,6 @@ export class LocalDataService {
       
       return decrypted && decrypted !== '0' ? decrypted : '';
     } catch (error) {
-      console.error('Error al obtener rol:', error);
       return '';
     }
   }
@@ -64,7 +63,18 @@ export class LocalDataService {
   }
 
   decryptIdUser(id: any){
-    return CryptoJS.AES.decrypt(id.toString()?? '', environment.key4).toString(CryptoJS.enc.Utf8);
+    try {
+      if (!id) {
+        return '';
+      }
+      const decrypted = CryptoJS.AES.decrypt(id.toString(), environment.key4).toString(CryptoJS.enc.Utf8);
+      if (!decrypted || decrypted.trim() === '') {
+        return '';
+      }
+      return decrypted;
+    } catch (error) {
+      return '';
+    }
   }
 
   setBackofficeToken(token: string) {
@@ -81,7 +91,6 @@ export class LocalDataService {
       }
       return CryptoJS.AES.decrypt(encrypted, environment.key1).toString(CryptoJS.enc.Utf8);
     } catch (error) {
-      console.error('Error al obtener token de backoffice:', error);
       return null;
     }
   }
@@ -98,7 +107,6 @@ export class LocalDataService {
       const decrypted = CryptoJS.AES.decrypt(encrypted, environment.key2).toString(CryptoJS.enc.Utf8);
       return JSON.parse(decrypted);
     } catch (error) {
-      console.error('Error al obtener usuario de backoffice:', error);
       return null;
     }
   }
@@ -121,23 +129,19 @@ export class LocalDataService {
       }
       return CryptoJS.AES.decrypt(encrypted, environment.key1).toString(CryptoJS.enc.Utf8);
     } catch (error) {
-      console.error('Error al obtener token de voteradar:', error);
       return null;
     }
   }
 
   setVoteradarUserId(userId: number) {
     localStorage.setItem('voteradar_user_id', userId.toString());
-    console.log('✅ LocalDataService - voteradar_user_id guardado en localStorage:', userId);
   }
 
   getVoteradarUserId(): number | null {
     const userId = localStorage.getItem('voteradar_user_id');
     const parsed = userId ? parseInt(userId, 10) : null;
     if (parsed) {
-      console.log('✅ LocalDataService - voteradar_user_id recuperado:', parsed);
     } else {
-      console.warn('⚠️ LocalDataService - NO se encontró voteradar_user_id en localStorage');
     }
     return parsed;
   }

@@ -1,194 +1,239 @@
-<form class="container py-5" [formGroup]="createForm" (ngSubmit)="onSubmit()">
-  <div class="card">
-    <div class="bg-primary py-3 px-5 text-white">
-      <h4 class="m-0">Añadir coordinador</h4>
-    </div>
-    <div class="card-body">
-      <h4 class="ms-4 fw-bolder">Datos personales</h4>
-      <div class="row m-4">
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Nombres</span>
-            <span class="text-danger">*</span>
-          </label>
-          <input
-            type="text"
-            class="form-control border-2 border-dark rounded"
-            formControlName="nombres"
-            (keypress)="keypressValidator.keyPressLetters($event)"
-            placeholder="Ingrese nombres"
-          />
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Apellidos</span>
-            <span class="text-danger">*</span>
-          </label>
-          <input
-            type="text"
-            class="form-control border-2 border-dark rounded"
-            formControlName="apellidos"
-            (keypress)="keypressValidator.keyPressLetters($event)"
-            placeholder="Ingrese apellidos"
-          />
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Género</span>
-            <span class="text-danger">*</span>
-          </label>
-          <ng-select
-            [searchable]="false"
-            class="custom-select rounded"
-            formControlName="genero_id"
-            placeholder="Seleccione género"
-            [clearAllText]="'Borrar todo'"
-          >
-            <ng-option [value]="1">Masculino</ng-option>
-            <ng-option [value]="2">Femenino</ng-option>
-            <ng-option [value]="3">Otro</ng-option>
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Tipo de documento</span>
-            <span class="text-danger">*</span>
-          </label>
-          <ng-select
-            [searchable]="false"
-            class="custom-select rounded"
-            formControlName="tipo_documento_id"
-            placeholder="Seleccione tipo de documento"
-            [clearAllText]="'Borrar todo'"
-          >
-            <ng-option [value]="1">Cédula de ciudadanía</ng-option>
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Número de documento</span>
-            <span class="text-danger">*</span>
-          </label>
-          <input
-            type="number"
-            class="form-control border-2 border-dark rounded"
-            placeholder="Ingrese número de documento"
-            formControlName="numero_documento"
-            (keypress)="keypressValidator.keyPressNumbers($event)"
-          />
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label fw-bold">
-            <span class="fw-bold">Teléfono</span>
-            <span class="text-danger">*</span>
-          </label>
-          <input
-            type="number"
-            class="form-control border-2 border-dark rounded"
-            formControlName="telefono"
-            (keypress)="keypressValidator.keyPressNumbers($event)"
-            placeholder="Ingrese número de teléfono"
-          />
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="form-label">
-            <span class="fw-bold">Correo electrónico</span>
-            <span class="text-danger">*</span>
-          </label>
-          <input
-            type="email"
-            class="form-control border-2 border-dark rounded"
-            formControlName="email"
-            placeholder="Ingrese correo electrónico"
-          />
-          <small
-            class="text-danger"
-            *ngIf="createFormControl['email'].errors?.['email'] || createFormControl['email'].errors?.['invalidEmail']"
-          >
-            Ingrese una dirección de correo electrónico valido.
-          </small>
+<div class="min-h-screen" [style.background]="'linear-gradient(to bottom right, rgba(var(--color-primary-rgb), 0.05), white, rgba(var(--color-primary-rgb), 0.05))'">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+      <!-- Header -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden mb-6">
+        <div class="p-6 sm:p-8" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-0">Añadir coordinador</h2>
         </div>
       </div>
-      <hr class="mx-4 border border-primary rounded border-2" />
-      <h4 class="ms-4 fw-bolder">Lugar de trabajo</h4>
-      <div class="row mx-4 my-4">
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">
-            <span class="fw-bold">Departamento de votación</span>
-            <span class="text-danger">*</span>
-          </label>
-          <ng-select
-            [items]="dataDepartments"
-            [searchable]="false"
-            class="custom-select rounded"
-            placeholder="Seleccione departamento"
-            bindLabel="nombre_departamento_votacion"
-            bindValue="codigo_unico"
-            (change)="getSelectedDepartment($event)"
-            información="No hay información disponible"
-            [clearAllText]="'Borrar todo'"
-          >
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">
-            <span class="fw-bold">Municipio de votación</span>
-            <span class="text-danger">*</span>
-          </label>
-          <ng-select
-            [items]="dataMunicipals"
-            class="custom-select rounded"
-            bindLabel="nombre"
-            placeholder="Seleccione municipio"
-            bindValue="codigo_unico"
-            [clearAllText]="'Borrar todo'"
-            (change)="getSelectedMunicipal($event)"
-            [(ngModel)]="selectedMunicipal"
-            [ngModelOptions]="{ standalone: true }"
-            información="No hay información disponible"
-          >
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">
-            <span class="fw-bold">Zona de votación</span>
-            <span class="text-danger">*</span>
-          </label>
-          <ng-select
-            [items]="dataZones"
-            [searchable]="false"
-            class="custom-select rounded"
-            [clearAllText]="'Borrar todo'"
-            formControlName="zona"
-            bindLabel="nombre"
-            bindValue="codigo_unico"
-            placeholder="Seleccione zona"
-            (change)="getSelectedZone($event)"
-            información="No hay información disponible"
-          >
-          </ng-select>
-        </div>
-        <div class="form-group col-md-6 col-lg-4 pt-2">
-          <label class="fw-bold form-label">Puestos de votación</label>
-          <ng-select
-            [items]="dataStations"
-            class="custom-multiple-select rounded"
-            formControlName="puestos"
-            bindLabel="nombre"
-            bindValue="codigo_unico"
-            [multiple]="true"
-            [clearAllText]="'Borrar todo'"
-            información="No hay información disponible"
-            placeholder="Seleccione puesto(s)"
-          >
-          </ng-select>
+
+      <!-- Form Content -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden mb-6">
+        <div class="p-6 sm:p-8">
+          <!-- Datos personales -->
+          <div class="mb-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="p-2 rounded-lg" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
+                <i class="fas fa-user text-white text-lg"></i>
+              </div>
+              <h3 class="text-xl font-bold text-gray-900">Datos personales</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Nombres <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  class="w-full px-4 py-3 text-sm sm:text-base border border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:border-transparent"
+                  [style.--tw-ring-color]="'var(--color-primary)'"
+                  formControlName="nombres"
+                  (keypress)="keypressValidator.keyPressLetters($event)"
+                  placeholder="Ingrese nombres"
+                  (focus)="onInputFocus($event)"
+                  (blur)="onInputBlur($event)"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Apellidos <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  class="w-full px-4 py-3 text-sm sm:text-base border border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:border-transparent"
+                  [style.--tw-ring-color]="'var(--color-primary)'"
+                  formControlName="apellidos"
+                  (keypress)="keypressValidator.keyPressLetters($event)"
+                  placeholder="Ingrese apellidos"
+                  (focus)="onInputFocus($event)"
+                  (blur)="onInputBlur($event)"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Género <span class="text-red-500">*</span>
+                </label>
+                <ng-select
+                  [searchable]="false"
+                  class="custom-select rounded"
+                  formControlName="genero_id"
+                  placeholder="Seleccione género"
+                  [clearAllText]="'Borrar todo'"
+                >
+                  <ng-option [value]="1">Masculino</ng-option>
+                  <ng-option [value]="2">Femenino</ng-option>
+                  <ng-option [value]="3">Otro</ng-option>
+                </ng-select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Tipo de documento <span class="text-red-500">*</span>
+                </label>
+                <ng-select
+                  [searchable]="false"
+                  class="custom-select rounded"
+                  formControlName="tipo_documento_id"
+                  placeholder="Seleccione tipo de documento"
+                  [clearAllText]="'Borrar todo'"
+                >
+                  <ng-option [value]="1">Cédula de ciudadanía</ng-option>
+                </ng-select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Número de documento <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  class="w-full px-4 py-3 text-sm sm:text-base border border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:border-transparent"
+                  [style.--tw-ring-color]="'var(--color-primary)'"
+                  placeholder="Ingrese número de documento"
+                  formControlName="numero_documento"
+                  (keypress)="keypressValidator.keyPressNumbers($event)"
+                  (focus)="onInputFocus($event)"
+                  (blur)="onInputBlur($event)"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Teléfono <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  class="w-full px-4 py-3 text-sm sm:text-base border border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:border-transparent"
+                  [style.--tw-ring-color]="'var(--color-primary)'"
+                  formControlName="telefono"
+                  (keypress)="keypressValidator.keyPressNumbers($event)"
+                  placeholder="Ingrese número de teléfono"
+                  (focus)="onInputFocus($event)"
+                  (blur)="onInputBlur($event)"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Correo electrónico <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  class="w-full px-4 py-3 text-sm sm:text-base border border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:border-transparent"
+                  [style.--tw-ring-color]="'var(--color-primary)'"
+                  formControlName="email"
+                  placeholder="Ingrese correo electrónico"
+                  (focus)="onInputFocus($event)"
+                  (blur)="onInputBlur($event)"
+                />
+                <small
+                  class="text-red-500 text-sm mt-1 block"
+                  *ngIf="createFormControl['email'].errors?.['email'] || createFormControl['email'].errors?.['invalidEmail']"
+                >
+                  Ingrese una dirección de correo electrónico válida.
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Separador -->
+          <div class="my-8 border-t-2" [style.border-color]="'var(--color-primary)'"></div>
+
+          <!-- Lugar de trabajo -->
+          <div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="p-2 rounded-lg" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
+                <i class="fas fa-map-marker-alt text-white text-lg"></i>
+              </div>
+              <h3 class="text-xl font-bold text-gray-900">Lugar de trabajo</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Departamento de votación <span class="text-red-500">*</span>
+                </label>
+                <ng-select
+                  [items]="dataDepartments"
+                  [searchable]="false"
+                  class="custom-select rounded"
+                  placeholder="Seleccione departamento"
+                  bindLabel="nombre_departamento_votacion"
+                  bindValue="codigo_unico"
+                  (change)="getSelectedDepartment($event)"
+                  información="No hay información disponible"
+                  [clearAllText]="'Borrar todo'"
+                >
+                </ng-select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Municipio de votación <span class="text-red-500">*</span>
+                </label>
+                <ng-select
+                  [items]="dataMunicipals"
+                  class="custom-select rounded"
+                  bindLabel="nombre"
+                  placeholder="Seleccione municipio"
+                  bindValue="codigo_unico"
+                  [clearAllText]="'Borrar todo'"
+                  (change)="getSelectedMunicipal($event)"
+                  [(ngModel)]="selectedMunicipal"
+                  [ngModelOptions]="{ standalone: true }"
+                  información="No hay información disponible"
+                >
+                </ng-select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Zona de votación <span class="text-red-500">*</span>
+                </label>
+                <ng-select
+                  [items]="dataZones"
+                  [searchable]="false"
+                  class="custom-select rounded"
+                  [clearAllText]="'Borrar todo'"
+                  formControlName="zona"
+                  bindLabel="nombre"
+                  bindValue="codigo_unico"
+                  placeholder="Seleccione zona"
+                  (change)="getSelectedZone($event)"
+                  información="No hay información disponible"
+                >
+                </ng-select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Puestos de votación
+                </label>
+                <ng-select
+                  [items]="dataStations"
+                  class="custom-multiple-select rounded"
+                  formControlName="puestos"
+                  bindLabel="nombre"
+                  bindValue="codigo_unico"
+                  [multiple]="true"
+                  [clearAllText]="'Borrar todo'"
+                  información="No hay información disponible"
+                  placeholder="Seleccione puesto(s)"
+                >
+                </ng-select>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- Submit Button -->
+      <div class="flex justify-end pt-4">
+        <button 
+          type="submit" 
+          class="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl text-white transition-all duration-200 hover:shadow-lg"
+          [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+          (mouseenter)="onButtonHoverEnter($event)"
+          (mouseleave)="onButtonHoverLeave($event)"
+        >
+          CREAR
+        </button>
+      </div>
+    </form>
   </div>
-  <div class="d-flex justify-content-end pt-4">
-    <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">
-      CREAR
-    </button>
-  </div>
-</form>
+</div>

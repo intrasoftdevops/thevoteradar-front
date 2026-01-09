@@ -22,6 +22,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   testigoActual: any = {};
   mesasActual: any = '';
   searchForm: FormGroup;
+  activeTab: string = 'asignados';
   dataStations: any = [];
   tabla: boolean = false;
   puestoSeleccionado = '';
@@ -40,6 +41,7 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   loadingMunicipios: boolean = false;
   loadingZonas: boolean = false;
   loadingPuestos: boolean = false;
+  loading: boolean = true;
 
   constructor(
     private apiService: ApiService,
@@ -77,69 +79,143 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   }
 
   getTestigos() {
-    console.log('📞 Obteniendo testigos...');
-    console.log('📍 Puesto seleccionado:', this.puestoSeleccionado);
+    this.loading = true;
     
-    this.apiService.getTestigos().subscribe((resp: any) => {
-      console.log('✅ Respuesta de testigos:', resp);
-      const { testigos_asignados, testigos_no_asignados } = resp;
-      
-      console.log(`📊 Testigos recibidos del backend: ${testigos_asignados?.length || 0} asignados, ${testigos_no_asignados?.length || 0} no asignados`);
-      
-      // Inicializar listas
-      let testigosAsignadosFiltrados = [];
-      
-      // Si hay un puesto seleccionado, filtrar por ese puesto
-      if (this.puestoSeleccionado) {
-        console.log(`🔍 Filtrando testigos por puesto: ${this.puestoSeleccionado}`);
-        testigosAsignadosFiltrados = (testigos_asignados || []).filter((testigo: any) => {
-          // Verificar que el testigo tenga mesas
-          if (!testigo.mesas || !Array.isArray(testigo.mesas) || testigo.mesas.length === 0) {
-            console.log(`⚠️ Testigo ${testigo.id} no tiene mesas`);
-            return false;
+    if (this.isAdmin) {
+      // Para admin: obtener todos los testigos desde el equipo completo
+      this.backofficeAdminService.getEquipoAdmin().subscribe({
+        next: (resp: any) => {
+          
+          // El endpoint devuelve toda la jerarquía, extraer testigos
+          const allTestigos: any[] = [];
+          
+          // Recorrer gerentes -> supervisores -> coordinadores -> testigos
+          if (resp.gerentes && Array.isArray(resp.gerentes)) {
+            resp.gerentes.forEach((gerente: any) => {
+              if (gerente.supervisores && Array.isArray(gerente.supervisores)) {
+                gerente.supervisores.forEach((supervisor: any) => {
+                  if (supervisor.coordinadores && Array.isArray(supervisor.coordinadores)) {
+                    supervisor.coordinadores.forEach((coordinador: any) => {
+                      if (coordinador.testigos && Array.isArray(coordinador.testigos)) {
+                        allTestigos.push(...coordinador.testigos);
+                      }
+                    });
+                  }
+                });
+              }
+            });
           }
           
-          // Filtrar mesas del testigo por el puesto seleccionado
-          const mesasDelPuesto = testigo.mesas.filter(
-            (mesa: any) => mesa.codigo_puesto_votacion === this.puestoSeleccionado
+          
+          // Separar testigos asignados y no asignados
+          const testigosAsignados = allTestigos.filter((t: any) => 
+            t.mesas && Array.isArray(t.mesas) && t.mesas.length > 0
+          );
+          const testigosNoAsignados = allTestigos.filter((t: any) => 
+            !t.mesas || !Array.isArray(t.mesas) || t.mesas.length === 0
           );
           
-          // Si tiene mesas del puesto seleccionado, actualizar el array de mesas del testigo
-          if (mesasDelPuesto.length > 0) {
-            testigo.mesas = mesasDelPuesto;
-            return true;
+          
+          // Inicializar listas
+          let testigosAsignadosFiltrados = [];
+          
+          // Si hay un puesto seleccionado, filtrar por ese puesto
+          if (this.puestoSeleccionado) {
+            testigosAsignadosFiltrados = testigosAsignados.filter((testigo: any) => {
+              // Verificar que el testigo tenga mesas
+              if (!testigo.mesas || !Array.isArray(testigo.mesas) || testigo.mesas.length === 0) {
+                return false;
+              }
+              
+              // Filtrar mesas del testigo por el puesto seleccionado
+              const mesasDelPuesto = testigo.mesas.filter(
+                (mesa: any) => mesa.codigo_puesto_votacion === this.puestoSeleccionado
+              );
+              
+              // Si tiene mesas del puesto seleccionado, actualizar el array de mesas del testigo
+              if (mesasDelPuesto.length > 0) {
+                testigo.mesas = mesasDelPuesto;
+                return true;
+              }
+              
+              return false;
+            });
+          } else {
+            // Si no hay puesto seleccionado, mostrar todos los testigos asignados
+            testigosAsignadosFiltrados = testigosAsignados;
           }
           
-          return false;
-        });
-        console.log(`✅ Testigos filtrados por puesto: ${testigosAsignadosFiltrados.length}`);
-      } else {
-        // Si no hay puesto seleccionado, mostrar todos los testigos asignados
-        console.log('📋 Mostrando todos los testigos asignados (sin filtro de puesto)');
-        testigosAsignadosFiltrados = testigos_asignados || [];
-      }
-      
-      this.listTestigoAsignados = testigosAsignadosFiltrados;
-      this.listTestigoNoAsignados = testigos_no_asignados || [];
-      
-      console.log(`📋 Testigos finales: ${this.listTestigoAsignados.length} asignados, ${this.listTestigoNoAsignados.length} no asignados`);
-      
-      // Mostrar detalles de los primeros testigos asignados para debug
-      if (this.listTestigoAsignados.length > 0) {
-        console.log('📝 Primeros testigos asignados:', this.listTestigoAsignados.slice(0, 3).map((t: any) => ({
-          id: t.id,
-          nombre: `${t.nombres} ${t.apellidos}`,
-          mesas: t.mesas?.length || 0
-        })));
-      }
-      
-      this.renderer();
-      this.notFirstTime = true;
-    }, (error) => {
-      console.error('❌ Error al obtener testigos:', error);
-      this.listTestigoAsignados = [];
-      this.listTestigoNoAsignados = [];
-    });
+          this.listTestigoAsignados = testigosAsignadosFiltrados;
+          this.listTestigoNoAsignados = testigosNoAsignados;
+          
+          
+          this.renderer();
+          this.notFirstTime = true;
+          this.loading = false;
+          setTimeout(() => {
+            this.applyPaginationStyles();
+          }, 300);
+        },
+        error: (error: any) => {
+          this.listTestigoAsignados = [];
+          this.listTestigoNoAsignados = [];
+          this.loading = false;
+        }
+      });
+    } else {
+      // Para coordinador: usar el endpoint tradicional con el ID del coordinador
+      this.apiService.getTestigos().subscribe({
+        next: (resp: any) => {
+          const { testigos_asignados, testigos_no_asignados } = resp;
+          
+          
+          // Inicializar listas
+          let testigosAsignadosFiltrados = [];
+          
+          // Si hay un puesto seleccionado, filtrar por ese puesto
+          if (this.puestoSeleccionado) {
+            testigosAsignadosFiltrados = (testigos_asignados || []).filter((testigo: any) => {
+              // Verificar que el testigo tenga mesas
+              if (!testigo.mesas || !Array.isArray(testigo.mesas) || testigo.mesas.length === 0) {
+                return false;
+              }
+              
+              // Filtrar mesas del testigo por el puesto seleccionado
+              const mesasDelPuesto = testigo.mesas.filter(
+                (mesa: any) => mesa.codigo_puesto_votacion === this.puestoSeleccionado
+              );
+              
+              // Si tiene mesas del puesto seleccionado, actualizar el array de mesas del testigo
+              if (mesasDelPuesto.length > 0) {
+                testigo.mesas = mesasDelPuesto;
+                return true;
+              }
+              
+              return false;
+            });
+          } else {
+            // Si no hay puesto seleccionado, mostrar todos los testigos asignados
+            testigosAsignadosFiltrados = testigos_asignados || [];
+          }
+          
+          this.listTestigoAsignados = testigosAsignadosFiltrados;
+          this.listTestigoNoAsignados = testigos_no_asignados || [];
+          
+          this.renderer();
+          this.notFirstTime = true;
+          this.loading = false;
+          // Apply styles after rendering is complete
+          setTimeout(() => {
+            this.applyPaginationStyles();
+          }, 300);
+        },
+        error: (error) => {
+          this.listTestigoAsignados = [];
+          this.listTestigoNoAsignados = [];
+          this.loading = false;
+        }
+      });
+    }
   }
 
   renderer() {
@@ -151,7 +227,58 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
     }
     setTimeout(() => {
       this.dtTrigger.next(void 0);
+      this.applyPaginationStyles();
     });
+  }
+
+  applyPaginationStyles() {
+    const applyStyles = () => {
+      const root = document.documentElement;
+      const primaryColor = getComputedStyle(root).getPropertyValue('--color-primary').trim();
+      const accentColor = getComputedStyle(root).getPropertyValue('--color-accent').trim();
+      
+      const selectors = [
+        '.dataTables_wrapper .dataTables_paginate .paginate_button.current',
+        '.dataTables_wrapper .dataTables_paginate .paginate_button.current a',
+        '.dataTables_wrapper .dataTables_paginate ul.pagination li.paginate_button.current',
+        '.dataTables_wrapper .dataTables_paginate ul.pagination li.paginate_button.current a'
+      ];
+      
+      selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((button: any) => {
+          if (button) {
+            button.removeAttribute('style');
+            button.style.cssText += `background: linear-gradient(to right, ${primaryColor}, ${accentColor}) !important;`;
+            button.style.cssText += `background-color: transparent !important;`;
+            button.style.cssText += `background-image: linear-gradient(to right, ${primaryColor}, ${accentColor}) !important;`;
+            button.style.cssText += `border-color: ${primaryColor} !important;`;
+            button.style.cssText += `color: white !important;`;
+            button.style.cssText += `font-weight: 600 !important;`;
+          }
+        });
+      });
+    };
+    
+    const intervals = [0, 50, 100, 200, 300, 500, 1000];
+    intervals.forEach(delay => setTimeout(applyStyles, delay));
+    
+    const paginationContainers = document.querySelectorAll('.dataTables_wrapper');
+    paginationContainers.forEach(container => {
+      const paginationContainer = container.querySelector('.dataTables_paginate');
+      if (paginationContainer) {
+        const observer = new MutationObserver(() => applyStyles());
+        observer.observe(paginationContainer, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+      }
+    });
+    
+    document.addEventListener('click', (e: any) => {
+      if (e.target && e.target.closest && e.target.closest('.dataTables_wrapper .dataTables_paginate')) {
+        setTimeout(applyStyles, 10);
+        setTimeout(applyStyles, 50);
+        setTimeout(applyStyles, 100);
+      }
+    }, true);
   }
 
   redirectUpdateTestigo(id: any) {
@@ -162,6 +289,10 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   testigoActualSeleccionado(testigo: any, mesas?: any) {
     this.testigoActual = testigo;
     this.mesasActual = mesas;
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
   }
 
   dataTableOptions() {
@@ -205,12 +336,10 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
     if (item) {
       const codigo_unico = this.getCode(item);
       this.puestoSeleccionado = codigo_unico;
-      console.log('📍 Puesto seleccionado:', this.puestoSeleccionado);
       this.tabla = true;
       this.getTestigos();
     } else {
       this.puestoSeleccionado = '';
-      console.log('📍 Puesto deseleccionado');
       this.tabla = false;
       // Si no hay puesto seleccionado, obtener todos los testigos
       this.getTestigos();
@@ -224,11 +353,9 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   getDepartmentAdmin() {
     this.backofficeAdminService.getDepartamentosAdmin().subscribe({
       next: (resp: any) => {
-        console.log('✅ Departamentos cargados:', resp);
         this.dataDepartments = resp.departamentos || resp || [];
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar departamentos:', error);
         this.dataDepartments = [];
       }
     });
@@ -255,17 +382,13 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   }
 
   getMunicipalAdmin(codigoDepartamento: string) {
-    console.log('📞 Llamando a getMunicipiosAdmin con código:', codigoDepartamento);
     this.loadingMunicipios = true;
     this.backofficeAdminService.getMunicipiosAdmin(codigoDepartamento).subscribe({
       next: (resp: any) => {
-        console.log('✅ Respuesta de municipios:', resp);
         this.dataMunicipals = resp.municipios || resp || [];
-        console.log('📋 Municipios cargados:', this.dataMunicipals.length, 'municipios');
         this.loadingMunicipios = false;
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar municipios:', error);
         this.dataMunicipals = [];
         this.loadingMunicipios = false;
       }
@@ -290,17 +413,13 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   }
 
   getZonasyGerentes(codigoMunicipio: string) {
-    console.log('📞 Llamando a getZonasPorMunicipio con código:', codigoMunicipio);
     this.loadingZonas = true;
     this.backofficeAdminService.getZonasPorMunicipio(codigoMunicipio).subscribe({
       next: (resp: any) => {
-        console.log('✅ Respuesta de zonas:', resp);
         this.dataZones = resp.zonas || resp || [];
-        console.log('📋 Zonas cargadas:', this.dataZones.length, 'zonas');
         this.loadingZonas = false;
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar zonas:', error);
         this.dataZones = [];
         this.loadingZonas = false;
       }
@@ -324,17 +443,13 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   }
 
   getPuestosySupervisores(codigoZona: string) {
-    console.log('📞 Llamando a getPuestosPorZona con código:', codigoZona);
     this.loadingPuestos = true;
     this.backofficeAdminService.getPuestosPorZona(codigoZona).subscribe({
       next: (resp: any) => {
-        console.log('✅ Respuesta de puestos:', resp);
         this.dataStations = resp.puestos || resp || [];
-        console.log('📋 Puestos cargados:', this.dataStations.length, 'puestos');
         this.loadingPuestos = false;
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar puestos:', error);
         this.dataStations = [];
         this.loadingPuestos = false;
       }
@@ -346,3 +461,4 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
     return codigo_unico;
   }
 }
+

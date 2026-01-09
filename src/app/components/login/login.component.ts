@@ -84,11 +84,7 @@ export class LoginComponent implements OnInit {
         this.logoSize = theme.branding.logoSize || 'medium';
         this.title = theme.branding.title;
         this.description = theme.branding.description;
-        console.log('🖼️ LoginComponent - Logo actualizado:', {
-          logo: this.logo,
-          logoSize: this.logoSize,
-          title: this.title
-        });
+      
       }
     });
   }
@@ -226,7 +222,6 @@ export class LoginComponent implements OnInit {
             this.missingFields = response.missing_fields || [];
             this.loginEmail = phoneOrEmail.includes('@') ? phoneOrEmail : (response.remote_user?.email || phoneOrEmail);
             
-            console.log('✅ Login backoffice - verificationId:', this.verificationId, 'remoteUser:', this.remoteUser, 'loginEmail:', this.loginEmail);
             this.alertService.infoAlert(response.message || 'Es tu primera vez iniciando sesión. Por favor completa tus datos y verifica tu teléfono con el código OTP enviado.');
               return;
             }
@@ -297,7 +292,6 @@ export class LoginComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          console.error('❌ Error en login:', error);
           
           // IMPORTANTE: NO resetear el formulario, mantener los valores ingresados
           // Los valores del formulario se mantienen para que el usuario pueda corregirlos
@@ -358,24 +352,18 @@ export class LoginComponent implements OnInit {
 
     // Validar que tenemos los datos necesarios para el flujo de backoffice
     if (!this.verificationId) {
-      console.error('❌ No hay verificationId disponible');
       this.alertService.errorAlert('Error: No se encontró el ID de verificación. Por favor, intenta iniciar sesión nuevamente.');
       this.isLoading = false;
       return;
     }
 
     if (!this.remoteUser) {
-      console.error('❌ No hay remoteUser disponible');
       this.alertService.errorAlert('Error: No se encontró la información del usuario. Por favor, intenta iniciar sesión nuevamente.');
       this.isLoading = false;
       return;
     }
     
     // Flujo de backoffice: verificar el OTP antes de mostrar el formulario
-    console.log('✅ Verificando OTP - Flujo de backoffice');
-    console.log('🔍 verificationId:', this.verificationId);
-    console.log('🔍 remoteUser:', this.remoteUser);
-    console.log('🔍 OTP ingresado:', this.loginForm.value.otp);
     
     // Verificar el OTP con el backend antes de mostrar el formulario
     this.backofficeAuth.verifyOtp(this.loginForm.value.otp, this.verificationId).subscribe({
@@ -395,7 +383,6 @@ export class LoginComponent implements OnInit {
             this.alertService.infoAlert('OTP verificado correctamente. Por favor completa tus datos para continuar.');
             this.isLoading = false;
           } catch (error) {
-            console.error('❌ Error al inicializar formulario de perfil:', error);
             this.alertService.errorAlert('Error al inicializar el formulario. Por favor intenta nuevamente.');
             this.isLoading = false;
             // No cambiar el estado si hay un error
@@ -406,7 +393,6 @@ export class LoginComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('❌ Error al verificar OTP:', error);
         const errorMessage = error.error?.detail || error.error?.message || 'Código OTP incorrecto o expirado';
         this.alertService.errorAlert(errorMessage);
         this.isLoading = false;
@@ -520,12 +506,7 @@ export class LoginComponent implements OnInit {
     if (!profileData.password_confirmation) missingFields.push('Confirmar Contraseña');
     
     if (missingFields.length > 0) {
-      console.error('Campos faltantes:', missingFields);
-      console.error('Datos del formulario:', {
-        telefono: this.loginForm.value.telefono,
-        otp: this.loginForm.value.otp,
-        profileForm: this.profileForm?.value
-      });
+     
       this.alertService.errorAlert(`Por favor completa los siguientes campos: ${missingFields.join(', ')}`);
       this.isLoading = false;
       return;
@@ -593,7 +574,6 @@ export class LoginComponent implements OnInit {
       backofficeProfileData.email_optional = profileData.email_optional;
     }
     
-    console.log('📤 Enviando datos de perfil completado:', { ...backofficeProfileData, password: '***', password_confirmation: '***' });
       
       this.backofficeAuth.completeProfile(backofficeProfileData).subscribe({
         next: (resp: any) => {
@@ -601,7 +581,6 @@ export class LoginComponent implements OnInit {
           if (resp.access_token) {
             // Validar que resp.user existe
             if (!resp.user) {
-              console.error('❌ Respuesta sin información de usuario:', resp);
               this.alertService.errorAlert('Error: No se recibió información del usuario en la respuesta');
               return;
             }
@@ -647,7 +626,6 @@ export class LoginComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          console.error('Error completo al completar perfil (backoffice):', error);
           const errorMessage = error.error?.detail || error.error?.message || 'Error al completar el perfil';
         this.alertService.errorAlert(errorMessage);
       }
@@ -668,9 +646,6 @@ export class LoginComponent implements OnInit {
 
   initProfileForm() {
     try {
-      console.log('🔧 Inicializando formulario de perfil...');
-      console.log('🔧 remoteUser:', this.remoteUser);
-      console.log('🔧 user role:', this.remoteUser?.role);
       
       // Autocompletar desde remoteUser si tiene datos de users (name, lastname, numero_documento)
       // Los gerentes, supervisores, coordinadores también tienen datos en users cuando fueron creados
@@ -691,15 +666,12 @@ export class LoginComponent implements OnInit {
         email = this.remoteUser?.email || '';
         numeroDocumento = this.remoteUser?.numero_documento || '';
         telefono = this.remoteUser?.telefono || this.remoteUser?.phone || '';
-        console.log('🔧 Datos de users detectados - autocompletando:', { nombres, apellidos, numeroDocumento });
       } else {
         // Si no tiene datos de users, solo usar datos básicos
         email = this.remoteUser?.email || '';
         telefono = this.remoteUser?.phone || this.remoteUser?.telefono || '';
-        console.log('🔧 No hay datos de users, solo datos básicos');
       }
       
-      console.log('🔧 Datos del formulario:', { nombres, apellidos, email, numeroDocumento, telefono });
     
     this.profileForm = this.fb.group({
       nombres: [nombres, Validators.required],
@@ -717,9 +689,7 @@ export class LoginComponent implements OnInit {
       validators: this.passwordMatchValidator
     });
       
-      console.log('✅ Formulario de perfil inicializado correctamente');
     } catch (error) {
-      console.error('❌ Error al inicializar formulario de perfil:', error);
       this.alertService.errorAlert('Error al inicializar el formulario. Por favor intenta nuevamente.');
       // No lanzar el error para evitar que se propague y resetee el componente
       // El error ya se maneja en handleOtpVerification()
@@ -824,7 +794,6 @@ export class LoginComponent implements OnInit {
     const tenantCode = this.detectedTenantCode || environment.defaultTenantId;
     
     if (!tenantCode) {
-      console.error('❌ No se pudo determinar el tenant_id para el login');
       this.alertService.errorAlert('Error de configuración: No se pudo determinar el tenant');
       this.isLoading = false;
       return;
@@ -848,7 +817,6 @@ export class LoginComponent implements OnInit {
           this.missingFields = response.missing_fields || [];
           // Guardar el email del login para usarlo después
           this.loginEmail = email;
-          console.log('✅ Login backoffice - verificationId:', this.verificationId, 'remoteUser:', this.remoteUser, 'loginEmail:', this.loginEmail);
           this.alertService.infoAlert(response.message || 'Es tu primera vez iniciando sesión. Por favor completa tus datos y verifica tu teléfono con el código OTP enviado.');
           // NO eliminar temp_tenant_id_for_login aquí - se necesita para completar el perfil
           // Se eliminará después de completar el perfil exitosamente
@@ -857,14 +825,12 @@ export class LoginComponent implements OnInit {
         
         // Si no tiene token, es porque requiere completar perfil
         if (!response.access_token) {
-          console.warn('LoginComponent - Respuesta sin token, requiere completar perfil');
           localStorage.removeItem('temp_tenant_id_for_login');
           return;
         }
 
         // Verificar que response.user existe
         if (!response.user) {
-          console.error('LoginComponent - Respuesta sin información de usuario');
           this.alertService.errorAlert('Error: No se recibió información del usuario');
           localStorage.removeItem('temp_tenant_id_for_login');
           return;
@@ -893,9 +859,7 @@ export class LoginComponent implements OnInit {
           
           if (response.voteradar_user_id) {
             this.localData.setVoteradarUserId(response.voteradar_user_id);
-            console.log('✅ LoginComponent - voteradar_user_id guardado:', response.voteradar_user_id);
           } else {
-            console.warn('⚠️ LoginComponent - voteradar_token recibido pero NO voteradar_user_id');
           }
         }
         
@@ -910,7 +874,6 @@ export class LoginComponent implements OnInit {
         
         // Cargar tema desde la configuración del tenant (backend) en lugar del tema hardcodeado
         this.themeService.loadThemeFromTenantConfig(tenantIdToStore).catch(error => {
-          console.error('Error al cargar tema después del login:', error);
           // Fallback al tema por defecto si falla
           this.themeService.setTheme('default');
         });
@@ -923,10 +886,8 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         localStorage.removeItem('temp_tenant_id_for_login');
-        console.error('LoginComponent - Error en login:', error);
         this.isLoading = false;
         const errorMessage = error.error?.detail || error.error?.message || 'Error al iniciar sesión';
-        console.error('LoginComponent - Mensaje de error:', errorMessage);
         this.alertService.errorAlert(errorMessage);
       }
     });

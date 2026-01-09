@@ -108,7 +108,6 @@ export class AssignChallengeModalComponent {
         this.usersLoading = false;
       },
       error: (err) => {
-        console.error('❌ AssignChallengeModal - Error cargando usuarios del sistema:', err);
         this.usersLoading = false;
         this.usersError = 'No se pudieron cargar los usuarios';
       }
@@ -152,13 +151,12 @@ export class AssignChallengeModalComponent {
 
     assignObservable.subscribe({
       next: (response) => {
-        console.log('✅ Challenge asignado exitosamente:', response);
         this.assigning = false;
         this.onClose();
         this.assigned.emit();
       },
       error: (error) => {
-        console.error('❌ Error al asignar challenge:', error);
+        error('❌ Error al asignar challenge:', error);
         this.assigning = false;
         
         let errorMessage = 'No se pudo asignar el challenge';

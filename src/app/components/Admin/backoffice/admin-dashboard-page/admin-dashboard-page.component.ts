@@ -45,7 +45,6 @@ export class AdminDashboardPageComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: (err) => {
-        console.error('❌ AdminDashboardPage - Error cargando estadísticas:', err);
         this.loading = false;
         this.error = err?.error?.detail || 'No se pudieron cargar las estadísticas';
         this.statistics = null;

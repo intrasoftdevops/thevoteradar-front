@@ -98,7 +98,6 @@ export class SurveyLandingComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error al cargar encuesta:', error);
         this.error = 'No fue posible cargar la encuesta. Verifica que el enlace sea correcto.';
         this.loading = false;
       }
@@ -121,7 +120,6 @@ export class SurveyLandingComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error al verificar voto:', error);
       }
     });
   }
@@ -183,7 +181,6 @@ export class SurveyLandingComponent implements OnInit {
         this.submitting = false;
       },
       error: (error) => {
-        console.error('Error al enviar respuestas:', error);
         if (error.status === 409) {
           this.error = 'Ya has respondido esta encuesta anteriormente.';
         } else {

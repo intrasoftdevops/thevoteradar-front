@@ -146,7 +146,6 @@ export class ChallengeService {
   private getAuthHeaders(): HttpHeaders | null {
     const token = this.localData.getToken();
     if (!token || token === 'undefined' || token === '') {
-      console.warn('⚠️ ChallengeService: No hay token de autenticación disponible');
       return null;
     }
     return new HttpHeaders({
@@ -162,36 +161,21 @@ export class ChallengeService {
    */
   getMyChallenges(): Observable<ChallengeApiResponse[]> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.getMyChallenges: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado. Verifica environment.apiURL'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.getMyChallenges: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/my-challenges`;
-    console.log('🔍 ChallengeService.getMyChallenges:', {
-      url,
-      apiBaseUrl: this.apiBaseUrl,
-      backofficeApiURL: environment.backofficeApiURL,
-      hasToken: !!headers.get('Authorization'),
-      fullUrl: url
-    });
+    
 
     return this.http.get<ChallengeApiResponse[]>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.getMyChallenges - Error completo:', {
-            error,
-            status: error?.status,
-            statusText: error?.statusText,
-            message: error?.message,
-            url: error?.url,
-            errorBody: error?.error
-          });
+         
           return throwError(() => error);
         })
       );
@@ -204,28 +188,20 @@ export class ChallengeService {
    */
   getChallengeById(challengeId: string): Observable<ChallengeApiResponse> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.getChallengeById: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.getChallengeById: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/${challengeId}`;
-    console.log('🔍 ChallengeService.getChallengeById:', { url, challengeId });
 
     return this.http.get<ChallengeApiResponse>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.getChallengeById - Error:', {
-            error,
-            challengeId,
-            status: error?.status,
-            errorBody: error?.error
-          });
+        
           return throwError(() => error);
         })
       );
@@ -238,13 +214,11 @@ export class ChallengeService {
    */
   getAllChallenges(filters?: { status?: string; limit?: number; offset?: number }): Observable<ChallengeApiResponse[]> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.getAllChallenges: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.getAllChallenges: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
@@ -265,16 +239,11 @@ export class ChallengeService {
       url += `?${params.toString()}`;
     }
 
-    console.log('🔍 ChallengeService.getAllChallenges:', { url, filters });
 
     return this.http.get<ChallengeApiResponse[]>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.getAllChallenges - Error:', {
-            error,
-            status: error?.status,
-            errorBody: error?.error
-          });
+       
           return throwError(() => error);
         })
       );
@@ -287,28 +256,20 @@ export class ChallengeService {
    */
   createChallenge(challengeData: CreateChallengeRequest): Observable<ChallengeResponse> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.createChallenge: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.createChallenge: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges`;
-    console.log('🔍 ChallengeService.createChallenge:', { url, challengeData });
 
     return this.http.post<ChallengeResponse>(url, challengeData, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.createChallenge - Error:', {
-            error,
-            challengeData,
-            status: error?.status,
-            errorBody: error?.error
-          });
+       
           return throwError(() => error);
         })
       );
@@ -322,29 +283,20 @@ export class ChallengeService {
    */
   updateChallenge(challengeId: string, challengeData: UpdateChallengeRequest): Observable<ChallengeResponse> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.updateChallenge: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.updateChallenge: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/${challengeId}`;
-    console.log('🔍 ChallengeService.updateChallenge:', { url, challengeId, challengeData });
 
     return this.http.put<ChallengeResponse>(url, challengeData, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.updateChallenge - Error:', {
-            error,
-            challengeId,
-            challengeData,
-            status: error?.status,
-            errorBody: error?.error
-          });
+       
           return throwError(() => error);
         })
       );
@@ -357,28 +309,20 @@ export class ChallengeService {
    */
   deleteChallenge(challengeId: string): Observable<{ message: string }> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.deleteChallenge: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.deleteChallenge: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/${challengeId}`;
-    console.log('🔍 ChallengeService.deleteChallenge:', { url, challengeId });
 
     return this.http.delete<{ message: string }>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.deleteChallenge - Error:', {
-            error,
-            challengeId,
-            status: error?.status,
-            errorBody: error?.error
-          });
+     
           return throwError(() => error);
         })
       );
@@ -392,29 +336,20 @@ export class ChallengeService {
    */
   updateChallengeStatus(challengeId: string, status: 'active' | 'completed' | 'upcoming' | 'cancelled'): Observable<ChallengeResponse> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.updateChallengeStatus: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.updateChallengeStatus: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/${challengeId}/status`;
-    console.log('🔍 ChallengeService.updateChallengeStatus:', { url, challengeId, status });
 
     return this.http.patch<ChallengeResponse>(url, { status }, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.updateChallengeStatus - Error:', {
-            error,
-            challengeId,
-            status,
-            statusCode: error?.status,
-            errorBody: error?.error
-          });
+         
           return throwError(() => error);
         })
       );
@@ -427,28 +362,20 @@ export class ChallengeService {
    */
   assignToTree(request: AssignToTreeRequest): Observable<ChallengeResponse> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.assignToTree: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.assignToTree: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/assign-to-tree`;
-    console.log('🔍 ChallengeService.assignToTree:', { url, request });
 
     return this.http.post<ChallengeResponse>(url, request, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.assignToTree - Error:', {
-            error,
-            request,
-            status: error?.status,
-            errorBody: error?.error
-          });
+       
           return throwError(() => error);
         })
       );
@@ -461,28 +388,20 @@ export class ChallengeService {
    */
   assignToDirect(request: AssignToDirectRequest): Observable<ChallengeResponse> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.assignToDirect: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.assignToDirect: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/assign-to-direct`;
-    console.log('🔍 ChallengeService.assignToDirect:', { url, request });
 
     return this.http.post<ChallengeResponse>(url, request, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.assignToDirect - Error:', {
-            error,
-            request,
-            status: error?.status,
-            errorBody: error?.error
-          });
+       
           return throwError(() => error);
         })
       );
@@ -495,28 +414,20 @@ export class ChallengeService {
    */
   assignToUser(request: AssignToUserRequest): Observable<ChallengeResponse> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.assignToUser: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.assignToUser: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/assign-to-user`;
-    console.log('🔍 ChallengeService.assignToUser:', { url, request });
 
     return this.http.post<ChallengeResponse>(url, request, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.assignToUser - Error:', {
-            error,
-            request,
-            status: error?.status,
-            errorBody: error?.error
-          });
+      
           return throwError(() => error);
         })
       );
@@ -528,27 +439,20 @@ export class ChallengeService {
    */
   getMyChallengesCategorized(): Observable<CategorizedChallengesResponse> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.getMyChallengesCategorized: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.getMyChallengesCategorized: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/my-challenges/categorized`;
-    console.log('🔍 ChallengeService.getMyChallengesCategorized:', { url });
 
     return this.http.get<CategorizedChallengesResponse>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.getMyChallengesCategorized - Error:', {
-            error,
-            status: error?.status,
-            errorBody: error?.error
-          });
+         
           return throwError(() => error);
         })
       );
@@ -561,28 +465,20 @@ export class ChallengeService {
    */
   getAssignedUsers(challengeId: string): Observable<AssignedUser[]> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.getAssignedUsers: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.getAssignedUsers: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/${challengeId}/assigned-users`;
-    console.log('🔍 ChallengeService.getAssignedUsers:', { url, challengeId });
 
     return this.http.get<AssignedUser[]>(url, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.getAssignedUsers - Error:', {
-            error,
-            challengeId,
-            status: error?.status,
-            errorBody: error?.error
-          });
+       
           return throwError(() => error);
         })
       );
@@ -595,28 +491,20 @@ export class ChallengeService {
    */
   confirmCompletions(request: ConfirmCompletionsRequest): Observable<ChallengeResponse> {
     if (!this.apiBaseUrl) {
-      console.error('❌ ChallengeService.confirmCompletions: No hay URL del API configurada');
       return throwError(() => new Error('El servicio de challenges no está configurado'));
     }
 
     const headers = this.getAuthHeaders();
     if (!headers) {
-      console.error('❌ ChallengeService.confirmCompletions: No hay token de autenticación');
       return throwError(() => new Error('No hay token de autenticación disponible'));
     }
 
     const url = `${this.apiBaseUrl}/challenges/confirm-completions`;
-    console.log('🔍 ChallengeService.confirmCompletions:', { url, request });
 
     return this.http.post<ChallengeResponse>(url, request, { headers })
       .pipe(
         catchError(error => {
-          console.error('❌ ChallengeService.confirmCompletions - Error:', {
-            error,
-            request,
-            status: error?.status,
-            errorBody: error?.error
-          });
+       
           return throwError(() => error);
         })
       );

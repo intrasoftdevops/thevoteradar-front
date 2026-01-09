@@ -1,26 +1,38 @@
-<form class="container py-5" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
-  <div class="bg-primary py-3 px-5 text-white">
-    <h4>Edita tus datos</h4>
-  </div>
-  <div class="d-flex justify-content-center">
-    <div class="position-relative my-4">
-      <i
-        class="fa-solid fa-circle-user fa-10x text-white bg-info rounded-circle border border-primary border-5"
-      ></i>
-      <button
-        type="button"
-        class="btn btn-primary position-absolute bottom-0 end-0 border border-light rounded-circle text-center border-2 d-none"
-        style="width: 51px; height: 51px"
-        data-bs-toggle="modal"
-        data-bs-target="#perfilModal"
-      >
-        <i class="fa-solid fa-camera text-white fa-xl"></i>
-      </button>
+<div class="min-h-screen" [style.background]="'linear-gradient(to bottom right, rgba(var(--color-primary-rgb), 0.05), white, rgba(var(--color-primary-rgb), 0.05))'">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Loader -->
+    <div *ngIf="loading" class="flex items-center justify-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2" [style.border-color]="'var(--color-primary)'"></div>
+      <span class="ml-3 text-gray-600">Cargando datos del perfil...</span>
     </div>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <div class="row m-4 d-flex justify-content-center">
+    
+    <!-- Formulario -->
+    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden mb-6">
+        <div class="p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-0">Edita tus datos</h2>
+        </div>
+        <div class="p-6 sm:p-8">
+          <div class="d-flex justify-content-center mb-6">
+            <div class="position-relative">
+              <i
+                class="fa-solid fa-circle-user fa-10x rounded-circle d-block"
+                [style.color]="'var(--color-primary)'"
+              ></i>
+              <button
+                type="button"
+                class="position-absolute bottom-0 end-0 rounded-circle text-center d-none"
+                style="width: 51px; height: 51px; border: 3px solid white;"
+                [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+                data-bs-toggle="modal"
+                data-bs-target="#perfilModal"
+              >
+                <i class="fa-solid fa-camera text-white fa-xl"></i>
+              </button>
+            </div>
+          </div>
+          <h4 class="mb-4 fw-bolder text-xl" [style.color]="'var(--color-primary)'">Datos personales</h4>
+          <div class="row">
         <div class="form-group col-md-6 col-lg-4 pt-2">
           <label class="form-label">
             <span class="fw-bold">Nombres</span>
@@ -28,7 +40,9 @@
           </label>
           <input
             type="text"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="updateForm.get('nombres')?.invalid && updateForm.get('nombres')?.touched ? '#ef4444' : 'rgba(var(--color-primary-rgb), 0.3)'"
+            [style.focus-border-color]="'var(--color-primary)'"
             formControlName="nombres"
             (keypress)="keypressValidator.keyPressLetters($event)"
             placeholder="Ingrese nombres"
@@ -41,7 +55,9 @@
           </label>
           <input
             type="text"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="'rgba(var(--color-primary-rgb), 0.3)'"
+            [style.focus-border-color]="'var(--color-primary)'"
             formControlName="apellidos"
             (keypress)="keypressValidator.keyPressLetters($event)"
             placeholder="Ingrese apellidos"
@@ -73,7 +89,7 @@
             [searchable]="false"
             class="custom-select rounded"
             formControlName="tipo_documento_id"
-            placeholder="Seleccione tipo de documemto"
+            placeholder="Seleccione tipo de documento"
             [clearAllText]="'Borrar todo'"
           >
             <ng-option [value]="1">Cédula de ciudadanía</ng-option>
@@ -86,7 +102,9 @@
           </label>
           <input
             type="number"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="'rgba(var(--color-primary-rgb), 0.3)'"
+            [style.focus-border-color]="'var(--color-primary)'"
             placeholder="Ingrese número de documento"
             formControlName="numero_documento"
             (keypress)="keypressValidator.keyPressNumbers($event)"
@@ -96,7 +114,9 @@
           <label class="form-label fw-bold">Teléfono</label>
           <input
             type="tel"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="'rgba(var(--color-primary-rgb), 0.3)'"
+            [style.focus-border-color]="'var(--color-primary)'"
             formControlName="telefono"
             placeholder="Ingrese número de teléfono"
           />
@@ -108,7 +128,9 @@
           </label>
           <input
             type="email"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="updateForm.get('email')?.invalid && updateForm.get('email')?.touched ? '#ef4444' : 'rgba(var(--color-primary-rgb), 0.3)'"
+            [style.focus-border-color]="'var(--color-primary)'"
             formControlName="email"
             placeholder="Ingrese correo electrónico"
           />
@@ -116,26 +138,35 @@
             class="text-danger"
             *ngIf="updateFormControl['email'].errors?.['email'] || updateFormControl['email'].errors?.['invalidEmail']"
           >
-            Ingrese una direccion de correo electronico valido.
+            Ingrese una dirección de correo electrónico válida.
           </small>
         </div>
+          </div>
+        </div>
       </div>
-    </div>
+      <div class="d-flex justify-content-end pt-4 gap-3">
+        <button
+          type="button"
+          class="text-white text-lg px-6 py-3 rounded-lg transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+          data-bs-toggle="modal"
+          data-bs-target="#cambiarContraseña"
+        >
+          <i class="fa-solid fa-key mr-2"></i>
+          CAMBIAR CONTRASEÑA
+        </button>
+        <button 
+          type="submit" 
+          class="text-white text-lg px-6 py-3 rounded-lg transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+        >
+          <i class="fa-solid fa-save mr-2"></i>
+          GUARDAR
+        </button>
+      </div>
+    </form>
   </div>
-  <div class="d-flex justify-content-end pt-4">
-    <button
-      type="button"
-      class="btn btn-lg btn-primary mx-2 rounded"
-      data-bs-toggle="modal"
-      data-bs-target="#cambiarContraseña"
-    >
-      CAMBIAR CONTRASEÑA
-    </button>
-    <button type="submit" class="btn btn-lg btn-primary mx-2 rounded">
-      GUARDAR
-    </button>
-  </div>
-</form>
+</div>
 <div
   class="modal fade"
   id="perfilModal"
@@ -147,7 +178,7 @@
 >
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header text-white" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
         <h5 class="modal-title" id="exampleModalLabel">
           Editar foto de perfil
         </h5>
@@ -184,10 +215,21 @@
         </ngx-dropzone>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+        <button 
+          type="button" 
+          class="btn px-4 py-2 rounded-lg transition-all duration-200"
+          style="background-color: #ef4444; color: white;"
+          data-bs-dismiss="modal"
+        >
           Cancelar
         </button>
-        <button type="button" class="btn btn-primary">Editar foto</button>
+        <button 
+          type="button" 
+          class="text-white px-4 py-2 rounded-lg transition-all duration-200 font-semibold"
+          [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+        >
+          Editar foto
+        </button>
       </div>
     </div>
   </div>
@@ -208,7 +250,7 @@
       [formGroup]="updatePasswordForm"
       (ngSubmit)="onSubmitPassword()"
     >
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header text-white" [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'">
         <h5 class="modal-title" id="exampleModalLabel">Cambiar contraseña</h5>
         <button
           type="button"
@@ -227,7 +269,9 @@
           </label>
           <input
             type="password"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="updatePasswordForm.get('password')?.invalid && updatePasswordForm.get('password')?.touched ? '#ef4444' : 'rgba(var(--color-primary-rgb), 0.3)'"
+            [style.focus-border-color]="'var(--color-primary)'"
             formControlName="password"
             placeholder="Ingrese nueva contraseña"
             autocomplete="off"
@@ -246,9 +290,11 @@
           </label>
           <input
             type="password"
-            class="form-control border-2 border-dark rounded"
+            class="form-control rounded-lg border-2 transition-all duration-200 focus:shadow-lg"
+            [style.border-color]="updatePasswordForm.get('confirmedPassword')?.invalid && updatePasswordForm.get('confirmedPassword')?.touched ? '#ef4444' : 'rgba(var(--color-primary-rgb), 0.3)'"
+            [style.focus-border-color]="'var(--color-primary)'"
             formControlName="confirmedPassword"
-            placeholder="Ingrese nueva contraseña"
+            placeholder="Repita la nueva contraseña"
             autocomplete="off"
           />
           <small
@@ -261,15 +307,24 @@
             class="text-danger"
             *ngIf="updatePasswordFormControl['confirmedPassword'].errors?.['compare']"
           >
-            La contraseñas no coinciden.
+            Las contraseñas no coinciden.
           </small>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+        <button 
+          type="button" 
+          class="btn px-4 py-2 rounded-lg transition-all duration-200"
+          style="background-color: #ef4444; color: white;"
+          data-bs-dismiss="modal"
+        >
           Cancelar
         </button>
-        <button type="submit" class="btn btn-primary">
+        <button 
+          type="submit" 
+          class="text-white px-4 py-2 rounded-lg transition-all duration-200 font-semibold"
+          [style.background]="'linear-gradient(to right, var(--color-primary), var(--color-accent))'"
+        >
           Cambiar contraseña
         </button>
       </div>

@@ -37,12 +37,10 @@ export class AssignedUsersModalComponent implements OnChanges {
 
     this.challengeService.getAssignedUsers(this.challenge.challenge_id).subscribe({
       next: (users) => {
-        console.log('✅ Usuarios asignados cargados:', users);
         this.assignedUsers = users;
         this.loading = false;
       },
       error: (error) => {
-        console.error('❌ Error al cargar usuarios asignados:', error);
         this.loading = false;
         
         let errorMessage = 'No se pudieron cargar los usuarios asignados';

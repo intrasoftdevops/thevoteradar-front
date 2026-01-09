@@ -53,11 +53,9 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     // Usar el nuevo servicio de backoffice
     this.backofficeAdminService.getDepartamentosAdmin().subscribe({
       next: (resp: any) => {
-        console.log('✅ Departamentos cargados:', resp);
         this.dataDepartments = resp.departamentos || resp || [];
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar departamentos:', error);
         this.dataDepartments = [];
       }
     });
@@ -142,7 +140,6 @@ export class CrearCoordinadorAdminComponent implements OnInit {
               this.dataStations = [];
             },
             error: (error: any) => {
-              console.error('❌ Error al crear coordinador:', error);
               let errorMessage = 'Error al crear el coordinador';
               if (error.error?.detail) {
                 if (Array.isArray(error.error.detail)) {
@@ -168,12 +165,10 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     // Usar el nuevo servicio de backoffice, pasando el código del departamento
     this.backofficeAdminService.getMunicipiosAdmin(codigoDepartamento).subscribe({
       next: (resp: any) => {
-        console.log('✅ Municipios cargados:', resp);
         // El backend ya filtra por departamento, así que no necesitamos filtrar aquí
         this.dataMunicipals = resp.municipios || resp || [];
       },
       error: (error: any) => {
-        console.error('❌ Error al cargar municipios:', error);
         this.dataMunicipals = [];
       }
     });
@@ -184,11 +179,9 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     if (codigoMunicipio) {
       this.backofficeAdminService.getZonasPorMunicipio(codigoMunicipio).subscribe({
         next: (resp: any) => {
-          console.log('✅ Zonas cargadas:', resp);
           this.dataZones = resp.zonas || resp || [];
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar zonas:', error);
           this.dataZones = [];
         }
       });
@@ -200,11 +193,9 @@ export class CrearCoordinadorAdminComponent implements OnInit {
     if (codigoZona) {
       this.backofficeAdminService.getPuestosPorZona(codigoZona).subscribe({
         next: (resp: any) => {
-          console.log('✅ Puestos cargados:', resp);
           this.dataStations = resp.puestos || resp || [];
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar puestos:', error);
           this.dataStations = [];
         }
       });
@@ -214,5 +205,37 @@ export class CrearCoordinadorAdminComponent implements OnInit {
   getCode(item: any) {
     const { codigo_unico } = item;
     return codigo_unico;
+  }
+
+  onInputFocus(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = 'var(--color-primary)';
+      target.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.05)';
+    }
+  }
+
+  onInputBlur(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      target.style.borderColor = '';
+      target.style.backgroundColor = '';
+    }
+  }
+
+  onButtonHoverEnter(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target && target.tagName === 'BUTTON') {
+      target.style.transform = 'translateY(-2px)';
+      target.style.background = 'linear-gradient(to right, var(--color-accent), var(--color-primary))';
+    }
+  }
+
+  onButtonHoverLeave(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target && target.tagName === 'BUTTON') {
+      target.style.transform = '';
+      target.style.background = 'linear-gradient(to right, var(--color-primary), var(--color-accent))';
+    }
   }
 }
