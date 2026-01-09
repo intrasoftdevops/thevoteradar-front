@@ -49,6 +49,11 @@ export interface SubMenuItem {
   styleUrls: ['./sidebar-menu.component.scss']
 })
 export class SidebarMenuComponent implements OnInit, OnChanges {
+  // Flags para ocultar temporalmente funcionalidades
+  private readonly SHOW_RETOS = false;
+  private readonly SHOW_ENCUESTAS = false;
+  private readonly SHOW_DASHBOARD = false;
+
   @Input() collapsed: boolean = false;
   /**
    * Tipo de menú:
@@ -319,7 +324,7 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
           label: 'Estructura',
           icon: 'fas fa-sitemap',
           children: [
-            { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', route: '/panel/estructura/dashboard' },
+            ...(this.SHOW_DASHBOARD ? [{ id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', route: '/panel/estructura/dashboard' }] : []),
             { id: 'usuarios', label: 'Usuarios', icon: 'fas fa-users', route: '/panel/estructura/usuarios' },
             { id: 'rankings', label: 'Rankings', icon: 'fas fa-trophy', route: '/panel/estructura' },
           ]
@@ -329,7 +334,7 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
           label: 'Activación',
           icon: 'fas fa-bolt',
           children: [
-            { id: 'challenges', label: 'Retos', icon: 'fas fa-tasks', route: '/panel/activacion/challenges' },
+            ...(this.SHOW_RETOS ? [{ id: 'challenges', label: 'Retos', icon: 'fas fa-tasks', route: '/panel/activacion/challenges' }] : []),
             { id: 'whatsapp', label: 'WhatsApp', icon: 'fab fa-whatsapp', route: '/panel/activacion/whatsapp' },
           ]
         },
@@ -338,7 +343,7 @@ export class SidebarMenuComponent implements OnInit, OnChanges {
           label: 'Intención de Voto',
           icon: 'fas fa-poll',
           children: [
-            { id: 'encuestas', label: 'Encuestas', icon: 'fas fa-clipboard-list', route: '/panel/encuestas', comingSoon: true },
+            ...(this.SHOW_ENCUESTAS ? [{ id: 'encuestas', label: 'Encuestas', icon: 'fas fa-clipboard-list', route: '/panel/encuestas', comingSoon: true }] : []),
             { id: 'muestra-opinion', label: 'Muestra (Voto Opinión)', icon: 'fas fa-users', route: '/panel/voto-opinion/muestra', comingSoon: true },
           ]
         },

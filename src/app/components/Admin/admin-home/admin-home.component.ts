@@ -56,6 +56,9 @@ interface CityData {
   styleUrls: ['./admin-home.component.scss']
 })
 export class AdminHomeComponent implements OnInit, OnDestroy {
+  // Flags para ocultar temporalmente funcionalidades
+  readonly SHOW_RETOS = false;
+  readonly SHOW_ENCUESTAS = false;
   
   // Estadísticas generales
   stats: DashboardStats = {
@@ -173,69 +176,73 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
       })
     );
 
-    const challenges$ = this.apiService.getMyChallenges().pipe(
-      retry(2),
-      tap((response: ChallengeApiResponse[]) => {
-        const activeChallenges = response.filter((c) => c.status === 'active');
-        this.challenges = activeChallenges
-          .sort((a, b) => {
-            const dateA = new Date(a.date_creation || 0).getTime();
-            const dateB = new Date(b.date_creation || 0).getTime();
-            return dateB - dateA;
+    const challenges$ = this.SHOW_RETOS 
+      ? this.apiService.getMyChallenges().pipe(
+          retry(2),
+          tap((response: ChallengeApiResponse[]) => {
+            const activeChallenges = response.filter((c) => c.status === 'active');
+            this.challenges = activeChallenges
+              .sort((a, b) => {
+                const dateA = new Date(a.date_creation || 0).getTime();
+                const dateB = new Date(b.date_creation || 0).getTime();
+                return dateB - dateA;
+              })
+              .map((challenge) => ({
+                id: challenge.challenge_id,
+                title: challenge.name,
+                description: challenge.description || '',
+                status: challenge.status as 'active' | 'completed' | 'upcoming',
+                participants: challenge.max_users || 0,
+                endDate: challenge.max_date,
+                puntos: challenge.puntos,
+                max_users: challenge.max_users,
+                date_creation: challenge.date_creation
+              }))
+              .slice(0, 3);
+            this.stats.activeChallenges = activeChallenges.length;
+            this.hasChallengesEndpoint = true;
+          }),
+          catchError((err) => {
+            this.challenges = [];
+            this.challengesError = 'No se pudieron cargar los challenges';
+            this.stats.activeChallenges = 0;
+            return of(null);
           })
-          .map((challenge) => ({
-            id: challenge.challenge_id,
-            title: challenge.name,
-            description: challenge.description || '',
-            status: challenge.status as 'active' | 'completed' | 'upcoming',
-            participants: challenge.max_users || 0,
-            endDate: challenge.max_date,
-            puntos: challenge.puntos,
-            max_users: challenge.max_users,
-            date_creation: challenge.date_creation
-          }))
-          .slice(0, 3);
-        this.stats.activeChallenges = activeChallenges.length;
-        this.hasChallengesEndpoint = true;
-      }),
-      catchError((err) => {
-        this.challenges = [];
-        this.challengesError = 'No se pudieron cargar los challenges';
-        this.stats.activeChallenges = 0;
-        return of(null);
-      })
-    );
+        )
+      : of(null);
 
-    const surveys$ = this.surveyService.getSurveys().pipe(
-      retry(2),
-      tap((surveys) => {
-        const activeSurveys = (surveys || []).filter(s => this.isSurveyActiveOrPublished(s));
+    const surveys$ = this.SHOW_ENCUESTAS
+      ? this.surveyService.getSurveys().pipe(
+          retry(2),
+          tap((surveys) => {
+            const activeSurveys = (surveys || []).filter(s => this.isSurveyActiveOrPublished(s));
 
-        this.recentSurveys = activeSurveys
-          .sort((a, b) => {
-            const dateA = new Date(a.created_at || 0).getTime();
-            const dateB = new Date(b.created_at || 0).getTime();
-            return dateB - dateA;
+            this.recentSurveys = activeSurveys
+              .sort((a, b) => {
+                const dateA = new Date(a.created_at || 0).getTime();
+                const dateB = new Date(b.created_at || 0).getTime();
+                return dateB - dateA;
+              })
+              .slice(0, 3)
+              .map(survey => ({
+                id: survey.id || '',
+                title: survey.title || 'Sin título',
+                description: survey.description,
+                createdAt: survey.created_at || '',
+                responsesCount: survey.recipients_count || 0
+              }));
+            this.stats.totalSurveys = surveys.length;
+          }),
+          catchError((err) => {
+            // Solo loguear errores que no sean 401 (esperados si el usuario no tiene permisos)
+            if (err.status !== 401) {
+            }
+            this.recentSurveys = [];
+            this.surveysError = 'No se pudieron cargar las encuestas';
+            return of(null);
           })
-          .slice(0, 3)
-          .map(survey => ({
-            id: survey.id || '',
-            title: survey.title || 'Sin título',
-            description: survey.description,
-            createdAt: survey.created_at || '',
-            responsesCount: survey.recipients_count || 0
-          }));
-        this.stats.totalSurveys = surveys.length;
-      }),
-      catchError((err) => {
-        // Solo loguear errores que no sean 401 (esperados si el usuario no tiene permisos)
-        if (err.status !== 401) {
-        }
-        this.recentSurveys = [];
-        this.surveysError = 'No se pudieron cargar las encuestas';
-        return of(null);
-      })
-    );
+        )
+      : of(null);
 
     const ranking$ = this.backofficeService.getGlobalRanking({ limit: 100 }).pipe(
       retry(2),
@@ -252,8 +259,8 @@ export class AdminHomeComponent implements OnInit, OnDestroy {
     // forkJoin espera a que todas terminen (o fallen) antes de completar
     this.statsLoading = true;
     this.leadersLoading = true;
-    this.challengesLoading = true;
-    this.surveysLoading = true;
+    this.challengesLoading = this.SHOW_RETOS;
+    this.surveysLoading = this.SHOW_ENCUESTAS;
 
     const allData$ = forkJoin({
       stats: stats$,
