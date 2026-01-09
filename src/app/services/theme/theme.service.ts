@@ -68,6 +68,7 @@ export class ThemeService {
       '475711': 'daniel-quintero',
       '1062885': 'juan-duque',
       '473173': 'potus-44',
+      '1075976': 'martha-ruiz',
     };
     
     return tenantThemeMap[tenantId] || null;
@@ -108,6 +109,13 @@ export class ThemeService {
 		'potus-44.localhost': '473173',
 		// Dominios de producción
 		'potus-44.com': '473173',
+		
+		// ===== MARTHA RUIZ (1075976) =====
+		'martha-ruiz': '1075976',
+		'martha-ruiz.localhost': '1075976',
+		'martha-ruiz.voteradar.co': '1075976',
+		// Dominios de producción
+		'martha-ruiz.com': '1075976',
     };
     
     if (domainTenantMap[hostname]) {
