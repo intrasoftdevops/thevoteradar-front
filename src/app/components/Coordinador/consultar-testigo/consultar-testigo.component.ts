@@ -80,18 +80,14 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
 
   getTestigos() {
     this.loading = true;
-    console.log('getTestigos llamado, isAdmin:', this.isAdmin);
     
     if (this.isAdmin) {
       // Para admin: usar el nuevo endpoint de testigos
-      console.log('Llamando a getTestigosPuestoAsignado...');
       this.backofficeAdminService.getTestigosPuestoAsignado().subscribe({
         next: (resp: any) => {
-          console.log('Respuesta de getTestigosPuestoAsignado:', resp);
           // La respuesta puede venir como { res: True, testigos_asignados: [...], testigos_no_asignados: [...] }
           const testigosAsignados = resp.testigos_asignados || [];
           const testigosNoAsignados = resp.testigos_no_asignados || [];
-          console.log('Testigos asignados:', testigosAsignados.length, 'Testigos no asignados:', testigosNoAsignados.length);
           
           // Inicializar listas
           let testigosAsignadosFiltrados = [];
@@ -133,8 +129,6 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
           }, 300);
         },
         error: (error: any) => {
-          console.error('Error al cargar testigos:', error);
-          console.error('Error completo:', JSON.stringify(error, null, 2));
           this.listTestigoAsignados = [];
           this.listTestigoNoAsignados = [];
           this.loading = false;
@@ -329,16 +323,13 @@ export class ConsultarTestigoComponent implements OnInit, OnDestroy {
   // ==========================================
   
   getDepartmentAdmin() {
-    console.log('getDepartmentAdmin llamado');
     this.backofficeAdminService.getDepartamentosAdmin().subscribe({
       next: (resp: any) => {
-        console.log('Departamentos cargados:', resp);
         this.dataDepartments = resp.departamentos || resp || [];
         // Después de cargar departamentos, cargar testigos inicialmente
         this.getTestigos();
       },
       error: (error: any) => {
-        console.error('Error al cargar departamentos:', error);
         this.dataDepartments = [];
         // Aún así, intentar cargar testigos
         this.getTestigos();

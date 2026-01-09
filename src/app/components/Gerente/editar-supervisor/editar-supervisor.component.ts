@@ -239,7 +239,6 @@ export class EditarSupervisorComponent implements OnInit {
         }
         
         // Debug: verificar qué datos recibimos
-        console.log('Supervisor recibido:', supervisor);
         
         // Cargar datos básicos del supervisor
         // El backend devuelve: nombres, apellidos, numero_documento, telefono, email
@@ -361,7 +360,6 @@ export class EditarSupervisorComponent implements OnInit {
         },
         error: (error: any) => {
           this.dataMunicipals = [];
-          console.error('Error al cargar municipios (editar-supervisor):', error);
           reject(error);
         }
       });
@@ -372,16 +370,13 @@ export class EditarSupervisorComponent implements OnInit {
     return new Promise((resolve, reject) => {
       // Usar el nuevo servicio de backoffice
       if (codigoMunicipio) {
-        console.log('EditarSupervisor - cargando zonas para municipio:', codigoMunicipio);
         this.backofficeAdminService.getZonasPorMunicipio(codigoMunicipio).subscribe({
           next: (resp: any) => {
             this.dataZones = resp.zonas || resp || [];
-            console.log('EditarSupervisor - zonas recibidas:', this.dataZones);
             resolve();
           },
           error: (error: any) => {
             this.dataZones = [];
-            console.error('EditarSupervisor - error al cargar zonas:', error);
             reject(error);
           }
         });
