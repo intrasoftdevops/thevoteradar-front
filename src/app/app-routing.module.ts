@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { EditarPerfilComponent } from './components/editarPerfil/editar-perfil.component';
+import { QrRedirectComponent } from './components/public/qr-redirect/qr-redirect.component';
 
 // Admin Components
 import { AdminHomeComponent } from './components/Admin/admin-home/admin-home.component';
@@ -110,6 +111,10 @@ const routes: Routes = [
   {
     path: 'survey/:surveyId',
     component: SurveyLandingComponent
+  },
+  {
+    path: 'qr/:tenantId',
+    component: QrRedirectComponent
   },
 
   // ============================================
