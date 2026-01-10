@@ -116,6 +116,13 @@ export class ThemeService {
 		'martha-ruiz.voteradar.co': '1075976',
 		// Dominios de producción
 		'martha-ruiz.com': '1075976',
+		
+		// ===== PABLO ACUÑA (1076565) =====
+		'pablo-acuna': '1076565',
+		'pablo-acuna.localhost': '1076565',
+		'pablo-acuna.voteradar.co': '1076565',
+		// Dominios de producción
+		'pablo-acuna.com': '1076565',
     };
     
     if (domainTenantMap[hostname]) {

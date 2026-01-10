@@ -45,10 +45,15 @@ export const DOMAIN_TENANT_MAP: { [key: string]: string } = {
   'juan-duque.localhost': '1062885',
   'juan-duque': '1062885',
   
+  // Pablo Acuña - Tenant ID: 1076565
+  'pablo-acuna.localhost': '1076565',
+  'pablo-acuna': '1076565',
+  
   // Producción - subdominios de voteradar.co
   'daniel-quintero.voteradar.co': '475711',
   'juan-duque.voteradar.co': '1062885',
   'potus-44.voteradar.co': '473173',
+  'pablo-acuna.voteradar.co': '1076565',
   'voteradar.co': '473173', // Dominio principal
 };
 
@@ -72,11 +77,13 @@ export const TENANT_CODE_TO_ID_MAP: { [key: string]: string } = {
   'daniel-quintero': '475711',
   'juan-duque': '1062885',
   'potus-44': '473173',
+  'pablo-acuna': '1076565',
   // Si el tenant code ya es numérico, se retorna tal cual
   '473173': '473173',
   '475711': '475711',
   '475757': '475757',
   '1062885': '1062885',
+  '1076565': '1076565',
 };
 
 /**
