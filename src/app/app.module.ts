@@ -110,6 +110,7 @@ import { MenuAdministradorImpugnacionesComponent } from './components/Administra
 // Public Components
 import { SurveyLandingComponent } from './components/public/survey-landing/survey-landing.component';
 import { ShortLinkRedirectComponent } from './components/public/short-link-redirect/short-link-redirect.component';
+import { QrRedirectComponent } from './components/public/qr-redirect/qr-redirect.component';
 
 // Other Components
 import { EditarPerfilComponent } from './components/editarPerfil/editar-perfil.component';
@@ -218,6 +219,7 @@ import { ContactosComponent } from './components/contactos/contactos.component';
     // Public (TODO: Migrar a PublicModule con lazy loading)
     SurveyLandingComponent,
     ShortLinkRedirectComponent,
+    QrRedirectComponent,
     
     // Other (TODO: Migrar a SharedModule o ProfileModule)
     EditarPerfilComponent,
